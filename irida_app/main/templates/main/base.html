@@ -59,7 +59,7 @@
 
 </head>
 
-<body id='main'>
+<body>
 
     <!-- Start Switcher -->
     {% include 'main/switcher.html' %}
@@ -709,12 +709,12 @@
                                 <li class="slide">
                                     <a href="pagination.html" class="side-menu__item">Pagination</a>
                                 </li>
-                           <li class="slide">
-                                    <a href="spinners.html" class="side-menu__item">Spinners</a>
-                                </li>
-                                <li class="slide">
-                                    <a href="progress.html" class="side-menu__item">Progress</a>
-                                </li>
+                               <li class="slide">
+                                        <a href="spinners.html" class="side-menu__item">Spinners</a>
+                                    </li>
+                               <li class="slide">
+                                   <a href="progress.html" class="side-menu__item">Progress</a>
+                               </li>
                                <li class="slide">
                                     <a href="dropdowns.html" class="side-menu__item">Dropdowns</a>
                                 </li>
@@ -2424,6 +2424,11 @@
     <!-- Chartjs Chart JS -->
     <script src="{% static 'libs/chart.js/chart.min.js' %}"></script>
     <script src="{% static 'js/jquery-3.6.3.min.js' %}"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{% block page_script %}
+    <!-- място за локалните скриптове -->
+{% endblock %}
     <script src="{% static 'libs/flatpickr/picker.js' %}"></script>
     <script src="{% static 'libs/flatpickr/picker.date.js' %}"></script>
 
@@ -2442,13 +2447,6 @@
     <script src="{% static 'js/custom.js' %}"></script>
     <script src="{% static 'js/date.js' %}"></script>
     <script src="{% static 'js/custom-switcher.min.js' %}"></script>
-
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-{% block page_script %}
-    <!-- място за локалните скриптове -->
-{% endblock %}
 </body>
 
 </html>

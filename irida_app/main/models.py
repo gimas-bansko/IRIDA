@@ -16,7 +16,7 @@ class Specialty(models.Model):
 
     specialty_num = models.CharField('Специалност - номер', max_length=8, default='', blank=True)
     specialty_name = models.CharField('Специалност - име', max_length=100, default='', blank=True)
-    plan = models.FileField('Учебен план', upload_to='docs/')
+    plan = models.FileField('Учебен план', upload_to='docs/', blank=True)
     level = models.PositiveSmallIntegerField(choices=[(2, 'втора'), (3, 'трета')], default=3,
                                              help_text='Степен на професионална квалификация')
 
