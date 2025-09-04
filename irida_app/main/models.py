@@ -89,8 +89,9 @@ class UserProfile(models.Model):
                                                     help_text='роля (ниво на достъп)')
     session_screen = models.PositiveSmallIntegerField('Интерфейс', choices=THEME_TYPE, default=DARK,
                                                       help_text='цветова схема на интерфейса')
-    klas = models.PositiveSmallIntegerField('Клас', null=True, blank=True,
+    grade = models.PositiveSmallIntegerField('Клас', null=True, blank=True, default=11,
                                                      validators=[ MinValueValidator(8), MaxValueValidator(12) ] )
+    section = models.CharField('Паралелка', null=True, blank=True, default='а', max_length=1)
     speciality = models.ForeignKey(Specialty, verbose_name='Специалност', on_delete=models.CASCADE, related_name='user_speciality',
                                    help_text='специалност по подразбиране', null=True, blank=True)
 
@@ -121,9 +122,9 @@ def save_user_profile(sender, instance, **kwargs):
 """
 class Log(models.Model):
     user_id = models.IntegerField('id на потребител', default=0)
-    user_name = models.CharField('име на потребител', max_length=50, default='', null=True)
+    user_name = models.CharField('Име на потребител', max_length=50, default='', null=True)
     action = models.CharField('Действие', max_length=200, default='')
-    date = models.DateTimeField('дата и час', default=timezone.now, null=True)
+    date = models.DateTimeField('Дата и час', default=timezone.now, null=True)
 
     def __str__(self):
         return '('+str(self.date)+') '+self.user_name+'/ '+self.action

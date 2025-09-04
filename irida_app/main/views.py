@@ -37,12 +37,18 @@ def subjects_list_view(request):
 def welcome_view(request):
     user = request.user
     user_profile = user.userprofile
+    schools = School.objects.all()
+
     context = {
+        'tab_title': 'начало',
         'user_nick': user.username,
         'user_name': user.first_name+' '+user.last_name,
+        'user_first_name': user.first_name,
         'user_level': USER_LEVEL[user_profile.access_level-1][1],
         'user_profile': user_profile,
-        }
+        'schools': schools,
+        'specialities': user_profile.school.specialities.all(),
+    }
     print(f'context={context}')
     return render(request, 'main/welcome.html', context)
 
@@ -73,8 +79,10 @@ class UserDataAPIView(APIView):
             'user_level_text': USER_LEVEL[user_profile.access_level - 1][1],
             'user_level_num': user_profile.access_level,
             'school':  user_profile.school.id if user_profile.school else 0,
+            'grade':  user_profile.grade if user_profile.grade else 0,
+            'section':  user_profile.section if user_profile.section else 0,
             'speciality': user_profile.speciality.id if user_profile.speciality else 0,
-        }
+            }
         return Response(context)
 
 # данни за определено по id училище
