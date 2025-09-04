@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-vertical-style="overlay" data-theme-mode="light"
+    data-header-styles="light" data-menu-styles="light" data-toggled="close">
+
+<head>
+
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> ИРИДА </title>
+    <meta name="Description" content="Project Irirda">
+    <meta name="Author" content="Gimas 2000">
+    <meta name="keywords"
+        content="education">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'BizLyt/images/brand-logos/favicon.ico.png' %}" type="image/x-icon">
+
+    <!-- Main Theme Js -->
+    <script src="{% static 'BizLyt/js/authentication-main.js' %}"></script>
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="{% static 'BizLyt/libs/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Style Css -->
+    <link href="{% static 'BizLyt/css/styles.css' %}" rel="stylesheet">
+
+    <!-- Icons Css -->
+    <link href="{% static 'BizLyt/css/icons.min.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Start Switcher -->
+    {% include 'main/switcher.html' %}
+    <!-- End Switcher -->
+
+    <div class="page error-bg" id="particles-js">
+        <!-- Start::error-page -->
+        <div class="error-page">
+           <div class="container">
+            <div class=" p-5 my-auto d-flex justify-content-center">
+                <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-6 col-sm-8 col-12">
+                    <div class="my-5 d-flex justify-content-center">
+                        <a href="index.html">
+                            <img src="{% static 'BizLyt/images/brand-logos/desktop-logo.png' %}" alt="logo" class="desktop-logo">
+                        </a>
+                    </div>
+                    <div class="card-1 custom-card">
+                        <div class="card-body p-5">
+                            <div class="block-password">
+                                <p class="h5 fw-semibold mb-2 text-center">Добре дошли!</p>
+                            </div>
+                            <!-- templates/auth/login.html -->
+                            <form method="post" action="{% url 'login' %}">
+                                {% csrf_token %}
+                                {% if next %}
+                                    <input type="hidden" name="next" value="{{ next }}">
+                                {% endif %}
+
+                                <div class="row gy-3">
+                                    <div class="col-xl-12">
+                                        <label for="signin-username" class="form-label text-default">Потребителско име:</label>
+                                        <input type="text"
+                                               class="form-control form-control-lg {% if form.username.errors %}is-invalid{% endif %}"
+                                               id="signin-username"
+                                               name="username"
+                                               placeholder="Enter User Name"
+                                               value="{{ form.data.username|default_if_none:'' }}"
+                                               required
+                                               autocomplete="username">
+                                        {% if form.username.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.username.errors|striptags }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-xl-12 mb-2">
+                                        <label for="signin-password" class="form-label text-default d-block">Парола:</label>
+                                        <div class="input-group">
+                                            <input type="password"
+                                                   class="form-control form-control-lg {% if form.password.errors %}is-invalid{% endif %}"
+                                                   id="signin-password"
+                                                   name="password"
+                                                   placeholder="password"
+                                                   required
+                                                   autocomplete="current-password">
+                                            <button class="btn btn-light" type="button"
+                                                    onclick="createpassword('signin-password',this)" id="button-addon2">
+                                                <i class="ri-eye-off-line align-middle"></i>
+                                            </button>
+                                        </div>
+                                        {% if form.non_field_errors %}
+                                        <div class="text-danger small mt-2">
+                                            {{ form.non_field_errors|striptags }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mt-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="remember" name="remember">
+                                            <label class="form-check-label text-muted fw-normal" for="remember">
+                                                Запомни ме
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xl-12 d-grid mt-5">
+                                        <button type="submit" class="btn-1 white text-center">Вход</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Custom-Switcher JS -->
+    <script src="{% static 'BizLyt/js/custom-switcher.min.js' %}"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'BizLyt/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Show Password JS -->
+    <script src="{% static 'BizLyt/js/show-password.js' %}"></script>
+
+        <!-- Particles JS -->
+    <script src="{% static 'BizLyt/libs/particles.js/particles.js' %}"></script>
+        <!-- Error JS -->
+    <script src="{% static 'BizLyt/js/error.js' %}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,2456 @@
+<!DOCTYPE html>
+{% load static %}
+<!--
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-vertical-style="overlay" data-theme-mode="dark"
+    data-header-styles="dark" data-menu-styles="dark" data-toggled="close">
+-->
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-theme-mode="light"
+      data-header-styles="light" data-menu-styles="dark" data-nav-style="menu-click">
+<head>
+
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> ИРИДА </title>
+    <meta name="Description" content="Project Irirda">
+    <meta name="Author" content="Gimas 2000">
+    <meta name="keywords"
+        content="education">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/brand-logos/favicon.ico.png' %}" type="image/x-icon">
+
+    <!-- Choices JS -->
+    <script src="{% static 'libs/choices.js/public/assets/scripts/choices.min.js' %}"></script>
+
+    <!-- Main Theme Js -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="{% static 'libs/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Style Css -->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+
+    <!-- Icons Css -->
+    <link href="{% static 'css/icons.min.css' %}" rel="stylesheet">
+
+    <!-- Node Waves Css -->
+    <link href="{% static 'libs/node-waves/waves.min.css' %}" rel="stylesheet">
+
+
+    <!-- Simplebar Css -->
+    <link href="{% static 'libs/simplebar/simplebar.min.css' %}" rel="stylesheet">
+
+    <!-- Color Picker Css -->
+    <link rel="stylesheet" href="{% static 'libs/flatpickr/flatpickr.min.css' %}">
+    <link rel="stylesheet" href="{% static 'libs/@simonwep/pickr/themes/nano.min.css' %}">
+
+    <!-- Choices Css -->
+    <link rel="stylesheet" href="{% static 'libs/choices.js/public/assets/styles/choices.min.css' %}">
+
+
+    <link rel="stylesheet" href="{% static 'libs/jsvectormap/css/jsvectormap.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'libs/flatpickr/swiper-bundle.min.css' %}">
+    <link rel="stylesheet" href="{% static 'libs/flatpickr/classic.css' %}">
+    <link rel="stylesheet" href="{% static 'libs/flatpickr/classic.date.css' %}">
+
+</head>
+
+<body id='main'>
+
+    <!-- Start Switcher -->
+    {% include 'main/switcher.html' %}
+    <!-- End Switcher -->
+
+    <div class="page">
+           <!-- app-header -->
+        <header class="app-header">
+
+            <!-- Start::main-header-container -->
+            <div class="main-header-container container-fluid">
+
+                <!-- Start::header-content-left -->
+                <div class="header-content-left">
+
+                    <!-- Start::header-element лого-->
+                    <div class="header-element">
+                        <div class="horizontal-logo">
+                            <a href="index.html" class="header-logo">
+                                <img src="{% static 'images/brand-logos/desktop-logo.png' %}" alt="logo"
+                                    class="desktop-logo">
+                                <img src="{% static 'images/brand-logos/toggle-logo.png' %}" alt="logo" class="toggle-logo">
+                                <img src="{% static 'images/brand-logos/desktop-dark.png' %}" alt="logo"
+                                    class="desktop-dark">
+                                <img src="{% static 'images/brand-logos/toggle-dark.png' %}" alt="logo" class="toggle-dark">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element търсене-->
+                    <div class="header-element ">
+                        <!-- Start::header-link -->
+                        <a aria-label="Hide Sidebar"
+                            class="sidemenu-toggle header-link animated-arrow hor-toggle horizontal-navtoggle"
+                            data-bs-toggle="sidebar" href="javascript:void(0);"><span></span></a>
+                        <!-- Start::header-element -->
+                        <div class="header-element header-search">
+                            <!-- Start::header-link -->
+
+                            <a href="javascript:void(0);" class="header-link" data-bs-toggle="modal"
+                                data-bs-target="#searchModal">
+                                <i class="bx bx-search-alt-2 header-link-icon"></i>
+                            </a>
+                            <!-- End::header-link -->
+                        </div>
+                    </div>
+                    <!-- End::header-element -->
+                </div>
+                <!-- End::header-content-left -->
+
+                <!-- Start::header-content-right -->
+                <div class="header-content-right">
+
+                    <!-- Start::header-element потребител -->
+                    <div class="header-element">
+                        <!-- Start::header-link|dropdown-toggle -->
+                        <a href="#" class="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <div class="d-sm-block d-none">
+                                    <p class="fw-semibold mb-0 lh-1">{{ user_name }}</p>
+                                    <p class="mb-0 lh-1 fs-12 text-muted">влязъл като {{ user_nick }}</p>
+                                </div>
+                            </div>
+                        </a>
+                        <!-- End::header-link|dropdown-toggle -->
+                        <ul class="main-header-dropdown dropdown-menu pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end"
+                            aria-labelledby="mainHeaderProfile">
+                            <li><a class="dropdown-item d-flex" href="profile.html"><i
+                                        class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
+                            <li><a class="dropdown-item d-flex" href="mail.html"><i
+                                        class="ti ti-inbox fs-18 me-2 op-7"></i>Inbox <span
+                                        class="badge bg-success-transparent ms-auto">25</span></a></li>
+
+                            <li><a class="dropdown-item d-flex" href="mail-settings.html"><i
+                                        class="ti ti-adjustments-horizontal fs-18 me-2 op-7"></i>Settings</a></li>
+                            <li><a class="dropdown-item d-flex border-block-end" href="javascript:void(0);"><i
+                                        class="ti ti-wallet fs-18 me-2 op-7"></i>Bal: $7,12,950</a></li>
+
+                            <li><a class="dropdown-item d-flex" href="{% url 'logout' %}"><i
+                                        class="ti ti-logout fs-18 me-2 op-7"></i>Изход</a></li>
+                        </ul>
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element notifications-dropdown">
+                        <!-- Start::header-link|dropdown-toggle -->
+                        <a href="javascript:void(0);" class="header-link-1 dropdown-toggle" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" id="messageDropdown1" aria-expanded="false">
+                            <svg class="header-link-icon-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none">
+                                <path
+                                    d="M2 7L10.1649 12.7154C10.8261 13.1783 11.1567 13.4097 11.5163 13.4993C11.8339 13.5785 12.1661 13.5785 12.4837 13.4993C12.8433 13.4097 13.1739 13.1783 13.8351 12.7154L22 7M6.8 20H17.2C18.8802 20 19.7202 20 20.362 19.673C20.9265 19.3854 21.3854 18.9265 21.673 18.362C22 17.7202 22 16.8802 22 15.2V8.8C22 7.11984 22 6.27976 21.673 5.63803C21.3854 5.07354 20.9265 4.6146 20.362 4.32698C19.7202 4 18.8802 4 17.2 4H6.8C5.11984 4 4.27976 4 3.63803 4.32698C3.07354 4.6146 2.6146 5.07354 2.32698 5.63803C2 6.27976 2 7.11984 2 8.8V15.2C2 16.8802 2 17.7202 2.32698 18.362C2.6146 18.9265 3.07354 19.3854 3.63803 19.673C4.27976 20 5.11984 20 6.8 20Z"
+                                    stroke="#3D3D3D" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg> <span class="badge rounded-pill header-icon-badge pulse pulse-secondary"
+                                id="notification-icon-badge"><svg xmlns="http://www.w3.org/2000/svg" width="10"
+                                    height="10" viewBox="0 0 10 10" fill="none">
+                                    <circle cx="5.20039" cy="4.8" r="4.3" fill="#2E90FA" stroke="#FAFAFA" />
+                                </svg></span>
+                        </a>
+                        <!-- End::header-link|dropdown-toggle -->
+
+                        <!-- Start::main-header-dropdown -->
+                        <div class="main-header-dropdown dropdown-menu dropdown-menu-end" data-popper-placement="none">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <p class="mb-0 fs-17 fw-semibold">Notifications</p>
+                                    <span class="badge bg-secondary-transparent" id="notifiation-data">5 Unread</span>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <ul class="list-unstyled mb-0" id="header-notification-scroll-1">
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-primary-transparent avatar-rounded"><i
+                                                    class="ti ti-gift fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Your Order Has
+                                                        Been Shipped</a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    No: 123456 Has Shipped To Your Delivery Address</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-secondary-transparent avatar-rounded"><i
+                                                    class="ti ti-discount-2 fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Discount
+                                                        Available</a></p>
+                                                <span
+                                                    class="text-muted fw-normal fs-12 header-notification-text">Discount
+                                                    Available On Selected Products</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-pink-transparent avatar-rounded"><i
+                                                    class="ti ti-user-check fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Account Has
+                                                        Been Verified</a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Your
+                                                    Account Has Been Verified Sucessfully</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-warning-transparent avatar-rounded"><i
+                                                    class="ti ti-circle-check fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Placed
+                                                        <span class="text-warning">ID: #1116773</span></a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    Placed Successfully</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-success-transparent avatar-rounded"><i
+                                                    class="ti ti-clock fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Delayed
+                                                        <span class="text-success">ID: 7731116</span></a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    Delayed Unfortunately</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="p-3 empty-header-item1 border-top">
+                                <div class="d-grid">
+                                    <a href="notifications.html" class="btn btn-primary  white">View All</a>
+                                </div>
+                            </div>
+                            <div class="p-5 empty-item1 d-none">
+                                <div class="text-center">
+                                    <span class="avatar avatar-xl avatar-rounded bg-secondary-transparent">
+                                        <i class="ri-notification-off-line fs-2"></i>
+                                    </span>
+                                    <h6 class="fw-semibold mt-3">No New Notifications</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End::main-header-dropdown -->
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element notifications-dropdown">
+                        <!-- Start::header-link|dropdown-toggle -->
+                        <a href="javascript:void(0);" class="header-link-1 dropdown-toggle" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" id="messageDropdown" aria-expanded="false">
+                            <i class="bx bx-bell header-link-icon"></i>
+                            <span class="badge rounded-pill header-icon-badge pulse pulse-secondary"
+                                id="notification-icon-badge-1"><svg xmlns="http://www.w3.org/2000/svg" width="10"
+                                    height="10" viewBox="0 0 10 10" fill="none">
+                                    <circle cx="5.20039" cy="4.8" r="4.3" fill="#2E90FA" stroke="#FAFAFA" />
+                                </svg></span>
+                        </a>
+                        <!-- End::header-link|dropdown-toggle -->
+                        <!-- Start::main-header-dropdown -->
+                        <div class="main-header-dropdown dropdown-menu dropdown-menu-end" data-popper-placement="none">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <p class="mb-0 fs-17 fw-semibold">Notifications</p>
+                                    <span class="badge bg-secondary-transparent" id="notifiation-data-1">5 Unread</span>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <ul class="list-unstyled mb-0" id="header-notification-scroll">
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-primary-transparent avatar-rounded"><i
+                                                    class="ti ti-gift fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Your Order Has
+                                                        Been Shipped</a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    No: 123456 Has Shipped To Your Delivery Address</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-secondary-transparent avatar-rounded"><i
+                                                    class="ti ti-discount-2 fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Discount
+                                                        Available</a></p>
+                                                <span
+                                                    class="text-muted fw-normal fs-12 header-notification-text">Discount
+                                                    Available On Selected Products</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-pink-transparent avatar-rounded"><i
+                                                    class="ti ti-user-check fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Account Has
+                                                        Been Verified</a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Your
+                                                    Account Has Been Verified Sucessfully</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-warning-transparent avatar-rounded"><i
+                                                    class="ti ti-circle-check fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Placed
+                                                        <span class="text-warning">ID: #1116773</span></a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    Placed Successfully</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-success-transparent avatar-rounded"><i
+                                                    class="ti ti-clock fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Delayed
+                                                        <span class="text-success">ID: 7731116</span></a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    Delayed Unfortunately</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="p-3 empty-header-item1 border-top">
+                                <div class="d-grid">
+                                    <a href="notifications.html" class="btn btn-primary  white">View All</a>
+                                </div>
+                            </div>
+                            <div class="p-5 empty-item1 d-none">
+                                <div class="text-center">
+                                    <span class="avatar avatar-xl avatar-rounded bg-secondary-transparent">
+                                        <i class="ri-notification-off-line fs-2"></i>
+                                    </span>
+                                    <h6 class="fw-semibold mt-3">No New Notifications</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End::main-header-dropdown -->
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element header-theme-mode">
+                        <!-- Start::header-link|layout-setting -->
+                        <a href="javascript:void(0);" class="header-link layout-setting">
+                            <span class="light-layout">
+                                <!-- Start::header-link-icon -->
+                                <i class="bx bx-moon header-link-icon"></i>
+                                <!-- End::header-link-icon -->
+                            </span>
+                            <span class="dark-layout">
+                                <!-- Start::header-link-icon -->
+                                <i class="bx bx-sun header-link-icon"></i>
+                                <!-- End::header-link-icon -->
+                            </span>
+                        </a>
+                        <!-- End::header-link|layout-setting -->
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element switcher-icon -->
+                    <div class="header-element">
+                        <!-- Start::header-link|switcher-icon -->
+                        <a href="#" class="header-link switcher-icon" data-bs-toggle="offcanvas"
+                            data-bs-target="#switcher-canvas">
+                            <i class="bx bx-cog header-link-icon"></i>
+                        </a>
+                        <!-- End::header-link|switcher-icon -->
+                    </div>
+                    <!-- End::header-element -->
+
+                </div>
+                <!-- End::header-content-right -->
+
+            </div>
+            <!-- End::main-header-container -->
+
+        </header>
+        <!-- /app-header -->
+
+        <aside class="app-sidebar sticky" id="sidebar">
+            <!-- Start::main-sidebar -->
+            <div class="main-sidebar" id="sidebar-scroll">
+
+                <!-- Start::nav -->
+                <nav class="main-menu-container nav nav-pills flex-column sub-open">
+                    <div class="main-sidebar-header mb-24">
+                        <a href="index.html" class="header-logo">
+                            <img src="{% static 'images/brand-logos/desktop-dark.png' %}" alt="logo" class="desktop-dark">
+                            <img src="{% static 'images/brand-logos/toggle-dark.png' %}" alt="logo" class="toggle-dark">
+                            <img src="{% static 'images/brand-logos/desktop-logo.png' %}" alt="logo" class="desktop-logo">
+                            <img src="{% static 'images/brand-logos/toggle-logo.png' %}" alt="logo" class="toggle-logo">
+                        </a>
+                    </div>
+                    <div class="slide-left" id="slide-left">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24"
+                            viewBox="0 0 24 24">
+                            <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path>
+                        </svg>
+                    </div>
+                    <ul class="main-menu">
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">Главно меню</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide">
+                            <a href="{% url 'schools_list' %}" class="side-menu__item">
+                                <i class="bi bi-house side-menu__icon"></i>
+                                <span class="side-menu__label">Училища</span>
+                            </a>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide">
+                            <a href="icons.html" class="side-menu__item">
+                                <i class="bi bi-tools side-menu__icon"></i>
+                                <span class="side-menu__label">Специалности</span>
+                            </a>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">Main Menu</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-home side-menu__icon"></i>
+                                <span class="side-menu__label">Dashboards</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Dashboards</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="index.html" class="side-menu__item">CRM</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="index-1.html" class="side-menu__item">Ecommerce</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="index-2.html" class="side-menu__item">Pos system</a>
+                                </li>
+                              
+                                <li class="slide">
+                                    <a href="index-3.html" class="side-menu__item">Analytics</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="index-4.html" class="side-menu__item">Projects</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">Pages</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-file-blank side-menu__icon"></i>
+                                <span class="side-menu__label">Pages</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Pages</a>
+                                </li>
+                                <li class="slide has-sub">
+                                    <a href="javascript:void(0);" class="side-menu__item">Email
+                                        <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                    <ul class="slide-menu child2">
+                                        <li class="slide">
+                                            <a href="mail.html" class="side-menu__item">Mail App</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="mail-settings.html" class="side-menu__item">Mail Settings</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                          
+                                <li class="slide">
+                                    <a href="faq's.html" class="side-menu__item">FAQ's</a>
+                                </li>
+                             
+                                <li class="slide">
+                                    <a href="notifications.html" class="side-menu__item">Notifications</a>
+                                </li>
+                             
+                                <li class="slide">
+                                    <a href="profile.html" class="side-menu__item">Profile</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="reviews.html" class="side-menu__item">Reviews</a>
+                                </li>
+                           
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-fingerprint side-menu__icon"></i>
+                                <span class="side-menu__label">Authentication</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Authentication</a>
+                                </li>
+                              
+                               
+                                <li class="slide has-sub">
+                                    <a href="reset-password.html" class="side-menu__item">Reset Password
+                                        </a>
+                                <li class="slide has-sub">
+                                    <a href="sign-up.html" class="side-menu__item">Sign Up
+                                        </a>
+                                  
+                                </li>
+                                <li class="slide has-sub">
+                                    <a href="sign-in.html" class="side-menu__item">Sign In
+                                       </a>
+                                </li>
+                                  <li class="slide">
+                                    <a href="under-maintenance.html" class="side-menu__item">Under Maintenance</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-error side-menu__icon"></i>
+                                <span class="side-menu__label">Error</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Error</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="401-error.html" class="side-menu__item">401 - Error</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="404-error.html" class="side-menu__item">404 - Error</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="500-error.html" class="side-menu__item">500 - Error</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">General</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-box side-menu__icon"></i>
+                                <span class="side-menu__label">Ui Elements</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1 mega-menu">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Ui Elements</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="alerts.html" class="side-menu__item">Alerts</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="badge.html" class="side-menu__item">Badge</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="breadcrumb.html" class="side-menu__item">Breadcrumb</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="buttons.html" class="side-menu__item">Buttons</a>
+                                </li>
+                           
+                                <li class="slide">
+                                    <a href="images_figures.html" class="side-menu__item">Images & Figures</a>
+                                </li>
+                              
+                                <li class="slide">
+                                    <a href="navs_tabs.html" class="side-menu__item">Navs & Tabs</a>
+                                </li>
+                                 <li class="slide">
+                                    <a href="cards.html" class="side-menu__item">Cards</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="pagination.html" class="side-menu__item">Pagination</a>
+                                </li>
+                           <li class="slide">
+                                    <a href="spinners.html" class="side-menu__item">Spinners</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="progress.html" class="side-menu__item">Progress</a>
+                                </li>
+                               <li class="slide">
+                                    <a href="dropdowns.html" class="side-menu__item">Dropdowns</a>
+                                </li>
+                             
+                                <li class="slide">
+                                    <a href="tooltips.html" class="side-menu__item">Tooltips</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="typography.html" class="side-menu__item">Typography</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-file side-menu__icon"></i>
+                                <span class="side-menu__label">Forms</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Forms</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="floating_labels.html" class="side-menu__item">Floating Labels</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="form_layout.html" class="side-menu__item">Form Layouts</a>
+                                </li>
+                                <li class="slide has-sub">
+                                    <a href="javascript:void(0);" class="side-menu__item">Form Editors
+                                        <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                    <ul class="slide-menu child2">
+                                        <li class="slide">
+                                            <a href="quill_editor.html" class="side-menu__item">Quill Editor</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">Tables & Charts</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-table side-menu__icon"></i>
+                                <span class="side-menu__label">Tables</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Tables</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="tables.html" class="side-menu__item">Tables</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="grid-tables.html" class="side-menu__item">Grid JS Tables</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="data-tables.html" class="side-menu__item">Data Tables</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-bar-chart-square side-menu__icon"></i>
+                                <span class="side-menu__label">Charts</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Charts</a>
+                                </li>
+                                <li class="slide has-sub">
+                                    <a href="javascript:void(0);" class="side-menu__item">Apex Charts
+                                        <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                    <ul class="slide-menu child2">
+                                        <li class="slide">
+                                            <a href="apex-line-charts.html" class="side-menu__item">Line Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-area-charts.html" class="side-menu__item">Area Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-column-charts.html" class="side-menu__item">Column Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-bar-charts.html" class="side-menu__item">Bar Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-mixed-charts.html" class="side-menu__item">Mixed Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-rangearea-charts.html" class="side-menu__item">Range Area
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-timeline-charts.html" class="side-menu__item">Timeline
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-candlestick-charts.html" class="side-menu__item">CandleStick
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-boxplot-charts.html" class="side-menu__item">Boxplot
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-bubble-charts.html" class="side-menu__item">Bubble Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-scatter-charts.html" class="side-menu__item">Scatter
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-heatmap-charts.html" class="side-menu__item">Heatmap
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-treemap-charts.html" class="side-menu__item">Treemap
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-pie-charts.html" class="side-menu__item">Pie Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-radialbar-charts.html" class="side-menu__item">Radialbar
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-radar-charts.html" class="side-menu__item">Radar Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-polararea-charts.html" class="side-menu__item">Polararea
+                                                Charts</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="slide">
+                                    <a href="chartjs-charts.html" class="side-menu__item">Chartjs Charts</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="echarts.html" class="side-menu__item">Echart Charts</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">Maps & Icons</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-map side-menu__icon"></i>
+                                <span class="side-menu__label">Maps</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Maps</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="google-maps.html" class="side-menu__item">Google Maps</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="leaflet-maps.html" class="side-menu__item">Leaflet Maps</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="vector-maps.html" class="side-menu__item">Vector Maps</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide">
+                            <a href="icons.html" class="side-menu__item">
+                                <i class="bx bx-store-alt side-menu__icon"></i>
+                                <span class="side-menu__label">Icons</span>
+                            </a>
+                        </li>
+                        <!-- End::slide -->
+                    </ul>
+                    <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191"
+                            width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path>
+                        </svg></div>
+                </nav>
+                <!-- End::nav -->
+
+            </div>
+            <!-- End::main-sidebar -->
+
+        </aside>
+        <!-- End::app-sidebar -->
+
+{% block main_content %}
+        <!-- Start::app-content base-->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- Start::page-header -->
+                <div
+                    class="heading-blocks d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                    <div class="mb-8">
+                        <p class="fw-normal fs-24 mb-8">Welcome Back, Tom Raynor</p>
+                        <span class="para-content fs-semibold  fs-16">Let's dive in & get things done.</span>
+                    </div>
+                    <div class="btn-list d-flex gap-12 align-items-center">
+                        <div class="date-block">
+                            <div class="input-border">
+                                <div class="calendar-box">
+                                    <span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            viewBox="0 0 20 20" fill="none">
+                                            <path
+                                                d="M17.5 8.33334H2.5M13.3333 1.66667V5.00001M6.66667 1.66667V5.00001M6.5 18.3333H13.5C14.9001 18.3333 15.6002 18.3333 16.135 18.0609C16.6054 17.8212 16.9878 17.4387 17.2275 16.9683C17.5 16.4335 17.5 15.7335 17.5 14.3333V7.33334C17.5 5.93321 17.5 5.23314 17.2275 4.69836C16.9878 4.22796 16.6054 3.84551 16.135 3.60582C15.6002 3.33334 14.9001 3.33334 13.5 3.33334H6.5C5.09987 3.33334 4.3998 3.33334 3.86502 3.60582C3.39462 3.84551 3.01217 4.22796 2.77248 4.69836C2.5 5.23314 2.5 5.93321 2.5 7.33334V14.3333C2.5 15.7335 2.5 16.4335 2.77248 16.9683C3.01217 17.4387 3.39462 17.8212 3.86502 18.0609C4.3998 18.3333 5.09987 18.3333 6.5 18.3333Z"
+                                                stroke="#3D3D3D" stroke-width="1.66667" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </span>
+                                    <span class="input-box">
+                                        <input type="text" name="date" id="checkIn"
+                                            class="sel-input date_to form-control-1"
+                                            placeholder="Jun11,2025, Jun18,2025">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary ">
+                            <span class="d-flex align-items-center gap-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
+                                    fill="none">
+                                    <path d="M17.5 17.5H2.5M15 9.16667L10 14.1667M10 14.1667L5 9.16667M10 14.1667V2.5"
+                                        stroke="#FAFAFA" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                <span class="white">Export report</span>
+                                </span>
+                        </button>
+                    </div>
+                </div>
+                <!-- End::page-header -->
+
+                <!-- Start::row-1 -->
+                <div class="row">
+                    <div class="col-xxl-9 col-xl-12">
+                        <div class="row">
+                            <div class="col-xxl-3 col-lg-6 col-md-6">
+                                <div class="card-1 custom-card overflow-hidden">
+                                    <div class="card-body-1">
+                                        <div class="d-flex align-items-top justify-content-between">
+                                            <div class="flex-fill">
+                                                <div
+                                                    class="d-flex align-items-center justify-content-between flex-wrap">
+                                                    <div>
+                                                        <p class="fw-normal text-muted fs-16 mb-12">Total Sales</p>
+
+                                                    </div>
+                                                    <div class="block-svg">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                            viewBox="0 0 20 20" fill="none">
+                                                            <path
+                                                                d="M4.6 2.19999L3.3 3.93332C3.04251 4.27664 2.91377 4.4483 2.91676 4.59198C2.91936 4.71702 2.97799 4.83428 3.07646 4.91139C3.18962 4.99999 3.40419 4.99999 3.83333 4.99999H16.1667C16.5958 4.99999 16.8104 4.99999 16.9235 4.91139C17.022 4.83428 17.0806 4.71702 17.0832 4.59198C17.0862 4.4483 16.9575 4.27664 16.7 3.93332L15.4 2.19999M4.6 2.19999C4.74667 2.00443 4.82 1.90666 4.91294 1.83614C4.99525 1.77368 5.08846 1.72707 5.18782 1.69869C5.3 1.66666 5.42222 1.66666 5.66667 1.66666H14.3333C14.5778 1.66666 14.7 1.66666 14.8122 1.69869C14.9115 1.72707 15.0047 1.77368 15.0871 1.83614C15.18 1.90666 15.2533 2.00443 15.4 2.19999M4.6 2.19999L3.03333 4.28888C2.83545 4.55272 2.73651 4.68465 2.66625 4.82992C2.6039 4.95884 2.55843 5.09525 2.53096 5.23579C2.5 5.39417 2.5 5.55907 2.5 5.88888L2.5 15.6667C2.5 16.6001 2.5 17.0668 2.68166 17.4233C2.84144 17.7369 3.09641 17.9919 3.41002 18.1517C3.76654 18.3333 4.23325 18.3333 5.16667 18.3333L14.8333 18.3333C15.7668 18.3333 16.2335 18.3333 16.59 18.1517C16.9036 17.9919 17.1586 17.7369 17.3183 17.4233C17.5 17.0668 17.5 16.6001 17.5 15.6667V5.88888C17.5 5.55907 17.5 5.39417 17.469 5.23579C17.4416 5.09525 17.3961 4.95884 17.3338 4.82993C17.2635 4.68465 17.1646 4.55272 16.9667 4.28888L15.4 2.19999M13.3333 8.33332C13.3333 9.21738 12.9821 10.0652 12.357 10.6903C11.7319 11.3155 10.8841 11.6667 10 11.6667C9.11594 11.6667 8.2681 11.3155 7.64298 10.6903C7.01786 10.0652 6.66667 9.21738 6.66667 8.33332"
+                                                                stroke="#F0F5CC" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <h4 class="fw-normal mb-16 fs-36">10,145</h4>
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <a class="text-primary fw-normal  fs-14"
+                                                            href="javascript:void(0);">View all sale<i
+                                                                class="ti ti-arrow-narrow-right ms-2 fw-semibold d-inline-block"></i></a>
+                                                    </div>
+                                                    <div class="d-flex gap-6 align-items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                                            viewBox="0 0 12 12" fill="none">
+                                                            <path d="M6 2V10M6 10L9 7M6 10L3 7" stroke="#F04438"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round" />
+                                                        </svg>
+                                                        <p class="fs-14 custom-red mb-0 fw-normal">1.50%</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-3 col-lg-6 col-md-6">
+                                <div class="card-1 custom-card overflow-hidden">
+                                    <div class="card-body-2">
+                                        <div class="d-flex align-items-top justify-content-between">
+                                            <div class="flex-fill">
+                                                <div
+                                                    class="d-flex align-items-center justify-content-between flex-wrap">
+                                                    <div>
+                                                        <p class="fw-normal fs-16 mb-12 gray-9">Total Revenue
+                                                        </p>
+
+                                                    </div>
+                                                    <div class="block-svg-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                            viewBox="0 0 20 20" fill="none">
+                                                            <path
+                                                                d="M5 13.3333C5 15.1743 6.49238 16.6667 8.33333 16.6667H11.6667C13.5076 16.6667 15 15.1743 15 13.3333C15 11.4924 13.5076 9.99999 11.6667 9.99999H8.33333C6.49238 9.99999 5 8.50761 5 6.66666C5 4.82571 6.49238 3.33332 8.33333 3.33332H11.6667C13.5076 3.33332 15 4.82571 15 6.66666M10 1.66666V18.3333"
+                                                                stroke="#FFFAEB" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <h4 class="fw-normal mb-16 fs-36">10,145</h4>
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <a class="text-primary fw-normal  fs-14"
+                                                            href="javascript:void(0);">Complete revenue<i
+                                                                class="ti ti-arrow-narrow-right ms-2 fw-semibold d-inline-block"></i></a>
+                                                    </div>
+                                                    <div class="d-flex gap-6 align-items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                                            viewBox="0 0 12 12" fill="none">
+                                                            <path d="M6 10V2M6 2L3 5M6 2L9 5" stroke="#12B76A"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round" />
+                                                        </svg>
+                                                        <p class="fs-14 green mb-0 fw-normal">1.50%</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-3 col-lg-6 col-md-6">
+                                <div class="card-1 custom-card overflow-hidden">
+                                    <div class="card-body-3">
+                                        <div class="d-flex align-items-top justify-content-between">
+                                            <div class="flex-fill">
+                                                <div
+                                                    class="d-flex align-items-center justify-content-between flex-wrap">
+                                                    <div>
+                                                        <p class="fw-normal fs-16 mb-12 gray-9">Page Views
+                                                        </p>
+
+                                                    </div>
+                                                    <div class="block-svg-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                            viewBox="0 0 20 20" fill="none">
+                                                            <path
+                                                                d="M13.3333 2.8898C14.5681 3.50343 15.4166 4.77762 15.4166 6.25C15.4166 7.72238 14.5681 8.99657 13.3333 9.6102M15 13.972C16.2595 14.5419 17.3937 15.4708 18.3333 16.6667M1.66663 16.6667C3.2887 14.6021 5.49094 13.3333 7.91663 13.3333C10.3423 13.3333 12.5446 14.6021 14.1666 16.6667M11.6666 6.25C11.6666 8.32107 9.98769 10 7.91663 10C5.84556 10 4.16663 8.32107 4.16663 6.25C4.16663 4.17893 5.84556 2.5 7.91663 2.5C9.98769 2.5 11.6666 4.17893 11.6666 6.25Z"
+                                                                stroke="#ECFDF3" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <h4 class="fw-normal mb-16 fs-36">90,380</h4>
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <a class="text-primary fw-normal  fs-14"
+                                                            href="javascript:void(0);">Total page views<i
+                                                                class="ti ti-arrow-narrow-right ms-2 fw-semibold d-inline-block"></i></a>
+                                                    </div>
+                                                    <div class="d-flex gap-6 align-items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                                            viewBox="0 0 12 12" fill="none">
+                                                            <path d="M6 2V10M6 10L9 7M6 10L3 7" stroke="#F04438"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round" />
+                                                        </svg>
+                                                        <p class="fs-14 custom-red mb-0 fw-normal">1.20%</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-3 col-lg-6 col-md-6">
+                                <div class="card-1 custom-card overflow-hidden">
+                                    <div class="card-body-4">
+                                        <div class="d-flex align-items-top justify-content-between">
+                                            <div class="flex-fill">
+                                                <div
+                                                    class="d-flex align-items-center justify-content-between flex-wrap">
+                                                    <div>
+                                                        <p class="fw-normal fs-16 mb-12 gray-9">Profit By Sale
+                                                        </p>
+
+                                                    </div>
+                                                    <div class="block-svg-3">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                            viewBox="0 0 20 20" fill="none">
+                                                            <path
+                                                                d="M5 13.3333C5 15.1743 6.49238 16.6667 8.33333 16.6667H11.6667C13.5076 16.6667 15 15.1743 15 13.3333C15 11.4924 13.5076 9.99999 11.6667 9.99999H8.33333C6.49238 9.99999 5 8.50761 5 6.66666C5 4.82571 6.49238 3.33332 8.33333 3.33332H11.6667C13.5076 3.33332 15 4.82571 15 6.66666M10 1.66666V18.3333"
+                                                                stroke="#FFFAEB" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <h4 class="fw-normal mb-16 fs-36">$23,214</h4>
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div>
+                                                        <a class="text-primary fw-normal  fs-14"
+                                                            href="javascript:void(0);">Complete revenue<i
+                                                                class="ti ti-arrow-narrow-right ms-2 fw-semibold d-inline-block"></i></a>
+                                                    </div>
+                                                    <div class="d-flex gap-6 align-items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                                            viewBox="0 0 12 12" fill="none">
+                                                            <path d="M6 10V2M6 2L3 5M6 2L9 5" stroke="#12B76A"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round" />
+                                                        </svg>
+                                                        <p class="fs-14 green mb-0 fw-normal">1.50%</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-4">
+                                <div class="row">
+
+                                </div>
+
+                                <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <div class="card-1 custom-card">
+                                        <div class="card-header justify-content-between">
+                                            <div class="card-title">Profit Earned</div>
+                                            <div class="dropdown">
+                                                <a href="javascript:void(0);" class="p-2 fs-12 text-muted"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    View All<i
+                                                        class="ri-arrow-down-s-line align-middle ms-1 d-inline-block"></i>
+                                                </a>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Today</a>
+                                                    </li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">This
+                                                            Week</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Last
+                                                            Week</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <div class="row gy-3 card-body">
+                                            <div class="col-xl-6">
+                                                <div class="border-dashed-1">
+                                                    <span class="d-block mb-2 fs-16  gray-9">This Week</span>
+                                                    <h5 class="fw-normal custom-black fs-24 lh-1 mb-0">$14K<span
+                                                            class="text-success  fw-normal fs-14 ms-4 d-inline-flex align-items-center">0.64%<svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="13"
+                                                                height="12" viewBox="0 0 13 12" fill="none">
+                                                                <path d="M3.09369 4.5L6.09369 7.5L9.09369 4.5"
+                                                                    stroke="#F04438" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                                            </svg></span></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6">
+                                                <div class="border-dashed-1">
+                                                    <span class="d-block mb-2 fs-16  gray-9">This Week</span>
+                                                    <h5 class="fw-normal custom-black fs-24 lh-1 mb-0">$14K<span
+                                                            class="text-danger  fw-normal fs-14 ms-4 d-inline-flex align-items-center">0.64%<svg
+                                                                xmlns="http://www.w3.org/2000/svg" width="13"
+                                                                height="12" viewBox="0 0 13 12" fill="none">
+                                                                <path d="M9.09369 7.5L6.09369 4.5L3.09369 7.5"
+                                                                    stroke="#12B76A" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                                            </svg></span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="crm-profits-earned"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-8">
+                                <div class="row">
+                                    <div class="col-xl-12">
+                                        <div class="card-1 custom-card overflow-hidden">
+                                            <div class="card-header justify-content-between mb-24">
+                                                <div class="card-title">Order Statistics</div>
+                                                <div class="d-flex align-items-center gap-12">
+                                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                                        <button type="button"
+                                                            class="btn btn-primary btn-sm btn-wave waves-effect waves-light">Day</button>
+                                                        <button type="button"
+                                                            class="btn btn-primary-light btn-sm btn-wave waves-effect waves-light">Week</button>
+                                                        <button type="button"
+                                                            class="btn btn-primary-light btn-sm btn-wave waves-effect waves-light">Month</button>
+                                                        <button type="button"
+                                                            class="btn btn-primary-light btn-sm btn-wave waves-effect waves-light">Year</button>
+
+                                                    </div>
+                                                    <button type="button" class="btn-green">
+                                                        <span class="d-flex align-items-center gap-6">
+                                                            <span class="white fs-12">Export</span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12"
+                                                                height="12" viewBox="0 0 12 12" fill="none">
+                                                                <path
+                                                                    d="M10.3957 6.3037C10.5177 6.19907 10.5788 6.14676 10.6011 6.08451C10.6208 6.02988 10.6208 5.97011 10.6011 5.91548C10.5788 5.85323 10.5177 5.80091 10.3957 5.69629L6.16032 2.06598C5.9502 1.88588 5.84514 1.79583 5.7562 1.79363C5.6789 1.79171 5.60506 1.82567 5.55621 1.88561C5.5 1.95458 5.5 2.09294 5.5 2.36968V4.51731C4.43266 4.70404 3.4558 5.24487 2.72985 6.05693C1.93841 6.94225 1.50062 8.08797 1.5 9.27548V9.58147C2.02467 8.94943 2.67975 8.43825 3.42038 8.08295C4.07335 7.76971 4.77921 7.58415 5.5 7.53526V9.63031C5.5 9.90704 5.5 10.0454 5.55621 10.1144C5.60506 10.1743 5.6789 10.2083 5.7562 10.2064C5.84514 10.2042 5.9502 10.1141 6.16032 9.93401L10.3957 6.3037Z"
+                                                                    stroke="#ECFDF3" stroke-linecap="round"
+                                                                    stroke-linejoin="round" />
+                                                            </svg>
+                                                        </span>
+                                                    </button>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="card-body p-0">
+
+                                                <div id="subscriptionOverview" class="px-3 mt-sm-0 mt-3"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-12">
+                                <div class="card-1 custom-card">
+                                    <div class="card-header justify-content-between">
+                                        <div class="card-title"> Recent Orders </div>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <div> <input class="form-control form-control-sm" type="text"
+                                                    placeholder="Search Here" aria-label=".form-control-sm example">
+                                            </div>
+                                            <div class="dropdown"> <a href="javascript:void(0);"
+                                                    class="fw-normal fs-16 text-muted" data-bs-toggle="dropdown"
+                                                    aria-expanded="false">Sort by
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        viewBox="0 0 16 16" fill="none">
+                                                        <path d="M4 6L8 10L12 6" stroke="#888888" stroke-width="1.33333"
+                                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    </svg>
+                                                </a>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">New</a>
+                                                    </li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Popular</a>
+                                                    </li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0);">Relevant</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table text-nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="row" class="ps-4"><input class="form-check-input"
+                                                                type="checkbox" id="checkboxNoLabeljob1" value=""
+                                                                aria-label="..."></th>
+                                                        <th scope="col">Product</th>
+                                                        <th scope="col">Category</th>
+                                                        <th scope="col" class="text-center">Quantity</th>
+                                                        <th scope="col">Customer</th>
+                                                        <th scope="col">Status</th>
+                                                        <th scope="col">Price</th>
+                                                        <th scope="col">Ordered Date</th>
+                                                        <th scope="col">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="ps-4"><input class="form-check-input" type="checkbox"
+                                                                id="checkboxNoLabeljob2" value="" aria-label="..."></td>
+                                                        <td>
+                                                            <div class="d-flex"> <span
+                                                                    class="avatar avatar-md bg-light"><img
+                                                                        src="{% static 'images/ecommerce/png/1.png' %}"
+                                                                        class="" alt="..."></span>
+                                                                <div class="ms-2">
+                                                                    <p
+                                                                        class="fw-normal custom-black fs-14 mb-0 d-flex align-items-center">
+                                                                        <a class=" custom-black"
+                                                                            href="javascript:void(0);">Electronics</a>
+                                                                    </p>
+                                                                    <p class="fs-14 gray-3 fw-normal mb-0">Pixel</p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td> Furniture </td>
+                                                        <td class="text-center"> 1 </td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <div class="lh-1"> <span
+                                                                        class="avatar avatar-xs avatar-rounded"> <img
+                                                                            src="{% static 'images/faces/1.jpg' %}" alt="">
+                                                                    </span> </div>
+                                                                <div> Lucas Hayes </div>
+                                                            </div>
+                                                        </td>
+                                                        <td><span class="badge bg-primary-transparent">Shipped</span>
+                                                        </td>
+                                                        <td class="fw-normal">$1200.00</td>
+                                                        <td>2025-05-18</td>
+                                                        <td>
+                                                            <div class="btn-list"> <button
+                                                                    class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                        height="16" viewBox="0 0 16 16" fill="none">
+                                                                        <path
+                                                                            d="M1.61342 8.47549C1.52262 8.33173 1.47723 8.25985 1.45182 8.14898C1.43273 8.06571 1.43273 7.93437 1.45182 7.8511C1.47723 7.74023 1.52262 7.66835 1.61341 7.52459C2.36369 6.3366 4.59693 3.33337 8.00027 3.33337C11.4036 3.33337 13.6369 6.3366 14.3871 7.52459C14.4779 7.66835 14.5233 7.74023 14.5487 7.8511C14.5678 7.93437 14.5678 8.06571 14.5487 8.14898C14.5233 8.25985 14.4779 8.33173 14.3871 8.47549C13.6369 9.66348 11.4036 12.6667 8.00027 12.6667C4.59693 12.6667 2.36369 9.66348 1.61342 8.47549Z"
+                                                                            stroke="#F79009" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                        <path
+                                                                            d="M8.00027 10C9.10484 10 10.0003 9.10461 10.0003 8.00004C10.0003 6.89547 9.10484 6.00004 8.00027 6.00004C6.8957 6.00004 6.00027 6.89547 6.00027 8.00004C6.00027 9.10461 6.8957 10 8.00027 10Z"
+                                                                            stroke="#F79009" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                    </svg> </button> <button
+                                                                    class="btn btn-sm btn-icon btn-secondary-light btn-wave waves-effect waves-light">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                        height="16" viewBox="0 0 16 16" fill="none">
+                                                                        <path
+                                                                            d="M7.99998 13.3333H14M2 13.3333H3.11636C3.44248 13.3333 3.60554 13.3333 3.75899 13.2964C3.89504 13.2638 4.0251 13.2099 4.1444 13.1368C4.27895 13.0543 4.39425 12.939 4.62486 12.7084L13 4.33328C13.5523 3.781 13.5523 2.88557 13 2.33328C12.4477 1.781 11.5523 1.781 11 2.33328L2.62484 10.7084C2.39424 10.939 2.27894 11.0543 2.19648 11.1889C2.12338 11.3082 2.0695 11.4383 2.03684 11.5743C2 11.7278 2 11.8908 2 12.2169V13.3333Z"
+                                                                            stroke="#F04438" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                    </svg></button> </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="ps-4"><input class="form-check-input" type="checkbox"
+                                                                id="checkboxNoLabeljob3" value="" aria-label="..."
+                                                                checked=""></td>
+                                                        <td>
+                                                            <div class="d-flex"> <span
+                                                                    class="avatar avatar-md bg-light"><img
+                                                                        src="{% static 'images/ecommerce/png/36.png' %}"
+                                                                        class="" alt="..."></span>
+                                                                <div class="ms-2">
+                                                                    <p
+                                                                        class="fw-normal custom-black fs-14 mb-0 d-flex align-items-center">
+                                                                        <a class=" custom-black"
+                                                                            href="javascript:void(0);">Sports</a>
+                                                                    </p>
+                                                                    <p class="fs-14 gray-3 fw-normal mb-0">Pixel</p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td> Decoration </td>
+                                                        <td class="text-center"> 2 </td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <div class="lh-1"> <span
+                                                                        class="avatar avatar-xs avatar-rounded"> <img
+                                                                            src="{% static 'images/faces/2.jpg' %}" alt="">
+                                                                    </span> </div>
+                                                                <div> Abigail Scott </div>
+                                                            </div>
+                                                        </td>
+                                                        <td> <span class="badge bg-success-transparent">Delivered</span>
+                                                        </td>
+                                                        <td class="fw-normal">$250.00</td>
+                                                        <td>2025-05-19</td>
+                                                        <td>
+                                                            <div class="btn-list"> <button
+                                                                    class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                        height="16" viewBox="0 0 16 16" fill="none">
+                                                                        <path
+                                                                            d="M1.61342 8.47549C1.52262 8.33173 1.47723 8.25985 1.45182 8.14898C1.43273 8.06571 1.43273 7.93437 1.45182 7.8511C1.47723 7.74023 1.52262 7.66835 1.61341 7.52459C2.36369 6.3366 4.59693 3.33337 8.00027 3.33337C11.4036 3.33337 13.6369 6.3366 14.3871 7.52459C14.4779 7.66835 14.5233 7.74023 14.5487 7.8511C14.5678 7.93437 14.5678 8.06571 14.5487 8.14898C14.5233 8.25985 14.4779 8.33173 14.3871 8.47549C13.6369 9.66348 11.4036 12.6667 8.00027 12.6667C4.59693 12.6667 2.36369 9.66348 1.61342 8.47549Z"
+                                                                            stroke="#F79009" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                        <path
+                                                                            d="M8.00027 10C9.10484 10 10.0003 9.10461 10.0003 8.00004C10.0003 6.89547 9.10484 6.00004 8.00027 6.00004C6.8957 6.00004 6.00027 6.89547 6.00027 8.00004C6.00027 9.10461 6.8957 10 8.00027 10Z"
+                                                                            stroke="#F79009" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                    </svg> </button> <button
+                                                                    class="btn btn-sm btn-icon btn-secondary-light btn-wave waves-effect waves-light">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                        height="16" viewBox="0 0 16 16" fill="none">
+                                                                        <path
+                                                                            d="M7.99998 13.3333H14M2 13.3333H3.11636C3.44248 13.3333 3.60554 13.3333 3.75899 13.2964C3.89504 13.2638 4.0251 13.2099 4.1444 13.1368C4.27895 13.0543 4.39425 12.939 4.62486 12.7084L13 4.33328C13.5523 3.781 13.5523 2.88557 13 2.33328C12.4477 1.781 11.5523 1.781 11 2.33328L2.62484 10.7084C2.39424 10.939 2.27894 11.0543 2.19648 11.1889C2.12338 11.3082 2.0695 11.4383 2.03684 11.5743C2 11.7278 2 11.8908 2 12.2169V13.3333Z"
+                                                                            stroke="#F04438" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                    </svg></button> </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="ps-4"><input class="form-check-input" type="checkbox"
+                                                                id="checkboxNoLabeljob4" value="" aria-label="..."
+                                                                checked=""></td>
+                                                        <td>
+                                                            <div class="d-flex"> <span
+                                                                    class="avatar avatar-md bg-light"><img
+                                                                        src="{% static 'images/ecommerce/png/31.png' %}"
+                                                                        class="" alt="..."></span>
+                                                                <div class="ms-2">
+                                                                    <p
+                                                                        class="fw-normal custom-black fs-14 mb-0 d-flex align-items-center">
+                                                                        <a class=" custom-black"
+                                                                            href="javascript:void(0);">Sports</a>
+                                                                    </p>
+                                                                    <p class="fs-14 gray-3 fw-normal mb-0">Pixel</p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td> Fashion </td>
+                                                        <td class="text-center"> 1 </td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <div class="lh-1"> <span
+                                                                        class="avatar avatar-xs avatar-rounded"> <img
+                                                                            src="{% static 'images/faces/10.jpg' %}" alt="">
+                                                                    </span> </div>
+                                                                <div> Mason Wallace </div>
+                                                            </div>
+                                                        </td>
+                                                        <td> <span
+                                                                class="badge bg-secondary-transparent">Processing</span>
+                                                        </td>
+                                                        <td class="fw-normal">$800.00</td>
+                                                        <td>2025-05-20</td>
+                                                        <td>
+                                                            <div class="btn-list"> <button
+                                                                    class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                        height="16" viewBox="0 0 16 16" fill="none">
+                                                                        <path
+                                                                            d="M1.61342 8.47549C1.52262 8.33173 1.47723 8.25985 1.45182 8.14898C1.43273 8.06571 1.43273 7.93437 1.45182 7.8511C1.47723 7.74023 1.52262 7.66835 1.61341 7.52459C2.36369 6.3366 4.59693 3.33337 8.00027 3.33337C11.4036 3.33337 13.6369 6.3366 14.3871 7.52459C14.4779 7.66835 14.5233 7.74023 14.5487 7.8511C14.5678 7.93437 14.5678 8.06571 14.5487 8.14898C14.5233 8.25985 14.4779 8.33173 14.3871 8.47549C13.6369 9.66348 11.4036 12.6667 8.00027 12.6667C4.59693 12.6667 2.36369 9.66348 1.61342 8.47549Z"
+                                                                            stroke="#F79009" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                        <path
+                                                                            d="M8.00027 10C9.10484 10 10.0003 9.10461 10.0003 8.00004C10.0003 6.89547 9.10484 6.00004 8.00027 6.00004C6.8957 6.00004 6.00027 6.89547 6.00027 8.00004C6.00027 9.10461 6.8957 10 8.00027 10Z"
+                                                                            stroke="#F79009" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                    </svg> </button> <button
+                                                                    class="btn btn-sm btn-icon btn-secondary-light btn-wave waves-effect waves-light">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                        height="16" viewBox="0 0 16 16" fill="none">
+                                                                        <path
+                                                                            d="M7.99998 13.3333H14M2 13.3333H3.11636C3.44248 13.3333 3.60554 13.3333 3.75899 13.2964C3.89504 13.2638 4.0251 13.2099 4.1444 13.1368C4.27895 13.0543 4.39425 12.939 4.62486 12.7084L13 4.33328C13.5523 3.781 13.5523 2.88557 13 2.33328C12.4477 1.781 11.5523 1.781 11 2.33328L2.62484 10.7084C2.39424 10.939 2.27894 11.0543 2.19648 11.1889C2.12338 11.3082 2.0695 11.4383 2.03684 11.5743C2 11.7278 2 11.8908 2 12.2169V13.3333Z"
+                                                                            stroke="#F04438" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                    </svg></button> </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="ps-4"><input class="form-check-input" type="checkbox"
+                                                                id="checkboxNoLabeljob5" value="" aria-label="..."></td>
+                                                        <td>
+                                                            <div class="d-flex"> <span
+                                                                    class="avatar avatar-md bg-light"><img
+                                                                        src="{% static 'images/ecommerce/png/14.png' %}"
+                                                                        class="" alt="..."></span>
+                                                                <div class="ms-2">
+                                                                    <p
+                                                                        class="fw-normal custom-black fs-14 mb-0 d-flex align-items-center">
+                                                                        <a class=" custom-black"
+                                                                            href="javascript:void(0);">Sports</a>
+                                                                    </p>
+                                                                    <p class="fs-14 gray-3 fw-normal mb-0">Pixel</p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td> Electronics </td>
+                                                        <td class="text-center"> 3 </td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center gap-2">
+                                                                <div class="lh-1"> <span
+                                                                        class="avatar avatar-xs avatar-rounded"> <img
+                                                                            src="{% static 'images/faces/3.jpg' %}" alt="">
+                                                                    </span> </div>
+                                                                <div> Chloe Lewis </div>
+                                                            </div>
+                                                        </td>
+                                                        <td> <span class="badge bg-primary-transparent">Pending</span>
+                                                        </td>
+                                                        <td class="fw-normal">$50.00</td>
+                                                        <td>2025-05-20</td>
+                                                        <td>
+                                                            <div class="btn-list"> <button
+                                                                    class="btn btn-sm btn-icon btn-primary-light btn-wave waves-effect waves-light">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                        height="16" viewBox="0 0 16 16" fill="none">
+                                                                        <path
+                                                                            d="M1.61342 8.47549C1.52262 8.33173 1.47723 8.25985 1.45182 8.14898C1.43273 8.06571 1.43273 7.93437 1.45182 7.8511C1.47723 7.74023 1.52262 7.66835 1.61341 7.52459C2.36369 6.3366 4.59693 3.33337 8.00027 3.33337C11.4036 3.33337 13.6369 6.3366 14.3871 7.52459C14.4779 7.66835 14.5233 7.74023 14.5487 7.8511C14.5678 7.93437 14.5678 8.06571 14.5487 8.14898C14.5233 8.25985 14.4779 8.33173 14.3871 8.47549C13.6369 9.66348 11.4036 12.6667 8.00027 12.6667C4.59693 12.6667 2.36369 9.66348 1.61342 8.47549Z"
+                                                                            stroke="#F79009" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                        <path
+                                                                            d="M8.00027 10C9.10484 10 10.0003 9.10461 10.0003 8.00004C10.0003 6.89547 9.10484 6.00004 8.00027 6.00004C6.8957 6.00004 6.00027 6.89547 6.00027 8.00004C6.00027 9.10461 6.8957 10 8.00027 10Z"
+                                                                            stroke="#F79009" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                    </svg> </button> <button
+                                                                    class="btn btn-sm btn-icon btn-secondary-light btn-wave waves-effect waves-light">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                        height="16" viewBox="0 0 16 16" fill="none">
+                                                                        <path
+                                                                            d="M7.99998 13.3333H14M2 13.3333H3.11636C3.44248 13.3333 3.60554 13.3333 3.75899 13.2964C3.89504 13.2638 4.0251 13.2099 4.1444 13.1368C4.27895 13.0543 4.39425 12.939 4.62486 12.7084L13 4.33328C13.5523 3.781 13.5523 2.88557 13 2.33328C12.4477 1.781 11.5523 1.781 11 2.33328L2.62484 10.7084C2.39424 10.939 2.27894 11.0543 2.19648 11.1889C2.12338 11.3082 2.0695 11.4383 2.03684 11.5743C2 11.7278 2 11.8908 2 12.2169V13.3333Z"
+                                                                            stroke="#F04438" stroke-width="2"
+                                                                            stroke-linecap="round"
+                                                                            stroke-linejoin="round" />
+                                                                    </svg></button> </div>
+                                                        </td>
+                                                    </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="d-flex align-items-center">
+                                            <div class="fs-14 fw-normal custom-black"> Showing 5 Entries <i
+                                                    class="bi bi-arrow-right ms-2 fw-semibold"></i>
+                                            </div>
+                                            <div class="ms-auto">
+                                                <nav aria-label="Page navigation" class="pagination-style-4">
+                                                    <ul class="pagination mb-0 gap-8">
+                                                        <li class="page-item"> <a class="page-link"
+                                                                href="javascript:void(0);"> Prev </a> </li>
+                                                        <li class="page-item active"><a class="page-link"
+                                                                href="javascript:void(0);">1</a></li>
+                                                        <li class="page-item"><a class="page-link"
+                                                                href="javascript:void(0);">2</a></li>
+                                                        <li class="page-item"> <a class="page-link "
+                                                                href="javascript:void(0);"> next </a> </li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3 col-xl-12">
+                        <div class="row">
+                            <div class="col-xxl-12 col-xl-12">
+                                <div class="row">
+                                    <div class="col-xxl-12 col-xl-12">
+                                        <div class="card-1 custom-card">
+                                            <div class="card-header justify-content-between">
+                                                <div class="card-title">
+                                                    Leads By Source
+                                                </div>
+                                                <div class="dropdown"> <a href="javascript:void(0);"
+                                                        class="fw-normal fs-16 text-muted" data-bs-toggle="dropdown"
+                                                        aria-expanded="false">Sort by
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            viewBox="0 0 16 16" fill="none">
+                                                            <path d="M4 6L8 10L12 6" stroke="#888888"
+                                                                stroke-width="1.33333" stroke-linecap="round"
+                                                                stroke-linejoin="round" />
+                                                        </svg>
+                                                    </a>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        <li><a class="dropdown-item" href="javascript:void(0);">New</a>
+                                                        </li>
+                                                        <li><a class="dropdown-item"
+                                                                href="javascript:void(0);">Popular</a>
+                                                        </li>
+                                                        <li><a class="dropdown-item"
+                                                                href="javascript:void(0);">Relevant</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="card-body p-0 overflow-hidden">
+                                                <div
+                                                    class="leads-source-chart d-flex align-items-center justify-content-center">
+                                                    <canvas id="leads-source" class="chartjs-chart w-100 p-4"></canvas>
+                                                    <div class="lead-source-value">
+                                                        <span class="d-block fs-14">Total</span>
+                                                        <span class="d-block fs-25 fw-bold">4,145</span>
+                                                    </div>
+                                                </div>
+                                                <div class="border-top padding-block mb-2">
+                                                    <ul class="list-group list-group-flush top-categories">
+                                                        <li class="list-group-item">
+                                                            <div
+                                                                class="d-flex align-items-center justify-content-between">
+                                                                <div class="lh-1">
+                                                                    <div class="fw-normal fs-16 custom-black mb-1">
+                                                                        Accessories
+                                                                    </div>
+                                                                    <div>
+                                                                        <span
+                                                                            class="text-muted fw-normal fs-16">Decreased
+                                                                            by
+                                                                            <span
+                                                                                class="text-success gap-6 fs-14 fw-normal ms-1 d-inline-flex align-items-center">0.64%<svg
+                                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                                    width="12" height="12"
+                                                                                    viewBox="0 0 12 12" fill="none">
+                                                                                    <path
+                                                                                        d="M11 8.5L7.06568 4.56568C6.86768 4.36768 6.76867 4.26867 6.65451 4.23158C6.55409 4.19895 6.44591 4.19895 6.34549 4.23158C6.23133 4.26867 6.13232 4.36768 5.93431 4.56569L4.56568 5.93432C4.36768 6.13232 4.26867 6.23133 4.15451 6.26842C4.05409 6.30105 3.94591 6.30105 3.84549 6.26842C3.73133 6.23133 3.63232 6.13232 3.43431 5.93431L1 3.5M11 8.5H7.5M11 8.5V5"
+                                                                                        stroke="#F04438"
+                                                                                        stroke-width="2"
+                                                                                        stroke-linecap="round"
+                                                                                        stroke-linejoin="round" />
+                                                                                </svg></span></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="lh-1 text-end"> <span
+                                                                        class="d-block fs-18 custom-black fw-normal h6 mb-0">1,754</span>
+                                                                    <span class="d-block fs-14 text-muted">Sales</span>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div
+                                                                class="d-flex align-items-center justify-content-between">
+                                                                <div class="lh-1">
+                                                                    <div class="fw-normal fs-16 custom-black mb-1">
+                                                                        Electronics</div>
+                                                                    <div><span class="text-muted fs-16">Increased by
+                                                                            <span
+                                                                                class="text-danger fw-normal fs-14 gap-8 ms-1 d-inline-flex align-items-center">2.75%<svg
+                                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                                    width="12" height="12"
+                                                                                    viewBox="0 0 12 12" fill="none">
+                                                                                    <path
+                                                                                        d="M11 3.5L7.06568 7.43432C6.86768 7.63232 6.76867 7.73133 6.65451 7.76842C6.55409 7.80105 6.44591 7.80105 6.34549 7.76842C6.23133 7.73133 6.13232 7.63232 5.93431 7.43431L4.56568 6.06568C4.36768 5.86768 4.26867 5.76867 4.15451 5.73158C4.05409 5.69895 3.94591 5.69895 3.84549 5.73158C3.73133 5.76867 3.63232 5.86768 3.43431 6.06569L1 8.5M11 3.5H7.5M11 3.5V7"
+                                                                                        stroke="#12B76A"
+                                                                                        stroke-width="2"
+                                                                                        stroke-linecap="round"
+                                                                                        stroke-linejoin="round" />
+                                                                                </svg></span></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="lh-1 text-end"> <span
+                                                                        class="d-block fs-18 custom-black fw-normal h6 mb-0">1,234</span>
+                                                                    <span class="d-block fs-14 text-muted">Sales</span>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div
+                                                                class="d-flex align-items-center justify-content-between">
+                                                                <div class="lh-1">
+                                                                    <div class="fw-normal fs-16 custom-black mb-1">
+                                                                        Beauty Products</div>
+                                                                    <div><span class="text-muted fs-16">Increased by
+                                                                            <span
+                                                                                class="text-danger fw-normal fs-14 gap-8 ms-1 d-inline-flex align-items-center">2.75%<svg
+                                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                                    width="12" height="12"
+                                                                                    viewBox="0 0 12 12" fill="none">
+                                                                                    <path
+                                                                                        d="M11 3.5L7.06568 7.43432C6.86768 7.63232 6.76867 7.73133 6.65451 7.76842C6.55409 7.80105 6.44591 7.80105 6.34549 7.76842C6.23133 7.73133 6.13232 7.63232 5.93431 7.43431L4.56568 6.06568C4.36768 5.86768 4.26867 5.76867 4.15451 5.73158C4.05409 5.69895 3.94591 5.69895 3.84549 5.73158C3.73133 5.76867 3.63232 5.86768 3.43431 6.06569L1 8.5M11 3.5H7.5M11 3.5V7"
+                                                                                        stroke="#12B76A"
+                                                                                        stroke-width="2"
+                                                                                        stroke-linecap="round"
+                                                                                        stroke-linejoin="round" />
+                                                                                </svg></span></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="lh-1 text-end"> <span
+                                                                        class="d-block fs-18 custom-black fw-normal h6 mb-0">1280</span>
+                                                                    <span class="d-block fs-14 text-muted">Sales</span>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div
+                                                                class="d-flex align-items-center justify-content-between">
+                                                                <div class="lh-1">
+                                                                    <div class="fw-normal fs-16 custom-black mb-1">
+                                                                        Home Appliances
+                                                                    </div>
+                                                                    <div>
+                                                                        <span
+                                                                            class="text-muted fw-normal fs-16">Decreased
+                                                                            by
+                                                                            <span
+                                                                                class="text-success gap-6 fs-14 fw-normal ms-1 d-inline-flex align-items-center">0.64%<svg
+                                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                                    width="12" height="12"
+                                                                                    viewBox="0 0 12 12" fill="none">
+                                                                                    <path
+                                                                                        d="M11 8.5L7.06568 4.56568C6.86768 4.36768 6.76867 4.26867 6.65451 4.23158C6.55409 4.19895 6.44591 4.19895 6.34549 4.23158C6.23133 4.26867 6.13232 4.36768 5.93431 4.56569L4.56568 5.93432C4.36768 6.13232 4.26867 6.23133 4.15451 6.26842C4.05409 6.30105 3.94591 6.30105 3.84549 6.26842C3.73133 6.23133 3.63232 6.13232 3.43431 5.93431L1 3.5M11 8.5H7.5M11 8.5V5"
+                                                                                        stroke="#F04438"
+                                                                                        stroke-width="2"
+                                                                                        stroke-linecap="round"
+                                                                                        stroke-linejoin="round" />
+                                                                                </svg></span></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="lh-1 text-end"> <span
+                                                                        class="d-block fs-18 custom-black fw-normal h6 mb-0">2800</span>
+                                                                    <span class="d-block fs-14 text-muted">Sales</span>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div
+                                                                class="d-flex align-items-center justify-content-between">
+                                                                <div class="lh-1">
+                                                                    <div class="fw-normal fs-16 custom-black mb-1">
+                                                                        Furniture</div>
+                                                                    <div><span class="text-muted fs-16">Increased by
+                                                                            <span
+                                                                                class="text-danger fw-normal fs-14 gap-8 ms-1 d-inline-flex align-items-center">2.75%<svg
+                                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                                    width="12" height="12"
+                                                                                    viewBox="0 0 12 12" fill="none">
+                                                                                    <path
+                                                                                        d="M11 3.5L7.06568 7.43432C6.86768 7.63232 6.76867 7.73133 6.65451 7.76842C6.55409 7.80105 6.44591 7.80105 6.34549 7.76842C6.23133 7.73133 6.13232 7.63232 5.93431 7.43431L4.56568 6.06568C4.36768 5.86768 4.26867 5.76867 4.15451 5.73158C4.05409 5.69895 3.94591 5.69895 3.84549 5.73158C3.73133 5.76867 3.63232 5.86768 3.43431 6.06569L1 8.5M11 3.5H7.5M11 3.5V7"
+                                                                                        stroke="#12B76A"
+                                                                                        stroke-width="2"
+                                                                                        stroke-linecap="round"
+                                                                                        stroke-linejoin="round" />
+                                                                                </svg></span></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="lh-1 text-end"> <span
+                                                                        class="d-block fs-18 custom-black fw-normal h6 mb-0">1,234</span>
+                                                                    <span class="d-block fs-14 text-muted">Sales</span>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xxl-12 col-xl-12">
+                                        <div class="card-1 custom-card">
+                                            <div class="card-header">
+                                                <div class="card-title"> Visitors By Browser </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="list-unstyled visitors-browser-list">
+                                                    <li class="mb-24">
+                                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                                            <div> <span
+                                                                    class="avatar avatar-md avatar-rounded bg-primary-transparent p-2 border">
+                                                                    <img src="{% static 'images/browsers/chrome.png' %}"
+                                                                        alt=""> </span>
+                                                            </div>
+                                                            <div class="flex-fill">
+                                                                <div
+                                                                    class="d-flex align-items-center justify-content-between mb-2 flex-wrap">
+                                                                    <span
+                                                                        class="d-block fw-normal-inline-flex fs-16 custom-black">Chrome</span>
+                                                                    <span
+                                                                        class="d-block h6 fs-18  mb-0 fw-normal custom-black"><span
+                                                                            class="text-success me-2 fs-14 fw-medium d-inline-flex"><i
+                                                                                class="ti ti-arrow-narrow-up"></i>3.26%</span>13,546</span>
+                                                                </div>
+                                                                <div class="progress progress-xs " role="progressbar"
+                                                                    aria-valuenow="70" aria-valuemin="0"
+                                                                    aria-valuemax="100">
+                                                                    <div class="progress-bar progress-bar-striped progress-bar-animated  bg-primary"
+                                                                        style="width: 70%"> </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="mb-24">
+                                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                                            <div> <span
+                                                                    class="avatar avatar-md avatar-rounded bg-primary-transparent p-2 border">
+                                                                    <img src="{% static 'images/browsers/edge.png' %}"
+                                                                        alt=""> </span> </div>
+                                                            <div class="flex-fill">
+                                                                <div
+                                                                    class="d-flex align-items-center justify-content-between mb-2 flex-wrap">
+                                                                    <span
+                                                                        class="d-block fw-normal-inline-flex fs-16 custom-black">Edge</span>
+                                                                    <span
+                                                                        class="d-block h6 fs-18  mb-0 fw-normal custom-black"><span
+                                                                            class="text-danger me-2 fs-14 fw-medium d-inline-flex"><i
+                                                                                class="ti ti-arrow-narrow-down"></i>0.96%</span>11,322</span>
+                                                                </div>
+                                                                <div class="progress progress-xs " role="progressbar"
+                                                                    aria-valuenow="60" aria-valuemin="0"
+                                                                    aria-valuemax="100">
+                                                                    <div class="progress-bar progress-bar-striped progress-bar-animated  bg-secondary"
+                                                                        style="width: 60%"> </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="mb-24">
+                                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                                            <div> <span
+                                                                    class="avatar avatar-md avatar-rounded bg-primary-transparent p-2 border">
+                                                                    <img src="{% static 'images/browsers/firefox.png' %}"
+                                                                        alt=""> </span>
+                                                            </div>
+                                                            <div class="flex-fill">
+                                                                <div
+                                                                    class="d-flex align-items-center justify-content-between mb-2 flex-wrap">
+                                                                    <span
+                                                                        class="d-block fw-normal-inline-flex fs-16 custom-black">Firefox</span>
+                                                                    <span
+                                                                        class="d-block h6 fs-18  mb-0 fw-normal custom-black"><span
+                                                                            class="text-success me-2 fs-14 fw-medium d-inline-flex"><i
+                                                                                class="ti ti-arrow-narrow-up"></i>1.64%</span>6,236</span>
+                                                                </div>
+                                                                <div class="progress progress-xs" role="progressbar"
+                                                                    aria-valuenow="30" aria-valuemin="0"
+                                                                    aria-valuemax="100">
+                                                                    <div class="progress-bar progress-bar-striped progress-bar-animated  bg-success"
+                                                                        style="width: 30%"> </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="mb-24">
+                                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                                            <div> <span
+                                                                    class="avatar avatar-md avatar-rounded bg-primary-transparent p-2 border">
+                                                                    <img src="{% static 'images/browsers/safari.png' %}"
+                                                                        alt=""> </span>
+                                                            </div>
+                                                            <div class="flex-fill">
+                                                                <div
+                                                                    class="d-flex align-items-center justify-content-between mb-2 flex-wrap">
+                                                                    <span
+                                                                        class="d-block fw-normal-inline-flex fs-16 custom-black">Safari</span>
+                                                                    <span
+                                                                        class="d-block h6 fs-18  mb-0 fw-normal custom-black"><span
+                                                                            class="text-success me-2 fs-14 fw-medium d-inline-flex"><i
+                                                                                class="ti ti-arrow-narrow-up"></i>6.38%</span>10,235</span>
+                                                                </div>
+                                                                <div class="progress progress-xs" role="progressbar"
+                                                                    aria-valuenow="50" aria-valuemin="0"
+                                                                    aria-valuemax="100">
+                                                                    <div class="progress-bar progress-bar-striped progress-bar-animated  bg-warning"
+                                                                        style="width: 50%"> </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li class="mb-24">
+                                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                                            <div> <span
+                                                                    class="avatar avatar-md avatar-rounded bg-primary-transparent p-2 border">
+                                                                    <img src="{% static 'images/browsers/uc.png' %}" alt="">
+                                                                </span> </div>
+                                                            <div class="flex-fill">
+                                                                <div
+                                                                    class="d-flex align-items-center justify-content-between mb-2 flex-wrap">
+                                                                    <span
+                                                                        class="d-block fw-normal-inline-flex fs-16 custom-black">UCBrowser</span>
+                                                                    <span
+                                                                        class="d-block h6 fs-18  mb-0 fw-normal custom-black"><span
+                                                                            class="text-success me-2 fs-14 fw-medium d-inline-flex"><i
+                                                                                class="ti ti-arrow-narrow-up"></i>5.18%</span>14,965</span>
+                                                                </div>
+                                                                <div class="progress progress-xs" role="progressbar"
+                                                                    aria-valuenow="80" aria-valuemin="0"
+                                                                    aria-valuemax="100">
+                                                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger"
+                                                                        style="width: 80%"> </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                                            <div> <span
+                                                                    class="avatar avatar-md avatar-rounded bg-primary-transparent p-2 border">
+                                                                    <img src="{% static 'images/browsers/opera.png' %}"
+                                                                        alt=""> </span>
+                                                            </div>
+                                                            <div class="flex-fill">
+                                                                <div
+                                                                    class="d-flex align-items-center justify-content-between mb-2 flex-wrap">
+                                                                    <span
+                                                                        class="d-block fw-normal-inline-flex fs-16 custom-black">Opera</span><span
+                                                                        class="d-block h6 fs-18  mb-0 fw-normal custom-black"><span
+                                                                            class="text-danger me-2 fs-14 fw-medium d-inline-flex"><i
+                                                                                class="ti ti-arrow-narrow-down"></i>1.65%</span>8,432</span>
+                                                                </div>
+                                                                <div class="progress progress-xs" role="progressbar"
+                                                                    aria-valuenow="40" aria-valuemin="0"
+                                                                    aria-valuemax="100">
+                                                                    <div class="progress-bar progress-bar-striped progress-bar-animated  bg-info"
+                                                                        style="width: 40%"> </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End::row-1 -->
+
+                <!-- Start::row-2 -->
+                <div class="row">
+                    <div class="col-xxl-3 col-xl-6">
+                        <div class="card-1 custom-card">
+                            <div class="card-header">
+                                <div class="card-title"> Country Wise Sales </div>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-0 top-country-sales">
+                                    <li class="border-bottom mb-8">
+                                        <div class="d-flex align-items-center flex-wrap gap-2 mb-8">
+                                            <div class="lh-1"> <span class="avatar avatar-md  avatar-rounded"> <img
+                                                        src="{% static 'images/flags/us_flag.jpg' %}" alt=""> </span> </div>
+                                            <div class="flex-fill lh-1"> <span
+                                                    class="fw-normal mb-2 d-block custom-black fs-16">United
+                                                    States</span> <span class="d-block text-muted fs-14">32,190
+                                                    Sales</span> </div>
+                                            <div class="text-end"> <span
+                                                    class="fw-normal  d-block custom-black fs-18 mb-0">$32,190</span>
+                                                <span class="text-success fw-medium d-block"><i
+                                                        class="ti ti-arrow-narrow-up"></i>0.27%</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="border-bottom mb-8">
+                                        <div class="d-flex align-items-center flex-wrap gap-2 mb-8">
+                                            <div class="lh-1"> <span class="avatar avatar-md  avatar-rounded"> <img
+                                                        src="{% static 'images/flags/germany_flag.jpg' %}" alt=""> </span>
+                                            </div>
+                                            <div class="flex-fill lh-1"> <span
+                                                    class="fw-normal mb-2 d-block custom-black fs-16">Germany</span>
+                                                <span class="d-block text-muted fs-14">8,798 Sales</span>
+                                            </div>
+                                            <div class="text-end"> <span
+                                                    class="fw-normal  d-block custom-black fs-18 mb-0">$29,234</span>
+                                                <span class="text-success fw-medium d-block"><i
+                                                        class="ti ti-arrow-narrow-up"></i>0.12%</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="border-bottom mb-8">
+                                        <div class="d-flex align-items-center flex-wrap gap-2 mb-8">
+                                            <div class="lh-1"> <span class="avatar avatar-md  avatar-rounded"> <img
+                                                        src="{% static 'images/flags/mexico_flag.jpg' %}" alt=""> </span>
+                                            </div>
+                                            <div class="flex-fill lh-1"> <span
+                                                    class="fw-normal mb-2 d-block custom-black fs-16">Mexico</span>
+                                                <span class="d-block text-muted fs-14">16,885 Sales</span>
+                                            </div>
+                                            <div class="text-end"> <span
+                                                    class="fw-normal  d-block custom-black fs-18 mb-0">$26,166</span>
+                                                <span class="text-danger fw-medium d-block"><i
+                                                        class="ti ti-arrow-narrow-down"></i>0.75%</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="border-bottom mb-8">
+                                        <div class="d-flex align-items-center flex-wrap gap-2 mb-8">
+                                            <div class="lh-1"> <span class="avatar avatar-md  avatar-rounded"> <img
+                                                        src="{% static 'images/flags/uae_flag.jpg' %}" alt=""> </span> </div>
+                                            <div class="flex-fill lh-1"> <span
+                                                    class="fw-normal mb-2 d-block custom-black fs-16">Uae</span> <span
+                                                    class="d-block text-muted fs-14">14,885 Sales</span> </div>
+                                            <div class="text-end"> <span
+                                                    class="fw-normal  d-block custom-black fs-18 mb-0">$24,263</span>
+                                                <span class="text-success fw-medium d-block"><i
+                                                        class="ti ti-arrow-narrow-up"></i>1.45%</span>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li class="">
+                                        <div class="d-flex align-items-center flex-wrap gap-2 mb-8">
+                                            <div class="lh-1"> <span class="avatar avatar-md  avatar-rounded"> <img
+                                                        src="{% static 'images/flags/russia_flag.jpg' %}" alt=""> </span>
+                                            </div>
+                                            <div class="flex-fill lh-1"> <span
+                                                    class="fw-normal mb-2 d-block custom-black fs-16">Russia</span>
+                                                <span class="d-block text-muted fs-14">10,118 Sales</span>
+                                            </div>
+                                            <div class="text-end"> <span
+                                                    class="fw-normal  d-block custom-black fs-18 mb-0">$20,212</span>
+                                                <span class="text-danger fw-medium d-block"><i
+                                                        class="ti ti-arrow-narrow-down"></i>0.68%</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3 col-xl-6">
+                        <div class="card-1 custom-card">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">
+                                    Sessions By Device
+                                </div>
+
+                            </div>
+                            <div class="card-body my-2 py-4">
+                                <div class="parent-svg">
+                                    <div id="sessions"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <ul class="list-group segmentation-list list-unstyled padding-block-2">
+                                    <li class="list-group-item-1 border-bottom male">
+                                        <div class="d-flex align-items-start justify-content-between">
+                                            <div> <span class="d-block fw-normal  fs-16 custom-black">Male<span
+                                                        class="text-success fw-medium ms-1 d-inline-flex align-items-center"><i
+                                                            class="ti ti-arrow-narrow-up"></i>0.78%</span></span> </div>
+                                            <div class="d-block fw-normal  fs-18 custom-black"> 18,235 </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item-1  border-bottom female">
+                                        <div class="d-flex align-items-start justify-content-between">
+                                            <div> <span class="d-block fw-normal  fs-16 custom-black">Female<span
+                                                        class="text-danger fw-medium ms-1 d-inline-flex"><i
+                                                            class="ti ti-arrow-narrow-down"></i>1.57%</span></span>
+                                            </div>
+                                            <div class="d-block fw-normal  fs-18 custom-black"> 12,743 </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item-1  border-bottom others">
+                                        <div class="d-flex align-items-start justify-content-between">
+                                            <div> <span class="d-block fw-normal  fs-16 custom-black">Others<span
+                                                        class="text-success fw-medium ms-1 d-inline-flex align-items-center"><i
+                                                            class="ti ti-arrow-narrow-up"></i>0.32%</span></span> </div>
+                                            <div class="d-block fw-normal  fs-18 custom-black"> 5,369 </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item-1  dot">
+                                        <div class="d-flex align-items-start justify-content-between">
+                                            <div> <span class="d-block fw-normal  fs-16 custom-black">Not Mentioned<span
+                                                        class="text-success fw-medium ms-1 d-inline-flex align-items-center"><i
+                                                            class="ti ti-arrow-narrow-up"></i>19.45%</span></span>
+                                            </div>
+                                            <div class="d-block fw-normal  fs-18 custom-black"> 16,458 </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3 col-xl-6">
+                        <div class="card-1 custom-card">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">
+                                    Resent Activity
+                                </div>
+                                <div>
+                                    <a class="text-primary" href="javascript:void(0);">View
+                                        All<i class="ti ti-arrow-narrow-right ms-2 fw-semibold d-inline-block"></i></a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+
+                                <ul class="mb-60  list-unstyled">
+                                    <li class="mb-4">
+                                        <div class="d-flex align-items-center gap-16">
+                                            <span class="block-svg">
+                                                <img src="{% static 'images/faces/icons-1.png' %}" alt="">
+                                            </span>
+                                            <div>
+                                                <div class="d-flex gap-6 align-items-center">
+                                                    <span class="fs-16 fw-normal  custom-black">New Order</span>
+                                                    <span class="fs-12 fw-normal  gray-3">12:34 Pm</span>
+                                                </div>
+                                                <div>
+                                                    <span class="fs-14 fw-normal  gray-3">John Doe purchased <b
+                                                            class="fw-normal custom-black fs-14">Smartwatch X1</b> —
+                                                        $29?</span>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </li>
+                                    <li class="mb-4">
+                                        <div class="d-flex align-items-center gap-16">
+                                            <span class="block-svg">
+                                                <img src="{% static 'images/faces/icons-2.png' %}" alt="">
+                                            </span>
+                                            <div>
+                                                <div class="d-flex gap-6 align-items-center">
+                                                    <span class="fs-16 fw-normal  custom-black">Payout Processed</span>
+                                                    <span class="fs-12 fw-normal  gray-3">12:34 Pm</span>
+                                                </div>
+                                                <div>
+                                                    <span class="fs-14 fw-normal  gray-3">$1,120 transferred to your
+                                                        account</span>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </li>
+                                    <li class="mb-4">
+                                        <div class="d-flex align-items-center gap-16">
+                                            <span class="block-svg">
+                                                <img src="{% static 'images/faces/icons-3.png' %}" alt="">
+                                            </span>
+                                            <div>
+                                                <div class="d-flex gap-6 align-items-center">
+                                                    <span class="fs-16 fw-normal  custom-black">New Review</span>
+                                                    <span class="fs-12 fw-normal  gray-3">12:34 Pm</span>
+                                                </div>
+                                                <div>
+                                                    <span class="fs-14 fw-normal  gray-3">"Great product, fast
+                                                        shipping!"</span>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </li>
+                                    <li class="">
+                                        <div class="d-flex align-items-center gap-16">
+                                            <span class="block-svg">
+                                                <img src="{% static 'images/faces/icons-4.png' %}" alt="">
+                                            </span>
+                                            <div>
+                                                <div class="d-flex gap-6 align-items-center">
+                                                    <span class="fs-16 fw-normal  custom-black">Stock Alert</span>
+                                                    <span class="fs-12 fw-normal  gray-3">12:34 Pm</span>
+                                                </div>
+                                                <div>
+                                                    <span class="fs-14 fw-normal  gray-3">$Running low on <b
+                                                            class="fw-normal custom-black fs-14">Bluetooth Speakers</b>
+                                                        (5 left)</span>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3 col-xl-6">
+                        <div class="card-1 custom-card">
+                            <div class="card-header justify-content-between align-items-center">
+                                <div class="card-title">
+                                    Resent Activity
+                                </div>
+                                <div>
+                                    <a class="text-primary" href="javascript:void(0);">View
+                                        All<i class="ti ti-arrow-narrow-right ms-2 fw-semibold d-inline-block"></i></a>
+                                </div>
+                            </div>
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div class="fs-16 fw-400 custom-black">
+                                    Payment Mode
+                                </div>
+                                <div class="fs-16 fw-400 custom-black">
+                                    Amount Paid
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-1 ">
+                                        <a href="javascript:void(0);">
+                                            <div class="d-flex align-items-top justify-content-between">
+                                                <div class="d-flex gap-16 align-items-top justify-content-center">
+                                                    <span class="block-svg">
+                                                        <img src="{% static 'images/faces/icons-5.png' %}" alt="">
+                                                    </span>
+                                                    <div>
+                                                        <p class="fs-16 fw-normal mb-0 custom-black">Paypal ****2783</p>
+                                                        <p class="fs-14 fw-normal  gray-3">Online Transaction
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p class="fs-16 fw-normal mb-0 text-right custom-black">$23,897</p>
+                                                    <span class="fs-14 fw-normal  gray-3">Jun 18, 2025</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="mb-1 ">
+                                        <a href="javascript:void(0);">
+                                            <div class="d-flex align-items-top justify-content-between">
+                                                <div class="d-flex gap-16 align-items-top justify-content-center">
+                                                    <span class="block-svg">
+                                                        <img src="{% static 'images/faces/icons-6.png' %}" alt="">
+                                                    </span>
+                                                    <div>
+                                                        <p class="fs-16 fw-normal mb-0 custom-black">Digital Wallet</p>
+                                                        <p class="fs-14 fw-normal  gray-3">Online Transaction
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p class="fs-16 fw-normal mb-0 text-right custom-black">$23,897</p>
+                                                    <span class="fs-14 fw-normal  gray-3">Jun 17, 2025</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="mb-1 ">
+                                        <a href="javascript:void(0);">
+                                            <div class="d-flex align-items-top justify-content-between">
+                                                <div class="d-flex gap-16 align-items-top justify-content-center">
+                                                    <span class="block-svg">
+                                                        <img src="{% static 'images/faces/icons-7.png' %}" alt="">
+                                                    </span>
+                                                    <div>
+                                                        <p class="fs-16 fw-normal mb-0 custom-black">Visa Card ****2563
+                                                        </p>
+                                                        <p class="fs-14 fw-normal  gray-3">Online Transaction
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p class="fs-16 fw-normal mb-0 text-right custom-black">$23,897</p>
+                                                    <span class="fs-14 fw-normal  gray-3">Jun 18, 2025</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);">
+                                            <div class="d-flex align-items-top justify-content-between">
+                                                <div class="d-flex gap-16 align-items-top justify-content-center">
+                                                    <span class="block-svg">
+                                                        <img src="{% static 'images/faces/icons-8.png' %}" alt="">
+                                                    </span>
+                                                    <div>
+                                                        <p class="fs-16 fw-normal mb-0 custom-black">Cash On Delivery
+                                                        </p>
+                                                        <p class="fs-14 fw-normal  gray-3">Pay On Delivery
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p class="fs-16 fw-normal mb-0 text-right custom-black">$23,897</p>
+                                                    <span class="fs-14 fw-normal  gray-3">Jun 18, 2025</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End::row-2 -->
+
+
+            </div>
+        </div>
+        <!-- End::app-content base -->
+{% endblock %}
+
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <a href="javascript:void(0);" class="input-group-text" id="Search-Grid"><i
+                                    class="fe fe-search header-link-icon fs-18"></i></a>
+                            <input type="search" class="form-control border-0 px-2" placeholder="Search"
+                                aria-label="Username">
+                            <a href="javascript:void(0);" class="input-group-text" id="voice-search"><i
+                                    class="fe fe-mic header-link-icon"></i></a>
+                            <a href="javascript:void(0);" class="btn btn-light btn-icon" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="fe fe-more-vertical"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">Separated link</a></li>
+                            </ul>
+                        </div>
+                        <div class="mt-4">
+                            <p class="font-weight-semibold text-muted mb-2">Are You Looking For...</p>
+                            <span class="search-tags"><i class="fe fe-user me-2"></i>People<a href="javascript:void(0)"
+                                    class="tag-addon"><i class="fe fe-x"></i></a></span>
+                            <span class="search-tags"><i class="fe fe-file-text me-2"></i>Pages<a
+                                    href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                            <span class="search-tags"><i class="fe fe-align-left me-2"></i>Articles<a
+                                    href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                            <span class="search-tags"><i class="fe fe-server me-2"></i>Tags<a href="javascript:void(0)"
+                                    class="tag-addon"><i class="fe fe-x"></i></a></span>
+                        </div>
+                        <div class="my-4">
+                            <p class="font-weight-semibold text-muted mb-2">Recent Search :</p>
+                            <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                                <a href="notifications.html"><span>Notifications</span></a>
+                                <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert"
+                                    aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                            </div>
+                            <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                                <a href="alerts.html"><span>Alerts</span></a>
+                                <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert"
+                                    aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                            </div>
+                            <div class="p-2 border br-5 d-flex align-items-center text-muted mb-0 alert">
+                                <a href="mail.html"><span>Mail</span></a>
+                                <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert"
+                                    aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="btn-group ms-auto">
+                            <button class="btn btn-sm btn-primary-light">Search</button>
+                            <button class="btn btn-sm btn-primary">Clear Recents</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer Start -->
+        <footer class="footer mt-auto py-3 menu-bg text-center">
+            <div class="container">
+                <span class=" fw-normal  gray-3 fs-16"> <span id="year"></span> <a href="javascript:void(0);"
+                        class="gray-9 fw-semibold">Bizlyt</a>.
+                    Designed & Developed by <a href="javascript:void(0);">
+                        <span class="gray-9 fw-semibold">UIPARADOX</span>
+                    </a>
+                </span>
+            </div>
+        </footer>
+        <!-- Footer End -->
+
+    </div>
+
+
+    <div class="scrollToTop">
+        <span class="arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 15V1M8 1L1 8M8 1L15 8" stroke="#888888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </span>
+    </div>
+
+    <div id="responsive-overlay"></div>
+
+    <!-- Popper JS -->
+    <script src="{% static 'libs/@popperjs/core/umd/popper.min.js' %}"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Defaultmenu JS -->
+    <script src="{% static 'js/defaultmenu.min.js' %}"></script>
+
+    <!-- Node Waves JS-->
+    <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+    <!-- Used For Sessions By Device Chart -->
+    <script src="{% static 'libs/moment/moment.js' %}"></script>
+
+    <!-- Sticky JS -->
+    <script src="{% static 'js/sticky.js' %}"></script>
+
+    <!-- Simplebar JS -->
+    <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+    <script src="{% static 'js/simplebar.js' %}"></script>
+
+    <!-- Custom-Switcher JS -->
+
+    <!-- Color Picker JS -->
+    <script src="{% static 'libs/@simonwep/pickr/pickr.es5.min.js' %}"></script>
+
+    <!-- JSVector Maps JS -->
+    <script src="{% static 'libs/jsvectormap/js/jsvectormap.min.js' %}"></script>
+
+    <!-- JSVector Maps MapsJS -->
+    <script src="{% static 'libs/jsvectormap/maps/world-merc.js' %}"></script>
+
+    <!-- Apex Charts JS -->
+    <script src="{% static 'libs/apexcharts/apexcharts.min.js' %}"></script>
+
+    <!-- Chartjs Chart JS -->
+    <script src="{% static 'libs/chart.js/chart.min.js' %}"></script>
+    <script src="{% static 'js/jquery-3.6.3.min.js' %}"></script>
+    <script src="{% static 'libs/flatpickr/picker.js' %}"></script>
+    <script src="{% static 'libs/flatpickr/picker.date.js' %}"></script>
+
+    <!-- CRM-Dashboard -->
+    <script src="{% static 'js/crm-dashboard.js' %}"></script>
+
+    <!-- Jobs-Dashboard
+    <script src="{% static 'js/jobs-dashboard.js' %}"></script>
+    -->
+
+    <!-- Analytics-Dashboard JS
+    <script src="{% static 'js/analytics-dashboard.js' %}"></script>
+    -->
+
+    <!-- Custom JS -->
+    <script src="{% static 'js/custom.js' %}"></script>
+    <script src="{% static 'js/date.js' %}"></script>
+    <script src="{% static 'js/custom-switcher.min.js' %}"></script>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{% block page_script %}
+    <!-- място за локалните скриптове -->
+{% endblock %}
+</body>
+
+</html>
+
+
