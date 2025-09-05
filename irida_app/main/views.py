@@ -52,6 +52,18 @@ def welcome_view(request):
     print(f'context={context}')
     return render(request, 'main/welcome.html', context)
 
+def specialties_list_view(request):
+    user = request.user
+    user_profile = user.userprofile
+    context = {
+        'user_nick': user.username,
+        'user_name': user.first_name+' '+user.last_name,
+        'user_level': USER_LEVEL[user_profile.access_level-1][1],
+        'user_profile': user_profile,
+        }
+    print(f'context={context}')
+    return render(request, 'main/specialties.html', context)
+
 def schools_list_view(request):
     user = request.user
     user_profile = user.userprofile
@@ -79,9 +91,8 @@ class UserDataAPIView(APIView):
             'user_level_text': USER_LEVEL[user_profile.access_level - 1][1],
             'user_level_num': user_profile.access_level,
             'school':  user_profile.school.id if user_profile.school else 0,
-            'grade':  user_profile.grade if user_profile.grade else 0,
-            'section':  user_profile.section if user_profile.section else 0,
             'speciality': user_profile.speciality.id if user_profile.speciality else 0,
+            'grade_section': user_profile.grade_section.id if user_profile.grade_section else 0,
             }
         return Response(context)
 

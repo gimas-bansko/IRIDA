@@ -32,4 +32,11 @@ class LogV(admin.ModelAdmin):
     list_filter = ('user_name', 'action', )
     ordering = ('-date', )
 
+@admin.register(Klass)
+class KlassV(admin.ModelAdmin):
+    list_display = ('grade', 'section')
+    list_display_links = ('grade', 'section')
+    list_filter = ('grade', )
+    ordering = ('grade', )
+
 

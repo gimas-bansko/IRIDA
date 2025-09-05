@@ -7,6 +7,23 @@ from datetime import datetime
 from django.utils import timezone
 from .utils import *
 
+"""
+***************************************
+            Клас
+***************************************
+"""
+class Klass(models.Model):
+    grade = models.PositiveSmallIntegerField('Клас', null=True, blank=True, default=11,
+                                                     validators=[ MinValueValidator(8), MaxValueValidator(12) ] )
+    section = models.CharField('Паралелка', null=True, blank=True, default='а', max_length=1)
+
+    def __str__(self):
+        return f'{self.grade} {self.section}'
+
+    class Meta:
+        verbose_name = 'Клас'
+        verbose_name_plural = 'Класове'
+
 """ 
 ***************************************
                Специалности
@@ -51,6 +68,7 @@ class School(models.Model):
     boss = models.CharField('Директор', max_length=50, default='', blank=True,
                             help_text='Име на директора на училището')
     specialities = models.ManyToManyField(Specialty, verbose_name='Специалности', blank=True)
+    classes = models.ManyToManyField(Klass, verbose_name='Класове', blank=True)
 
     def __str__(self):
         return f'{self.short_name} {self.city}'
@@ -89,9 +107,8 @@ class UserProfile(models.Model):
                                                     help_text='роля (ниво на достъп)')
     session_screen = models.PositiveSmallIntegerField('Интерфейс', choices=THEME_TYPE, default=DARK,
                                                       help_text='цветова схема на интерфейса')
-    grade = models.PositiveSmallIntegerField('Клас', null=True, blank=True, default=11,
-                                                     validators=[ MinValueValidator(8), MaxValueValidator(12) ] )
-    section = models.CharField('Паралелка', null=True, blank=True, default='а', max_length=1)
+    grade_section = models.ForeignKey(Klass, verbose_name='Клас', on_delete=models.CASCADE, related_name='user_grade',
+                                   help_text='клас по подразбиране', null=True, blank=True)
     speciality = models.ForeignKey(Specialty, verbose_name='Специалност', on_delete=models.CASCADE, related_name='user_speciality',
                                    help_text='специалност по подразбиране', null=True, blank=True)
 

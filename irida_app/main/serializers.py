@@ -8,22 +8,18 @@ class SpecialtySerializer(serializers.ModelSerializer):
         model = Specialty
         fields = [
             'id',
-            'professional_field_num',
-            'professional_field_name',
-            'profession_num',
-            'profession_name',
             'specialty_num',
             'specialty_name',
-            'nip',
-            'level'
+            'level',
+            'plan',
         ]
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         request = self.context.get('request')
 
-        if representation['nip'] and request:
-            representation['nip'] = request.build_absolute_uri(instance.nip.url)
+        if representation['plan'] and request:
+            representation['plan'] = request.build_absolute_uri(instance.nip.url)
 
         return representation
 

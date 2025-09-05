@@ -2,9 +2,17 @@ const App = {
     delimiters: ['[[', ']]'], // Променяме синтаксиса на [[ ]]
     data() {
         return {
+            edit_mode:false,
             listOfSpecialties: [],
             user:{},
             school:{},
+            specialty:{
+                id:0,
+                specialty_num:'123',
+                specialty_name:"",
+                level:3,
+                plan:'mmmm',
+                },
         }
     },
     computed: {
@@ -70,14 +78,6 @@ const App = {
                     // Тук можете да добавите обработка на грешки
                 });
         },
-        loadSpecialties(logged_user){
-            // чета списъка на всички специалности които са от същото училище, като влезлия потребител
-            const vm = this;
-            axios.get('/api/schools/'+logged_user.school+'/specialties/')
-                .then(function(response){
-                    vm.listOfSpecialties = response.data
-                })
-        },
         loadSchool(logged_user){
             // чета всички данни за училището на влезлия потребител
             const vm = this;
@@ -94,6 +94,22 @@ const App = {
                     vm.loadSpecialties(vm.user)
                     vm.loadSchool(vm.user)
                 })
+        },
+        loadSpecialties(logged_user){
+            // чета списъка на всички специалности които са от същото училище, като влезлия потребител
+            const vm = this;
+            axios.get('/api/schools/'+logged_user.school+'/specialties/')
+                .then(function(response){
+                    vm.listOfSpecialties = response.data
+                })
+        },
+        newSpecialty(){
+            this.specialty.id = 0
+            this.specialty.specialty_num = ''
+            this.specialty.specialty_name = ''
+            this.specialty.level = 3
+            this.specialty.plan = ''
+            this.edit_mode = true
         },
         removeSpeciality(specialityId) {
             const vm = this;
@@ -138,8 +154,8 @@ const App = {
     },
     created: function(){
         this.status = 0
-        //this.loadUserDetails();
+        this.loadUserDetails();
     }
 }
 
-Vue.createApp(App).mount('#main123')
+Vue.createApp(App).mount('#main_app')

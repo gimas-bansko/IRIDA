@@ -1,0 +1,156 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+
+{% block main_content %}
+        <!-- Start::app-content -->
+            <!-- Режим списък -->
+            <div class="container-fluid">
+
+                <!-- Page Header -->
+                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                     <div>
+                         <p class="mb-5 mt-2 text-muted">
+                             <img class="avatar" src="{{ user_profile.school.logo.url }}">
+                             {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
+                         <h1 class="page-title fw-normal fs-20 mb-12">Специалности</h1>
+                         <nav>
+                            <ol class="breadcrumb mb-2">
+                                <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Специалности</li>
+                            </ol>
+                        </nav>
+                     </div>
+
+                     <div class="d-flex gap-12 align-items-center mt-5" v-if="!edit_mode">
+                         <button type="button" class="btn-1 btn btn-success" @click="newSpecialty()">
+                             <span class="d-flex align-items-center gap-6">
+                                 <i class="bi bi-plus-circle"></i>
+                                 <span class="white">Добави специалност</span>
+                             </span>
+                         </button>
+                     </div>
+                </div>
+                <!-- Page Header Close -->
+
+                <div class="container-lg" v-if="!edit_mode">
+                    <!-- Start::row-1 -->
+                    <div class="row justify-content-center">
+                        <div class="col-xxl-8 col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                            <ul class="list-unstyled mb-0 notification-container">
+                                <li v-for="(sp, sp_idx) in listOfSpecialties">
+                                    <div class="card-1 custom-card un-read">
+                                        <div class="card-body p-3">
+                                            <a href="javascript:void(0);">
+                                                <div class="d-flex align-items-top mt-0 flex-wrap">
+                                                    <div class="flex-fill">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="mt-sm-0 mt-2">
+                                                                <p class="mb-0 fs-14 fw-semibold">[[sp.specialty_num]]</p>
+                                                                <p class="mb-0 text-muted">[[sp.specialty_name]]</p>
+                                                            </div>
+                                                            <div class="ms-auto">
+                                                                <div class="btn-list">
+                                                                    <button type="button" class="btn btn-outline-success btn-wave">
+                                                                        <i class="bi bi-check2-circle"></i>&nbsp;Избери </button>
+                                                                    <button type="button" class="btn btn-outline-secondary btn-wave">
+                                                                        <i class="bi bi-pen"></i>&nbsp;Промени</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--End::row-1 -->
+                </div>
+
+            </div>
+            <!-- Режим диалог -->
+            <div class="container-fluid"  v-if="edit_mode">
+                <!-- Page Header -->
+                <div class="card-1 custom-card">
+                    <div class="card-header justify-content-between">
+                        <div class="card-title">
+                            Редактиране на данни за специалност:
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form class="row g-3 mt-0">
+                            <!-- код -->
+                            <div class="col-md-2">
+                                <label class="form-label" for="ShortName">Код</label>
+                                <input type="text" class="form-control" placeholder="код на специалността" id="ShortName"
+                                       v-model="specialty.specialty_num">
+                            </div>
+                            <!-- име -->
+                            <div class="col-md-8">
+                                <label class="form-label">Пълно име</label>
+                                <input type="text" class="form-control" placeholder="име на специалността"
+                                       v-model="specialty.specialty_name">
+                            </div>
+                            <!-- степен на професионлна квалификация -->
+                            <div class="col-md-2">
+                                <label for="inputState" class="form-label">Степен на ПК</label>
+                                <select id="inputState" class="form-select" v-model="specialty.level" @change="console.log(specialty.level)">
+                                    <option :value="2">Втора</option>
+                                    <option :value="3">Трета</option>
+                                </select>
+                            </div>
+                            <!-- Лого -->
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                                <label class="form-label">Лого:</label>
+                                <div class="row">
+                                   <div class="col-lg-2">
+                                       <img :src="school.logo"
+                                            alt="School logo" width="50">
+                                   </div>
+                                   <div class="col-lg-5">
+                                       Графичен файл (.png; .jpg; .bmp):
+                                       <div class="row d-flex align-items-end" v-if="school.logo">
+                                           [[ pictureFileName ]]
+                                       </div>
+                                       <div class="d-flex align-items-end" v-else>
+                                           Няма прикачен файл
+                                       </div>
+                                   </div>
+                                   <div class="col-lg-5">
+                                       <div class="form-icon icon-plus mt--20"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            data-bs-custom-class="custom-tooltip"
+                                            data-bs-title="Choose File">
+                                            <label for="imageInput" class="custom-file-label" style="width: 155px;">
+                                                <i class="feather-paperclip"></i> Прикачи&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </label>
+                                            <input type="file"
+                                                   id="imageInput"
+                                                   class="input-file"
+                                                   @change="onImageChange($event)($event)"
+                                                   style="display: none;">
+                                       </div>
+                                   </div>
+                                </div>
+                            </div>
+
+                            <!-- Бутони запис/отказ -->
+                            <div class="col-12 text-center">
+                                <button class="btn btn-outline-secondary btn-wave fs-16" @click="edit_mode=false">Откажи</button>
+                                &nbsp; &nbsp; &nbsp;
+                                <button class="btn btn-outline-success btn-wave fs-16">Запиши</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <!-- End::app-content -->
+
+{% endblock %}
+
+{% block page_script %}
+    <script src="{% static 'irida/js/welcome.js' %}"></script>
+{% endblock %}
