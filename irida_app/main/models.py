@@ -6,6 +6,27 @@ from django.dispatch import receiver
 from datetime import datetime
 from django.utils import timezone
 from .utils import *
+""" 
+***************************************
+        Предмети 
+***************************************
+"""
+class Subject(models.Model):
+    name = models.CharField('Име', max_length=200)
+    grade = models.SmallIntegerField('Клас', default=12, validators=[ MinValueValidator(8), MaxValueValidator(12) ])
+    subject_type = models.BooleanField('Тип', choices=[(True, 'теория'), (False, 'практика')], default=True,)
+    hpy = models.PositiveIntegerField('Брой часове годишно', default=54, validators=[MinValueValidator(18)])
+    wpy = models.SmallIntegerField('Брой учебни седмици годишно', choices=[(11,11), (18,18), (27,27), (29,29), (36,29)], default=18)
+    hpw1 = models.SmallIntegerField('Брой часове седмично (1-ви срок)', default=0)
+    hpw2 = models.SmallIntegerField('Брой часове седмично (2-ри срок)', default=0)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Учебен предмет'
+        verbose_name_plural = 'Учебни предмети'
+
 
 """
 ***************************************
@@ -33,9 +54,9 @@ class Specialty(models.Model):
 
     specialty_num = models.CharField('Специалност - номер', max_length=8, default='', blank=True)
     specialty_name = models.CharField('Специалност - име', max_length=100, default='', blank=True)
-    plan = models.FileField('Учебен план', upload_to='docs/', blank=True)
     level = models.PositiveSmallIntegerField(choices=[(2, 'втора'), (3, 'трета')], default=3,
                                              help_text='Степен на професионална квалификация')
+    subjects = models.ManyToManyField(Subject, verbose_name='Предмети', blank=True)
 
     def __str__(self):
         return f'{self.specialty_num}: {self.specialty_name}'
@@ -111,6 +132,8 @@ class UserProfile(models.Model):
                                    help_text='клас по подразбиране', null=True, blank=True)
     speciality = models.ForeignKey(Specialty, verbose_name='Специалност', on_delete=models.CASCADE, related_name='user_speciality',
                                    help_text='специалност по подразбиране', null=True, blank=True)
+    subject = models.ForeignKey(Subject, verbose_name='Предмет', on_delete=models.CASCADE, related_name='user_subject',
+                                   help_text='учебен предмет по подразбиране', null=True, blank=True)
 
     def __str__(self):
         return f'Потребител #{self.user.id}: {self.user.first_name} {self.user.last_name}'

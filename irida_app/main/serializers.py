@@ -11,17 +11,7 @@ class SpecialtySerializer(serializers.ModelSerializer):
             'specialty_num',
             'specialty_name',
             'level',
-            'plan',
         ]
-
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        request = self.context.get('request')
-
-        if representation['plan'] and request:
-            representation['plan'] = request.build_absolute_uri(instance.nip.url)
-
-        return representation
 
 
 class UserProfileSpecSerializer(serializers.ModelSerializer):
@@ -29,12 +19,12 @@ class UserProfileSpecSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ['gender', 'school', 'access_level', 'session_screen', 'session_theme', 'speciality']
+        fields = ['gender', 'school', 'access_level', 'session_screen', 'session_theme', 'speciality', 'subject']
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['gender', 'school', 'access_level', 'session_screen', 'session_theme', 'speciality']
+        fields = ['gender', 'school', 'access_level', 'session_screen', 'session_theme', 'speciality', 'subject']
 
 class UserSerializer(serializers.ModelSerializer):
     userprofile = UserProfileSerializer()

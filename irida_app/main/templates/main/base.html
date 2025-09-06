@@ -56,7 +56,9 @@
     <link rel="stylesheet" href="{% static 'libs/flatpickr/swiper-bundle.min.css' %}">
     <link rel="stylesheet" href="{% static 'libs/flatpickr/classic.css' %}">
     <link rel="stylesheet" href="{% static 'libs/flatpickr/classic.date.css' %}">
-
+    <script type="text/javascript">
+        window.CSRF_TOKEN = "{{ csrf_token }}";
+    </script>
 </head>
 
 <body>
@@ -494,6 +496,7 @@
                 <!-- Start::nav -->
                 <nav class="main-menu-container nav nav-pills flex-column sub-open">
                     <div class="main-sidebar-header mb-24">
+                        <!-- Лого горе ляво -->
                         <a href="{% url 'home' %}" class="header-logo">
                             <img src="{% static 'images/brand-logos/desktop-dark.png' %}" alt="logo" class="desktop-dark">
                             <img src="{% static 'images/brand-logos/toggle-dark.png' %}" alt="logo" class="toggle-dark">
@@ -507,28 +510,39 @@
                             <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path>
                         </svg>
                     </div>
+
+                    <!-- Меню -->
                     <ul class="main-menu">
                         <!-- Start::slide__category -->
                         <li class="slide__category"><span class="category-name">Главно меню</span></li>
                         <!-- End::slide__category -->
 
-                        <!-- Start::slide -->
+                        <!-- Start slide Училища -->
                         <li class="slide">
                             <a href="{% url 'schools_list' %}" class="side-menu__item">
                                 <i class="bi bi-house side-menu__icon"></i>
                                 <span class="side-menu__label">Училища</span>
                             </a>
                         </li>
-                        <!-- End::slide -->
+                        <!-- End slide Училища -->
 
-                        <!-- Start::slide -->
+                        <!-- Start  slide Специалности -->
                         <li class="slide">
                             <a href="{% url 'specialty_list' %}" class="side-menu__item">
                                 <i class="bi bi-tools side-menu__icon"></i>
                                 <span class="side-menu__label">Специалности</span>
                             </a>
                         </li>
-                        <!-- End::slide -->
+                        <!-- End slide Специалности -->
+
+                        <!-- Start  slide Предмети -->
+                        <li class="slide">
+                            <a href="{% url 'subjects_list' %}" class="side-menu__item">
+                                <i class="bi bi-book side-menu__icon"></i>
+                                <span class="side-menu__label">Предмети</span>
+                            </a>
+                        </li>
+                        <!-- End slide Предмети -->
 
                         <!-- Start::slide__category -->
                         <li class="slide__category"><span class="category-name">Main Menu</span></li>
