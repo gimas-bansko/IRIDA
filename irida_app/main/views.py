@@ -279,3 +279,28 @@ def subject_detail(request, subject_id, sp_id=None):
             import traceback
             traceback.print_exc()
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# задаване на предмет по подразбиране
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def set_course(request, sb=None):
+    user = request.user
+    user_profile = user.userprofile
+
+    # Ако искате да вземете sb от body при POST
+    if request.method == 'POST':
+        sb = request.data.get('sp') or request.data.get('subject_id')
+
+    # Валидация
+    try:
+        sb = int(sb) if sb is not None else 0
+    except (TypeError, ValueError):
+        return Response({'ok': False, 'error': 'Невалиден параметър sb'}, status=400)
+
+    if sb > 0:
+        subject = get_object_or_404(Subject, id=sb)
+        user_profile.subject = subject
+        user_profile.save()
+
+    return Response({'ok': True})

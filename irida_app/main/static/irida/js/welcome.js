@@ -121,9 +121,6 @@ const App = {
             vm.edit_mode = false
 
             // Изпращане на PUT заявка към API
-            console.log('/api/specialty/'+vm.specialty.id+'/')
-            console.log(vm.specialty.id)
-            //axios.put('/api/specialty/'+this.specialty.id+'/', this.specialty, {
             axios.put('api/schools/'+vm.user.user_id+'/specialty/'+vm.specialty.id+'/', vm.specialty, {
                 headers: {
                     'Content-Type': 'application/json',

@@ -123,6 +123,16 @@ const App = {
             }
             return 'практика'
         },
+        setSubjectGoal(sb_id) {
+            axios.get(`/api/speciality_select/${sb_id}/`)
+                .then(() => {
+                    window.location.href = '/subjects';
+                })
+                .catch(err => {
+                    console.error('Грешка:', err);
+                    alert('Възникна грешка!');
+                });
+        },
     },
     created: function(){
         console.log('subject.js')

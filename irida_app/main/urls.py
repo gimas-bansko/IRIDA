@@ -26,4 +26,5 @@ urlpatterns = [
     path('api/specialty/<int:sp_id>/subjects/', SpecialtySubjectsView.as_view(), name='specialty-subjects'),
     path('api/specialty/<int:sp_id>/subjects/<int:subject_id>/', subject_detail, name='specialty-subjects-detail'),
 
+    path('api/course_set/<int:sb>/', set_course, name='set_course'),
 ]
