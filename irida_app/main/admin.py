@@ -24,6 +24,7 @@ class SpecialtyFilter(admin.SimpleListFilter):
 admin.site.register(School)
 admin.site.register(Specialty)
 admin.site.register(Documents)
+admin.site.register(Subject)
 
 @admin.register(Log)
 class LogV(admin.ModelAdmin):
@@ -38,5 +39,4 @@ class KlassV(admin.ModelAdmin):
     list_display_links = ('grade', 'section')
     list_filter = ('grade', )
     ordering = ('grade', )
-
 

@@ -10,16 +10,16 @@
                 <!-- Page Header -->
                  <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
                      <div>
-                         <p class="mb-5 mt-2 text-muted">
+                         <p class="mb-1 mt-2 text-muted">
                              <img class="avatar" src="{{ user_profile.school.logo.url }}">
                              {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
-
-                         <h1 class="page-title fw-normal fs-20 mb-12">Предмети</h1>
+                         <p class="text-muted" style="margin-left: 3rem;">специалност {{ specialty.specialty_name}}</p>
+                         <h1 class="page-title fw-normal fs-20 mb-12">{{ subject.name}}</h1>
                          <nav>
                             <ol class="breadcrumb mb-2">
                                 <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
                                 <li class="breadcrumb-item"><a href="{% url 'specialty_list' %}">специалност {{ specialty.specialty_num}} - {{ specialty.specialty_name}}</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Предмети</li>
+                                <li class="breadcrumb-item active" aria-current="page">Цели и задачи</li>
                             </ol>
                         </nav>
                      </div>
@@ -68,23 +68,9 @@
                                                         </div>
                                                         <div class="ms-auto">
                                                             <div class="btn-list">
-                                                                <div class="btn-group">
-                                                                    <button type="button" class="btn btn-outline-success dropdown-toggle"
-                                                                            data-bs-toggle="dropdown" aria-expanded="false"
-                                                                            @click="setSubject(sbj.id)">
-                                                                        Детайли
-                                                                    </button>
-                                                                    <ul class="dropdown-menu">
-                                                                        <li><a class="dropdown-item" href="javascript:void(0);">Цели и задачи</a></li>
-                                                                        <li><a class="dropdown-item" href="javascript:void(0);">Another action</a></li>
-                                                                        <li><a class="dropdown-item" href="javascript:void(0);">Something else here</a></li>
-                                                                        <li>
-                                                                            <hr class="dropdown-divider">
-                                                                        </li>
-                                                                        <li><a class="dropdown-item" href="javascript:void(0);">Separated link</a></li>
-                                                                    </ul>
-                                                                </div>
-
+                                                                <button type="button" class="btn btn-outline-success btn-wave"
+                                                                        @click="setSubject(sbj.id)">
+                                                                    <i class="bi bi-check"></i>&nbsp;Детайли </button>
                                                                 <button type="button" class="btn btn-outline-secondary btn-wave"
                                                                         @click="editSubject(sbj_idx)">
                                                                     <i class="bi bi-pen"></i>&nbsp;Промени</button>

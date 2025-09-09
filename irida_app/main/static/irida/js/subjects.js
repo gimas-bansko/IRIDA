@@ -2,39 +2,27 @@ const App = {
     delimiters: ['[[', ']]'], // Променяме синтаксиса на [[ ]]
     data() {
         return {
-            edit_mode:false,
+            edit_mode:0, // 0 - списък; 1 - едактиране на предмет
             listOfSpecialties: [],
+            listOfSubjects: [],
             user:{},
             school:{},
-            specialty:{
+            subject:{
                 id:0,
-                specialty_num:'123',
-                specialty_name:"",
-                level:3,
+                name: '',
+                grade: 12,
+                subject_type: true,
+                hpy: 18,
+                wpy: 0,
+                hpw1: 0,
+                hpw2: 0,
                 },
         }
     },
     computed: {
-        pictureFileName() {
-            if (this.school.logo) {
-                // Извличаме името на файла от URL
-                return this.school.logo.split('/').pop(); // Взема последната част от пътя
-            }
-            return null; // Ако няма картинка
-        },
+
     },
     methods: {
-        onImageChange(e){
-            const file = e.target.files[0]
-            this.school.logo = URL.createObjectURL(file)
-            let formData = new FormData();
-            formData.append('id', this.school.id)
-            formData.append('logo', file)
-            let url =  'api/SchoolLogo/'
-            axios.post(url, formData, {headers: {'X-CSRFToken':CSRF_TOKEN, 'Content-Type': 'multipart/form-data'}})
-            txt = 'Променено/качено лого на училище '+this.school.short_name+' - '+this.school.city+')'
-            this.sendLogRecord(txt)
-        },
         sendLogRecord(txt){
             const vm=this
             axios({
@@ -51,32 +39,6 @@ const App = {
                 }
             })
         },
-        save() {
-            const vm = this;
-            axios({
-                method: 'PATCH',  // или 'PUT' ако искате да замените целия обект
-                url: `/api/schools/${this.school.id}/update/`,
-                headers: {
-                    'X-CSRFToken': CSRF_TOKEN,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                data: vm.school
-            })
-                .then(function(response) {
-                    // Може да покажете съобщение за успех или да направите друго действие
-                    console.log('School data updated successfully', response.data);
-                    // Опционално - обновете информацията
-                    vm.school = response.data;
-
-                    // Записване на действието в лога
-                    vm.sendLogRecord(`Редактирано училище ${vm.school.short_name} - ${vm.school.city}`);
-                })
-                .catch(function(error) {
-                    console.error('Error updating school data', error);
-                    // Тук можете да добавите обработка на грешки
-                });
-        },
         loadSchool(logged_user){
             // чета всички данни за училището на влезлия потребител
             const vm = this;
@@ -92,6 +54,7 @@ const App = {
                     vm.user = response.data
                     vm.loadSpecialties(vm.user)
                     vm.loadSchool(vm.user)
+                    vm.loadSubjects(vm.user)
                 })
         },
         loadSpecialties(logged_user){
@@ -102,36 +65,50 @@ const App = {
                     vm.listOfSpecialties = response.data
                 })
         },
-        newSpecialty(){
-            this.specialty.id = 0
-            this.specialty.specialty_num = ''
-            this.specialty.specialty_name = ''
-            this.specialty.level = 3
-            this.edit_mode = true
+        loadSubjects(logged_user){
+            // чета списъка на всички предмети, които са от текущо избраната специалност за влезлия потребител
+            const vm = this;
+            axios.get('/api/specialty/'+logged_user.specialty+'/subjects/')
+                .then(function(response){
+                    vm.listOfSubjects = response.data
+                    console.log(vm.listOfSubjects)
+                })
         },
-        editSpecialty(idx){
-            this.specialty.id = this.listOfSpecialties[idx].id
-            this.specialty.specialty_num = this.listOfSpecialties[idx].specialty_num
-            this.specialty.specialty_name = this.listOfSpecialties[idx].specialty_name
-            this.specialty.level = this.listOfSpecialties[idx].level
-            this.edit_mode = true
+        newSubject(){
+            this.subject.id = 0,
+            this.subject.name = '',
+            this.subject.grade = 12,
+            this.subject.subject_type = true,
+            this.subject.hpy = 18,
+            this.subject.wpy = 0,
+            this.subject.hpw1 = 0,
+            this.subject.hpw2 = 0,
+            this.edit_mode = 1
         },
-        saveSpecialty() {
+        editSubject(idx){
+            this.subject.id = this.listOfSubjects[idx].id
+            this.subject.name = this.listOfSubjects[idx].name
+            this.subject.grade = this.listOfSubjects[idx].grade
+            this.subject.subject_type = this.listOfSubjects[idx].subject_type
+            this.subject.hpy = this.listOfSubjects[idx].hpy
+            this.subject.wpy = this.listOfSubjects[idx].wpy
+            this.subject.hpw1 = this.listOfSubjects[idx].hpw1
+            this.subject.hpw2 = this.listOfSubjects[idx].hpw2
+            this.edit_mode = 1
+        },
+        saveSubject() {
             vm = this
-            vm.edit_mode = false
+            vm.edit_mode = 0
 
             // Изпращане на PUT заявка към API
-            console.log('/api/specialty/'+vm.specialty.id+'/')
-            console.log(vm.specialty.id)
-            //axios.put('/api/specialty/'+this.specialty.id+'/', this.specialty, {
-            axios.put('api/schools/'+vm.user.user_id+'/specialty/'+vm.specialty.id+'/', vm.specialty, {
+            axios.put('api/specialty/'+vm.user.specialty+'/subjects/'+vm.subject.id+'/', vm.subject, {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': CSRF_TOKEN
                 }
             })
                 .then(function(response) {
-                    vm.loadSpecialties(vm.user)
+                    vm.loadSubjects(vm.user)
                     // Показване на съобщение за успех
                     alert("Данните са записани успешно!");
                 })
@@ -140,18 +117,15 @@ const App = {
                     alert("Възникна грешка при запазване на данните!");
                 });
         },
-        setSpecialty(sp_id) {
-            axios.get(`/api/speciality_select/${sp_id}/`)
-            .then(() => {
-              window.location.href = '/subjects';
-            })
-            .catch(err => {
-              console.error('Грешка:', err);
-              alert('Възникна грешка!');
-            });
+        subjectTypeStr(idx) {
+            if (this.listOfSubjects[idx].subject_type) {
+                return 'теория'
+            }
+            return 'практика'
         },
     },
     created: function(){
+        console.log('subject.js')
         this.status = 0
         this.loadUserDetails();
     }

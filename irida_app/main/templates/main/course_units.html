@@ -19,7 +19,7 @@
                             <ol class="breadcrumb mb-2">
                                 <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
                                 <li class="breadcrumb-item"><a href="{% url 'specialty_list' %}">специалност {{ specialty.specialty_num}} - {{ specialty.specialty_name}}</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Предмети</li>
+                                <li class="breadcrumb-item active" aria-current="page">Теми</li>
                             </ol>
                         </nav>
                      </div>
@@ -68,23 +68,9 @@
                                                         </div>
                                                         <div class="ms-auto">
                                                             <div class="btn-list">
-                                                                <div class="btn-group">
-                                                                    <button type="button" class="btn btn-outline-success dropdown-toggle"
-                                                                            data-bs-toggle="dropdown" aria-expanded="false"
-                                                                            @click="setSubject(sbj.id)">
-                                                                        Детайли
-                                                                    </button>
-                                                                    <ul class="dropdown-menu">
-                                                                        <li><a class="dropdown-item" href="javascript:void(0);">Цели и задачи</a></li>
-                                                                        <li><a class="dropdown-item" href="javascript:void(0);">Another action</a></li>
-                                                                        <li><a class="dropdown-item" href="javascript:void(0);">Something else here</a></li>
-                                                                        <li>
-                                                                            <hr class="dropdown-divider">
-                                                                        </li>
-                                                                        <li><a class="dropdown-item" href="javascript:void(0);">Separated link</a></li>
-                                                                    </ul>
-                                                                </div>
-
+                                                                <button type="button" class="btn btn-outline-success btn-wave"
+                                                                        @click="setSubject(sbj.id)">
+                                                                    <i class="bi bi-check"></i>&nbsp;Детайли </button>
                                                                 <button type="button" class="btn btn-outline-secondary btn-wave"
                                                                         @click="editSubject(sbj_idx)">
                                                                     <i class="bi bi-pen"></i>&nbsp;Промени</button>

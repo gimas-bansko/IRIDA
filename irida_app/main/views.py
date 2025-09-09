@@ -35,13 +35,14 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-def welcome_view(request):
-    user = request.user
+def make_user_context(r):
+    user = r.user
     user_profile = user.userprofile
     schools = School.objects.all()
+    specialty = user_profile.speciality
+    subject = user_profile.subject
 
     context = {
-        'tab_title': 'начало',
         'user_nick': user.username,
         'user_name': user.first_name+' '+user.last_name,
         'user_first_name': user.first_name,
@@ -49,51 +50,35 @@ def welcome_view(request):
         'user_profile': user_profile,
         'schools': schools,
         'specialities': user_profile.school.specialities.all(),
+        'specialty': specialty,
+        'subject': subject,
     }
-    print(f'context={context}')
+    print(context)
+    return context
+
+def welcome_view(request):
+    context = make_user_context(request)
     return render(request, 'main/welcome.html', context)
 
 def subjects_list_view(request):
-    user = request.user
-    user_profile = user.userprofile
-    specialty = user_profile.speciality
-    subject = user_profile.subject
-
-    context = {
-        'user_nick': user.username,
-        'user_name': user.first_name+' '+user.last_name,
-        'user_level': USER_LEVEL[user_profile.access_level-1][1],
-        'user_profile': user_profile,
-        'specialty': specialty,
-        'subject': subject,
-        }
-
-    print(f'context={context}')
+    context = make_user_context(request)
     return render(request, 'main/subjects.html', context)
 
 def specialties_list_view(request):
-    user = request.user
-    user_profile = user.userprofile
-    context = {
-        'user_nick': user.username,
-        'user_name': user.first_name+' '+user.last_name,
-        'user_level': USER_LEVEL[user_profile.access_level-1][1],
-        'user_profile': user_profile,
-        }
-    print(f'context={context}')
+    context = make_user_context(request)
     return render(request, 'main/specialties.html', context)
 
 def schools_list_view(request):
-    user = request.user
-    user_profile = user.userprofile
-    context = {
-        'user_nick': user.username,
-        'user_name': user.first_name+' '+user.last_name,
-        'user_level': USER_LEVEL[user_profile.access_level-1][1],
-        'user_profile': user_profile,
-        }
-    print(f'context={context}')
+    context = make_user_context(request)
     return render(request, 'main/schools.html', context)
+
+def course_goals_view(request):
+    context = make_user_context(request)
+    return render(request, 'main/course_goals.html', context)
+
+def course_units_view(request):
+    context = make_user_context(request)
+    return render(request, 'main/course_units.html', context)
 
 """ 
 ***************************************
@@ -111,7 +96,7 @@ class UserDataAPIView(APIView):
             'user_level_text': USER_LEVEL[user_profile.access_level - 1][1],
             'user_level_num': user_profile.access_level,
             'school':  user_profile.school.id if user_profile.school else 0,
-            'speciality': user_profile.speciality.id if user_profile.speciality else 0,
+            'specialty': user_profile.speciality.id if user_profile.speciality else 0,
             'grade_section': user_profile.grade_section.id if user_profile.grade_section else 0,
             'subject': user_profile.subject.id if user_profile.subject else 0,
             }
@@ -216,3 +201,81 @@ def set_speciality(request, sp=None):
         user_profile.save()
 
     return Response({'ok': True})
+
+# ***************************
+#          Предмети
+# ***************************
+
+# предмети по определена специалност (по id)
+class SpecialtySubjectsView(APIView):
+    def get(self, request, sp_id, *args, **kwargs):
+        try:
+            # Намираме специалността по зададеното ID
+            specialty = Specialty.objects.get(id=sp_id)
+        except Specialty.DoesNotExist:
+            return Response({'error': 'Специалността не съществува.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Вземаме всички предмети, свързани със специалността
+        subjects = specialty.subjects.all()
+
+        # Сериализираме предметите
+        serializer = SubjectSerializer(subjects, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+# четене/обновяване на предмет
+@api_view(['GET', 'PUT'])
+def subject_detail(request, subject_id, sp_id=None):
+    # GET
+    if request.method == 'GET':
+        if int(subject_id) == 0:
+            # По избор: върнете празен шаблон за форми
+            return Response({
+                'id': 0,
+                'name': '',
+                'grade': 12,
+                'subject_type': True,
+                'hpy': 18,
+                'wpy': 0,
+                'hpw1': 0,
+                'hpw2': 0,
+                })
+        subject = get_object_or_404(Subject, id=subject_id)
+        serializer = SubjectSerializer(subject, context={'request': request})
+        return Response(serializer.data)
+
+    # PUT
+    elif request.method == 'PUT':
+        data = request.data
+        try:
+            # Създаване при id == 0
+            if int(subject_id) == 0:
+                serializer = SubjectSerializer(data=data, context={'request': request})
+                if serializer.is_valid():
+                    subject = serializer.save()
+                    # Ако имаме sp_id в URL, добавяме M2M връзка
+                    if sp_id is not None:
+                        specialty = get_object_or_404(Specialty, id=sp_id)
+                        specialty.subjects.add(subject)
+                    return Response(SubjectSerializer(subject, context={'request': request}).data,
+                                    status=status.HTTP_201_CREATED)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            # Обновяване при id != 0
+            subject = get_object_or_404(Subject, id=subject_id)
+            serializer = SubjectSerializer(subject, data=data, partial=True, context={'request': request})
+            if serializer.is_valid():
+                subject = serializer.save()
+                # По желание: ако sp_id е подаден, уверете се, че връзката съществува
+                if sp_id is not None:
+                    specialty = get_object_or_404(Specialty, id=sp_id)
+                    specialty.subjects.add(subject)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

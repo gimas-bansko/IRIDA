@@ -13,6 +13,19 @@ class SpecialtySerializer(serializers.ModelSerializer):
             'level',
         ]
 
+class SubjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = [
+            'id',
+            'name',
+            'grade',
+            'subject_type',
+            'hpy',
+            'wpy',
+            'hpw1',
+            'hpw2',
+        ]
 
 class UserProfileSpecSerializer(serializers.ModelSerializer):
     speciality = SpecialtySerializer()  # Включваме сериализатора за Specialty
