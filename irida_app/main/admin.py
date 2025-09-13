@@ -25,6 +25,9 @@ admin.site.register(School)
 admin.site.register(Specialty)
 admin.site.register(Documents)
 admin.site.register(Subject)
+admin.site.register(Unit)
+admin.site.register(Topic)
+admin.site.register(Goal)
 
 @admin.register(Log)
 class LogV(admin.ModelAdmin):

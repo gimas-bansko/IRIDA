@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Време на генериране:  9 септ 2025 в 20:41
+-- Време на генериране: 13 септ 2025 в 13:38
 -- Версия на сървъра: 10.4.32-MariaDB
 -- Версия на PHP: 8.2.12
 
@@ -133,7 +133,23 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (69, 'Can add Тема от раздел на УП', 18, 'add_topic'),
 (70, 'Can change Тема от раздел на УП', 18, 'change_topic'),
 (71, 'Can delete Тема от раздел на УП', 18, 'delete_topic'),
-(72, 'Can view Тема от раздел на УП', 18, 'view_topic');
+(72, 'Can view Тема от раздел на УП', 18, 'view_topic'),
+(73, 'Can add Цел на обучението', 16, 'add_goal'),
+(74, 'Can change Цел на обучението', 16, 'change_goal'),
+(75, 'Can delete Цел на обучението', 16, 'delete_goal'),
+(76, 'Can view Цел на обучението', 16, 'view_goal'),
+(77, 'Can add Задачa на обучението', 17, 'add_objective'),
+(78, 'Can change Задачa на обучението', 17, 'change_objective'),
+(79, 'Can delete Задачa на обучението', 17, 'delete_objective'),
+(80, 'Can view Задачa на обучението', 17, 'view_objective'),
+(81, 'Can add Занятие', 19, 'add_session'),
+(82, 'Can change Занятие', 19, 'change_session'),
+(83, 'Can delete Занятие', 19, 'delete_session'),
+(84, 'Can view Занятие', 19, 'view_session'),
+(85, 'Can add Занятие (тема)', 20, 'add_sessiontopics'),
+(86, 'Can change Занятие (тема)', 20, 'change_sessiontopics'),
+(87, 'Can delete Занятие (тема)', 20, 'delete_sessiontopics'),
+(88, 'Can view Занятие (тема)', 20, 'view_sessiontopics');
 
 -- --------------------------------------------------------
 
@@ -243,11 +259,13 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (4, 'auth', 'user'),
 (5, 'contenttypes', 'contenttype'),
 (7, 'main', 'documents'),
-(16, 'main', 'goals'),
+(16, 'main', 'goal'),
 (8, 'main', 'klass'),
 (9, 'main', 'log'),
-(17, 'main', 'objectives'),
+(17, 'main', 'objective'),
 (10, 'main', 'school'),
+(19, 'main', 'session'),
+(20, 'main', 'sessiontopics'),
 (11, 'main', 'specialty'),
 (13, 'main', 'subject'),
 (15, 'main', 'tema'),
@@ -300,7 +318,10 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (24, 'main', '0006_userprofile_subject', '2025-09-06 06:21:57.373762'),
 (25, 'main', '0007_subject_creator_subject_goals_subject_objectives_and_more', '2025-09-07 21:40:34.079087'),
 (26, 'main', '0008_unit_hours', '2025-09-08 06:38:15.385646'),
-(27, 'main', '0009_goals_objectives_topic_remove_subject_goals_and_more', '2025-09-09 13:29:39.867524');
+(27, 'main', '0009_goals_objectives_topic_remove_subject_goals_and_more', '2025-09-09 13:29:39.867524'),
+(28, 'main', '0010_rename_goals_goal_rename_objectives_objective', '2025-09-09 19:10:11.619726'),
+(29, 'main', '0011_delete_objective', '2025-09-10 12:50:06.046698'),
+(30, 'main', '0012_session_sessiontopics_and_more', '2025-09-13 11:38:10.647054');
 
 -- --------------------------------------------------------
 
@@ -337,15 +358,23 @@ CREATE TABLE `main_documents` (
 -- --------------------------------------------------------
 
 --
--- Структура на таблица `main_goals`
+-- Структура на таблица `main_goal`
 --
 
-CREATE TABLE `main_goals` (
+CREATE TABLE `main_goal` (
   `id` bigint(20) NOT NULL,
   `num` smallint(6) NOT NULL,
   `name` varchar(200) NOT NULL,
   `course_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Схема на данните от таблица `main_goal`
+--
+
+INSERT INTO `main_goal` (`id`, `num`, `name`, `course_id`) VALUES
+(1, 1, 'цел 1', 1),
+(2, 2, 'цел 2', 1);
 
 -- --------------------------------------------------------
 
@@ -379,19 +408,6 @@ CREATE TABLE `main_log` (
   `user_name` varchar(50) DEFAULT NULL,
   `action` varchar(200) NOT NULL,
   `date` datetime(6) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Структура на таблица `main_objectives`
---
-
-CREATE TABLE `main_objectives` (
-  `id` bigint(20) NOT NULL,
-  `num` smallint(6) NOT NULL,
-  `name` varchar(200) NOT NULL,
-  `course_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -460,6 +476,35 @@ INSERT INTO `main_school_specialities` (`id`, `school_id`, `specialty_id`) VALUE
 (2, 1, 3),
 (3, 1, 4),
 (4, 1, 5);
+
+-- --------------------------------------------------------
+
+--
+-- Структура на таблица `main_session`
+--
+
+CREATE TABLE `main_session` (
+  `id` bigint(20) NOT NULL,
+  `num` smallint(6) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `focus` longtext NOT NULL,
+  `goals` longtext NOT NULL,
+  `duration` smallint(6) NOT NULL,
+  `course_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Структура на таблица `main_sessiontopics`
+--
+
+CREATE TABLE `main_sessiontopics` (
+  `id` bigint(20) NOT NULL,
+  `description` varchar(200) NOT NULL,
+  `session_id` bigint(20) NOT NULL,
+  `topic_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -548,6 +593,15 @@ CREATE TABLE `main_topic` (
   `unit_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Схема на данните от таблица `main_topic`
+--
+
+INSERT INTO `main_topic` (`id`, `num`, `name`, `MoSCoW_cat`, `MoSCoW_rem`, `unit_id`) VALUES
+(1, 1, 'Основи на интернет. Мрежови протоколи. HTTP', 'M', 'Основополагащи понятия', 1),
+(2, 2, 'Видове HTTP заявки', 'M', '', 1),
+(3, 3, 'Клиент - сървър комуникация', 'M', '', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -561,6 +615,15 @@ CREATE TABLE `main_unit` (
   `subject_id` bigint(20) NOT NULL,
   `hours` smallint(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Схема на данните от таблица `main_unit`
+--
+
+INSERT INTO `main_unit` (`id`, `num`, `name`, `subject_id`, `hours`) VALUES
+(1, 1, 'Въведение в Интернет, мрежови протоколи и модел „Клиент - Сървър”', 1, 2),
+(2, 2, 'Разработка на външен интерфейс (front-end) на уеб приложения', 1, 1),
+(3, 3, 'Разработка на сървърна часст (back-end) на уеб приложения', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -585,7 +648,7 @@ CREATE TABLE `main_userprofile` (
 --
 
 INSERT INTO `main_userprofile` (`id`, `gender`, `access_level`, `session_screen`, `school_id`, `speciality_id`, `user_id`, `grade_section_id`, `subject_id`) VALUES
-(1, 1, 1, 1, 1, 1, 1, 1, NULL);
+(1, 1, 1, 1, 1, 1, 1, 1, 1);
 
 --
 -- Indexes for dumped tables
@@ -671,9 +734,9 @@ ALTER TABLE `main_documents`
   ADD PRIMARY KEY (`id`);
 
 --
--- Индекси за таблица `main_goals`
+-- Индекси за таблица `main_goal`
 --
-ALTER TABLE `main_goals`
+ALTER TABLE `main_goal`
   ADD PRIMARY KEY (`id`),
   ADD KEY `main_goals_course_id_8bd6ab9d_fk_main_subject_id` (`course_id`);
 
@@ -688,13 +751,6 @@ ALTER TABLE `main_klass`
 --
 ALTER TABLE `main_log`
   ADD PRIMARY KEY (`id`);
-
---
--- Индекси за таблица `main_objectives`
---
-ALTER TABLE `main_objectives`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `main_objectives_course_id_2d2f3221_fk_main_subject_id` (`course_id`);
 
 --
 -- Индекси за таблица `main_school`
@@ -717,6 +773,21 @@ ALTER TABLE `main_school_specialities`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `main_school_specialities_school_id_specialty_id_c782cac5_uniq` (`school_id`,`specialty_id`),
   ADD KEY `main_school_speciali_specialty_id_78354343_fk_main_spec` (`specialty_id`);
+
+--
+-- Индекси за таблица `main_session`
+--
+ALTER TABLE `main_session`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `main_session_course_id_ac5cca43_fk_main_subject_id` (`course_id`);
+
+--
+-- Индекси за таблица `main_sessiontopics`
+--
+ALTER TABLE `main_sessiontopics`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_session_topic` (`session_id`,`topic_id`),
+  ADD KEY `main_sessiontopics_topic_id_63ff71a8_fk_main_topic_id` (`topic_id`);
 
 --
 -- Индекси за таблица `main_specialty`
@@ -784,7 +855,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- AUTO_INCREMENT for table `auth_user`
@@ -814,13 +885,13 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `main_documents`
@@ -829,10 +900,10 @@ ALTER TABLE `main_documents`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `main_goals`
+-- AUTO_INCREMENT for table `main_goal`
 --
-ALTER TABLE `main_goals`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `main_goal`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `main_klass`
@@ -844,12 +915,6 @@ ALTER TABLE `main_klass`
 -- AUTO_INCREMENT for table `main_log`
 --
 ALTER TABLE `main_log`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `main_objectives`
---
-ALTER TABLE `main_objectives`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
@@ -869,6 +934,18 @@ ALTER TABLE `main_school_classes`
 --
 ALTER TABLE `main_school_specialities`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `main_session`
+--
+ALTER TABLE `main_session`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `main_sessiontopics`
+--
+ALTER TABLE `main_sessiontopics`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `main_specialty`
@@ -892,13 +969,13 @@ ALTER TABLE `main_subject`
 -- AUTO_INCREMENT for table `main_topic`
 --
 ALTER TABLE `main_topic`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `main_unit`
 --
 ALTER TABLE `main_unit`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `main_userprofile`
@@ -945,16 +1022,10 @@ ALTER TABLE `django_admin_log`
   ADD CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
 
 --
--- Ограничения за таблица `main_goals`
+-- Ограничения за таблица `main_goal`
 --
-ALTER TABLE `main_goals`
+ALTER TABLE `main_goal`
   ADD CONSTRAINT `main_goals_course_id_8bd6ab9d_fk_main_subject_id` FOREIGN KEY (`course_id`) REFERENCES `main_subject` (`id`);
-
---
--- Ограничения за таблица `main_objectives`
---
-ALTER TABLE `main_objectives`
-  ADD CONSTRAINT `main_objectives_course_id_2d2f3221_fk_main_subject_id` FOREIGN KEY (`course_id`) REFERENCES `main_subject` (`id`);
 
 --
 -- Ограничения за таблица `main_school_classes`
@@ -969,6 +1040,19 @@ ALTER TABLE `main_school_classes`
 ALTER TABLE `main_school_specialities`
   ADD CONSTRAINT `main_school_speciali_specialty_id_78354343_fk_main_spec` FOREIGN KEY (`specialty_id`) REFERENCES `main_specialty` (`id`),
   ADD CONSTRAINT `main_school_specialities_school_id_9588fab6_fk_main_school_id` FOREIGN KEY (`school_id`) REFERENCES `main_school` (`id`);
+
+--
+-- Ограничения за таблица `main_session`
+--
+ALTER TABLE `main_session`
+  ADD CONSTRAINT `main_session_course_id_ac5cca43_fk_main_subject_id` FOREIGN KEY (`course_id`) REFERENCES `main_subject` (`id`);
+
+--
+-- Ограничения за таблица `main_sessiontopics`
+--
+ALTER TABLE `main_sessiontopics`
+  ADD CONSTRAINT `main_sessiontopics_session_id_c9a604e5_fk_main_session_id` FOREIGN KEY (`session_id`) REFERENCES `main_session` (`id`),
+  ADD CONSTRAINT `main_sessiontopics_topic_id_63ff71a8_fk_main_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `main_topic` (`id`);
 
 --
 -- Ограничения за таблица `main_specialty_subjects`

@@ -27,4 +27,9 @@ urlpatterns = [
     path('api/specialty/<int:sp_id>/subjects/<int:subject_id>/', subject_detail, name='specialty-subjects-detail'),
 
     path('api/course_set/<int:sb>/', set_course, name='set_course'),
+    path('api/course/<int:sb_id>/goals/', SubjectGoalsView.as_view(), name='subject-goals'),
+    path('api/goals/upsert/', GoalUpsertView.as_view(), name='goal-upsert'),
+    path('api/subjects/<int:subject_id>/units-with-topics/', SubjectUnitsWithTopicsView.as_view(), name='subject-units-with-topics'),
+    path('api/units/upsert/', UnitUpsertView.as_view(), name='unit-upsert'),
+    path('api/topics/upsert/', TopicUpsertView.as_view(), name='topic-upsert'),
 ]

@@ -120,3 +120,48 @@ class SchoolLogoSerializer(serializers.ModelSerializer):
         item = School.objects.update_or_create(id=validated_data.get("id"), defaults={'logo': image})
         return item
 
+# ******************
+#     Предмети
+# ******************
+
+#   Цели за предмет
+class GoalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Goal
+        fields = ['id', 'num', 'name', 'course']
+        read_only_fields = ['id']
+
+# Раздели и теми
+class TopicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Topic
+        fields = ['id', 'num', 'name', 'MoSCoW_cat', 'MoSCoW_rem']
+
+class UnitSerializer(serializers.ModelSerializer):
+    # вложени теми
+    topics = TopicSerializer(source='unit_topic', many=True, read_only=True)
+
+    class Meta:
+        model = Unit
+        fields = ['id', 'num', 'name', 'hours', 'topics']
+
+# serializers.py
+
+class UnitWriteSerializer(serializers.ModelSerializer):
+    # subject се подава като ID
+    subject = serializers.PrimaryKeyRelatedField(queryset=Subject.objects.all())
+
+    class Meta:
+        model = Unit
+        fields = ['id', 'num', 'name', 'hours', 'subject']
+        read_only_fields = ['id']
+
+
+class TopicWriteSerializer(serializers.ModelSerializer):
+    # unit се подава като ID
+    unit = serializers.PrimaryKeyRelatedField(queryset=Unit.objects.all())
+
+    class Meta:
+        model = Topic
+        fields = ['id', 'num', 'name', 'MoSCoW_cat', 'MoSCoW_rem', 'unit']
+        read_only_fields = ['id']

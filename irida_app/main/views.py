@@ -11,6 +11,7 @@ from rest_framework import generics
 from .serializers import *
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Prefetch
 
 
 @csrf_protect
@@ -304,3 +305,108 @@ def set_course(request, sb=None):
         user_profile.save()
 
     return Response({'ok': True})
+
+# списък на целите на обучението по предмета по подразбиране на текущия потребител(по id)
+class SubjectGoalsView(generics.ListAPIView):
+    serializer_class = GoalSerializer
+
+    def get_queryset(self):
+        sb_id = self.kwargs['sb_id']
+        return Goal.objects.filter(course_id=sb_id).order_by('num', 'id')
+
+
+class GoalUpsertView(APIView):
+    def post(self, request):
+        goal_id = request.data.get('id', 0) or 0
+        try:
+            goal_id = int(goal_id)
+        except (TypeError, ValueError):
+            return Response({'detail': 'Invalid id'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if goal_id > 0:
+            # Update
+            instance = get_object_or_404(Goal, id=goal_id)
+            serializer = GoalSerializer(instance, data=request.data, partial=False)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            # Create
+            serializer = GoalSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+# Раздели и теми
+class SubjectUnitsWithTopicsView(generics.ListAPIView):
+    serializer_class = UnitSerializer
+
+    def get_queryset(self):
+        subject_id = self.kwargs['subject_id']
+        get_object_or_404(Subject, id=subject_id)
+
+        # Подредба на вложените теми по num (и id за стабилност)
+        topics_prefetch = Prefetch('unit_topic', queryset=Topic.objects.order_by('num', 'id')
+        )
+
+        # Подредба на Units по num (и id за стабилност)
+        return (
+            Unit.objects
+            .filter(subject_id=subject_id)
+            .order_by('num', 'id')
+            .prefetch_related(topics_prefetch)
+        )
+
+
+class UnitUpsertView(APIView):
+    """
+    POST:
+      - id == 0  -> create
+      - id > 0   -> update
+    Body: { id, num, name, hours, subject }
+    """
+    def post(self, request):
+        unit_id = request.data.get('id', 0) or 0
+        try:
+            unit_id = int(unit_id)
+        except (TypeError, ValueError):
+            return Response({'detail': 'Invalid id'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if unit_id > 0:
+            instance = get_object_or_404(Unit, id=unit_id)
+            serializer = UnitWriteSerializer(instance, data=request.data, partial=False)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            serializer = UnitWriteSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class TopicUpsertView(APIView):
+    """
+    POST:
+      - id == 0  -> create
+      - id > 0   -> update
+    Body: { id, num, name, MoSCoW_cat, MoSCoW_rem, unit }
+    """
+    def post(self, request):
+        topic_id = request.data.get('id', 0) or 0
+        try:
+            topic_id = int(topic_id)
+        except (TypeError, ValueError):
+            return Response({'detail': 'Invalid id'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if topic_id > 0:
+            instance = get_object_or_404(Topic, id=topic_id)
+            serializer = TopicWriteSerializer(instance, data=request.data, partial=False)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            serializer = TopicWriteSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
