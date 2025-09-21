@@ -20,7 +20,7 @@
                                 <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
                                 <li class="breadcrumb-item"><a href="{% url 'specialty_list' %}">{{ specialty.specialty_name}}</a></li>
                                 <li class="breadcrumb-item"><a href="{% url 'subjects_list' %}">{{ subject.name}}
-                                ({% if subject.type %} теория {% else %} практика {% endif %})</a></li>
+                                ({% if subject.subject_type %} теория {% else %} практика {% endif %})</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Цели и задачи</li>
                             </ol>
                         </nav>

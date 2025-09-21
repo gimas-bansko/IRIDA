@@ -1,0 +1,433 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+
+{% block main_content %}
+        <!-- Start::app-content -->
+            <!-- Режим списък -->
+            <div class="container-fluid">
+
+                <!-- Page Header -->
+                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                     <div>
+                         <p class="mb-1 mt-2 text-muted">
+                             <img class="avatar" src="{{ user_profile.school.logo.url }}">
+                             {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
+                         <p class="text-muted" style="margin-left: 3rem;">специалност {{ specialty.specialty_name}}</p>
+                         <h1 class="page-title fw-normal fs-20 mb-12">{{ subject.name}}</h1>
+                         <nav>
+                             <ol class="breadcrumb mb-2">
+                                 <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
+                                 <li class="breadcrumb-item"><a href="{% url 'specialty_list' %}">{{ specialty.specialty_name}}</a></li>
+                                 <li class="breadcrumb-item"><a href="{% url 'subjects_list' %}">{{ subject.name}}
+                                    ({% if subject.subject_type %} теория {% else %} практика {% endif %})</a></li>
+                                 <li class="breadcrumb-item active" aria-current="page">Занятия</li>
+                             </ol>
+                         </nav>
+                     </div>
+                 </div>
+                <!-- Page Header Close -->
+
+                <!-- ако няма въведени занятия -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
+                     v-if="(listOfSessions.length===0)&&(!edit.editor)">
+                    <div class="card-1 custom-card">
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
+                            <div class="card-title ">
+                                <div>Учебни занятия</div>
+                            </div>
+                            <div class="d-flex gap-12 align-items-center">
+                                <button type="button" class="btn-1 btn btn-success" @click="newSession()">
+                                    <span class="d-flex align-items-center gap-6">
+                                        <i class="bi bi-plus-circle"></i>
+                                        <span class="white">Добави занятие</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled projects-items-danger-list">
+                                <li v-if="showItem(0,-1)">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal fs-16 custom-black">
+                                                Не са намерени занятия по предмета</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- ако има занятия -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
+                     v-if="(listOfSessions.length>0)&&(!edit.editor)">
+                    <div class="card-1 custom-card" >
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
+                            <div class="card-title ">
+                                <div>Учебни занятия</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled projects-items-success-list">
+                                <li v-for="(session, session_idx) in listOfSessions">
+                                    <!-- Общи параметри (заглавка) -->
+                                    <div class="d-flex align-items-center gap-3" v-if="showItem(0,session_idx)" style="padding-right: 16px;">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal  fs-16 custom-black">
+                                                Занятие [[session.num]]. [[session.name]]<br>
+                                                <span class="text-muted fs-12">Вид на занятието: </span>
+                                                <span class="badge fs-12"
+                                                      :class="sessionTypeClass(session.session_type)">
+                                                    [[sessionType(session.session_type)]]</span>
+                                                <span v-if="session.hours===1" class="text-muted fs-12">, Продължителност [[session.duration]] учебен час, </span>
+                                                <span v-if="session.hours!=1" class="text-muted fs-12">, Продължителност [[session.duration]] учебни часа, </span>
+                                                <span v-if="session.basic_level" class="badge bg-info fs-12">Основно (задължително) занятие</span>
+                                                <span v-else class="badge bg-warning fs-12">Резервно (при необходимост) занятие</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div v-if="!session.collapsed">
+                                        <!-- цели -->
+                                        <div class="card-1 custom-card mt-3">
+                                            <div class="card-body">
+                                                <span class="d-block fw-normal  fs-14 custom-black">
+                                                    Цели (очаквани резултати):<br>
+                                                    <span class="text-muted fs-12">[[session.goals]]</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- теми -->
+                                        <div class="card-1 custom-card mt-1" >
+                                            <div class="card-body">
+                                                <span class="d-block fw-normal  fs-14 custom-black">
+                                                    Теми:<br>
+                                                </span>
+                                                <ul class="list-unstyled projects-items-danger-list" v-if="session.session_topics.length===0">
+                                                    <!-- ако няма въведени теми -->
+                                                    <li v-if="showItem(1,-1)">
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <div class="flex-fill">
+                                                                <span class="d-block fw-normal fs-16 custom-black">
+                                                                    Не са въведени теми към раздела</span>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <ul class="list-unstyled projects-items-primary-list" v-else>
+                                                    <li v-for="(c_topic, topic_idx) in session.session_topics">
+                                                        <div class="d-flex align-items-center gap-3" v-if="showItem(1,unit_idx,topic_idx)">
+                                                            <div class="flex-fill">
+                                                                <span class="d-block fw-normal  fs-14 custom-black">
+                                                                    [[c_topic.topic.name]]
+                                                                    <span class="text-muted fs-12">([[moscowTextFor(c_topic.topic)]]
+                                                                        <span v-if="c_topic.topic.MoSCoW_rem"> - </span>
+                                                                        [[c_topic.topic.MoSCoW_rem]])<br>
+                                                                        [[c_topic.description]]
+                                                                    </span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                       </div>
+                                        <!-- фокус -->
+                                        <div class="card-1 custom-card mt-1" >
+                                            <div class="card-body">
+                                                <span class="d-block fw-normal  fs-14 custom-black">
+                                                    Фокус (основни акценти):<br>
+                                                    <span class="text-muted fs-12">[[session.focus]]</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="btn-list text-center mt-4">
+                                        <!-- бутон "По-малко" -->
+                                        <button v-if="!session.collapsed" type="button" class="btn btn-primary label-btn" @click="session.collapsed=true">
+                                            <i class="ri-arrow-up-s-line label-btn-icon me-2"></i>
+                                            По-малко
+                                        </button>&nbsp;&nbsp;
+                                        <!-- бутон "Виж повече" -->
+                                        <button v-if="session.collapsed" type="button" class="btn btn-primary label-btn" @click="session.collapsed=false">
+                                            <i class="ri-arrow-down-s-line label-btn-icon me-2"></i>
+                                            Виж повече
+                                        </button>&nbsp;&nbsp;
+                                        <!--
+                                        <button type="button" class="btn btn-primary label-btn" @click="" v-if="">
+                                            <i class="ri-arrow-up-line label-btn-icon me-2"></i>
+                                            Нагоре
+                                        </button>&nbsp;&nbsp;
+                                        <button type="button" class="btn btn-primary label-btn" @click="">
+                                            <i class="ri-arrow-down-line label-btn-icon me-2"></i>
+                                            Надолу
+                                        </button>&nbsp;&nbsp;
+                                        -->
+                                        <!-- бутон "Премахни" -->
+                                        <button class="btn btn-info label-btn dropdown-toggle" type="button" id="dropdownMenu2"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ri-close-line label-btn-icon me-2"></i>
+                                            Премахни
+                                        </button>&nbsp;&nbsp;
+                                        <div class="dropdown-menu">
+                                            <div class="alert alert-solid-info alert-dismissible fade show">
+                                                <div class="text-center mb-3 mt-1">
+                                                    Премахването на задание е окончателно и не може да се възстанови.<br>
+                                                    Наистина ли искате да премахнете това занятие?
+                                                </div>
+                                                <div class="text-center mb-3 mt-1">
+                                                    <button class="btn btn-outline-secondary btn-lg shadow-lg fs-16" @click="clearEditMode()">
+                                                        Не</button>
+                                                    &nbsp; &nbsp; &nbsp;
+                                                    <button class="btn btn-outline-success btn-wave fs-16" @click="deleteSession(session.id)">
+                                                        Да</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- бутон "Промени" -->
+                                        <button type="button" class="btn btn-success label-btn" @click="editSessionOpen(session)">
+                                            <i class="bi bi-pen label-btn-icon me-2"></i>
+                                            Промени
+                                        </button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <!-- бутон "Ресурси" -->
+                                        <button type="button" class="btn btn-secondary label-btn" @click="editSessionOpen(session)">
+                                            <i class="ri-stack-line label-btn-icon me-2"></i>
+                                            Ресурси
+                                        </button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- редактиране на занятие -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
+                     v-if="edit.editor">
+                    <div class="card-1 custom-card" >
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
+                            <div class="card-title">
+                                <div v-if="!editSession.id">Ново занятие</div>
+                                <div v-else>Редактиране на занятие</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3 mt-0">
+                                <!-- номер -->
+                                <div class="col-md-1">
+                                    <div class="form-floating mb-4 floating-success">
+                                        <input id="es_num" type="number" class="form-control" v-model="editSession.num">
+                                        <label for="es_num">№</label>
+                                    </div>
+                                </div>
+
+                                <!-- текст(тема) -->
+                                <div class="col-md-11">
+                                    <div class="form-floating mb-4 floating-success">
+                                        <input id="es_name" type="text" class="form-control" v-model="editSession.name">
+                                        <label for="es_name">Текст(тема)</label>
+                                    </div>
+                                </div>
+
+                                <!-- вид на занятието -->
+                                <div class="col-md-5">
+                                    <div class="form-floating mb-4">
+                                        <select class="form-select border-green" id="es_vid" v-model="editSession.session_type">
+                                            <option value="НЗ" class="bg-info">Нови знания</option>
+                                            <option value="УПР" class="bg-primary">Упражнение</option>
+                                            <option value="ПК" class="bg-secondary">Проверка и контрол</option>
+                                            <option value="ОС" class="bg-warning">Обобщаване и систематизиране</option>
+                                            <option value="K" class="bg-success">Комбиниран урок</option>
+                                        </select>
+                                        <label for="es_vid">Вид на занятието</label>
+                                    </div>
+                                </div>
+
+                                <!-- часове -->
+                                <div class="col-md-2">
+                                    <div class="form-floating mb-4 floating-success">
+                                        <input id="uh_0" type="number" class="form-control" v-model="editSession.duration">
+                                        <label for="uh_0">Продължителност</label>
+                                    </div>
+                                </div>
+
+                                <!-- тип на занятието -->
+                                <div class="col-md-5">
+                                    <div class="form-floating mb-4">
+                                        <select class="form-select border-green" id="es_tip" v-model="editSession.basic_level">
+                                            <option value="true" class="bg-info">Основно (задължително) занятие</option>
+                                            <option value="false" class="bg-success">Резервно (при необходимост) занятие</option>
+                                        </select>
+                                        <label for="es_tip">Тип на занятието</label>
+                                    </div>
+                                </div>
+
+                                <!-- цели -->
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-4">
+                                        <textarea class="form-control border-green" id="es_goal" rows="5" v-model="editSession.goals"
+                                                  style="height:56px;"></textarea>
+                                        <label for="es_goal">Цели на занятието(урока)</label>
+                                    </div>
+                                </div>
+
+                                <!-- теми -->
+                                <div class="card-1 custom-card mt-1" >
+                                    <div class="card-header d-md-flex d-block align-items-center justify-content-between my-1"
+                                         style="padding-right: 28px; padding: 0.25rem 1.25rem;">
+                                        <div class="card-title" style="font-size: 14px;">
+                                            <div>Теми от учебната програма, включени в занятието</div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled projects-items-danger-list" v-if="editSessionTopics.length===0">
+                                            <!-- ако няма въведени теми -->
+                                            <li v-if="editSessionTopics.length===0">
+                                                <div class="d-flex gap-12 justify-content-between">
+                                                    <div><span class="d-block fw-normal fs-16 custom-black">
+                                                        Не са въведени теми от учебната програма</span></div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <ul class="list-unstyled projects-items-primary-list" v-else>
+                                            <li v-for="(c_topic, topic_idx) in editSessionTopics">
+                                                <div class="d-flex align-items-center justify-content-between gap-3" v-if="showItem(1,-1,topic_idx)">
+                                                    <div class="flex-fill">
+                                                        <div class="row g-3 mt-0">
+                                                            <div class="col-md-8">
+                                                                <div class="d-block fw-normal  fs-14 custom-black">
+                                                                    [[c_topic.topic.name]]
+                                                                    <span class="text-muted fs-12">([[moscowTextFor(c_topic.topic)]]
+                                                                        <span v-if="c_topic.topic.MoSCoW_rem"> - </span>
+                                                                        [[c_topic.topic.MoSCoW_rem]])<br>
+                                                                        [[c_topic.description]]
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4 text-end" v-if="showEditor(0,-1,-1)">
+                                                                <button class="btn btn-info label-btn btn-sm fs-12 dropdown-toggle" type="button" id="dropdownMenu3"
+                                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="ri-close-line label-btn-icon me-2"></i>
+                                                                    Премахни
+                                                                </button>&nbsp;&nbsp;
+                                                                <div class="dropdown-menu">
+                                                                    <div class="alert alert-solid-info alert-dismissible fade show">
+                                                                        <div class="text-center mb-3 mt-1">
+                                                                            Темата ще бъде премахната от занятието.<br>
+                                                                            Моля, потвърдете премахнването и:
+                                                                        </div>
+                                                                        <div class="text-center mb-3 mt-1">
+                                                                            <button class="btn btn-outline-secondary btn-lg shadow-lg fs-16" @click="">
+                                                                                Не</button>
+                                                                            &nbsp; &nbsp; &nbsp;
+                                                                            <button class="btn btn-outline-success btn-wave fs-16" @click="removeSessionTopic(topic_idx)">
+                                                                                Да</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <button type="button" class="btn btn-success btn-sm fs-12 label-btn" @click="setEditMode(1, -1, topic_idx)">
+                                                                    <i class="bi bi-pen label-btn-icon me-2"></i>
+                                                                    Промени
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex align-items-center gap-3" v-if="showEditor(1,-1,topic_idx)">
+                                                    <div class="flex-fill">
+                                                        <div class="row g-3 mt-0">
+                                                            <!--  тема -->
+                                                            <div class="col-md-12">
+                                                                <div class="form-floating" >
+                                                                    <select class="form-select border-blue" id="es_unit" v-model="unitsList_idx">
+                                                                        <option  v-for="(unt, unt_idx) in listOfUnits" :value="unt_idx">Раздел [[unt.num]]. [[unt.name]]</option>
+                                                                    </select>
+                                                                    <label for="es_unit">Раздел от учебната програма</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <div class="form-floating">
+                                                                    <select class="form-select border-blue" id="es_theme" v-model="c_topic.topic.id">
+                                                                        <option v-for="tpc in topicsByUnitId(listOfUnits[unitsList_idx].id)"
+                                                                                :key="tpc.id" :value="tpc.id" :class="moscowClass(tpc)" >
+                                                                            [[ tpc.num ]]. [[ tpc.name ]] ([[moscowTextFor(tpc)]])</option>
+                                                                    </select>
+                                                                    <label for="es_theme">Тема</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- текст -->
+                                                            <div class="col-md-12">
+                                                                <div class="form-floating mb-4">
+                                                                    <input id="tn_2" type="text" class="form-control border-blue"
+                                                                           v-model="editSessionTopics[topic_idx].description">
+                                                                    <label for="tn_2">Описание</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 text-end" v-if="edit.index[1]>-1">
+                                                                <button type="button" class="btn btn-success btn-sm fs-12 label-btn"
+                                                                        @click="setEditMode(0,-1,-1)">
+                                                                    <i class="bi bi-chevron-double-up label-btn-icon me-2"></i>
+                                                                    Затвори
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-footer" style="padding-right: 15px;" v-if="showEditor(0,-1,topic_idx)">
+                                        <div class="d-flex gap-12 justify-content-between">
+                                            <div> </div>
+                                            <button type="button" class="btn-1 btn btn-primary" @click="addSessionTopic()">
+                                                <span class="d-flex align-items-center gap-6">
+                                                    <i class="bi bi-plus-circle"></i>
+                                                    <span class="white">Добави тема</span>
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                               </div>
+
+                                <!-- фокус -->
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-4 floating-success">
+                                        <textarea class="form-control border-green" id="es_focus" rows="5" v-model="editSession.focus"
+                                                  style="height:56px;"></textarea>
+                                        <label for="es_focus">Фокус(основни акценти на занятието)</label>
+                                    </div>
+                                </div>
+
+                                <!-- Бутони запис/отказ -->
+                                <div class="col-12 text-center mb-3 mt-1">
+                                    <button class="btn btn-outline-secondary btn-lg shadow-lg fs-16" @click="clearEditMode()">
+                                        Откажи</button>
+                                    &nbsp; &nbsp; &nbsp;
+                                    <button class="btn btn-outline-success btn-wave fs-16" @click="saveSession()">
+                                        Запиши</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- бутон добави занятие -->
+                <div class="card-1 custom-card mt-1" v-if="!edit.editor">
+                    <div class="card-body">
+                        <div class="btn-list text-center">
+                            <button type="button" class="btn btn-success label-btn" @click="newSession()">
+                                <i class="bi bi-plus-circle label-btn-icon me-2"></i>
+                                Добави занятие
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- End::app-content -->
+
+{% endblock %}
+
+{% block page_script %}
+    <script src="{% static 'irida/js/subjects.js' %}"></script>
+{% endblock %}

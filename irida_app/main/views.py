@@ -81,6 +81,10 @@ def course_units_view(request):
     context = make_user_context(request)
     return render(request, 'main/course_units.html', context)
 
+def course_sessions_view(request):
+    context = make_user_context(request)
+    return render(request, 'main/course_sessions.html', context)
+
 """ 
 ***************************************
                API
@@ -410,3 +414,51 @@ class TopicUpsertView(APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+# Списък и създаване на Session
+class SessionListCreateView(generics.ListCreateAPIView):
+    serializer_class = SessionWriteSerializer
+
+    def get_queryset(self):
+        # Показва всички на текущия потребител? Или глобално. Ако имаш филтр, добави го.
+        return Session.objects.all()
+
+# Изглед за детайли/редакция/изтриване на Session
+class SessionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Session.objects.all()
+    serializer_class = SessionWriteSerializer
+
+# Списък на Session за даден Subject (с вложени SessionTopic и разгънат Topic)
+class SubjectSessionsWithTopicsView(generics.ListAPIView):
+    serializer_class = SessionReadSerializer
+
+    def get_queryset(self):
+        subject_id = self.kwargs['subject_id']
+        get_object_or_404(Subject, id=subject_id)
+        topics_prefetch = Prefetch(
+            'session_topics',
+            queryset=SessionTopic.objects.select_related('topic').order_by('id')
+        )
+        return (
+            Session.objects
+            .filter(course_id=subject_id)
+            .order_by('num', 'id')
+            .prefetch_related(topics_prefetch)
+        )
+
+# CRUD за SessionTopic
+class SessionTopicListCreateView(generics.ListCreateAPIView):
+    serializer_class = SessionTopicWriteSerializer
+
+    def get_queryset(self):
+        # По избор: филтър по session_id от query параметър
+        session_id = self.request.query_params.get('session')
+        qs = SessionTopic.objects.all().select_related('topic', 'session')
+        if session_id:
+            qs = qs.filter(session_id=session_id)
+        return qs.order_by('id')
+
+class SessionTopicRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SessionTopic.objects.all().select_related('topic', 'session')
+    serializer_class = SessionTopicWriteSerializer

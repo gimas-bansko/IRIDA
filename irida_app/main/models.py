@@ -76,9 +76,16 @@ class Session(models.Model):
     course = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='course_session')
     num = models.SmallIntegerField('Занятие №', default=1, validators=[ MinValueValidator(1)])
     name = models.CharField('Име', max_length=200, help_text='Общо име на занятието')
-    focus = models.TextField('Фокус', default='', blank=True, help_text='Фокус(основни акценти на занятието')
+    focus = models.TextField('Фокус', default='', blank=True, help_text='Фокус(основни акценти на занятието)')
     goals = models.TextField('Цели', default='', blank=True, help_text='Оосновни цели на занятието')
     duration = models.SmallIntegerField('Продължителност', default=1, validators=[ MinValueValidator(1), MaxValueValidator(7)])
+    session_type = models.CharField('Вид на урочната единица', default='', max_length=3, blank=True,
+                                  choices=[('НЗ', 'Нови знания'), ('УПР', 'Упражнение'), ('ПК', 'Проверка и контрол'),
+                                           ('ОС', 'Обобщаване и систематизиране'), ('K', 'Комбиниран урок')])
+    basic_level = models.BooleanField('Тип на занятието', default=True,
+                                  choices=[(True, 'Основно(задължително) занятие'), (False, 'Резервно(при необходимост) занятие')])
+    collapsed = models.BooleanField('Показва се "свито"', default=True,
+                                  choices=[(True, 'Да'), (False, 'Не')])
 
     def __str__(self):
         return f'{self.num}. {self.name}'
@@ -86,25 +93,16 @@ class Session(models.Model):
     class Meta:
         verbose_name = 'Занятие'
         verbose_name_plural = 'Занятия'
+        ordering = ['num', 'id']
 
 # Занятие - теми
-class SessionTopics(models.Model):
-    session = models.ForeignKey(
-        Session,
-        on_delete=models.CASCADE,
-        related_name='session_topics',
-        verbose_name='Занятие'
-    )
-    topic = models.ForeignKey(
-        Topic,
-        on_delete=models.PROTECT,   # или SET_NULL/CASCADE според логиката ти
-        related_name='topic_sessions',
-        verbose_name='Тема'
-    )
+class SessionTopic(models.Model):
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='session_topics', verbose_name='Занятие')
+    topic = models.ForeignKey(Topic, on_delete=models.PROTECT, related_name='topic_sessions', verbose_name='Тема')
     description = models.CharField('Описание', max_length=200, blank=True, default='')
 
     def __str__(self):
-        return self.topic.name if getattr(self, 'topic', None) else self.description
+        return self.topic.name if self.topic_id else self.description
 
     class Meta:
         verbose_name = 'Занятие (тема)'

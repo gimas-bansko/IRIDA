@@ -28,6 +28,8 @@ admin.site.register(Subject)
 admin.site.register(Unit)
 admin.site.register(Topic)
 admin.site.register(Goal)
+admin.site.register(Session)
+admin.site.register(SessionTopic)
 
 @admin.register(Log)
 class LogV(admin.ModelAdmin):

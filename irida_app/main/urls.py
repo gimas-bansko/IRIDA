@@ -12,6 +12,7 @@ urlpatterns = [
     path('schools', schools_list_view, name='schools_list'),
     path('goals', course_goals_view, name='goals_list'),
     path('units', course_units_view, name='units_list'),
+    path('sessions', course_sessions_view, name='sessions_list'),
 
     # API
     path('api/context/', UserDataAPIView.as_view()),
@@ -32,4 +33,16 @@ urlpatterns = [
     path('api/subjects/<int:subject_id>/units-with-topics/', SubjectUnitsWithTopicsView.as_view(), name='subject-units-with-topics'),
     path('api/units/upsert/', UnitUpsertView.as_view(), name='unit-upsert'),
     path('api/topics/upsert/', TopicUpsertView.as_view(), name='topic-upsert'),
+
+    # Sessions
+    path('api/sessions/', SessionListCreateView.as_view(), name='session-list-create'),
+    path('api/sessions/<int:pk>/', SessionRetrieveUpdateDestroyView.as_view(), name='session-detail'),
+
+    # Sessions for Subject with topics expanded
+    path('api/subjects/<int:subject_id>/sessions-with-topics/', SubjectSessionsWithTopicsView.as_view(),
+         name='subject-sessions-with-topics'),
+
+    # SessionTopics
+    path('api/session-topics/', SessionTopicListCreateView.as_view(), name='session-topic-list-create'),
+    path('api/session-topics/<int:pk>/', SessionTopicRetrieveUpdateDestroyView.as_view(), name='session-topic-detail'),
 ]

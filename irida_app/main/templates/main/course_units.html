@@ -20,7 +20,7 @@
                                  <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
                                  <li class="breadcrumb-item"><a href="{% url 'specialty_list' %}">{{ specialty.specialty_name}}</a></li>
                                  <li class="breadcrumb-item"><a href="{% url 'subjects_list' %}">{{ subject.name}}
-                                    ({% if subject.type %} теория {% else %} практика {% endif %})</a></li>
+                                    ({% if subject.subject_type %} теория {% else %} практика {% endif %})</a></li>
                                  <li class="breadcrumb-item active" aria-current="page">Теми</li>
                              </ol>
                          </nav>
@@ -31,12 +31,12 @@
                 <!-- Раздели и теми -->
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
                     <div class="card-1 custom-card" >
-                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4">
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
                             <div class="card-title ">
                                 <div>Учебна програма</div>
                             </div>
                             <div class="d-flex gap-12 align-items-center" v-if="!edit.editor">
-                                <button type="button" class="btn-1 btn btn-success" @click="newUnit()">
+                                <button type="button" class="btn-1 btn btn-success" @click="handleNewUnitClick()">
                                     <span class="d-flex align-items-center gap-6">
                                         <i class="bi bi-plus-circle"></i>
                                         <span class="white">Добави раздел</span>
@@ -99,7 +99,7 @@
                             </ul>
                             <ul class="list-unstyled projects-items-success-list" v-else>
                                 <li v-for="(c_unit, unit_idx) in listOfUnits">
-                                    <div class="d-flex align-items-center gap-3" v-if="showItem(0,unit_idx)">
+                                    <div class="d-flex align-items-center gap-3" v-if="showItem(0,unit_idx)" style="padding-right: 16px;">
                                         <div class="flex-fill">
                                             <span class="d-block fw-normal  fs-16 custom-black">
                                                 Раздел [[c_unit.num]]. [[c_unit.name]]
@@ -153,7 +153,7 @@
                                         </div>
                                     </div>
                                     <!-- теми -->
-                                    <div class="card-1 custom-card" >
+                                    <div class="card-1 custom-card mt-3" >
                                         <div class="card-body">
                                             <ul class="list-unstyled projects-items-danger-list" v-if="c_unit.topics.length===0">
                                                 <!-- ако няма въведени теми -->
@@ -166,7 +166,7 @@
                                                     </div>
                                                 </li>
                                                 <!-- Дабавяне на тема -->
-                                                <li v-if="showEditor(1,-1)">
+                                                <li v-if="showEditor(1,unit_idx,-1)">
                                                     <div class="d-flex align-items-center gap-3">
                                                         <div class="flex-fill">
                                                             <div class="row g-3 mt-0">
@@ -221,7 +221,7 @@
                                             </ul>
                                             <ul class="list-unstyled projects-items-primary-list" v-else>
                                                 <li v-for="(c_topic, topic_idx) in c_unit.topics">
-                                                    <div class="d-flex align-items-center gap-3" v-if="showItem(1,topic_idx)">
+                                                    <div class="d-flex align-items-center gap-3" v-if="showItem(1,unit_idx,topic_idx)">
                                                         <div class="flex-fill">
                                                             <span class="d-block fw-normal  fs-16 custom-black">
                                                                 [[c_topic.num]]. [[c_topic.name]]
@@ -240,7 +240,7 @@
                                                             </span>
                                                         </button>
                                                     </div>
-                                                    <div class="d-flex align-items-center gap-3" v-if="showEditor(1,topic_idx)">
+                                                    <div class="d-flex align-items-center gap-3" v-if="showEditor(1,unit_idx,topic_idx)">
                                                         <div class="flex-fill">
                                                             <div class="row g-3 mt-0">
                                                                 <!-- номер -->
@@ -250,7 +250,6 @@
                                                                         <label for="tb_2">№</label>
                                                                     </div>
                                                                 </div>
-
                                                                 <!-- текст -->
                                                                 <div class="col-md-11">
                                                                     <div class="form-floating mb-4 floating-success">
@@ -292,7 +291,7 @@
                                                     </div>
                                                 </li>
                                                 <!-- Дабавяне на тема -->
-                                                <li v-if="showEditor(1,-1)">
+                                                <li v-if="showEditor(1,unit_idx,-1)">
                                                     <div class="row g-3 mt-0">
                                                         <!-- номер -->
                                                         <div class="col-md-1">
@@ -342,7 +341,7 @@
                                                 </li>
                                             </ul>
                                         </div>
-                                        <div class="card-footer">
+                                        <div class="card-footer" style="padding-right: 15px;">
                                             <div class="d-flex gap-12 justify-content-between" v-if="!edit.editor">
                                                 <div> </div>
                                                 <button type="button" class="btn-1 btn btn-primary" @click="newTopic(unit_idx)">
@@ -357,7 +356,7 @@
                                     <!-- теми край -->
                                 </li>
                                 <!-- Дабавяне на раздел -->
-                                <li v-if="showEditor(0,-1)">
+                                <li v-if="showEditor(0,-1)" id="idAddNewUnit" tabindex="-1" v-show="showAddNewUnit">
                                     <div class="d-flex align-items-center gap-3">
                                         <div class="flex-fill">
                                             <div class="row g-3 mt-0">

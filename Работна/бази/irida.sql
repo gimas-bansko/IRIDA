@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Време на генериране: 13 септ 2025 в 13:38
+-- Време на генериране: 21 септ 2025 в 15:21
 -- Версия на сървъра: 10.4.32-MariaDB
 -- Версия на PHP: 8.2.12
 
@@ -149,7 +149,11 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (85, 'Can add Занятие (тема)', 20, 'add_sessiontopics'),
 (86, 'Can change Занятие (тема)', 20, 'change_sessiontopics'),
 (87, 'Can delete Занятие (тема)', 20, 'delete_sessiontopics'),
-(88, 'Can view Занятие (тема)', 20, 'view_sessiontopics');
+(88, 'Can view Занятие (тема)', 20, 'view_sessiontopics'),
+(89, 'Can add Занятие (тема)', 20, 'add_sessiontopic'),
+(90, 'Can change Занятие (тема)', 20, 'change_sessiontopic'),
+(91, 'Can delete Занятие (тема)', 20, 'delete_sessiontopic'),
+(92, 'Can view Занятие (тема)', 20, 'view_sessiontopic');
 
 -- --------------------------------------------------------
 
@@ -176,7 +180,7 @@ CREATE TABLE `auth_user` (
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$600000$3iNEHTkQ6rkF6v46il2Dsp$wzYrjzST0uYMRVFUzIBCXDqFWdbed8vyiQCqZ39eB9o=', '2025-09-06 11:29:58.683807', 1, 'superadmin', 'Георги', 'Бориков', '', 1, 1, '2025-09-04 19:41:42.000000');
+(1, 'pbkdf2_sha256$600000$3iNEHTkQ6rkF6v46il2Dsp$wzYrjzST0uYMRVFUzIBCXDqFWdbed8vyiQCqZ39eB9o=', '2025-09-21 13:10:03.241606', 1, 'superadmin', 'Георги', 'Бориков', '', 1, 1, '2025-09-04 19:41:42.000000');
 
 -- --------------------------------------------------------
 
@@ -234,7 +238,14 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 (8, '2025-09-04 19:57:39.625757', '1', 'superadmin', 2, '[{\"changed\": {\"fields\": [\"First name\", \"Last name\"]}}]', 4, 1),
 (9, '2025-09-04 20:01:07.624781', '1', 'Потребител #1: Георги Бориков', 2, '[{\"changed\": {\"fields\": [\"\\u0420\\u043e\\u043b\\u044f\"]}}]', 12, 1),
 (10, '2025-09-04 20:28:55.272716', '1', 'ПГЕЕ гр. Банско', 2, '[{\"changed\": {\"fields\": [\"\\u041a\\u043b\\u0430\\u0441\\u043e\\u0432\\u0435\"]}}]', 10, 1),
-(11, '2025-09-05 10:31:06.950656', '1', '481030: Приложен програмист', 2, '[{\"changed\": {\"fields\": [\"\\u0423\\u0447\\u0435\\u0431\\u0435\\u043d \\u043f\\u043b\\u0430\\u043d\"]}}]', 11, 1);
+(11, '2025-09-05 10:31:06.950656', '1', '481030: Приложен програмист', 2, '[{\"changed\": {\"fields\": [\"\\u0423\\u0447\\u0435\\u0431\\u0435\\u043d \\u043f\\u043b\\u0430\\u043d\"]}}]', 11, 1),
+(12, '2025-09-18 13:56:28.255103', '1', '1. Първо занятие', 1, '[{\"added\": {}}]', 19, 1),
+(13, '2025-09-18 13:57:07.881755', '1', 'Основи на интернет. Мрежови протоколи. HTTP', 1, '[{\"added\": {}}]', 20, 1),
+(14, '2025-09-18 13:57:15.712272', '2', 'Видове HTTP заявки', 1, '[{\"added\": {}}]', 20, 1),
+(15, '2025-09-18 16:39:10.000811', '2', 'Видове HTTP заявки', 2, '[{\"changed\": {\"fields\": [\"\\u041e\\u043f\\u0438\\u0441\\u0430\\u043d\\u0438\\u0435\"]}}]', 20, 1),
+(16, '2025-09-18 16:39:15.741513', '1', 'Основи на интернет. Мрежови протоколи. HTTP', 2, '[]', 20, 1),
+(17, '2025-09-19 14:42:34.752268', '2', 'Интернет програмиране', 2, '[]', 13, 1),
+(18, '2025-09-19 14:51:13.490492', '1', '1. Първо занятие', 2, '[{\"changed\": {\"fields\": [\"Course\"]}}]', 19, 1);
 
 -- --------------------------------------------------------
 
@@ -265,7 +276,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (17, 'main', 'objective'),
 (10, 'main', 'school'),
 (19, 'main', 'session'),
-(20, 'main', 'sessiontopics'),
+(20, 'main', 'sessiontopic'),
 (11, 'main', 'specialty'),
 (13, 'main', 'subject'),
 (15, 'main', 'tema'),
@@ -321,7 +332,12 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (27, 'main', '0009_goals_objectives_topic_remove_subject_goals_and_more', '2025-09-09 13:29:39.867524'),
 (28, 'main', '0010_rename_goals_goal_rename_objectives_objective', '2025-09-09 19:10:11.619726'),
 (29, 'main', '0011_delete_objective', '2025-09-10 12:50:06.046698'),
-(30, 'main', '0012_session_sessiontopics_and_more', '2025-09-13 11:38:10.647054');
+(30, 'main', '0012_session_sessiontopics_and_more', '2025-09-13 11:38:10.647054'),
+(31, 'main', '0013_rename_sessiontopics_sessiontopic', '2025-09-13 12:24:50.350357'),
+(32, 'main', '0014_alter_session_options_session_unit_and_more', '2025-09-16 14:28:03.290262'),
+(33, 'main', '0015_remove_session_unit', '2025-09-17 16:08:48.433012'),
+(34, 'main', '0016_session_basic_level_session_session_type', '2025-09-18 13:50:08.751392'),
+(35, 'main', '0017_session_collapsed', '2025-09-18 19:10:46.911658');
 
 -- --------------------------------------------------------
 
@@ -340,7 +356,8 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
-('sugbi9tyy6lihsnijhrdhf3vax8f2h7t', '.eJxVjEsOwjAMBe-SNYqckDoNS_Y9Q2XHDi2gVOpnhbg7VOoCtm9m3sv0tK1Dvy0696OYi3Hm9Lsx5YfWHcid6m2yearrPLLdFXvQxXaT6PN6uH8HAy3Dt4aEiBoK5aAJYgNAUBiRmaMQu9SAOJdbiS76tlDwuSCKtl5SOJOa9wflkTgu:1uur7G:OWgXVODCfoWhfwmFrrlTpl219oaq7k-cfSvuMFl6S-c', '2025-09-20 11:29:58.689543'),
+('586n80zjuqhr2hy0wzzpoyhq5x6hwxkb', '.eJxVjEsOwjAMBe-SNYqckDoNS_Y9Q2XHDi2gVOpnhbg7VOoCtm9m3sv0tK1Dvy0696OYi3Hm9Lsx5YfWHcid6m2yearrPLLdFXvQxXaT6PN6uH8HAy3Dt4aEiBoK5aAJYgNAUBiRmaMQu9SAOJdbiS76tlDwuSCKtl5SOJOa9wflkTgu:1v0JpL:O3gFWTqF6vsjtDZWypJ6mLD7VeoP7AKzS41Uf5K3gIU', '2025-10-05 13:10:03.246775'),
+('apon4e913w78d0lfoiskr71lh3l5wczw', '.eJxVjEsOwjAMBe-SNYqckDoNS_Y9Q2XHDi2gVOpnhbg7VOoCtm9m3sv0tK1Dvy0696OYi3Hm9Lsx5YfWHcid6m2yearrPLLdFXvQxXaT6PN6uH8HAy3Dt4aEiBoK5aAJYgNAUBiRmaMQu9SAOJdbiS76tlDwuSCKtl5SOJOa9wflkTgu:1uzc8u:3cZDiPnyyzwg9nO54W9CLWotndNAOPjvjo2hPFnHZtU', '2025-10-03 14:31:20.443016'),
 ('vm5guny96d3yf0m1oz6oeqquaq43p7qz', '.eJxVjEsOwjAMBe-SNYqckDoNS_Y9Q2XHDi2gVOpnhbg7VOoCtm9m3sv0tK1Dvy0696OYi3Hm9Lsx5YfWHcid6m2yearrPLLdFXvQxXaT6PN6uH8HAy3Dt4aEiBoK5aAJYgNAUBiRmaMQu9SAOJdbiS76tlDwuSCKtl5SOJOa9wflkTgu:1uuGHi:bvbp3ZBPAQMSLwqke4Qo-VzOftzearhwTIjV1d9OOxw', '2025-09-18 20:10:18.056843');
 
 -- --------------------------------------------------------
@@ -490,21 +507,42 @@ CREATE TABLE `main_session` (
   `focus` longtext NOT NULL,
   `goals` longtext NOT NULL,
   `duration` smallint(6) NOT NULL,
-  `course_id` bigint(20) NOT NULL
+  `course_id` bigint(20) NOT NULL,
+  `basic_level` tinyint(1) NOT NULL,
+  `session_type` varchar(3) NOT NULL,
+  `collapsed` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Схема на данните от таблица `main_session`
+--
+
+INSERT INTO `main_session` (`id`, `num`, `name`, `focus`, `goals`, `duration`, `course_id`, `basic_level`, `session_type`, `collapsed`) VALUES
+(1, 1, 'Първо занятие 1', 'някакъв фокус на занятието 2', 'основните цели на занятието 1', 3, 1, 1, 'НЗ', 1),
+(3, 2, '2', '4', '3', 2, 1, 1, 'НЗ', 1);
 
 -- --------------------------------------------------------
 
 --
--- Структура на таблица `main_sessiontopics`
+-- Структура на таблица `main_sessiontopic`
 --
 
-CREATE TABLE `main_sessiontopics` (
+CREATE TABLE `main_sessiontopic` (
   `id` bigint(20) NOT NULL,
   `description` varchar(200) NOT NULL,
   `session_id` bigint(20) NOT NULL,
   `topic_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Схема на данните от таблица `main_sessiontopic`
+--
+
+INSERT INTO `main_sessiontopic` (`id`, `description`, `session_id`, `topic_id`) VALUES
+(1, 'описание, касаещо точка **', 1, 1),
+(2, 'описание, касаещо точка ***', 1, 2),
+(3, 'sdas asdasd asda', 1, 4),
+(4, 'tertertert', 1, 8);
 
 -- --------------------------------------------------------
 
@@ -599,8 +637,20 @@ CREATE TABLE `main_topic` (
 
 INSERT INTO `main_topic` (`id`, `num`, `name`, `MoSCoW_cat`, `MoSCoW_rem`, `unit_id`) VALUES
 (1, 1, 'Основи на интернет. Мрежови протоколи. HTTP', 'M', 'Основополагащи понятия', 1),
-(2, 2, 'Видове HTTP заявки', 'M', '', 1),
-(3, 3, 'Клиент - сървър комуникация', 'M', '', 1);
+(2, 2, 'Видове HTTP заявки', 'S', '', 1),
+(3, 3, 'Клиент - сървър комуникация', 'C', '', 1),
+(4, 4, 'Практически проект: Реализиране на чат приложение в модел „Клиент-сървър”', 'W', '', 1),
+(5, 1, 'Работа с HTML. Основни тагове', 'M', '', 2),
+(6, 2, 'Работа със CSS. Селектори и основни правила', 'M', '', 2),
+(7, 1, 'Работа с MVC концепцията - модел, изглед, контролер', 'M', '', 3),
+(8, 3, 'Работа с инструментите за разработчици на съвременните уеб браузъри', 'M', '', 2),
+(9, 4, 'Създаване на формуляри', 'M', '', 2),
+(10, 5, 'Създаване на семантични страници', 'M', '', 2),
+(11, 6, 'Увод в JavaScript. Работа с обекти и събития', 'M', '', 2),
+(12, 7, 'Принципи на DOM. Манипулиране на DOM', 'M', '', 2),
+(13, 8, 'Практически проект: Реализиране на адаптивен фронт-енд за уеб сайт', 'M', '', 2),
+(14, 2, 'Комуникация на БД в уеб приложение', 'M', '', 3),
+(15, 3, 'Работа с ORM (обектно-релационно съпоставящи) системи', 'M', '', 3);
 
 -- --------------------------------------------------------
 
@@ -621,9 +671,9 @@ CREATE TABLE `main_unit` (
 --
 
 INSERT INTO `main_unit` (`id`, `num`, `name`, `subject_id`, `hours`) VALUES
-(1, 1, 'Въведение в Интернет, мрежови протоколи и модел „Клиент - Сървър”', 1, 2),
-(2, 2, 'Разработка на външен интерфейс (front-end) на уеб приложения', 1, 1),
-(3, 3, 'Разработка на сървърна часст (back-end) на уеб приложения', 1, 1);
+(1, 1, 'Въведение в Интернет, мрежови протоколи и модел „Клиент - Сървър”', 1, 6),
+(2, 2, 'Разработка на външен интерфейс (front-end) на уеб приложения', 1, 20),
+(3, 3, 'Разработка на сървърна часст (back-end) на уеб приложения', 1, 20);
 
 -- --------------------------------------------------------
 
@@ -782,9 +832,9 @@ ALTER TABLE `main_session`
   ADD KEY `main_session_course_id_ac5cca43_fk_main_subject_id` (`course_id`);
 
 --
--- Индекси за таблица `main_sessiontopics`
+-- Индекси за таблица `main_sessiontopic`
 --
-ALTER TABLE `main_sessiontopics`
+ALTER TABLE `main_sessiontopic`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `unique_session_topic` (`session_id`,`topic_id`),
   ADD KEY `main_sessiontopics_topic_id_63ff71a8_fk_main_topic_id` (`topic_id`);
@@ -855,7 +905,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
 --
 -- AUTO_INCREMENT for table `auth_user`
@@ -879,7 +929,7 @@ ALTER TABLE `auth_user_user_permissions`
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `django_content_type`
@@ -891,7 +941,7 @@ ALTER TABLE `django_content_type`
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `main_documents`
@@ -933,19 +983,19 @@ ALTER TABLE `main_school_classes`
 -- AUTO_INCREMENT for table `main_school_specialities`
 --
 ALTER TABLE `main_school_specialities`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `main_session`
 --
 ALTER TABLE `main_session`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `main_sessiontopics`
+-- AUTO_INCREMENT for table `main_sessiontopic`
 --
-ALTER TABLE `main_sessiontopics`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `main_sessiontopic`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `main_specialty`
@@ -969,7 +1019,7 @@ ALTER TABLE `main_subject`
 -- AUTO_INCREMENT for table `main_topic`
 --
 ALTER TABLE `main_topic`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `main_unit`
@@ -1048,9 +1098,9 @@ ALTER TABLE `main_session`
   ADD CONSTRAINT `main_session_course_id_ac5cca43_fk_main_subject_id` FOREIGN KEY (`course_id`) REFERENCES `main_subject` (`id`);
 
 --
--- Ограничения за таблица `main_sessiontopics`
+-- Ограничения за таблица `main_sessiontopic`
 --
-ALTER TABLE `main_sessiontopics`
+ALTER TABLE `main_sessiontopic`
   ADD CONSTRAINT `main_sessiontopics_session_id_c9a604e5_fk_main_session_id` FOREIGN KEY (`session_id`) REFERENCES `main_session` (`id`),
   ADD CONSTRAINT `main_sessiontopics_topic_id_63ff71a8_fk_main_topic_id` FOREIGN KEY (`topic_id`) REFERENCES `main_topic` (`id`);
 

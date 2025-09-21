@@ -165,3 +165,27 @@ class TopicWriteSerializer(serializers.ModelSerializer):
         model = Topic
         fields = ['id', 'num', 'name', 'MoSCoW_cat', 'MoSCoW_rem', 'unit']
         read_only_fields = ['id']
+
+class SessionTopicWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SessionTopic
+        fields = ['id', 'session', 'topic', 'description']
+
+class SessionTopicReadSerializer(serializers.ModelSerializer):
+    topic = TopicSerializer(read_only=True)
+
+    class Meta:
+        model = SessionTopic
+        fields = ['id', 'description', 'topic', 'session']
+
+class SessionWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Session
+        fields = ['id', 'course', 'num', 'name', 'focus', 'goals', 'duration', 'session_type', 'basic_level', 'collapsed']
+
+class SessionReadSerializer(serializers.ModelSerializer):
+    session_topics = SessionTopicReadSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Session
+        fields = ['id', 'course', 'num', 'name', 'focus', 'goals', 'duration', 'session_type', 'basic_level', 'collapsed', 'session_topics']
