@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from .models import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -54,7 +54,6 @@ def make_user_context(r):
         'specialty': specialty,
         'subject': subject,
     }
-    print(context)
     return context
 
 def welcome_view(request):
@@ -85,6 +84,17 @@ def course_sessions_view(request):
     context = make_user_context(request)
     return render(request, 'main/course_sessions.html', context)
 
+def course_lessons_view(request, session_id):
+    user = request.user
+    user_profile = user.userprofile
+    session = Session.objects.get(id=session_id)
+    user_profile.session = session
+    user_profile.save()
+
+    context = make_user_context(request)
+    context['session_id'] = session_id
+    return render(request, 'main/lesson.html', context)
+
 """ 
 ***************************************
                API
@@ -106,6 +116,21 @@ class UserDataAPIView(APIView):
             'subject': user_profile.subject.id if user_profile.subject else 0,
             }
         return Response(context)
+
+class UserDataExpandedAPIView(APIView):
+    def get(self, request):
+        user = request.user
+        up = user.userprofile  # имаш сигнал за auto-create
+
+        data = {
+            'user_id': user.id,
+            'user_nick': user.username,
+            'user_name': f'{user.first_name} {user.last_name}'.strip(),
+            'user_level_num': up.access_level,
+            'user_level_text': USER_LEVEL[up.access_level - 1][1] if up.access_level else '',
+            'profile': UserProfileExpandedSerializer(up).data,
+        }
+        return Response(data)
 
 # данни за определено по id училище
 class SchoolDetailAPIView(generics.RetrieveAPIView):
@@ -462,3 +487,63 @@ class SessionTopicListCreateView(generics.ListCreateAPIView):
 class SessionTopicRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = SessionTopic.objects.all().select_related('topic', 'session')
     serializer_class = SessionTopicWriteSerializer
+
+class SessionTopicsForSessionView(generics.ListAPIView):
+    serializer_class = SessionTopicReadSerializerDetailed
+
+    def get_queryset(self):
+        session_id = self.kwargs['session_id']
+        # Валидация, че сесията съществува (по желание)
+        get_object_or_404(Session, id=session_id)
+        return (
+            SessionTopic.objects
+            .filter(session_id=session_id)
+            .select_related('topic')   # за да е ефикасно „разгъването“
+            .order_by('topic__num', 'id')
+        )
+
+class SessionPointsForSessionView(generics.ListAPIView):
+    serializer_class = SessionPointSerializer
+
+    def get_queryset(self):
+        session_id = self.kwargs['session_id']
+        # Уверяваме се, че сесията съществува
+        get_object_or_404(Session, id=session_id)
+        return (
+            SessionPoint.objects
+            .filter(session_id=session_id)
+            .order_by('num', 'id')
+        )
+
+@api_view(['POST'])
+@csrf_exempt
+def session_point_upsert(request):
+    """
+    POST body: { id, session, num, name, description, duration, content }
+    - id == 0 или липсва -> create
+    - id > 0 -> update
+    """
+    point_id = request.data.get('id', 0) or 0
+    try:
+        point_id = int(point_id)
+    except (TypeError, ValueError):
+        return Response({'detail': 'Invalid id'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if point_id > 0:
+        instance = get_object_or_404(SessionPoint, id=point_id)
+        serializer = SessionPointSerializer(instance, data=request.data, partial=False)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        serializer = SessionPointSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['DELETE'])
+def session_point_delete(request, pk):
+    instance = get_object_or_404(SessionPoint, id=pk)
+    instance.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

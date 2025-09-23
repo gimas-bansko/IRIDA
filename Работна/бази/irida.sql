@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Време на генериране: 21 септ 2025 в 15:21
+-- Време на генериране: 24 септ 2025 в 01:28
 -- Версия на сървъра: 10.4.32-MariaDB
 -- Версия на PHP: 8.2.12
 
@@ -153,7 +153,11 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (89, 'Can add Занятие (тема)', 20, 'add_sessiontopic'),
 (90, 'Can change Занятие (тема)', 20, 'change_sessiontopic'),
 (91, 'Can delete Занятие (тема)', 20, 'delete_sessiontopic'),
-(92, 'Can view Занятие (тема)', 20, 'view_sessiontopic');
+(92, 'Can view Занятие (тема)', 20, 'view_sessiontopic'),
+(93, 'Can add Точка от плана', 21, 'add_sessionpoint'),
+(94, 'Can change Точка от плана', 21, 'change_sessionpoint'),
+(95, 'Can delete Точка от плана', 21, 'delete_sessionpoint'),
+(96, 'Can view Точка от плана', 21, 'view_sessionpoint');
 
 -- --------------------------------------------------------
 
@@ -180,7 +184,7 @@ CREATE TABLE `auth_user` (
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$600000$3iNEHTkQ6rkF6v46il2Dsp$wzYrjzST0uYMRVFUzIBCXDqFWdbed8vyiQCqZ39eB9o=', '2025-09-21 13:10:03.241606', 1, 'superadmin', 'Георги', 'Бориков', '', 1, 1, '2025-09-04 19:41:42.000000');
+(1, 'pbkdf2_sha256$600000$3iNEHTkQ6rkF6v46il2Dsp$wzYrjzST0uYMRVFUzIBCXDqFWdbed8vyiQCqZ39eB9o=', '2025-09-23 15:02:42.570142', 1, 'superadmin', 'Георги', 'Бориков', '', 1, 1, '2025-09-04 19:41:42.000000');
 
 -- --------------------------------------------------------
 
@@ -276,6 +280,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (17, 'main', 'objective'),
 (10, 'main', 'school'),
 (19, 'main', 'session'),
+(21, 'main', 'sessionpoint'),
 (20, 'main', 'sessiontopic'),
 (11, 'main', 'specialty'),
 (13, 'main', 'subject'),
@@ -337,7 +342,11 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (32, 'main', '0014_alter_session_options_session_unit_and_more', '2025-09-16 14:28:03.290262'),
 (33, 'main', '0015_remove_session_unit', '2025-09-17 16:08:48.433012'),
 (34, 'main', '0016_session_basic_level_session_session_type', '2025-09-18 13:50:08.751392'),
-(35, 'main', '0017_session_collapsed', '2025-09-18 19:10:46.911658');
+(35, 'main', '0017_session_collapsed', '2025-09-18 19:10:46.911658'),
+(36, 'main', '0018_userprofile_session', '2025-09-21 17:56:44.623974'),
+(37, 'main', '0019_sessiontopic_content_sessionpoint', '2025-09-22 07:05:32.947486'),
+(38, 'main', '0020_sessionpoint_num', '2025-09-22 16:02:28.888759'),
+(39, 'main', '0021_remove_sessiontopic_content_sessionpoint_content', '2025-09-22 16:07:03.457211');
 
 -- --------------------------------------------------------
 
@@ -356,8 +365,8 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
-('586n80zjuqhr2hy0wzzpoyhq5x6hwxkb', '.eJxVjEsOwjAMBe-SNYqckDoNS_Y9Q2XHDi2gVOpnhbg7VOoCtm9m3sv0tK1Dvy0696OYi3Hm9Lsx5YfWHcid6m2yearrPLLdFXvQxXaT6PN6uH8HAy3Dt4aEiBoK5aAJYgNAUBiRmaMQu9SAOJdbiS76tlDwuSCKtl5SOJOa9wflkTgu:1v0JpL:O3gFWTqF6vsjtDZWypJ6mLD7VeoP7AKzS41Uf5K3gIU', '2025-10-05 13:10:03.246775'),
-('apon4e913w78d0lfoiskr71lh3l5wczw', '.eJxVjEsOwjAMBe-SNYqckDoNS_Y9Q2XHDi2gVOpnhbg7VOoCtm9m3sv0tK1Dvy0696OYi3Hm9Lsx5YfWHcid6m2yearrPLLdFXvQxXaT6PN6uH8HAy3Dt4aEiBoK5aAJYgNAUBiRmaMQu9SAOJdbiS76tlDwuSCKtl5SOJOa9wflkTgu:1uzc8u:3cZDiPnyyzwg9nO54W9CLWotndNAOPjvjo2hPFnHZtU', '2025-10-03 14:31:20.443016'),
+('586n80zjuqhr2hy0wzzpoyhq5x6hwxkb', '.eJxVjEsOwjAMBe-SNYqckDoNS_Y9Q2XHDi2gVOpnhbg7VOoCtm9m3sv0tK1Dvy0696OYi3Hm9Lsx5YfWHcid6m2yearrPLLdFXvQxXaT6PN6uH8HAy3Dt4aEiBoK5aAJYgNAUBiRmaMQu9SAOJdbiS76tlDwuSCKtl5SOJOa9wflkTgu:1v0hil:XIZFAp4KRWEzrXNhKQPIHEN6eVplzGCCzQMdNHGZm7w', '2025-10-06 14:40:51.815905'),
+('apon4e913w78d0lfoiskr71lh3l5wczw', '.eJxVjEsOwjAMBe-SNYqckDoNS_Y9Q2XHDi2gVOpnhbg7VOoCtm9m3sv0tK1Dvy0696OYi3Hm9Lsx5YfWHcid6m2yearrPLLdFXvQxXaT6PN6uH8HAy3Dt4aEiBoK5aAJYgNAUBiRmaMQu9SAOJdbiS76tlDwuSCKtl5SOJOa9wflkTgu:1v14XS:MVy-6EuCeva_1dMCECw9B7tWZrzAoWXFqQcBBTXdo-0', '2025-10-07 15:02:42.579390'),
 ('vm5guny96d3yf0m1oz6oeqquaq43p7qz', '.eJxVjEsOwjAMBe-SNYqckDoNS_Y9Q2XHDi2gVOpnhbg7VOoCtm9m3sv0tK1Dvy0696OYi3Hm9Lsx5YfWHcid6m2yearrPLLdFXvQxXaT6PN6uH8HAy3Dt4aEiBoK5aAJYgNAUBiRmaMQu9SAOJdbiS76tlDwuSCKtl5SOJOa9wflkTgu:1uuGHi:bvbp3ZBPAQMSLwqke4Qo-VzOftzearhwTIjV1d9OOxw', '2025-09-18 20:10:18.056843');
 
 -- --------------------------------------------------------
@@ -520,6 +529,37 @@ CREATE TABLE `main_session` (
 INSERT INTO `main_session` (`id`, `num`, `name`, `focus`, `goals`, `duration`, `course_id`, `basic_level`, `session_type`, `collapsed`) VALUES
 (1, 1, 'Първо занятие 1', 'някакъв фокус на занятието 2', 'основните цели на занятието 1', 3, 1, 1, 'НЗ', 1),
 (3, 2, '2', '4', '3', 2, 1, 1, 'НЗ', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Структура на таблица `main_sessionpoint`
+--
+
+CREATE TABLE `main_sessionpoint` (
+  `id` bigint(20) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `description` varchar(200) NOT NULL,
+  `duration` smallint(6) NOT NULL,
+  `session_id` bigint(20) NOT NULL,
+  `num` smallint(6) NOT NULL,
+  `content` longtext NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Схема на данните от таблица `main_sessionpoint`
+--
+
+INSERT INTO `main_sessionpoint` (`id`, `name`, `description`, `duration`, `session_id`, `num`, `content`) VALUES
+(1, 'Въведение и мотивиране', 'Bridging-In', 5, 1, 1, '<ul style=\"list-style-type:disc;\"><li>Мотивационен въпрос („Как бихте описали автомобил като <i>обект</i>?“).</li><li>Кратък разговор/примери за „обекти“, които ученикът среща ежедневно.</li><li>Преговор – обясняване връзката между реалния свят и класове в програмирането.</li></ul>'),
+(2, 'Излагане на основните понятия', 'Stated Outcomes', 5, 1, 2, '<ul style=\"list-style-type:disc;\"><li>Ясно заявяване на целите:&nbsp;<ul style=\"list-style-type:circle;\"><li>Да могат да дефинират клас.</li><li>Да създават и използват полета, свойства и методи.</li><li>Да разграничават основните части на класа.</li></ul></li></ul>'),
+(3, 'Изложение и примери', 'Обяснение + Демо код', 15, 1, 3, '<ul style=\"list-style-type:disc;\"><li><strong>3.1. Дефиниране на клас</strong><ul style=\"list-style-type:circle;\"><li>Синтаксис, основни правила.</li><li>Пример клас: Car, Student, или друг лесно разбираем пример.</li><li>Практическа демонстрация – показване на кода в реално време.</li></ul></li><li><strong>3.2. Полета и свойства</strong><ul style=\"list-style-type:circle;\"><li>Дефиниция на полета (член-променливи).</li><li>Дефиниция на свойства (getters/setters, ако езикът ги поддържа).</li><li>Разлика между публично и частно поле.</li></ul></li><li><strong>3.3. Методи</strong><ul style=\"list-style-type:circle;\"><li>Какво е метод, как се създава и извиква.</li><li>Примери на прости методи – напр. PrintInfo(), IncreaseSpeed().</li></ul></li></ul>'),
+(4, 'Кратка дискусия и рефлексия', '', 7, 1, 4, '<ul style=\"list-style-type:disc;\"><li>Въпроси към класа: „Може ли да дадете друг пример за обект?“</li><li>Критични въпроси: „Защо свойствата са по-добри от директен достъп до полетата?“</li><li>Обратна връзка дали на всички е ясно.</li></ul>'),
+(5, 'Упражнение 1', 'Работа в клас – съвместно', 8, 1, 5, '<ul style=\"list-style-type:disc;\"><li>Заедно с учениците дефинирате клас (например Book) с няколко полета и методи.</li><li>Въвеждане на кода, моментално обяснение на всеки ред.</li></ul>'),
+(6, 'Самостоятелна практика', '(Практическа задача', 25, 1, 6, '<ul style=\"list-style-type:disc;\"><li><strong>Задача:</strong><br>„Създайте клас Animal с полета (например name, age), свойства за всяко поле, и поне два метода (напр. CelebrateBirthday, Speak).“</li><li>Упътване: Дава се шаблон/пример, ако някой има нужда.</li><li>Учителят обикаля и подпомага индивидуално.</li></ul>'),
+(7, 'Проверка и споделяне на резултати', '', 10, 1, 7, '<ul style=\"list-style-type:disc;\"><li>Доброволци представят своето решение на дъската/проектора.</li><li>Дискусия: Дали всички са използвали свойства? Кой метод изглежда по-оригинално?</li></ul>'),
+(8, 'Кратък тест/мини-викторина', 'Pre/Post Assessment', 7, 1, 8, '<ul style=\"list-style-type:disc;\"><li>3 бързи въпроса (на хартия или дигитално), например:&nbsp;<ul style=\"list-style-type:circle;\"><li>Как се дефинира клас?</li><li>Каква е разликата между поле и свойство?</li><li><span style=\"color:#082A75;\"><strong>Как се извиква метод?</strong></span></li></ul></li></ul>'),
+(9, 'Обобщение и Самостоятелнa работа', 'Summary & Homework', 8, 1, 9, '<ul style=\"list-style-type:disc;\"><li>Обобщаване на ключовите моменти:&nbsp;<ul style=\"list-style-type:circle;\"><li>Клас = шаблон, полета = данни, свойства = контрол, методи = действия.</li></ul></li><li>Домашна задача:&nbsp;<ul style=\"list-style-type:circle;\"><li>Подобно на упражнението в клас – направи клас Person с уникално име, възраст, и няколко метода по избор.</li></ul></li></ul>');
 
 -- --------------------------------------------------------
 
@@ -690,15 +730,16 @@ CREATE TABLE `main_userprofile` (
   `speciality_id` bigint(20) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   `grade_section_id` bigint(20) DEFAULT NULL,
-  `subject_id` bigint(20) DEFAULT NULL
+  `subject_id` bigint(20) DEFAULT NULL,
+  `session_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Схема на данните от таблица `main_userprofile`
 --
 
-INSERT INTO `main_userprofile` (`id`, `gender`, `access_level`, `session_screen`, `school_id`, `speciality_id`, `user_id`, `grade_section_id`, `subject_id`) VALUES
-(1, 1, 1, 1, 1, 1, 1, 1, 1);
+INSERT INTO `main_userprofile` (`id`, `gender`, `access_level`, `session_screen`, `school_id`, `speciality_id`, `user_id`, `grade_section_id`, `subject_id`, `session_id`) VALUES
+(1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
 --
 -- Indexes for dumped tables
@@ -832,6 +873,13 @@ ALTER TABLE `main_session`
   ADD KEY `main_session_course_id_ac5cca43_fk_main_subject_id` (`course_id`);
 
 --
+-- Индекси за таблица `main_sessionpoint`
+--
+ALTER TABLE `main_sessionpoint`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `main_sessionpoint_session_id_27aa5fef_fk_main_session_id` (`session_id`);
+
+--
 -- Индекси за таблица `main_sessiontopic`
 --
 ALTER TABLE `main_sessiontopic`
@@ -883,7 +931,8 @@ ALTER TABLE `main_userprofile`
   ADD KEY `main_userprofile_school_id_74f42cf3_fk_main_school_id` (`school_id`),
   ADD KEY `main_userprofile_speciality_id_475d0b2d_fk_main_specialty_id` (`speciality_id`),
   ADD KEY `main_userprofile_grade_section_id_45484bc6_fk_main_klass_id` (`grade_section_id`),
-  ADD KEY `main_userprofile_subject_id_5a0cbf6b_fk_main_subject_id` (`subject_id`);
+  ADD KEY `main_userprofile_subject_id_5a0cbf6b_fk_main_subject_id` (`subject_id`),
+  ADD KEY `main_userprofile_session_id_c9e7aff8_fk_main_session_id` (`session_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -905,7 +954,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT for table `auth_user`
@@ -935,13 +984,13 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `main_documents`
@@ -990,6 +1039,12 @@ ALTER TABLE `main_school_specialities`
 --
 ALTER TABLE `main_session`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `main_sessionpoint`
+--
+ALTER TABLE `main_sessionpoint`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `main_sessiontopic`
@@ -1098,6 +1153,12 @@ ALTER TABLE `main_session`
   ADD CONSTRAINT `main_session_course_id_ac5cca43_fk_main_subject_id` FOREIGN KEY (`course_id`) REFERENCES `main_subject` (`id`);
 
 --
+-- Ограничения за таблица `main_sessionpoint`
+--
+ALTER TABLE `main_sessionpoint`
+  ADD CONSTRAINT `main_sessionpoint_session_id_27aa5fef_fk_main_session_id` FOREIGN KEY (`session_id`) REFERENCES `main_session` (`id`);
+
+--
 -- Ограничения за таблица `main_sessiontopic`
 --
 ALTER TABLE `main_sessiontopic`
@@ -1135,6 +1196,7 @@ ALTER TABLE `main_unit`
 ALTER TABLE `main_userprofile`
   ADD CONSTRAINT `main_userprofile_grade_section_id_45484bc6_fk_main_klass_id` FOREIGN KEY (`grade_section_id`) REFERENCES `main_klass` (`id`),
   ADD CONSTRAINT `main_userprofile_school_id_74f42cf3_fk_main_school_id` FOREIGN KEY (`school_id`) REFERENCES `main_school` (`id`),
+  ADD CONSTRAINT `main_userprofile_session_id_c9e7aff8_fk_main_session_id` FOREIGN KEY (`session_id`) REFERENCES `main_session` (`id`),
   ADD CONSTRAINT `main_userprofile_speciality_id_475d0b2d_fk_main_specialty_id` FOREIGN KEY (`speciality_id`) REFERENCES `main_specialty` (`id`),
   ADD CONSTRAINT `main_userprofile_subject_id_5a0cbf6b_fk_main_subject_id` FOREIGN KEY (`subject_id`) REFERENCES `main_subject` (`id`),
   ADD CONSTRAINT `main_userprofile_user_id_15c416f4_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);

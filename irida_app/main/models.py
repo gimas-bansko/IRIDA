@@ -110,6 +110,26 @@ class SessionTopic(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['session', 'topic'], name='unique_session_topic')
         ]
+
+# Занятие - точки от плана
+class SessionPoint(models.Model):
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='session_points', verbose_name='Занятие')
+    num = models.SmallIntegerField('Занятие №', default=1, validators=[ MinValueValidator(1)])
+    name = models.CharField('Текст(име)', max_length=200, blank=True, default='')
+    description = models.CharField('Описание', max_length=200, blank=True, default='')
+    duration = models.SmallIntegerField('Продължителност (мин.)', default=1,
+                                        validators=[MinValueValidator(1), MaxValueValidator(180)])
+    content = models.TextField('Съдържание', default='', blank=True, help_text='Съдържание на точката (html)')
+
+    def __str__(self):
+        return f'{self.id} {self.name}'
+
+    class Meta:
+        verbose_name = 'Точка от плана'
+        verbose_name_plural = 'Точки от плана'
+
+
+
 """
 ***************************************
             Клас
@@ -216,6 +236,8 @@ class UserProfile(models.Model):
                                    help_text='специалност по подразбиране', null=True, blank=True)
     subject = models.ForeignKey(Subject, verbose_name='Предмет', on_delete=models.CASCADE, related_name='user_subject',
                                    help_text='учебен предмет по подразбиране', null=True, blank=True)
+    session = models.ForeignKey(Session, verbose_name='Занятие', on_delete=models.CASCADE, related_name='user_session',
+                                   help_text='занятие по подразбиране', null=True, blank=True)
 
     def __str__(self):
         return f'Потребител #{self.user.id}: {self.user.first_name} {self.user.last_name}'

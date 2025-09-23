@@ -189,3 +189,56 @@ class SessionReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
         fields = ['id', 'course', 'num', 'name', 'focus', 'goals', 'duration', 'session_type', 'basic_level', 'collapsed', 'session_topics']
+
+class SchoolMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = School
+        fields = ('id', 'short_name', 'full_name', 'city', 'logo')
+
+class SpecialtyMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Specialty
+        fields = ('id', 'specialty_num', 'specialty_name', 'level')
+
+class KlassMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Klass
+        fields = ('id', 'grade', 'section')
+
+class SubjectMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = ('id', 'name', 'grade', 'subject_type')
+
+class SessionMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Session
+        fields = ('id', 'num', 'name', 'focus', 'goals', 'duration', 'session_type', 'basic_level')
+
+class UserProfileExpandedSerializer(serializers.ModelSerializer):
+    school = SchoolMiniSerializer(read_only=True)
+    speciality = SpecialtyMiniSerializer(read_only=True)
+    grade_section = KlassMiniSerializer(read_only=True)
+    subject = SubjectMiniSerializer(read_only=True)
+    session = SessionMiniSerializer(read_only=True)
+
+    class Meta:
+        model = UserProfile
+        fields = (
+            'access_level', 'session_screen',
+            'school', 'speciality', 'grade_section', 'subject', 'session',
+        )
+
+class SessionTopicReadSerializerDetailed(serializers.ModelSerializer):
+    topic = TopicSerializer(read_only=True)
+
+    class Meta:
+        model = SessionTopic
+        fields = ['id', 'description', 'topic', 'session']
+
+# Занятие - точки от плана
+class SessionPointSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SessionPoint
+        fields = ['id','session', 'num',  'name', 'description', 'duration', 'content']
+

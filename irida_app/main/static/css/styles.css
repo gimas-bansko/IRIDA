@@ -20881,3 +20881,5 @@ option.moscow-m { color: #12B76A; }   /* Must */
 option.moscow-s { color: #C8C12A; }   /* Should */
 option.moscow-c { color: #F79009; }   /* Could */
 option.moscow-w { color: #F04438; }      /* Won't */
+
+.ck-editor__editable_inline { min-height: 200px; }

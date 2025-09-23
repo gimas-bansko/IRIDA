@@ -13,9 +13,11 @@ urlpatterns = [
     path('goals', course_goals_view, name='goals_list'),
     path('units', course_units_view, name='units_list'),
     path('sessions', course_sessions_view, name='sessions_list'),
+    path('lesson/<int:session_id>/', course_lessons_view, name='lesson_details'),
 
     # API
     path('api/context/', UserDataAPIView.as_view()),
+    path('api/context/expanded/', UserDataExpandedAPIView.as_view()),
 
     path('api/schools/<int:pk>/', SchoolDetailAPIView.as_view(), name='school-detail'),
     path('api/schools/<int:school_id>/specialties/', SchoolSpecialtiesView.as_view(), name='school-specialties'),
@@ -45,4 +47,8 @@ urlpatterns = [
     # SessionTopics
     path('api/session-topics/', SessionTopicListCreateView.as_view(), name='session-topic-list-create'),
     path('api/session-topics/<int:pk>/', SessionTopicRetrieveUpdateDestroyView.as_view(), name='session-topic-detail'),
+    path('api/sessions/<int:session_id>/topics/', SessionTopicsForSessionView.as_view(), name='session-topics-for-session'),
+    path('api/sessions/<int:session_id>/points/', SessionPointsForSessionView.as_view(), name='session-points-for-session'),
+    path('api/session-points/upsert/', session_point_upsert, name='session-point-upsert'),
+    path('api/session-points/<int:pk>/', session_point_delete, name='session-point-delete'),
 ]

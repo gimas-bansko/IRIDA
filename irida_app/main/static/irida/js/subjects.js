@@ -605,6 +605,9 @@ const App = {
                 alert('Грешка при изтриване на занятие.');
             }
         },
+        goToLesson(sessionId) {
+            window.location.href = `/lesson/${sessionId}/`;
+        },
     },
     created: function(){
         this.status = 0
