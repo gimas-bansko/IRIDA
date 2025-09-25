@@ -198,18 +198,18 @@
 
                         <!-- Секция "Дидактически материали" -->
                         <li class="slide__category"><span class="category-name">Дидактически<br>материали</span></li>
-                        <!-- Теоретически бележки и Примери -->
+                        <!-- Теоретически бележки -->
                         <li class="slide">
-                            <a class="side-menu__item" @click="menu_item='Бележки и примери'">
+                            <a class="side-menu__item" @click="menu_item='Теоретически бележки'">
                                 <i class="bi bi-check2-circle side-menu__icon"></i>
-                                <span class="side-menu__label">Бележки и<br> примери</span>
+                                <span class="side-menu__label">Теоретически<br>бележки</span>
                             </a>
                         </li>
                         <!-- Примери и задачи -->
                         <li class="slide">
-                            <a class="side-menu__item" @click="menu_item='Задачи'">
+                            <a class="side-menu__item" @click="menu_item='Примери и задачи'">
                                 <i class="bi bi-check2-circle side-menu__icon"></i>
-                                <span class="side-menu__label">Задачи</span>
+                                <span class="side-menu__label">Примери<br>и задачи</span>
                             </a>
                         </li>
                         <!-- Тестове -->
@@ -266,8 +266,7 @@
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
                      v-if="menu_item==='План - детайли'">
                     <div class="card-1 custom-card">
-                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4"
-                             style="padding-right: 28px;">
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
                             <div class="card-title ">
                                 <div>Детайлен план на занятие [[session.num]]</div>
                                 <div class="row g-1 mt-0">
@@ -403,7 +402,7 @@
                     <div class="card-1 custom-card">
                         <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
                             <div class="card-title ">
-                                <div>Tайминг на занятие [[session.num]]</div>
+                                <div>Tайминг на занятие 1</div>
                                 <div class="fs-12 text-muted">Тема : [[session.name]]</div>
                             </div>
                         </div>
@@ -450,135 +449,69 @@
                         </div>
                     </div>
                 </div>
-                <!-- Бележки -->
+                <!-- Теоретически бележки -->
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
-                     v-if="menu_item==='Бележки и примери'">
+                     v-if="menu_item==='Теоретически бележки'">
                     <div class="card-1 custom-card">
-                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4"
-                             style="padding-right: 28px;">
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
                             <div class="card-title ">
-                                <div>Теоретични бележки и примери към занятие [[session.num]]</div>
+                                <div>Теоретически бележки към занятие 1</div>
                                 <div class="fs-12 text-muted">Тема : [[session.name]]</div>
                             </div>
+                            <div class="d-flex gap-12 align-items-center">
+                                <button type="button" class="btn-1 btn btn-success">
+                                    <span class="d-flex align-items-center gap-6">
+                                        <i class="bi bi-plus-circle"></i>
+                                        <span class="white">Добави точка в плана</span>
+                                    </span>
+                                </button>
+                            </div>
                         </div>
-                        <div class="card-body" v-show="!noteEditMode">
-                            <ul class="list-unstyled projects-items-danger-list" v-if="notes.length===0">
+                        <div class="card-body">
+                            <ul class="list-unstyled projects-items-danger-list">
                                 <li>
                                     <div class="d-flex align-items-center gap-3">
                                         <div class="flex-fill">
                                             <span class="d-block fw-normal fs-16 custom-black">
-                                                Няма бележки и примери</span>
+                                                Не е намерен план на занятието</span>
                                         </div>
                                     </div>
                                 </li>
                             </ul>
-                            <div v-else class="mb-3" v-for="n in notes" :key="n.id">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <span class="badge bg-secondary me-2">[[ n.num ]]</span>
-                                        <strong>[[ n.name ]]</strong>
-                                    </div>
-                                    <div class="d-flex gap-2">
-                                        <button class="btn btn-info btn-sm" @click="deleteNote(n)">Премахни</button>
-                                        <button class="btn btn-success btn-sm" @click="startEditNote(n)">Промени</button>
-                                    </div>
-                                </div>
-                                <div class="mt-2 fs-12" v-if="!noteEditMode">
-                                    <div v-html="sanitize(n.content)"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer" style="padding-right: 15px;" v-show="!noteEditMode">
-                            <div class="d-flex gap-12 justify-content-between">
-                                <div></div>
-                                <button type="button" class="btn btn-success btn-sm" @click="startCreateNote()">
-                                  <i class="bi bi-plus-circle"></i> Нова бележка
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Редактор на бележка -->
-                        <div class="card mt-3"  v-show="noteEditMode">
-                            <div class="card-header">
-                                <strong>[[ noteForm.id ? 'Редактиране на бележка/пример' : 'Нова бележка/пример' ]]</strong>
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    <div class="col-2">
-                                        <label class="form-label">№</label>
-                                        <input type="number" class="form-control" v-model.number="noteForm.num" min="1">
-                                    </div>
-                                    <div class="col-10">
-                                        <label class="form-label">Име</label>
-                                        <input type="text" class="form-control" v-model="noteForm.name">
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label">Съдържание</label>
-                                        <textarea id="noteContentEditor" class="form-control" rows="8"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer d-flex justify-content-end gap-2" v-show="noteEditMode">
-                                <button class="btn btn-secondary" @click="async ()=>{ await unmountNoteEditor(); noteEditMode=false; }">Отказ</button>
-                                <button class="btn btn-primary" @click="saveNote">Запази</button>
-                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- Задачи -->
-                <div class="card mt-4" v-if="menu_item==='Задачи'">
-                    <div class="card-header d-flex justify-content-between">
-                        <strong>Задачи</strong>
-                        <button type="button" class="btn btn-success btn-sm" @click="startCreateTask()">
-                            <i class="bi bi-plus-circle"></i> Нова задача
-                        </button>
-                    </div>
-                    <div class="card-body" v-show="!taskEditMode">
-                        <div v-if="tasks.length===0" class="text-muted">Няма задачи</div>
-                        <div v-else class="mb-3" v-for="t in tasks" :key="t.id">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="badge bg-secondary me-2">[[ t.num ]]</span>
-                                    <strong>[[ t.name ]]</strong>
-                                </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-info btn-sm" @click="deleteTask(t)">Премахни</button>
-                                    <button class="btn btn-success btn-sm" @click="startEditTask(t)">Промени</button>
-                                </div>
+                <!-- Примери и задачи -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
+                     v-if="menu_item==='Примери и задачи'">
+                    <div class="card-1 custom-card">
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
+                            <div class="card-title ">
+                                <div>Примери и задачи към занятие 1</div>
+                                <div class="fs-12 text-muted">Тема : [[session.name]]</div>
                             </div>
-                            <div class="mt-2 fs-12">
-                                <div class="fw-bold">Условие:</div>
-                                <div v-html="sanitize(t.condition)"></div>
-                                <div class="fw-bold mt-2">Отговор:</div>
-                                <div v-html="sanitize(t.answer)"></div>
+                            <div class="d-flex gap-12 align-items-center">
+                                <button type="button" class="btn-1 btn btn-success">
+                                    <span class="d-flex align-items-center gap-6">
+                                        <i class="bi bi-plus-circle"></i>
+                                        <span class="white">Добави точка в плана</span>
+                                    </span>
+                                </button>
                             </div>
                         </div>
-                    </div>
-                    <!-- Редактор на задача -->
-                    <div class="card-body" v-show="taskEditMode">
-                        <div class="row g-3">
-                            <div class="col-2">
-                                <label class="form-label">№</label>
-                                <input type="number" class="form-control" v-model.number="taskForm.num" min="1">
-                            </div>
-                            <div class="col-10">
-                                <label class="form-label">Име</label>
-                                <input type="text" class="form-control" v-model="taskForm.name">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Условие</label>
-                                <textarea id="taskConditionEditor" class="form-control" rows="6"></textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Отговор</label>
-                                <textarea id="taskAnswerEditor" class="form-control" rows="6"></textarea>
-                            </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled projects-items-danger-list">
+                                <li>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal fs-16 custom-black">
+                                                Не е намерен план на занятието</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="card-footer d-flex justify-content-end gap-2" v-show="taskEditMode">
-                    <button class="btn btn-secondary" @click="async ()=>{ await unmountTaskEditors(); taskEditMode=false; }">Отказ</button>
-                    <button class="btn btn-primary" @click="saveTask">Запази</button>
-                  </div>
                 </div>
                 <!-- Тестове -->
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"

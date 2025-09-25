@@ -51,4 +51,18 @@ urlpatterns = [
     path('api/sessions/<int:session_id>/points/', SessionPointsForSessionView.as_view(), name='session-points-for-session'),
     path('api/session-points/upsert/', session_point_upsert, name='session-point-upsert'),
     path('api/session-points/<int:pk>/', session_point_delete, name='session-point-delete'),
+
+    # SessionNotes
+    path('api/sessions/<int:session_id>/notes/', SessionNotesForSessionView.as_view(),
+         name='session-notes-for-session'),
+    path('api/session-notes/upsert/', session_note_upsert, name='session-note-upsert'),
+    path('api/session-notes/<int:pk>/', session_note_delete, name='session-note-delete'),
+
+    # SessionTasks
+    path('api/sessions/<int:session_id>/tasks/', SessionTasksForSessionView.as_view(),
+         name='session-tasks-for-session'),
+    path('api/session-tasks/upsert/', session_task_upsert, name='session-task-upsert'),
+    path('api/session-tasks/<int:pk>/', session_task_delete, name='session-task-delete'),
+
+    path('api/uploads/ckeditor-image/', ckeditor_image_upload, name='ckeditor-image-upload'),
 ]

@@ -242,3 +242,14 @@ class SessionPointSerializer(serializers.ModelSerializer):
         model = SessionPoint
         fields = ['id','session', 'num',  'name', 'description', 'duration', 'content']
 
+
+class SessionNoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SessionNote
+        fields = ['id', 'session', 'point', 'num', 'name', 'content']
+
+
+class SessionTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SessionTask
+        fields = ['id', 'session', 'point', 'num', 'name', 'condition', 'answer']

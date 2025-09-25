@@ -118,7 +118,7 @@ class SessionPoint(models.Model):
     name = models.CharField('Текст(име)', max_length=200, blank=True, default='')
     description = models.CharField('Описание', max_length=200, blank=True, default='')
     duration = models.SmallIntegerField('Продължителност (мин.)', default=1,
-                                        validators=[MinValueValidator(1), MaxValueValidator(180)])
+                                        validators=[MinValueValidator(1), MaxValueValidator(270)])
     content = models.TextField('Съдържание', default='', blank=True, help_text='Съдържание на точката (html)')
 
     def __str__(self):
@@ -128,6 +128,40 @@ class SessionPoint(models.Model):
         verbose_name = 'Точка от плана'
         verbose_name_plural = 'Точки от плана'
 
+
+# Занятие - бележки към точка от план
+class SessionNote(models.Model):
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='session_notes', verbose_name='Занятие')
+    point = models.ForeignKey(SessionPoint, verbose_name='Точка от плана на урока', on_delete=models.SET_NULL,
+                              null=True, blank=True,related_name='point_notes')
+    num = models.SmallIntegerField('Бележка №', default=1, validators=[MinValueValidator(1)])
+    name = models.CharField('Текст(име)', max_length=200, blank=True, default='')
+    content = models.TextField('Съдържание', default='', blank=True, help_text='Съдържание на точката (html)')
+
+    def __str__(self):
+        return f'{self.id} {self.name}'
+
+    class Meta:
+        verbose_name = 'Бележка към точка от план'
+        verbose_name_plural = 'Бележки към точка от план'
+
+
+# Занятие - Задачи към точка от план
+class SessionTask(models.Model):
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='session_tasks', verbose_name='Занятие')
+    point = models.ForeignKey(SessionPoint, verbose_name='Задача към точка от план', on_delete=models.SET_NULL,
+                              null=True, blank=True,related_name='point_tasks')
+    num = models.SmallIntegerField('Бележка №', default=1, validators=[MinValueValidator(1)])
+    name = models.CharField('Текст(име)', max_length=200, blank=True, default='')
+    condition = models.TextField('Условие', default='', blank=True, help_text='Условие на задачата (html)')
+    answer = models.TextField('Орговор', default='', blank=True, help_text='Отговор на задачата (html)')
+
+    def __str__(self):
+        return f'{self.id} {self.name}'
+
+    class Meta:
+        verbose_name = 'Задача към точка от план'
+        verbose_name_plural = 'Задачи към точка от план'
 
 
 """

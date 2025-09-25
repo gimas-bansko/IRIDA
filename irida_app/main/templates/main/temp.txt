@@ -1,0 +1,134 @@
+                <!-- План - детайли -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
+                     v-if="menu_item==='План - детайли'">
+                    <div class="card-1 custom-card">
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
+                            <div class="card-title ">
+                                <div>Детайлен план на занятие [[session.num]]</div>
+                                <div class="row g-1 mt-0">
+                                    <div class="col-md-2 fs-12 text-muted text-end">Тема :</div>
+                                    <div class="col-md-10 fs-12">[[session.name]]</div>
+                                    <div class="col-md-2 fs-12 text-muted text-end">Продължителност :</div>
+                                    <div class="col-md-10 fs-12">[[session.duration]] <span v-if="session.duration===1">час</span><span v-else>часа</span></div>
+                                    <div class="col-md-2 fs-12 text-muted text-end">Тип на занятието :</div>
+                                    <div class="col-md-10 fs-12">[[sessionType(session.session_type)]]</div>
+                                    <div class="col-md-2 fs-12 text-muted text-end">Включени теми :</div>
+                                    <div class="col-md-10 fs-12">
+                                        <ul>
+                                            <li v-for="t in topics">
+                                                <div>[[t.topic.name]] <span class="text-muted">([[ moscowTextFor(t.topic) ]])</span></div>
+                                                <div class="fs-11">[[t.description]]</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-2 fs-12 text-muted text-end">Очаквани резултати :</div>
+                                    <div class="col-md-10 fs-12">[[session.goals]]</div>
+                                    <div class="col-md-2 fs-12 text-muted text-end">Акценти :</div>
+                                    <div class="col-md-10 fs-12">[[session.focus]]</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body" v-show="!editMode">
+                            <!-- Когато няма точки -->
+                            <ul class="list-unstyled projects-items-danger-list" v-if="points.length===0">
+                                <li>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal fs-16 custom-black">
+                                                Не е намерен план на занятието</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <!-- Списък на точки -->
+                            <div v-else>
+                                <div class="mb-3" v-for="p in points" :key="p.id">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge bg-secondary me-2">[[ p.num ]]</span>
+                                            <strong>[[ p.name ]]</strong>
+                                            <small class="text-muted ms-2"> <span v-if="p.description">([[ p.description ]])</span> - [[ p.duration ]] мин.</small>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-info label-btn btn-sm fs-12 dropdown-toggle" type="button" id="dropdownMenu1"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="ri-close-line label-btn-icon me-2"></i>
+                                                Премахни
+                                            </button>&nbsp;&nbsp;
+                                            <div class="dropdown-menu">
+                                                <div class="alert alert-solid-info alert-dismissible fade show">
+                                                    <div class="text-center mb-3 mt-1">
+                                                        Моля, потвърдете изтриване на тази точка от плана на занятието
+                                                    </div>
+                                                    <div class="text-center mb-3 mt-1">
+                                                        <button class="btn btn-outline-secondary btn-lg shadow-lg fs-16" @click="">
+                                                            Не</button>
+                                                        &nbsp; &nbsp; &nbsp;
+                                                        <button class="btn btn-outline-success btn-wave fs-16" @click="deletePoint(p)">
+                                                            Да</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-success btn-sm fs-12 label-btn" @click="startEditPoint(p)">
+                                                <i class="bi bi-pen label-btn-icon me-2"></i>
+                                                Промени
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Показване на съдържанието като форматиран HTML -->
+                                    <div class="mt-2 fs-12" v-if="!isEditing(p.id)">
+                                    <!-- Почистваме HTML с DOMPurify преди да го инжектираме -->
+                                        <div v-html="sanitize(p.content)"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer" style="padding-right: 15px;"  v-show="!editMode">
+                            <div class="d-flex gap-12 justify-content-between">
+                                <div></div>
+                                <button type="button" class="btn-1 btn btn-success" @click="startCreatePoint">
+                                    <span class="d-flex align-items-center gap-6">
+                                       <i class="bi bi-plus-circle"></i>
+                                        <span class="white">Добави точка в плана</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Редактор (общ контейнер за добавяне/редактиране). Показва се само в editMode -->
+                        <div class="card mt-3"  v-show="editMode">
+                            <div class="card-header">
+                                <strong>[[ editForm.id ? 'Редактиране на точка' : 'Нова точка' ]]</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-2">
+                                        <label class="form-label">№</label>
+                                        <input class="form-control" type="number" v-model.number="editForm.num" min="1" />
+                                    </div>
+                                    <div class="col-10">
+                                        <label class="form-label">Наименование на точката</label>
+                                        <input class="form-control" type="text" v-model="editForm.name" />
+                                    </div>
+                                    <div class="col-9">
+                                        <label class="form-label">Забележка/коментар</label>
+                                        <input class="form-control" type="text" v-model="editForm.description" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label class="form-label">Продължителност (мин.)</label>
+                                        <input class="form-control" type="number" v-model.number="editForm.duration" min="1" max="180" />
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Съдържание</label>
+                                        <!-- textarea, върху която качваме CKEditor -->
+                                        <textarea id="pointContentEditor" class="form-control" rows="8"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-end gap-2">
+                                <button class="btn btn-secondary" @click="cancelEdit">Отказ</button>
+                                <button class="btn btn-primary" @click="savePoint">Запази</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>

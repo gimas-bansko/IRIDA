@@ -13,6 +13,9 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Prefetch
 
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
 
 @csrf_protect
 def login_view(request):
@@ -547,3 +550,109 @@ def session_point_delete(request, pk):
     instance = get_object_or_404(SessionPoint, id=pk)
     instance.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+# views.py
+
+class SessionNotesForSessionView(generics.ListAPIView):
+    serializer_class = SessionNoteSerializer
+
+    def get_queryset(self):
+        session_id = self.kwargs['session_id']
+        get_object_or_404(Session, id=session_id)
+        return SessionNote.objects.filter(session_id=session_id).order_by('num', 'id')
+
+
+@api_view(['POST'])
+@csrf_exempt
+def session_note_upsert(request):
+    """
+    POST body: { id, session, point, num, name, content }
+    id == 0/missing -> create; id > 0 -> update
+    """
+    note_id = request.data.get('id', 0) or 0
+    try:
+        note_id = int(note_id)
+    except (TypeError, ValueError):
+        return Response({'detail': 'Invalid id'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if note_id > 0:
+        instance = get_object_or_404(SessionNote, id=note_id)
+        serializer = SessionNoteSerializer(instance, data=request.data, partial=False)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        serializer = SessionNoteSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['DELETE'])
+def session_note_delete(request, pk):
+    instance = get_object_or_404(SessionNote, id=pk)
+    instance.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# -------- Tasks --------
+
+class SessionTasksForSessionView(generics.ListAPIView):
+    serializer_class = SessionTaskSerializer
+
+    def get_queryset(self):
+        session_id = self.kwargs['session_id']
+        get_object_or_404(Session, id=session_id)
+        return SessionTask.objects.filter(session_id=session_id).order_by('num', 'id')
+
+
+@api_view(['POST'])
+@csrf_exempt
+def session_task_upsert(request):
+    """
+    POST body: { id, session, point, num, name, condition, answer }
+    id == 0/missing -> create; id > 0 -> update
+    """
+    task_id = request.data.get('id', 0) or 0
+    try:
+        task_id = int(task_id)
+    except (TypeError, ValueError):
+        return Response({'detail': 'Invalid id'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if task_id > 0:
+        instance = get_object_or_404(SessionTask, id=task_id)
+        serializer = SessionTaskSerializer(instance, data=request.data, partial=False)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        serializer = SessionTaskSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['DELETE'])
+def session_task_delete(request, pk):
+    instance = get_object_or_404(SessionTask, id=pk)
+    instance.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+@csrf_exempt
+def ckeditor_image_upload(request):
+    """
+    Expects: multipart/form-data with 'upload' field (CKEditor default)
+    Returns: { "url": "<absolute-or-relative-url>" }
+    """
+    f = request.FILES.get('upload')
+    if not f:
+        return Response({'error': 'No file'}, status=400)
+
+    # записваме файла
+    path = default_storage.save(f"session_pics/{f.name}", ContentFile(f.read()))
+    url = default_storage.url(path)  # напр. /media/session_pics/...
+
+    # CKEditor expects { url }
+    return Response({'url': url}, status=201)

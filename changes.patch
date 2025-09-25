@@ -1,0 +1,24 @@
+*** Begin Patch
+*** Update File: main/serializers.py
+@@
+-from rest_framework import serializers
+-from .models import Session, SessionPoint, Topic
++from rest_framework import serializers
++from .models import Session, SessionPoint, Topic
++from .models import SessionNote, SessionTask
+@@
+ class SessionPointSerializer(serializers.ModelSerializer):
+     class Meta:
+         model = SessionPoint
+         fields = ['id','session', 'num',  'name', 'description', 'duration', 'content']
++
++class SessionNoteSerializer(serializers.ModelSerializer):
++    class Meta:
++        model = SessionNote
++        fields = ['id', 'session', 'point', 'num', 'name', 'content']
++
++class SessionTaskSerializer(serializers.ModelSerializer):
++    class Meta:
++        model = SessionTask
++        fields = ['id', 'session', 'point', 'num', 'name', 'condition', 'answer']
+*** End Patch

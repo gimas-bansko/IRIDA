@@ -1,5 +1,14 @@
-# Типове въпроси
+from django.utils import timezone
+import os
 
+def session_image_upload_path(filename: str) -> str:
+    name, ext = os.path.splitext(filename)
+    ts = timezone.now().strftime('%Y%m%d_%H%M%S_%f')
+    safe_ext = (ext or '').lower()
+    return f"session_pics/{ts}{safe_ext}"
+
+
+# Типове въпроси
 TYPE1 = 1
 TYPE2 = 2
 TYPE3 = 3
