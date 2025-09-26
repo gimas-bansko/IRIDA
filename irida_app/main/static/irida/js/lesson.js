@@ -405,8 +405,9 @@ const App = {
                         'DocumentOutline','DocumentOutlineUI',
                         'AIAssistant','MultiLevelList','TableOfContents','PasteFromOfficeEnhanced',
                     ],
-                    image: { insert: { integrations: [ 'insertImageViaUrl' ] } },
                     /*
+                    image: { insert: { integrations: [ 'insertImageViaUrl' ] } },
+*/
                     image: {
                         insert: { integrations: [ 'uploadImage', 'insertImageViaUrl' ] },
                         toolbar: [
@@ -414,7 +415,6 @@ const App = {
                             '|', 'toggleImageCaption', 'imageTextAlternative'
                         ]
                     },
-*/
                     simpleUpload: {
                         uploadUrl: '/api/uploads/ckeditor-image/',
                         withCredentials: false,
