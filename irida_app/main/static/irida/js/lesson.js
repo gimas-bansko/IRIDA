@@ -35,7 +35,7 @@ const App = {
             // note edit
             noteEditMode: false,
             noteForm: { id: 0, session: null, point: null, num: 1, name: '', content: '' },
-            _noteEditor: null,
+            /* _noteEditor: null, */
             isNoteEditorMounting: false,
 
             // task edit
@@ -100,8 +100,19 @@ const App = {
             // return DOMPurify.sanitize(html, {FORBID_TAGS: ['img', 'svg']});
             return DOMPurify.sanitize(html);
         },
+        async cancelEdit() {
+            await this.unmountPointEditor(); // изчакай destroy да завърши
+            await this.unmountNoteEditor(); // изчакай destroy да завърши
+            await this.unmountTaskEditors(); // изчакай destroy да завърши
+            this.pointEditMode = false;
+            this.noteEditMode = false;
+            this.taskEditMode = false;
+            this.pointForm = {
+                id: 0, session: null, num: 1, name: '', description: '', duration: 10, content: ''
+            };
+        },
 
-        // Save create/update/save point
+        // Point --- create/update/save
         startCreatePoint() {
             this.pointEditMode = true;
             this.pointForm = {
@@ -142,17 +153,6 @@ const App = {
                 this._pointEditor = null;
             }
         },
-        async cancelEdit() {
-            await this.unmountPointEditor(); // изчакай destroy да завърши
-            await this.unmountNoteEditor(); // изчакай destroy да завърши
-            await this.unmountTaskEditors(); // изчакай destroy да завърши
-            this.pointEditMode = false;
-            this.noteEditMode = false;
-            this.taskEditMode = false;
-            this.pointForm = {
-                id: 0, session: null, num: 1, name: '', description: '', duration: 10, content: ''
-            };
-        },
         async savePoint() {
             if (this._pointEditor) {
                 this.pointForm.content = this._pointEditor.getContent ? this._pointEditor.getContent() : this.pointForm.content;
@@ -176,7 +176,6 @@ const App = {
                 alert('Грешка при запис на точка');
             }
         },
-        // Delete
         deletePoint(p) {
             if (!confirm('Сигурни ли сте, че искате да изтриете тази точка?')) return;
             axios.delete('/api/session-points/' + p.id + '/', {
@@ -185,9 +184,7 @@ const App = {
                     'X-CSRFToken': CSRF_TOKEN
                 }
             })
-                .then(() => {
-                    this.loadSessionPoints();
-                })
+                .then(() => {this.loadSessionPoints();})
                 .catch(err => {
                     console.error(err);
                     alert('Грешка при изтриване');
@@ -217,15 +214,28 @@ const App = {
                 .then(res => vm.tasks = res.data);
         },
 
-        // Notes CRUD
+        // Notes
         startCreateNote(pointId = null) {
             this.noteEditMode = true;
-            this.noteForm = { id: 0, session: this.session.id, point: pointId, num: (this.notes?.length||0)+1, name: '', content: '' };
-            this.mountNoteEditor('');
+            this.noteForm = {
+                id: 0,
+                session: this.session.id,
+                point: pointId, num: (this.notes?.length||0)+1,
+                name: '',
+                content: ''
+            };
+            this.mountNoteEditor(this.noteForm.content);
         },
         startEditNote(n) {
             this.noteEditMode = true;
-            this.noteForm = { id: n.id, session: n.session ?? this.session.id, point: n.point ?? null, num: n.num, name: n.name, content: n.content||'' };
+            this.noteForm = {
+                id: n.id,
+                session: n.session ?? this.session.id,
+                point: n.point ?? null,
+                num: n.num,
+                name: n.name,
+                content: n.content||''
+            };
             this.mountNoteEditor(this.noteForm.content);
         },
         async mountNoteEditor(initialHtml) {
@@ -254,21 +264,32 @@ const App = {
             if (!this.noteForm.session) this.noteForm.session = this.session.id;
             try {
                 await axios.post('/api/session-notes/upsert/', this.noteForm, {
-                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN }
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': CSRF_TOKEN
+                    }
                 });
                 await this.unmountNoteEditor();
                 this.noteEditMode = false;
                 await this.loadSessionNotes();
             } catch(e) {
-                console.error(e); alert('Грешка при запис на бележка');
+                console.error(e);
+                alert('Грешка при запис на бележка');
             }
         },
         deleteNote(n) {
             if (!confirm('Да се изтрие ли тази бележка?')) return;
             axios.delete('/api/session-notes/' + n.id + '/', {
-                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN }
-            }).then(() => this.loadSessionNotes())
-                .catch(err => { console.error(err); alert('Грешка при изтриване'); });
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': CSRF_TOKEN
+                }
+            })
+                .then(() => {this.loadSessionNotes();})
+                .catch(err => {
+                    console.error(err);
+                    alert('Грешка при изтриване');
+                });
         },
 
         // Tasks CRUD

@@ -341,7 +341,7 @@
                                         </div>
                                     </div>
                                     <!-- Показване на съдържанието като форматиран HTML -->
-                                    <div class="mt-2 fs-12" v-if="!isEditing(p.id)">
+                                    <div class="mt-2 fs-12" v-if="!isPointEditing(p.id)">
                                     <!-- Почистваме HTML с DOMPurify преди да го инжектираме -->
                                         <div v-html="sanitize(p.content)"></div>
                                     </div>
