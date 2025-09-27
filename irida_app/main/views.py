@@ -14,8 +14,9 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Prefetch
 
 from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 from django.conf import settings
+from django.core.files.base import ContentFile
+
 
 @csrf_protect
 def login_view(request):
@@ -97,6 +98,17 @@ def course_lessons_view(request, session_id):
     context = make_user_context(request)
     context['session_id'] = session_id
     return render(request, 'main/lesson.html', context)
+
+def test_view(request, session_id):
+    user = request.user
+    user_profile = user.userprofile
+    session = Session.objects.get(id=session_id)
+    user_profile.session = session
+    user_profile.save()
+
+    context = make_user_context(request)
+    context['session_id'] = session_id
+    return render(request, 'main/test.html', context)
 
 """ 
 ***************************************
@@ -656,3 +668,25 @@ def ckeditor_image_upload(request):
 
     # CKEditor expects { url }
     return Response({'url': url}, status=201)
+
+
+@api_view(['POST'])
+@csrf_exempt
+def tinymce_image_upload(request):
+    """
+    TinyMCE default handler expects:
+        - multipart/form-data with 'file'
+        - Response: { "location": "<absolute-or-relative-url>" }
+    """
+
+    f = request.FILES.get('file')
+    if not f:
+        return Response({'error': 'No file'}, status=400)
+
+    # Запис на файл в MEDIA
+    path = default_storage.save(f"session_pics/{f.name}", ContentFile(f.read()))
+    url = default_storage.url(path)  # напр. /media/session_pics/...
+
+    # Върни във формат, който TinyMCE очаква
+    return Response({'location': url}, status=201)
+

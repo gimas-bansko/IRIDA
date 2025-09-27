@@ -11,8 +11,8 @@ const App = {
             topics:[],
             points:[],
             // редакция/добавяне
-            editMode: false,
-            editForm: {
+            pointEditMode: false,
+            pointForm: {
                 id: 0,
                 session: null,
                 num: 1,
@@ -92,8 +92,8 @@ const App = {
         },
 
         // UI helpers
-        isEditing(pointId) {
-            return this.editMode && this.editForm.id === pointId;
+        isPointEditing(pointId) {
+            return this.pointEditMode && this.pointForm.id === pointId;
         },
         sanitize(html) {
             // Премахни изображенията като доп. защита, ако желаеш:
@@ -101,10 +101,10 @@ const App = {
             return DOMPurify.sanitize(html);
         },
 
-        // Create/Edit flow
+        // Save create/update/save point
         startCreatePoint() {
-            this.editMode = true;
-            this.editForm = {
+            this.pointEditMode = true;
+            this.pointForm = {
                 id: 0,
                 session: this.session.id,
                 num: (this.points?.length || 0) + 1,
@@ -113,11 +113,11 @@ const App = {
                 duration: 10,
                 content: ''
             };
-            this.mountEditor(this.editForm.content);
+            this.mountPointEditor(this.pointForm.content);
         },
         startEditPoint(p) {
-            this.editMode = true;
-            this.editForm = {
+            this.pointEditMode = true;
+            this.pointForm = {
                 id: p.id,
                 session: p.session,           // идва от API; ако липсва, дай this.session.id
                 num: p.num,
@@ -126,142 +126,50 @@ const App = {
                 duration: p.duration,
                 content: p.content || ''
             };
-            this.mountEditor(this.editForm.content);
+            this.mountPointEditor(this.pointForm.content);
         },
-
-        // CKEditor mount/unmount
-        // Save (create/update)
-
-        async mountEditor(initialHtml) {
-            await this.unmountEditor();
+        async mountPointEditor(initialHtml) {
+            await this.unmountPointEditor();
             await this.$nextTick();
-            const el = document.getElementById('pointContentEditor');
-            if (!el) return;
-            this.isEditorMounting = true;
-            try {
-                const editor = await CKEDITOR.ClassicEditor.create(el, {
-                    toolbar: [
-                        'heading', '|',
-                        'bold', 'italic', 'underline', 'subscript', 'superscript',
-                        '|',
-                        'bulletedList', 'numberedList', 'outdent', 'indent', '|',
-                        'blockQuote', 'link', '|',
-                        'undo', 'redo'
-                    ],
-
-                    removePlugins: [
-                        // Collaboration / Premium
-                        'RealTimeCollaborativeComments',
-                        'RealTimeCollaborativeTrackChanges',
-                        'RealTimeCollaborativeRevisionHistory',
-
-                        'PresenceList',
-                        'Comments',
-                        'TrackChanges',
-                        'TrackChangesData',
-                        'RevisionHistory',
-                        'Pagination',
-                        'WProofreader',
-                        'FormatPainter',
-                        'SlashCommand',
-                        'CaseChange',
-                        'Template',
-
-                        // Cloud / storage
-                        'CKBox',
-                        'CKFinder',
-                        'EasyImage',
-
-                        // Uploads / media
-/*
-                        'ImageUpload',
-                        'ImageInsert',
-                        'Base64UploadAdapter',
-                        'MediaEmbedToolbar',
-*/
-                        // Ако не ти трябват таблици, можеш да махнеш и тях (по избор):
-                        // 'Table', 'TableToolbar', 'TableProperties', 'TableCellProperties',
-
-                        // Document Outline (причината за грешката)
-                        'DocumentOutline',
-                        'DocumentOutlineUI',
-                        // Premium / Collaboration
-                        'AIAssistant',                  // ai-invalid-license-key
-                        'MultiLevelList',               // multi-level-list-invalid-license-key
-                        'TableOfContents',              // table-of-contents-invalid-license-key
-                        'PasteFromOfficeEnhanced',      // paste-from-office-enhanced-invalid-license-key
-                    ],
-
-                    link: {
-                        decorators: {
-                            addTargetToExternalLinks: {
-                                mode: 'automatic',
-                                callback: url => /^(https?:)?\/\//.test(url),
-                                attributes: { target: '_blank', rel: 'noopener noreferrer' }
-                            }
-                        }
-                    }
-                });
-
-                // Направи инстанцията нереактивна, за да избегнеш Vue proxy проблеми
-                this._editor = markRaw(editor);
-
-                // Задай началното съдържание
-                this._editor.setData(initialHtml || '');
-            } catch (e) {
-                console.error('CKEditor init error:', e);
-            } finally {
-                this.isEditorMounting = false;
-            }
+            const selector = '#pointContentEditor';
+            this._pointEditor = await this.initTiny(selector, initialHtml, (html) => {
+                this.pointForm.content = html;
+            });
         },
-        async unmountEditor() {
-            // ако още се инициализира – изчакай да приключи
-            if (this.isEditorMounting) {
-                // малък backoff; или цикъл за изчакване
-                await new Promise(r => setTimeout(r, 50));
-                if (this.isEditorMounting) {
-                    // ако продължава, повтори кратко изчакване
-                    await new Promise(r => setTimeout(r, 100));
-                }
-            }
-
-            const editor = this._editor;
-            if (editor) {
-                try {
-                    // обновяваме source елемента (textarea), ако е налично:
-                    // някои версии се нуждаят от updateSourceElement преди destroy
-                    await editor.destroy();
-                } catch (e) {
-                    console.warn('CKEditor destroy warning:', e);
-                } finally {
-                    this._editor = null;
-                }
+        async unmountPointEditor() {
+            if (this._pointEditor) {
+                await this.destroyTiny(this._pointEditor);
+                this._pointEditor = null;
             }
         },
         async cancelEdit() {
-            await this.unmountEditor(); // изчакай destroy да завърши
-            this.editMode = false;
-            this.editForm = {
+            await this.unmountPointEditor(); // изчакай destroy да завърши
+            await this.unmountNoteEditor(); // изчакай destroy да завърши
+            await this.unmountTaskEditors(); // изчакай destroy да завърши
+            this.pointEditMode = false;
+            this.noteEditMode = false;
+            this.taskEditMode = false;
+            this.pointForm = {
                 id: 0, session: null, num: 1, name: '', description: '', duration: 10, content: ''
             };
         },
         async savePoint() {
-            if (this._editor) {
-                this.editForm.content = this._editor.getData();
+            if (this._pointEditor) {
+                this.pointForm.content = this._pointEditor.getContent ? this._pointEditor.getContent() : this.pointForm.content;
             }
-            if (!this.editForm.session) this.editForm.session = this.session.id;
-            if (!this.editForm.num) this.editForm.num = 1;
-            if (!this.editForm.duration) this.editForm.duration = 10;
+            if (!this.pointForm.session) this.pointForm.session = this.session.id;
+            if (!this.pointForm.num) this.pointForm.num = 1;
+            if (!this.pointForm.duration) this.pointForm.duration = 10;
 
             try {
-                await axios.post('/api/session-points/upsert/', this.editForm, {
+                await axios.post('/api/session-points/upsert/', this.pointForm, {
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': CSRF_TOKEN,
                     }
                 });
-                await this.unmountEditor();
-                this.editMode = false;
+                await this.unmountPointEditor();
+                this.pointEditMode = false;
                 await this.loadSessionPoints();
             } catch (e) {
                 console.error(e);
@@ -320,8 +228,29 @@ const App = {
             this.noteForm = { id: n.id, session: n.session ?? this.session.id, point: n.point ?? null, num: n.num, name: n.name, content: n.content||'' };
             this.mountNoteEditor(this.noteForm.content);
         },
+        async mountNoteEditor(initialHtml) {
+            console.log('Mount note start');
+            await this.unmountNoteEditor();
+            await this.$nextTick();
+            console.log('After nextTick');
+
+            const selector = '#noteContentEditor';
+            this._noteEditor = await this.initTiny(selector, initialHtml, (html) => {
+                this.noteForm.content = html;
+            });
+            console.log('Tiny mounted');
+        },
+        async unmountNoteEditor() {
+            if (this._noteEditor) {
+                await this.destroyTiny(this._noteEditor);
+                this._noteEditor = null;
+            }
+        },
+
         async saveNote() {
-            if (this._noteEditor) this.noteForm.content = this._noteEditor.getData();
+            if (this._noteEditor) {
+                this.noteForm.content = this._noteEditor.getContent ? this._noteEditor.getContent() : this.noteForm.content;
+            }
             if (!this.noteForm.session) this.noteForm.session = this.session.id;
             try {
                 await axios.post('/api/session-notes/upsert/', this.noteForm, {
@@ -357,8 +286,12 @@ const App = {
             this.mountTaskEditors(this.taskForm.condition, this.taskForm.answer);
         },
         async saveTask() {
-            if (this._taskCondEditor) this.taskForm.condition = this._taskCondEditor.getData();
-            if (this._taskAnsEditor) this.taskForm.answer = this._taskAnsEditor.getData();
+            if (this._taskCondEditor) {
+                this.taskForm.condition = this._taskCondEditor.getContent ? this._taskCondEditor.getContent() : this.taskForm.condition;
+            }
+            if (this._taskAnsEditor) {
+                this.taskForm.answer = this._taskAnsEditor.getContent ? this._taskAnsEditor.getContent() : this.taskForm.answer;
+            }
             if (!this.taskForm.session) this.taskForm.session = this.session.id;
             try {
                 await axios.post('/api/session-tasks/upsert/', this.taskForm, {
@@ -379,126 +312,129 @@ const App = {
                 .catch(err => { console.error(err); alert('Грешка при изтриване'); });
         },
 
-        // Editors (конфигурация с изображения според избрания вариант A или B)
-        async mountNoteEditor(initialHtml) {
-            await this.unmountNoteEditor();
-            await this.$nextTick();
-            const el = document.getElementById('noteContentEditor');
-            if (!el) return;
-            this.isNoteEditorMounting = true;
-            try {
-                const editor = await CKEDITOR.ClassicEditor.create(el, {
-                    toolbar: [
-                        'heading', '|',
-                        'bold', 'italic', 'underline', 'subscript', 'superscript', '|',
-                        'bulletedList', 'numberedList', 'outdent', 'indent', '|',
-                        'blockQuote', 'link', '|', 'insertImage', '|',
-                        'undo', 'redo'
-                    ],
-                    removePlugins: [
-                        // Collaboration/cloud/premium only – keep upload/image plugins intact
-                        'RealTimeCollaborativeComments','RealTimeCollaborativeTrackChanges','RealTimeCollaborativeRevisionHistory',
-                        'PresenceList','Comments','TrackChanges','TrackChangesData','RevisionHistory',
-                        'Pagination','WProofreader','FormatPainter','SlashCommand','CaseChange','Template',
-                        'CKBox','CKFinder','EasyImage',
-                        'MediaEmbedToolbar',
-                        'DocumentOutline','DocumentOutlineUI',
-                        'AIAssistant','MultiLevelList','TableOfContents','PasteFromOfficeEnhanced',
-                    ],
-                    /*
-                    image: { insert: { integrations: [ 'insertImageViaUrl' ] } },
-*/
-                    image: {
-                        insert: { integrations: [ 'uploadImage', 'insertImageViaUrl' ] },
-                        toolbar: [
-                            'imageStyle:inline', 'imageStyle:block', 'imageStyle:side',
-                            '|', 'toggleImageCaption', 'imageTextAlternative'
-                        ]
-                    },
-                    simpleUpload: {
-                        uploadUrl: '/api/uploads/ckeditor-image/',
-                        withCredentials: false,
-                        headers: { 'X-CSRFToken': CSRF_TOKEN }
-                    }
-                });
-
-// Debug: list plugins
-                console.log('Has Image plugin:', !!editor.plugins.get('Image'));
-                console.log('Has ImageUpload:', !!editor.plugins.get('ImageUpload'));
-                console.log('Has ImageInsert:', !!editor.plugins.get('ImageInsert'));
-                console.log('Has SimpleUploadAdapter:', !!editor.plugins.get('SimpleUploadAdapter'));
-
-
-                this._noteEditor = markRaw(editor);
-                this._noteEditor.setData(initialHtml || '');
-            } finally {
-                this.isNoteEditorMounting = false;
-            }
-        },
-        async unmountNoteEditor() {
-            if (this.isNoteEditorMounting) await new Promise(r=>setTimeout(r,50));
-            if (this._noteEditor) {
-                try { await this._noteEditor.destroy(); } catch(e) { console.warn(e); }
-                this._noteEditor = null;
-            }
-        },
-
         async mountTaskEditors(initialCond, initialAns) {
             await this.unmountTaskEditors();
             await this.$nextTick();
-            const condEl = document.getElementById('taskConditionEditor');
-            const ansEl = document.getElementById('taskAnswerEditor');
-            this.isTaskEditorsMounting = true;
-            const config = {
-                toolbar: [
-                    'heading', '|',
-                    'bold', 'italic', 'underline', 'subscript', 'superscript', '|',
-                    'bulletedList', 'numberedList', 'outdent', 'indent', '|',
-                    'blockQuote', 'link', '|', 'insertImage', '|',
-                    'undo', 'redo'
-                ],
-                removePlugins: [
-                    // Collaboration/cloud/premium only – keep upload/image plugins intact
-                    'RealTimeCollaborativeComments','RealTimeCollaborativeTrackChanges','RealTimeCollaborativeRevisionHistory',
-                    'PresenceList','Comments','TrackChanges','TrackChangesData','RevisionHistory',
-                    'Pagination','WProofreader','FormatPainter','SlashCommand','CaseChange','Template',
-                    'CKBox','CKFinder','EasyImage',
-                    'MediaEmbedToolbar',
-                    'DocumentOutline','DocumentOutlineUI',
-                    'AIAssistant','MultiLevelList','TableOfContents','PasteFromOfficeEnhanced',
-                ],
-                image: {
-                    insert: { integrations: [ 'uploadImage', 'insertImageViaUrl' ] },
-                    toolbar: [
-                        'imageStyle:inline', 'imageStyle:block', 'imageStyle:side',
-                        '|', 'toggleImageCaption', 'imageTextAlternative'
-                    ]
-                },
-                simpleUpload: {
-                    uploadUrl: '/api/uploads/ckeditor-image/',
-                    withCredentials: false,
-                    headers: { 'X-CSRFToken': CSRF_TOKEN }
-                }
-            };
-            try {
-                if (condEl) {
-                    this._taskCondEditor = markRaw(await CKEDITOR.ClassicEditor.create(condEl, config));
-                    this._taskCondEditor.setData(initialCond || '');
-                }
-                if (ansEl) {
-                    this._taskAnsEditor = markRaw(await CKEDITOR.ClassicEditor.create(ansEl, config));
-                    this._taskAnsEditor.setData(initialAns || '');
-                }
-            } finally {
-                this.isTaskEditorsMounting = false;
-            }
+
+            this._taskCondEditor = await this.initTiny('#taskConditionEditor', initialCond, (html) => {
+                this.taskForm.condition = html;
+            });
+
+            this._taskAnsEditor = await this.initTiny('#taskAnswerEditor', initialAns, (html) => {
+                this.taskForm.answer = html;
+            });
         },
         async unmountTaskEditors() {
-            if (this.isTaskEditorsMounting) await new Promise(r=>setTimeout(r,50));
-            if (this._taskCondEditor) { try { await this._taskCondEditor.destroy(); } catch(e){} this._taskCondEditor = null; }
-            if (this._taskAnsEditor)  { try { await this._taskAnsEditor.destroy(); }  catch(e){} this._taskAnsEditor  = null; }
+            if (this._taskCondEditor) {
+                await this.destroyTiny(this._taskCondEditor);
+                this._taskCondEditor = null;
+            }
+            if (this._taskAnsEditor) {
+                await this.destroyTiny(this._taskAnsEditor);
+                this._taskAnsEditor = null;
+            }
         },
 
+        initTiny(targetOrSelector, initialHtml = '', onChange) {
+            console.log('initTiny', targetOrSelector);
+            return new Promise((resolve, reject) => {
+                // 1) Resolve target element early
+                const tmpConfig = typeof targetOrSelector === 'string'
+                    ? { selector: targetOrSelector }
+                    : { ...targetOrSelector };
+
+                const targetEl = tmpConfig.target || null;
+
+                const baseConfig = {
+                    menubar: false,
+                    plugins: 'link lists image table code',
+                    toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | table | code',
+                    height: 300,
+                    branding: false,
+                    id: targetEl?.id || undefined,
+                    images_upload_handler: async (blobInfo, progress) => {
+                        const form = new FormData();
+                        form.append('file', blobInfo.blob(), blobInfo.filename());
+                        const resp = await fetch('/api/uploads/tinymce-image/', {
+                            method: 'POST',
+                            body: form,
+                            headers: { 'X-CSRFToken': CSRF_TOKEN }
+                        });
+                        if (!resp.ok) throw new Error('Upload failed');
+                        const data = await resp.json();
+                        return data.location || data.url;
+                    },
+                    setup: (editor) => {
+                        editor.on('init', () => {
+                            editor.setContent(initialHtml || '');
+                            resolve(editor);
+                        });
+                        editor.on('change keyup undo redo input', () => {
+                            onChange && onChange(editor.getContent());
+                        });
+                    }
+                };
+
+                const config = typeof targetOrSelector === 'string'
+                    ? { ...baseConfig, selector: targetOrSelector }
+                    : { ...baseConfig, ...targetOrSelector };
+
+                // 2) Deep cleanup before init
+                try {
+                    // By id
+                    if (config.id) {
+                        const byId = tinymce?.get?.(config.id);
+                        if (byId) { try { byId.remove(); } catch {} }
+                    }
+                    // By matching target element (paranoid sweep)
+                    if (targetEl) {
+                        const editors = (tinymce?.EditorManager?.editors || []).slice();
+                        for (const ed of editors) {
+                            // ed.getElement() returns the original target element (textarea)
+                            if (ed && !ed.destroyed && ed.getElement && ed.getElement() === targetEl) {
+                                try { ed.remove(); } catch {}
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Tiny pre-clean error:', e);
+                }
+
+                // 3) Let DOM settle for a frame after clone/replace
+                const nextFrame = typeof requestAnimationFrame === 'function'
+                    ? (cb) => requestAnimationFrame(() => cb())
+                    : (cb) => setTimeout(cb, 0);
+
+                nextFrame(() => {
+                    try {
+                        tinymce.init(config).catch(reject);
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+        },
+
+        destroyTiny(editor) {
+            return new Promise((resolve) => {
+                try {
+                    if (editor && !editor.destroyed) {
+                        // remove() е синхронен за v8, но все пак обграждаме в try/catch
+                        editor.remove();
+                    }
+                } catch (e) {
+                    console.warn('Tiny remove error (safe to ignore):', e);
+                }
+                finally {
+                    const eid = editor?.id;
+                    if (eid) {
+                        const maybe = tinymce?.get?.(eid);
+                        if (maybe) { try { maybe.remove(); } catch {} }
+                    }
+                    resolve();
+                }
+            });
+        },
     },
     created: function(){
         this.loadUserDetails();

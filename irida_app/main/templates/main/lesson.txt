@@ -17,6 +17,8 @@
     <meta name="Author" content="Gimas 2000">
     <meta name="keywords"
         content="education">
+    <!-- Place the first <script> tag in your HTML's <head> -->
+    <script src="https://cdn.tiny.cloud/1/yb5c4b52rjs2n86fgcvpkkj7j93mrg21v19pll6c9jt1d41n/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
 
     <!-- Favicon -->
     <link rel="icon" href="{% static 'images/brand-logos/favicon.ico.png' %}" type="image/x-icon">
@@ -39,7 +41,6 @@
     <!-- Node Waves Css -->
     <link href="{% static 'libs/node-waves/waves.min.css' %}" rel="stylesheet">
 
-
     <!-- Simplebar Css -->
     <link href="{% static 'libs/simplebar/simplebar.min.css' %}" rel="stylesheet">
 
@@ -49,7 +50,6 @@
 
     <!-- Choices Css -->
     <link rel="stylesheet" href="{% static 'libs/choices.js/public/assets/styles/choices.min.css' %}">
-
 
     <link rel="stylesheet" href="{% static 'libs/jsvectormap/css/jsvectormap.min.css' %}">
 
@@ -183,7 +183,7 @@
                         <li class="slide__category"><span class="category-name">План на<br>занятието(урока)</span></li>
                         <!-- План - детайли -->
                         <li class="slide">
-                            <a class="side-menu__item" @click="menu_item='План - детайли'">
+                            <a class="side-menu__item" @click="async () => {cancelEdit(); menu_item='План - детайли';}">
                                 <i class="bi bi-house side-menu__icon"></i>
                                 <span class="side-menu__label">План - детайли</span>
                             </a>
@@ -198,18 +198,18 @@
 
                         <!-- Секция "Дидактически материали" -->
                         <li class="slide__category"><span class="category-name">Дидактически<br>материали</span></li>
-                        <!-- Теоретически бележки -->
+                        <!-- Теоретически бележки и Примери -->
                         <li class="slide">
-                            <a class="side-menu__item" @click="menu_item='Теоретически бележки'">
+                            <a class="side-menu__item" @click="async () => {cancelEdit(); menu_item='Бележки и примери';}">
                                 <i class="bi bi-check2-circle side-menu__icon"></i>
-                                <span class="side-menu__label">Теоретически<br>бележки</span>
+                                <span class="side-menu__label">Бележки и<br> примери</span>
                             </a>
                         </li>
                         <!-- Примери и задачи -->
                         <li class="slide">
-                            <a class="side-menu__item" @click="menu_item='Примери и задачи'">
+                            <a class="side-menu__item" @click="async () => {cancelEdit(); menu_item='Задачи'">
                                 <i class="bi bi-check2-circle side-menu__icon"></i>
-                                <span class="side-menu__label">Примери<br>и задачи</span>
+                                <span class="side-menu__label">Задачи</span>
                             </a>
                         </li>
                         <!-- Тестове -->
@@ -221,7 +221,7 @@
                         </li>
                         <!-- Приложения -->
                         <li class="slide">
-                            <a class="side-menu__item" @click="menu_item='Приложения'">
+                            <a class="side-menu__item" @click="async () => {cancelEdit(); menu_item='Приложения'">
                                 <i class="bi bi-check2-circle side-menu__icon"></i>
                                 <span class="side-menu__label">Приложения</span>
                             </a>
@@ -266,7 +266,8 @@
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
                      v-if="menu_item==='План - детайли'">
                     <div class="card-1 custom-card">
-                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4"
+                             style="padding-right: 28px;">
                             <div class="card-title ">
                                 <div>Детайлен план на занятие [[session.num]]</div>
                                 <div class="row g-1 mt-0">
@@ -292,7 +293,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body" v-show="!editMode">
+                        <div class="card-body" v-show="!pointEditMode">
                             <!-- Когато няма точки -->
                             <ul class="list-unstyled projects-items-danger-list" v-if="points.length===0">
                                 <li>
@@ -347,7 +348,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer" style="padding-right: 15px;"  v-show="!editMode">
+                        <div class="card-footer" style="padding-right: 15px;"  v-show="!pointEditMode">
                             <div class="d-flex gap-12 justify-content-between">
                                 <div></div>
                                 <button type="button" class="btn-1 btn btn-success" @click="startCreatePoint">
@@ -360,27 +361,27 @@
                         </div>
 
                         <!-- Редактор (общ контейнер за добавяне/редактиране). Показва се само в editMode -->
-                        <div class="card mt-3"  v-show="editMode">
+                        <div class="card mt-3"  v-show="pointEditMode">
                             <div class="card-header">
-                                <strong>[[ editForm.id ? 'Редактиране на точка' : 'Нова точка' ]]</strong>
+                                <strong>[[ pointForm.id ? 'Редактиране на точка' : 'Нова точка' ]]</strong>
                             </div>
                             <div class="card-body">
                                 <div class="row g-3">
                                     <div class="col-2">
                                         <label class="form-label">№</label>
-                                        <input class="form-control" type="number" v-model.number="editForm.num" min="1" />
+                                        <input class="form-control" type="number" v-model.number="pointForm.num" min="1" />
                                     </div>
                                     <div class="col-10">
                                         <label class="form-label">Наименование на точката</label>
-                                        <input class="form-control" type="text" v-model="editForm.name" />
+                                        <input class="form-control" type="text" v-model="pointForm.name" />
                                     </div>
                                     <div class="col-9">
                                         <label class="form-label">Забележка/коментар</label>
-                                        <input class="form-control" type="text" v-model="editForm.description" />
+                                        <input class="form-control" type="text" v-model="pointForm.description" />
                                     </div>
                                     <div class="col-3">
                                         <label class="form-label">Продължителност (мин.)</label>
-                                        <input class="form-control" type="number" v-model.number="editForm.duration" min="1" max="180" />
+                                        <input class="form-control" type="number" v-model.number="pointForm.duration" min="1" max="180" />
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">Съдържание</label>
@@ -402,7 +403,7 @@
                     <div class="card-1 custom-card">
                         <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
                             <div class="card-title ">
-                                <div>Tайминг на занятие 1</div>
+                                <div>Tайминг на занятие [[session.num]]</div>
                                 <div class="fs-12 text-muted">Тема : [[session.name]]</div>
                             </div>
                         </div>
@@ -449,69 +450,135 @@
                         </div>
                     </div>
                 </div>
-                <!-- Теоретически бележки -->
+                <!-- Бележки -->
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
-                     v-if="menu_item==='Теоретически бележки'">
+                     v-if="menu_item==='Бележки и примери'">
                     <div class="card-1 custom-card">
-                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4"
+                             style="padding-right: 28px;">
                             <div class="card-title ">
-                                <div>Теоретически бележки към занятие 1</div>
+                                <div>Теоретични бележки и примери към занятие [[session.num]]</div>
                                 <div class="fs-12 text-muted">Тема : [[session.name]]</div>
                             </div>
-                            <div class="d-flex gap-12 align-items-center">
-                                <button type="button" class="btn-1 btn btn-success">
-                                    <span class="d-flex align-items-center gap-6">
-                                        <i class="bi bi-plus-circle"></i>
-                                        <span class="white">Добави точка в плана</span>
-                                    </span>
-                                </button>
-                            </div>
                         </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled projects-items-danger-list">
+                        <div class="card-body" v-show="!noteEditMode">
+                            <ul class="list-unstyled projects-items-danger-list" v-if="notes.length===0">
                                 <li>
                                     <div class="d-flex align-items-center gap-3">
                                         <div class="flex-fill">
                                             <span class="d-block fw-normal fs-16 custom-black">
-                                                Не е намерен план на занятието</span>
+                                                Няма бележки и примери</span>
                                         </div>
                                     </div>
                                 </li>
                             </ul>
+                            <div v-else class="mb-3" v-for="n in notes" :key="n.id">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-secondary me-2">[[ n.num ]]</span>
+                                        <strong>[[ n.name ]]</strong>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-info btn-sm" @click="deleteNote(n)">Премахни</button>
+                                        <button class="btn btn-success btn-sm" @click="startEditNote(n)">Промени</button>
+                                    </div>
+                                </div>
+                                <div class="mt-2 fs-12" v-if="!noteEditMode">
+                                    <div v-html="sanitize(n.content)"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer" style="padding-right: 15px;" v-show="!noteEditMode">
+                            <div class="d-flex gap-12 justify-content-between">
+                                <div></div>
+                                <button type="button" class="btn btn-success btn-sm" @click="startCreateNote()">
+                                  <i class="bi bi-plus-circle"></i> Нова бележка
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Редактор на бележка -->
+                        <div class="card mt-3"  v-show="noteEditMode">
+                            <div class="card-header">
+                                <strong>[[ noteForm.id ? 'Редактиране на бележка/пример' : 'Нова бележка/пример' ]]</strong>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-2">
+                                        <label class="form-label">№</label>
+                                        <input type="number" class="form-control" v-model.number="noteForm.num" min="1">
+                                    </div>
+                                    <div class="col-10">
+                                        <label class="form-label">Име</label>
+                                        <input type="text" class="form-control" v-model="noteForm.name">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Съдържание</label>
+                                        <textarea id="noteContentEditor" class="form-control" rows="8"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-end gap-2" v-show="noteEditMode">
+                                <button class="btn btn-secondary" @click="async ()=>{ await unmountNoteEditor(); noteEditMode=false; }">Отказ</button>
+                                <button class="btn btn-primary" @click="saveNote">Запази</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- Примери и задачи -->
-                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
-                     v-if="menu_item==='Примери и задачи'">
-                    <div class="card-1 custom-card">
-                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
-                            <div class="card-title ">
-                                <div>Примери и задачи към занятие 1</div>
-                                <div class="fs-12 text-muted">Тема : [[session.name]]</div>
+                <!-- Задачи -->
+                <div class="card mt-4" v-if="menu_item==='Задачи'">
+                    <div class="card-header d-flex justify-content-between">
+                        <strong>Задачи</strong>
+                        <button type="button" class="btn btn-success btn-sm" @click="startCreateTask()">
+                            <i class="bi bi-plus-circle"></i> Нова задача
+                        </button>
+                    </div>
+                    <div class="card-body" v-show="!taskEditMode">
+                        <div v-if="tasks.length===0" class="text-muted">Няма задачи</div>
+                        <div v-else class="mb-3" v-for="t in tasks" :key="t.id">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="badge bg-secondary me-2">[[ t.num ]]</span>
+                                    <strong>[[ t.name ]]</strong>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-info btn-sm" @click="deleteTask(t)">Премахни</button>
+                                    <button class="btn btn-success btn-sm" @click="startEditTask(t)">Промени</button>
+                                </div>
                             </div>
-                            <div class="d-flex gap-12 align-items-center">
-                                <button type="button" class="btn-1 btn btn-success">
-                                    <span class="d-flex align-items-center gap-6">
-                                        <i class="bi bi-plus-circle"></i>
-                                        <span class="white">Добави точка в плана</span>
-                                    </span>
-                                </button>
+                            <div class="mt-2 fs-12">
+                                <div class="fw-bold">Условие:</div>
+                                <div v-html="sanitize(t.condition)"></div>
+                                <div class="fw-bold mt-2">Отговор:</div>
+                                <div v-html="sanitize(t.answer)"></div>
                             </div>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled projects-items-danger-list">
-                                <li>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="flex-fill">
-                                            <span class="d-block fw-normal fs-16 custom-black">
-                                                Не е намерен план на занятието</span>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
                         </div>
                     </div>
+                    <!-- Редактор на задача -->
+                    <div class="card-body" v-show="taskEditMode">
+                        <div class="row g-3">
+                            <div class="col-2">
+                                <label class="form-label">№</label>
+                                <input type="number" class="form-control" v-model.number="taskForm.num" min="1">
+                            </div>
+                            <div class="col-10">
+                                <label class="form-label">Име</label>
+                                <input type="text" class="form-control" v-model="taskForm.name">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Условие</label>
+                                <textarea id="taskConditionEditor" class="form-control" rows="6"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Отговор</label>
+                                <textarea id="taskAnswerEditor" class="form-control" rows="6"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-end gap-2" v-show="taskEditMode">
+                    <button class="btn btn-secondary" @click="async ()=>{ await unmountTaskEditors(); taskEditMode=false; }">Отказ</button>
+                    <button class="btn btn-primary" @click="saveTask">Запази</button>
+                  </div>
                 </div>
                 <!-- Тестове -->
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
@@ -626,11 +693,9 @@
     <script src="{% static 'js/jquery-3.6.3.min.js' %}"></script>
 
     <!-- място за локалните скриптове -->
-    <!-- Старо:
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <!-- TinyMCE Community CDN
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     -->
-    <!-- Ново: super-build -->
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -648,5 +713,3 @@
 </body>
 
 </html>
-
-

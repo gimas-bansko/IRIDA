@@ -17,6 +17,8 @@
     <meta name="Author" content="Gimas 2000">
     <meta name="keywords"
         content="education">
+    <!-- Place the first <script> tag in your HTML's <head> -->
+    <script src="https://cdn.tiny.cloud/1/yb5c4b52rjs2n86fgcvpkkj7j93mrg21v19pll6c9jt1d41n/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
 
     <!-- Favicon -->
     <link rel="icon" href="{% static 'images/brand-logos/favicon.ico.png' %}" type="image/x-icon">
@@ -181,7 +183,7 @@
                         <li class="slide__category"><span class="category-name">План на<br>занятието(урока)</span></li>
                         <!-- План - детайли -->
                         <li class="slide">
-                            <a class="side-menu__item" @click="menu_item='План - детайли'">
+                            <a class="side-menu__item" @click="async () => {cancelEdit(); menu_item='План - детайли';}">
                                 <i class="bi bi-house side-menu__icon"></i>
                                 <span class="side-menu__label">План - детайли</span>
                             </a>
@@ -198,14 +200,14 @@
                         <li class="slide__category"><span class="category-name">Дидактически<br>материали</span></li>
                         <!-- Теоретически бележки и Примери -->
                         <li class="slide">
-                            <a class="side-menu__item" @click="menu_item='Бележки и примери'">
+                            <a class="side-menu__item" @click="async () => {cancelEdit(); menu_item='Бележки и примери';}">
                                 <i class="bi bi-check2-circle side-menu__icon"></i>
                                 <span class="side-menu__label">Бележки и<br> примери</span>
                             </a>
                         </li>
                         <!-- Примери и задачи -->
                         <li class="slide">
-                            <a class="side-menu__item" @click="menu_item='Задачи'">
+                            <a class="side-menu__item" @click="async () => {cancelEdit(); menu_item='Задачи';}">
                                 <i class="bi bi-check2-circle side-menu__icon"></i>
                                 <span class="side-menu__label">Задачи</span>
                             </a>
@@ -219,7 +221,7 @@
                         </li>
                         <!-- Приложения -->
                         <li class="slide">
-                            <a class="side-menu__item" @click="menu_item='Приложения'">
+                            <a class="side-menu__item" @click="async () => {cancelEdit(); menu_item='Приложения';}">
                                 <i class="bi bi-check2-circle side-menu__icon"></i>
                                 <span class="side-menu__label">Приложения</span>
                             </a>
@@ -291,7 +293,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body" v-show="!editMode">
+                        <div class="card-body" v-show="!pointEditMode">
                             <!-- Когато няма точки -->
                             <ul class="list-unstyled projects-items-danger-list" v-if="points.length===0">
                                 <li>
@@ -346,7 +348,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer" style="padding-right: 15px;"  v-show="!editMode">
+                        <div class="card-footer" style="padding-right: 15px;"  v-show="!pointEditMode">
                             <div class="d-flex gap-12 justify-content-between">
                                 <div></div>
                                 <button type="button" class="btn-1 btn btn-success" @click="startCreatePoint">
@@ -359,27 +361,27 @@
                         </div>
 
                         <!-- Редактор (общ контейнер за добавяне/редактиране). Показва се само в editMode -->
-                        <div class="card mt-3"  v-show="editMode">
+                        <div class="card mt-3"  v-show="pointEditMode">
                             <div class="card-header">
-                                <strong>[[ editForm.id ? 'Редактиране на точка' : 'Нова точка' ]]</strong>
+                                <strong>[[ pointForm.id ? 'Редактиране на точка' : 'Нова точка' ]]</strong>
                             </div>
                             <div class="card-body">
                                 <div class="row g-3">
                                     <div class="col-2">
                                         <label class="form-label">№</label>
-                                        <input class="form-control" type="number" v-model.number="editForm.num" min="1" />
+                                        <input class="form-control" type="number" v-model.number="pointForm.num" min="1" />
                                     </div>
                                     <div class="col-10">
                                         <label class="form-label">Наименование на точката</label>
-                                        <input class="form-control" type="text" v-model="editForm.name" />
+                                        <input class="form-control" type="text" v-model="pointForm.name" />
                                     </div>
                                     <div class="col-9">
                                         <label class="form-label">Забележка/коментар</label>
-                                        <input class="form-control" type="text" v-model="editForm.description" />
+                                        <input class="form-control" type="text" v-model="pointForm.description" />
                                     </div>
                                     <div class="col-3">
                                         <label class="form-label">Продължителност (мин.)</label>
-                                        <input class="form-control" type="number" v-model.number="editForm.duration" min="1" max="180" />
+                                        <input class="form-control" type="number" v-model.number="pointForm.duration" min="1" max="180" />
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">Съдържание</label>
@@ -691,11 +693,9 @@
     <script src="{% static 'js/jquery-3.6.3.min.js' %}"></script>
 
     <!-- място за локалните скриптове -->
-    <!-- Старо:
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <!-- TinyMCE Community CDN
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     -->
-    <!-- Ново: super-build -->
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

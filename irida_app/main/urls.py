@@ -14,6 +14,8 @@ urlpatterns = [
     path('units', course_units_view, name='units_list'),
     path('sessions', course_sessions_view, name='sessions_list'),
     path('lesson/<int:session_id>/', course_lessons_view, name='lesson_details'),
+    #    path('lesson/<int:session_id>/', test_view, name='lesson_details'),
+
 
     # API
     path('api/context/', UserDataAPIView.as_view()),
@@ -65,4 +67,5 @@ urlpatterns = [
     path('api/session-tasks/<int:pk>/', session_task_delete, name='session-task-delete'),
 
     path('api/uploads/ckeditor-image/', ckeditor_image_upload, name='ckeditor-image-upload'),
+    path('api/uploads/tinymce-image/', tinymce_image_upload, name='tinymce-image-upload'),
 ]
