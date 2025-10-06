@@ -20799,7 +20799,7 @@ a:hover {
   position: absolute;
   content: "";
   width: 3px;
-  height: 80%;
+  height: 100%;
   inset-inline-start: 0;
   inset-block-start: 4px;
   border-radius: 4px;
@@ -20839,7 +20839,7 @@ a:hover {
   position: absolute;
   content: "";
   width: 3px;
-  height: 80%;
+  height: 100%;
   inset-inline-start: 0;
   inset-block-start: 4px;
   border-radius: 4px;
@@ -20847,6 +20847,19 @@ a:hover {
 
 .projects-items-primary-list li::before {
   background-color: var(--custom-blue);
+}
+
+/* изключваме ефекта за списъци във вътрешното съдържание */
+.projects-items-primary-list .mt-2 [class] ul,
+.projects-items-primary-list .mt-2 ul {
+  list-style: initial;          /* или none, според нуждата */
+  padding-left: revert-layer;   /* възстанови стандартния отстъп */
+  margin-left: revert-layer;
+  border-left: none;            /* ако линията е била border */
+}
+
+.projects-items-primary-list .mt-2 li::before {
+  content: none !important;     /* ако линията е реализирана с ::before */
 }
 
 .projects-items-res-list li {
@@ -20882,4 +20895,53 @@ option.moscow-s { color: #C8C12A; }   /* Should */
 option.moscow-c { color: #F79009; }   /* Could */
 option.moscow-w { color: #F04438; }      /* Won't */
 
-.ck-editor__editable_inline { min-height: 200px; }
+/* Контейнерът на съдържанието да се държи предсказуемо */
+.note-content {
+  display: block;
+  width: 100%;
+  overflow: hidden;            /* отрязва плаващи излизания и излишък */
+}
+
+/* Изображенията вътре да не излизат от контейнера */
+.note-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;              /* премахва inline „подскачане“ */
+  margin: 8px 0;               /* въздух около картинките */
+  object-fit: contain;         /* безопасно мащабиране */
+}
+
+/* Видео/iframe също да не преливат */
+.note-content iframe,
+.note-content video,
+.note-content embed {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Ако в съдържанието има плаващи елементи (float), ги „изчистваме“ */
+.note-content::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Предпазни мерки за таблици */
+.note-content table {
+  max-width: 100%;
+  width: 100%;
+  table-layout: auto;
+  overflow-x: auto;
+  display: block;              /* позволява хоризонтален скрол при нужда */
+}
+
+/* Ако някъде е инжектиран absolute/float стил, го ограничаваме */
+.note-content * {
+  box-sizing: border-box;
+}
+
+.note-content [style*="position:absolute"] {
+  position: static !important; /* предотвратява изскачане извън потока */
+}

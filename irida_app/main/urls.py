@@ -13,6 +13,7 @@ urlpatterns = [
     path('goals', course_goals_view, name='goals_list'),
     path('units', course_units_view, name='units_list'),
     path('sessions', course_sessions_view, name='sessions_list'),
+    path('users', users_list_view, name='users_list'),
     path('lesson/<int:session_id>/', course_lessons_view, name='lesson_details'),
     #    path('lesson/<int:session_id>/', test_view, name='lesson_details'),
 
@@ -68,4 +69,8 @@ urlpatterns = [
 
     path('api/uploads/ckeditor-image/', ckeditor_image_upload, name='ckeditor-image-upload'),
     path('api/uploads/tinymce-image/', tinymce_image_upload, name='tinymce-image-upload'),
+
+    path('api/users-list/<int:sc>/<int:lvl>/', UserListView.as_view(), name='users-list'),
+    path('api/users/', UserListCreateView.as_view(), name='users-list-create'),
+    path('api/users/<int:pk>/', UserRetrieveUpdateDestroyView.as_view(), name='user-detail'),
 ]

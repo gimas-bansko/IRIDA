@@ -35,14 +35,11 @@ const App = {
             // note edit
             noteEditMode: false,
             noteForm: { id: 0, session: null, point: null, num: 1, name: '', content: '' },
-            /* _noteEditor: null, */
             isNoteEditorMounting: false,
 
             // task edit
             taskEditMode: false,
             taskForm: { id: 0, session: null, point: null, num: 1, name: '', condition: '', answer: '' },
-            _taskCondEditor: null,
-            _taskAnsEditor: null,
             isTaskEditorsMounting: false,
 
         }
@@ -206,15 +203,36 @@ const App = {
         loadSessionNotes() {
             const vm = this;
             axios.get('/api/sessions/' + vm.session.id + '/notes/')
-                .then(res => vm.notes = res.data);
+                .then(res => {
+                    vm.notes = res.data
+                    vm.addCollapsedToNotes();
+                });
         },
         loadSessionTasks() {
             const vm = this;
             axios.get('/api/sessions/' + vm.session.id + '/tasks/')
-                .then(res => vm.tasks = res.data);
+                .then(res => {
+                    vm.tasks = res.data;
+                    vm.addCollapsedToTasks();
+                });
         },
 
         // Notes
+        addCollapsedToNotes() {
+            if (!Array.isArray(this.notes)) return;
+            for (const n of this.notes) {
+                if (n && typeof n === 'object' && !Object.prototype.hasOwnProperty.call(n, 'collapsed')) {
+                    n.collapsed = true;
+                }
+            }
+        },
+        getPointNumNameById(id) {
+            if (!Array.isArray(this.points) || id == null) return null;
+            const pointId = Number(id);
+            const p = this.points.find(pt => Number(pt.id) === pointId);
+            if (!p) return null;
+            return `към точка ${p.num}. ${p.name}`
+        },
         startCreateNote(pointId = null) {
             this.noteEditMode = true;
             this.noteForm = {
@@ -256,7 +274,6 @@ const App = {
                 this._noteEditor = null;
             }
         },
-
         async saveNote() {
             if (this._noteEditor) {
                 this.noteForm.content = this._noteEditor.getContent ? this._noteEditor.getContent() : this.noteForm.content;
@@ -292,47 +309,40 @@ const App = {
                 });
         },
 
-        // Tasks CRUD
+        // Tasks
+        addCollapsedToTasks() {
+            if (!Array.isArray(this.notes)) return;
+            for (const n of this.tasks) {
+                if (n && typeof n === 'object' && !Object.prototype.hasOwnProperty.call(n, 'collapsed')) {
+                    n.collapsed = true;
+                }
+            }
+        },
         startCreateTask(pointId = null) {
             this.taskEditMode = true;
-            this.taskForm = { id: 0, session: this.session.id, point: pointId, num: (this.tasks?.length||0)+1, name: '', condition: '', answer: '' };
+            this.taskForm = {
+                id: 0,
+                session: this.session.id,
+                point: pointId,
+                num: (this.tasks?.length||0)+1, name: '',
+                condition: '',
+                answer: ''
+            };
             this.mountTaskEditors('', '');
         },
         startEditTask(t) {
             this.taskEditMode = true;
             this.taskForm = {
-                id: t.id, session: t.session ?? this.session.id, point: t.point ?? null,
-                num: t.num, name: t.name, condition: t.condition||'', answer: t.answer||''
+                id: t.id,
+                session: t.session ?? this.session.id,
+                point: t.point ?? null,
+                num: t.num,
+                name: t.name,
+                condition: t.condition||'',
+                answer: t.answer||''
             };
             this.mountTaskEditors(this.taskForm.condition, this.taskForm.answer);
         },
-        async saveTask() {
-            if (this._taskCondEditor) {
-                this.taskForm.condition = this._taskCondEditor.getContent ? this._taskCondEditor.getContent() : this.taskForm.condition;
-            }
-            if (this._taskAnsEditor) {
-                this.taskForm.answer = this._taskAnsEditor.getContent ? this._taskAnsEditor.getContent() : this.taskForm.answer;
-            }
-            if (!this.taskForm.session) this.taskForm.session = this.session.id;
-            try {
-                await axios.post('/api/session-tasks/upsert/', this.taskForm, {
-                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN }
-                });
-                await this.unmountTaskEditors();
-                this.taskEditMode = false;
-                await this.loadSessionTasks();
-            } catch(e) {
-                console.error(e); alert('Грешка при запис на задача');
-            }
-        },
-        deleteTask(t) {
-            if (!confirm('Да се изтрие ли тази задача?')) return;
-            axios.delete('/api/session-tasks/' + t.id + '/', {
-                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN }
-            }).then(() => this.loadSessionTasks())
-                .catch(err => { console.error(err); alert('Грешка при изтриване'); });
-        },
-
         async mountTaskEditors(initialCond, initialAns) {
             await this.unmountTaskEditors();
             await this.$nextTick();
@@ -355,6 +365,43 @@ const App = {
                 this._taskAnsEditor = null;
             }
         },
+        async saveTask() {
+            if (this._taskCondEditor) {
+                this.taskForm.condition = this._taskCondEditor.getContent ? this._taskCondEditor.getContent() : this.taskForm.condition;
+            }
+            if (this._taskAnsEditor) {
+                this.taskForm.answer = this._taskAnsEditor.getContent ? this._taskAnsEditor.getContent() : this.taskForm.answer;
+            }
+            if (!this.taskForm.session) this.taskForm.session = this.session.id;
+            try {
+                await axios.post('/api/session-tasks/upsert/', this.taskForm, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': CSRF_TOKEN
+                    }
+                });
+                await this.unmountTaskEditors();
+                this.taskEditMode = false;
+                await this.loadSessionTasks();
+            } catch(e) {
+                console.error(e); alert('Грешка при запис на задача');
+            }
+        },
+        deleteTask(t) {
+            if (!confirm('Да се изтрие ли тази задача?')) return;
+            axios.delete('/api/session-tasks/' + t.id + '/', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': CSRF_TOKEN
+                }
+            })
+                .then(() => this.loadSessionTasks())
+                .catch(err => {
+                    console.error(err);
+                    alert('Грешка при изтриване');
+                });
+        },
+
 
         initTiny(targetOrSelector, initialHtml = '', onChange) {
             console.log('initTiny', targetOrSelector);

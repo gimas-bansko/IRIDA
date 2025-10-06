@@ -2,21 +2,42 @@
 {% load static %}
 
 {% block main_content %}
-        <!-- Start::app-content -->
-        <div class="main-content app-content" id='main'>
             <!-- Режим списък -->
             <div class="container-fluid mt-10">
+                <!-- Page Header -->
+                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                 <div>
+                     <a href="javascript:void(0);">
+                        <div class="d-flex align-items-top mt-0 flex-wrap">
+                            <div class="lh-1">
+                                <span class="avatar avatar-md me-3 avatar-rounded">
+                                    <img class="avatar" src="{{ user_profile.school.logo.url }}">
+                                </span>
+                            </div>
+                            <div class="flex-fill">
+                                <div class="d-flex align-items-center">
+                                    <div class="mt-sm-0 mt-2">
+                                        <p class="mb-0 fs-14 fw-semibold">
+                                            {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
+                                        <p class="mb-0 text-muted">{{ user_profile.school.full_name}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                 </div>
+                 </div>
 
                 <!-- Page Header -->
                  <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
                       style="background-image: url({% static 'irida/images/iris.jpg' %}); background-size: cover;"  >
-                     <div>
+                     <div style="min-height: 250px;">
                          {% if user_profile.gender %}
                          <h1 class="page-title fw-normal fs-20 mb-12">👋 Добре дошъл, {{ user_first_name }}!</h1>
                          {% else %}
                          <h1 class="page-title fw-normal fs-20 mb-12">👋 Добре дошлa, {{ user_first_name }}!</h1>
                          {% endif %}
-                         <p class="mb-0 mt-2 text-muted">Платформата Ирида е предназначена да помага в процеса на обучение.</p>
+                         <p class="mb-0 mt-2" style="color: floralwhite;">Платформата Ирида е предназначена да помага в процеса на обучение.</p>
                          <span class="mb-0 d-block text-muted fs-12">Приятна работа!</span>
                      </div>
                 </div>
@@ -27,36 +48,6 @@
                     <div class="row justify-content-center">
                         <div class="col-xxl-8 col-xl-12 col-lg-12 col-md-12 col-sm-12">
                             <ul class="list-unstyled mb-0 notification-container">
-                                <li>
-                                    <div class="card-1 custom-card un-read">
-                                        <div class="card-body p-3">
-                                            <a href="javascript:void(0);">
-                                                <div class="d-flex align-items-top mt-0 flex-wrap">
-                                                    <div class="lh-1">
-                                                        <span class="avatar avatar-md me-3 avatar-rounded">
-                                                            <img class="avatar" src="{{ user_profile.school.logo.url }}">
-                                                        </span>
-                                                    </div>
-                                                    <div class="flex-fill">
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="mt-sm-0 mt-2">
-                                                                <p class="mb-0 fs-14 fw-semibold">
-                                                                    {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
-                                                                <p class="mb-0 text-muted">{{ user_profile.school.full_name}}</p>
-                                                            </div>
-                                                            <div class="ms-auto">
-                                                                <div class="btn-list">
-                                                                    <button type="button" class="btn btn-outline-success btn-wave">
-                                                                        <i class="bi bi-check2-circle"></i>&nbsp;Избери друго училище</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
                                 <li>
                                     <div class="card-1 custom-card un-read">
                                         <div class="card-body p-3">
@@ -150,8 +141,6 @@
                     <!--End::row-1 -->
                 </div>
             </div>
-        </div>
-        <!-- End::app-content -->
 {% endblock %}
 
 {% block page_script %}

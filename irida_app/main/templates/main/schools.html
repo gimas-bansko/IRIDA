@@ -3,35 +3,22 @@
 
 
 {% block main_content %}
-        <!-- Start::app-content -->
-        <div class="main-content app-content">
             <!-- Режим списък -->
             <div class="container-fluid">
-
                 <!-- Page Header -->
-                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
                      <div>
-                         <h1 class="page-title fw-normal fs-20 mb-12">Училища</h1>
+                         <h1 class="page-title fw-normal fs-20 mb-12">Училище</h1>
                          <nav>
                             <ol class="breadcrumb mb-2">
                                 <li class="breadcrumb-item"><a href="#">Начало</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Училища</li>
+                                <li class="breadcrumb-item active" aria-current="page">Училище</li>
                             </ol>
                         </nav>
                      </div>
-
-                     <div class="d-flex gap-12 align-items-center">
-                         <button type="button" class="btn-1 btn btn-success">
-                             <span class="d-flex align-items-center gap-6">
-                                 <i class="bi bi-plus-circle"></i>
-                                 <span class="white">Добави училище</span>
-                             </span>
-                         </button>
-                     </div>
-                </div>
+                 </div>
                 <!-- Page Header Close -->
-
-                <div class="container-lg">
+                <div class="container-lg" v-if="!edit_mode">
                     <!-- Start::row-1 -->
                     <div class="row justify-content-center">
                         <div class="col-xxl-8 col-xl-12 col-lg-12 col-md-12 col-sm-12">
@@ -43,20 +30,22 @@
                                                 <div class="d-flex align-items-top mt-0 flex-wrap">
                                                     <div class="lh-1">
                                                         <span class="avatar avatar-md me-3 avatar-rounded">
-                                                            <img alt="avatar" src="{% static 'BizLyt/images/faces/school_logo_1.png' %}">
+                                                            <img alt="avatar" :src="school.logo">
                                                         </span>
                                                     </div>
                                                     <div class="flex-fill">
                                                         <div class="d-flex align-items-center">
                                                             <div class="mt-sm-0 mt-2">
-                                                                <p class="mb-0 fs-14 fw-semibold">ПГЕЕ - гр. Банско</p>
-                                                                <p class="mb-0 text-muted">Професионална гимназия по електроника и енергетика</p>
+                                                                <p class="mb-0 fs-14 fw-semibold">[[school.short_name]] - [[school.city]]</p>
+                                                                <p class="mb-0 text-muted">[[school.full_name]]</p>
+                                                                <p class="mb-0 text-muted fs-12">адрес: [[school.address]]</p>
+                                                                <p class="mb-0 text-muted fs-12">e-mail: [[school.email]]</p>
+                                                                <p class="mb-0 text-muted fs-12">телефон: [[school.phone_number]]</p>
+                                                                <p class="mb-0 text-muted fs-12">директор: [[school.boss]]</p>
                                                             </div>
                                                             <div class="ms-auto">
                                                                 <div class="btn-list">
-                                                                    <button type="button" class="btn btn-outline-success btn-wave">
-                                                                        <i class="bi bi-check2-circle"></i>&nbsp;Избери </button>
-                                                                    <button type="button" class="btn btn-outline-secondary btn-wave">
+                                                                    <button type="button" class="btn btn-outline-secondary btn-wave" @click="edit_mode=true">
                                                                         <i class="bi bi-pen"></i>&nbsp;Промени</button>
                                                                 </div>
                                                             </div>
@@ -72,10 +61,9 @@
                     </div>
                     <!--End::row-1 -->
                 </div>
-
             </div>
             <!-- Режим диалог -->
-            <div class="container-fluid">
+            <div class="container-fluid" v-if="edit_mode">
                 <!-- Page Header -->
                 <div class="card-1 custom-card">
                     <div class="card-header justify-content-between">
@@ -84,7 +72,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form class="row g-3 mt-0">
+                        <div class="row g-3 mt-0">
                             <!-- Лого -->
                             <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                 <label class="form-label">Лого:</label>
@@ -155,15 +143,14 @@
                                     placeholder="Директор">
                             </div>
                             <div class="col-12 text-center">
-                                <button type="submit" class="btn btn-outline-success btn-wave fs-16">Запиши</button>
+                                <button type="submit" class="btn btn-outline-secondary btn-wave fs-16" @click="edit_mode=false">Откажи</button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="submit" class="btn btn-outline-success btn-wave fs-16" @click="edit_mode=false">Запиши</button>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
-
-        </div>
-        <!-- End::app-content -->
 {% endblock %}
 
 {% block page_script %}

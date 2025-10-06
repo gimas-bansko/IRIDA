@@ -27,71 +27,6 @@ class SubjectSerializer(serializers.ModelSerializer):
             'hpw2',
         ]
 
-class UserProfileSpecSerializer(serializers.ModelSerializer):
-    speciality = SpecialtySerializer()  # Включваме сериализатора за Specialty
-
-    class Meta:
-        model = UserProfile
-        fields = ['gender', 'school', 'access_level', 'session_screen', 'session_theme', 'speciality', 'subject']
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserProfile
-        fields = ['gender', 'school', 'access_level', 'session_screen', 'session_theme', 'speciality', 'subject']
-
-class UserSerializer(serializers.ModelSerializer):
-    userprofile = UserProfileSerializer()
-
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name', 'userprofile']
-        extra_kwargs = {
-            'password': {'write_only': True},  # Паролата не трябва да се връща в отговорите
-        }
-
-    def create(self, validated_data):
-        # Извличаме данните за профила
-        userprofile_data = validated_data.pop('userprofile', None)
-
-        # Създаваме потребителя
-        user = User.objects.create_user(**validated_data)
-
-        # Актуализираме автоматично създадения профил, ако има данни за userprofile
-        if userprofile_data:
-            for attr, value in userprofile_data.items():
-                setattr(user.userprofile, attr, value)
-            user.userprofile.save()
-
-        return user
-
-    def update(self, instance, validated_data):
-        # Извличаме данните за профила
-        userprofile_data = validated_data.pop('userprofile', None)
-
-        # Актуализираме основните данни на потребителя
-        instance.username = validated_data.get('username', instance.username)
-        instance.email = validated_data.get('email', instance.email)
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
-
-        instance.save()
-
-        # Актуализираме профила на потребителя, ако има данни за него
-        if userprofile_data:
-            userprofile = instance.userprofile
-            userprofile.gender = userprofile_data.get('gender', userprofile.gender)
-            userprofile.save()
-
-        return instance
-
-
-class UserReadSerializer(serializers.ModelSerializer):
-    userprofile = UserProfileSpecSerializer()
-
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'userprofile']
-
 # данни за училище
 class SchoolSerializer(serializers.ModelSerializer):
 
@@ -145,8 +80,6 @@ class UnitSerializer(serializers.ModelSerializer):
         model = Unit
         fields = ['id', 'num', 'name', 'hours', 'topics']
 
-# serializers.py
-
 class UnitWriteSerializer(serializers.ModelSerializer):
     # subject се подава като ID
     subject = serializers.PrimaryKeyRelatedField(queryset=Subject.objects.all())
@@ -155,7 +88,6 @@ class UnitWriteSerializer(serializers.ModelSerializer):
         model = Unit
         fields = ['id', 'num', 'name', 'hours', 'subject']
         read_only_fields = ['id']
-
 
 class TopicWriteSerializer(serializers.ModelSerializer):
     # unit се подава като ID
@@ -200,11 +132,6 @@ class SpecialtyMiniSerializer(serializers.ModelSerializer):
         model = Specialty
         fields = ('id', 'specialty_num', 'specialty_name', 'level')
 
-class KlassMiniSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Klass
-        fields = ('id', 'grade', 'section')
-
 class SubjectMiniSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
@@ -218,7 +145,6 @@ class SessionMiniSerializer(serializers.ModelSerializer):
 class UserProfileExpandedSerializer(serializers.ModelSerializer):
     school = SchoolMiniSerializer(read_only=True)
     speciality = SpecialtyMiniSerializer(read_only=True)
-    grade_section = KlassMiniSerializer(read_only=True)
     subject = SubjectMiniSerializer(read_only=True)
     session = SessionMiniSerializer(read_only=True)
 
@@ -226,7 +152,7 @@ class UserProfileExpandedSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = (
             'access_level', 'session_screen',
-            'school', 'speciality', 'grade_section', 'subject', 'session',
+            'school', 'speciality', 'grade', 'section', 'subject', 'session',
         )
 
 class SessionTopicReadSerializerDetailed(serializers.ModelSerializer):
@@ -242,14 +168,99 @@ class SessionPointSerializer(serializers.ModelSerializer):
         model = SessionPoint
         fields = ['id','session', 'num',  'name', 'description', 'duration', 'content']
 
-
 class SessionNoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = SessionNote
         fields = ['id', 'session', 'point', 'num', 'name', 'content']
 
-
 class SessionTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = SessionTask
         fields = ['id', 'session', 'point', 'num', 'name', 'condition', 'answer']
+
+class SessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Session
+        fields = ['id', 'num', 'name']
+
+class UserProfileSpecSerializer(serializers.ModelSerializer):
+    speciality = SpecialtySerializer()  # Включваме сериализатора за Specialty
+    subject = SubjectSerializer()
+    session = SessionSerializer()
+    class Meta:
+        model = UserProfile
+        fields = ['gender', 'school', 'access_level', 'session_screen', 'grade', 'section', 'speciality', 'subject', 'session']
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = [
+            'gender',
+            'school',
+            'access_level',
+            'session_screen',
+            'session',
+            'grade',
+            'section',
+            'speciality',
+            'subject',
+        ]
+
+class UserSerializer(serializers.ModelSerializer):
+    userprofile = UserProfileSerializer()
+    password = serializers.CharField(write_only=True, required=False, allow_blank=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name', 'userprofile']
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
+
+    def create(self, validated_data):
+        userprofile_data = validated_data.pop('userprofile', None)
+        password = validated_data.pop('password', None)
+        user = User(**validated_data)
+        if password:
+            user.set_password(password)
+        else:
+            # генерирай временна или остави празно и неразреши login без парола
+            user.set_unusable_password()
+        user.save()
+
+        # Актуализираме автоматично създадения профил
+        if userprofile_data:
+            for attr, value in userprofile_data.items():
+                setattr(user.userprofile, attr, value)
+            user.userprofile.save()
+
+        return user
+
+    def update(self, instance, validated_data):
+        userprofile_data = validated_data.pop('userprofile', None)
+        password = validated_data.pop('password', None)
+
+        # Основни полета
+        for f in ['username', 'email', 'first_name', 'last_name']:
+            if f in validated_data:
+                setattr(instance, f, validated_data[f])
+
+        if password:
+            instance.set_password(password)
+
+        instance.save()
+
+        if userprofile_data:
+            up = instance.userprofile
+            for attr, value in userprofile_data.items():
+                setattr(up, attr, value)
+            up.save()
+
+        return instance
+
+class UserReadSerializer(serializers.ModelSerializer):
+    userprofile = UserProfileSpecSerializer()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'userprofile']

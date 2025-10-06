@@ -23,7 +23,6 @@
                             </ol>
                         </nav>
                      </div>
-
                      <div class="d-flex gap-12 align-items-center mt-5" v-if="!edit.editor">
                          <button type="button" class="btn-1 btn btn-success" @click="newSubject()">
                              <span class="d-flex align-items-center gap-6">
@@ -101,7 +100,7 @@
 
             </div>
             <!-- Режим диалог редактиране на предмет-->
-            <div class="container-fluid"  v-if="edit_mode===1">
+            <div class="container-fluid"  v-if="edit.editor">
                 <!-- Page Header -->
                 <div class="card-1 custom-card">
                     <div class="card-header justify-content-between">
@@ -174,7 +173,7 @@
 
                             <!-- Бутони запис/отказ -->
                             <div class="col-12 text-center">
-                                <button class="btn btn-outline-secondary btn-wave fs-16" @click="edit_mode=0">
+                                <button class="btn btn-outline-secondary btn-wave fs-16" @click="clearEditMode">
                                     Откажи</button>
                                 &nbsp; &nbsp; &nbsp;
                                 <button class="btn btn-outline-success btn-wave fs-16" @click="saveSubject()">

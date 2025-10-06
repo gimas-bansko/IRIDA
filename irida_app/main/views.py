@@ -1,5 +1,6 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
 
@@ -7,9 +8,8 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from .models import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import generics
+from rest_framework import generics, status
 from .serializers import *
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Prefetch
 
@@ -30,7 +30,7 @@ def login_view(request):
     else:
         form = AuthenticationForm(request)
 
-    # Подавам form за да покаа грешки/values без да променям визията
+    # Подавам form за да покажа грешки/values без да променям визията
     return render(request, 'main/sign-in.html', {'form': form, 'next': next_url})
 
 def sign_in(request):
@@ -46,6 +46,7 @@ def make_user_context(r):
     schools = School.objects.all()
     specialty = user_profile.speciality
     subject = user_profile.subject
+    session = user_profile.session
 
     context = {
         'user_nick': user.username,
@@ -57,6 +58,7 @@ def make_user_context(r):
         'specialities': user_profile.school.specialities.all(),
         'specialty': specialty,
         'subject': subject,
+        'session': session,
     }
     return context
 
@@ -67,6 +69,10 @@ def welcome_view(request):
 def subjects_list_view(request):
     context = make_user_context(request)
     return render(request, 'main/subjects.html', context)
+
+def users_list_view(request):
+    context = make_user_context(request)
+    return render(request, 'main/users.html', context)
 
 def specialties_list_view(request):
     context = make_user_context(request)
@@ -127,8 +133,10 @@ class UserDataAPIView(APIView):
             'user_level_num': user_profile.access_level,
             'school':  user_profile.school.id if user_profile.school else 0,
             'specialty': user_profile.speciality.id if user_profile.speciality else 0,
-            'grade_section': user_profile.grade_section.id if user_profile.grade_section else 0,
+            'grade': user_profile.grade,
+            'section': user_profile.section,
             'subject': user_profile.subject.id if user_profile.subject else 0,
+            'session': user_profile.session.id if user_profile.session else 0,
             }
         return Response(context)
 
@@ -221,7 +229,6 @@ def specialty_detail(request, specialty_id, school_id=None):
             import traceback
             traceback.print_exc()
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 # изпобор на специалност по подразбиране
 @api_view(['GET', 'POST'])  # позволяваме и POST, ако решите да не пращате id в URL
@@ -325,7 +332,6 @@ def subject_detail(request, subject_id, sp_id=None):
             traceback.print_exc()
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 # задаване на предмет по подразбиране
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
@@ -357,7 +363,6 @@ class SubjectGoalsView(generics.ListAPIView):
     def get_queryset(self):
         sb_id = self.kwargs['sb_id']
         return Goal.objects.filter(course_id=sb_id).order_by('num', 'id')
-
 
 class GoalUpsertView(APIView):
     def post(self, request):
@@ -401,7 +406,6 @@ class SubjectUnitsWithTopicsView(generics.ListAPIView):
             .prefetch_related(topics_prefetch)
         )
 
-
 class UnitUpsertView(APIView):
     """
     POST:
@@ -428,7 +432,6 @@ class UnitUpsertView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
 class TopicUpsertView(APIView):
     """
     POST:
@@ -454,7 +457,6 @@ class TopicUpsertView(APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
 # Списък и създаване на Session
 class SessionListCreateView(generics.ListCreateAPIView):
@@ -556,14 +558,11 @@ def session_point_upsert(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
 @api_view(['DELETE'])
 def session_point_delete(request, pk):
     instance = get_object_or_404(SessionPoint, id=pk)
     instance.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
-
-# views.py
 
 class SessionNotesForSessionView(generics.ListAPIView):
     serializer_class = SessionNoteSerializer
@@ -572,7 +571,6 @@ class SessionNotesForSessionView(generics.ListAPIView):
         session_id = self.kwargs['session_id']
         get_object_or_404(Session, id=session_id)
         return SessionNote.objects.filter(session_id=session_id).order_by('num', 'id')
-
 
 @api_view(['POST'])
 @csrf_exempt
@@ -599,16 +597,13 @@ def session_note_upsert(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
 @api_view(['DELETE'])
 def session_note_delete(request, pk):
     instance = get_object_or_404(SessionNote, id=pk)
     instance.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
-
 # -------- Tasks --------
-
 class SessionTasksForSessionView(generics.ListAPIView):
     serializer_class = SessionTaskSerializer
 
@@ -616,7 +611,6 @@ class SessionTasksForSessionView(generics.ListAPIView):
         session_id = self.kwargs['session_id']
         get_object_or_404(Session, id=session_id)
         return SessionTask.objects.filter(session_id=session_id).order_by('num', 'id')
-
 
 @api_view(['POST'])
 @csrf_exempt
@@ -643,13 +637,11 @@ def session_task_upsert(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
 @api_view(['DELETE'])
 def session_task_delete(request, pk):
     instance = get_object_or_404(SessionTask, id=pk)
     instance.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 @api_view(['POST'])
 @csrf_exempt
@@ -668,7 +660,6 @@ def ckeditor_image_upload(request):
 
     # CKEditor expects { url }
     return Response({'url': url}, status=201)
-
 
 @api_view(['POST'])
 @csrf_exempt
@@ -690,3 +681,53 @@ def tinymce_image_upload(request):
     # Върни във формат, който TinyMCE очаква
     return Response({'location': url}, status=201)
 
+class UserListView(APIView):
+    def get(self, request, sc, lvl):
+        # Извличане на параметрите за филтриране от заявката
+        school_id = sc
+        level = lvl
+        # Филтриране на потребителите
+        users = User.objects.filter(
+            userprofile__school=school_id,
+            userprofile__access_level__gt=level,
+        )
+        # Сериализиране на резултатите
+        serializer = UserReadSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UserListCreateView(generics.ListCreateAPIView):
+    """
+    GET: (по избор) връща всички или филтрирани по query params:
+        ?school=<id>&min_level=<n>&max_level=<m>
+    POST: създава потребител {username, password?, email, first_name, last_name, userprofile{...}}
+    """
+    queryset = User.objects.all().select_related('userprofile').order_by('id')
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        return UserReadSerializer if self.request.method == 'GET' else UserSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        school = self.request.query_params.get('school')
+        min_level = self.request.query_params.get('min_level')
+        max_level = self.request.query_params.get('max_level')
+
+        if school:
+            qs = qs.filter(userprofile__school=school)
+        if min_level:
+            qs = qs.filter(userprofile__access_level__gte=min_level)
+        if max_level:
+            qs = qs.filter(userprofile__access_level__lte=max_level)
+
+        # По подразбиране можеш да приложиш текущия контекст: същото училище и под-ниво
+        # но оставям свободно и ползвай съществуващия UserListView при нужда
+        return qs
+
+class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all().select_related('userprofile')
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        # GET -> Read; PUT/PATCH -> Write; DELETE -> няма тяло
+        return UserReadSerializer if self.request.method == 'GET' else UserSerializer

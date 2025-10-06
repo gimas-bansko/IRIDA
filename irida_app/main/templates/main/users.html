@@ -1,0 +1,497 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+
+{% block main_content %}
+        <!-- Start::app-content -->
+            <!-- Режим списък -->
+            <div class="container-fluid">
+
+                <!-- Page Header -->
+                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                     <div>
+                         <p class="mb-1 mt-2 text-muted">
+                             <img class="avatar" src="{{ user_profile.school.logo.url }}">
+                             {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
+                         <nav>
+                            <ol class="breadcrumb mb-2 ">
+                                <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Потребители</li>
+                            </ol>
+                        </nav>
+                     </div>
+                </div>
+                <!-- Page Header Close -->
+
+                <!-- Администратори -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
+                     v-if="(user.user_level_num<4)&&(!edit.editor||edit.admin)">
+                    <div class="card-1 custom-card" >
+                        <!-- Заглавие на секцията -->
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4">
+                            <div class="card-title ">
+                                <div>Администратори</div>
+                            </div>
+                        </div>
+                        <!-- Тяло (списък/редактиране) -->
+                        <div class="card-body">
+                            <!-- Списък ако няма потребители в тази група -->
+                            <ul class="list-unstyled projects-items-danger-list" v-if="(numAdmins===0)&&(!edit.editor)">
+                                <!-- ако няма въведени администратори -->
+                                <li>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal fs-16 custom-black">
+                                                Няма създадени потребители с администраторски права</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <!-- Списък ако има потребители в тази група -->
+                            <ul class="list-unstyled projects-items-success-list" v-if="(numAdmins>0)&&(!edit.editor)">
+                                <!-- ако има въведен поне 1 администратор -->
+                                <li v-for="(usr, usr_idx) in listOfUsers">
+                                    <div class="d-flex align-items-center gap-3"  v-if="usr.userprofile.access_level===3">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal  fs-16 custom-black">
+                                                [[usr.first_name]]&nbsp;[[usr.last_name]] <span class="text-muted">([[usr.username]])</span></span>
+                                        </div>
+                                        <button type="button" class="btn-1 btn btn-success fw-medium" @click="startEdit(usr,3)">
+                                            <span class="d-flex align-items-center gap-6">
+                                                <i class="bi bi-pen"></i>
+                                                <span class="white">Промени</span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </li>
+                            </ul>
+                            <!-- Редактиране -->
+                            <div class="card-1 custom-card" v-if="edit.admin">
+                                <div class="card-header">
+                                    <div class="card-title ">
+                                        <div>[[editorHeader]]</div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3 mt-0">
+                                        <input type="text" style="display:none" aria-hidden="true" autocomplete="username">
+                                        <input type="password" style="display:none" aria-hidden="true" autocomplete="current-password">
+                                        <!-- съобщение за грешка -->
+                                        <div class="col-12 text-center" v-if="!userOK">
+                                            <div class="alert alert-danger" role="alert">
+                                                [[userErrorMsg ]]
+                                            </div>
+                                        </div>
+                                        <!-- потребителско име -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success">
+                                                <input id="ua_0" type="text" class="form-control" v-model="form.username">
+                                                <label for="ua_0">Потребителско име</label>
+                                            </div>
+                                        </div>
+                                        <!-- Парола 1 -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success"
+                                                 v-if="(formMode === 'create')||formChangePassword">
+                                                <input id="ua_1" type="password" class="form-control" v-model="form.password">
+                                                <label for="ua_1">Парола</label>
+                                            </div>
+                                        </div>
+                                        <!-- Парола 2 -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success"
+                                                 v-if="(formMode === 'create')||formChangePassword">
+                                                <input id="ua_2" type="password" class="form-control" v-model="form.password2">
+                                                <label for="ua_2">Парола (повторно)</label>
+                                            </div>
+                                        </div>
+                                        <!-- собствено име -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success">
+                                                <input id="ua_3" type="text" class="form-control" v-model="form.first_name">
+                                                <label for="ua_3">Собствено име</label>
+                                            </div>
+                                        </div>
+                                        <!-- фамилно име -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success">
+                                                <input id="ua_4" type="text" class="form-control" v-model="form.last_name">
+                                                <label for="ua_4">Фамилно име</label>
+                                            </div>
+                                        </div>
+                                        <!-- email -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success">
+                                                <input id="ua_5" type="email" class="form-control" v-model="form.email">
+                                                <label for="ua_5">e-mail</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer d-md-flex d-block align-items-center justify-content-center">
+                                    <div class="form-check"  v-if="formMode === 'edit'">
+                                        <input class="form-check-input" type="checkbox" v-model="formChangePassword" id="invalidCheck">
+                                        <label class="form-check-label" for="invalidCheck">
+                                            Промени паролата&nbsp; &nbsp; &nbsp;
+                                        </label>
+                                    </div>
+                                    <!-- Бутони запис/отказ -->
+                                    <button class="btn btn-outline-secondary btn-wave fs-16" @click="clearEditMode()">
+                                        Откажи</button>
+                                    &nbsp; &nbsp; &nbsp;
+                                    <button class="btn btn-outline-success btn-wave fs-16" :disabled="!userOK"
+                                            @click="saveUser">
+                                        Запиши</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Футер - бутон за добавяне на елемент -->
+                        <div class="card-footer d-md-flex d-block align-items-center justify-content-between">
+                            <div>
+                            </div>
+                            <div class="d-flex gap-12 align-items-center" v-if="!edit.editor">
+                                <button type="button" class="btn-1 btn btn-success" @click="startCreate(3)">
+                                    <span class="d-flex align-items-center gap-6">
+                                        <i class="bi bi-plus-circle"></i>
+                                        <span class="white">Добави администратор</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Учители -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
+                     v-if="!edit.editor||edit.teacher">
+                    <div class="card-1 custom-card" >
+                        <!-- Заглавие на секцията -->
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4">
+                            <div class="card-title ">
+                                <div>Учители</div>
+                            </div>
+                        </div>
+                        <!-- Тяло (списък/редактиране) -->
+                        <div class="card-body">
+                            <!-- Списък ако няма потребители в тази група -->
+                            <ul class="list-unstyled projects-items-danger-list" v-if="(numTeachers===0)&&(!edit.editor)">
+                                <!-- ако няма въведени учители -->
+                                <li>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal fs-16 custom-black">
+                                                Няма създадени потребители с права на учител</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <!-- Списък ако има потребители в тази група -->
+                            <ul class="list-unstyled projects-items-success-list" v-if="(numTeachers>0)&&(!edit.editor)">
+                                <!-- ако има въведен поне 1 учител -->
+                                <li v-for="(usr, usr_idx) in listOfUsers">
+                                    <div class="d-flex align-items-center gap-3" v-if="usr.userprofile.access_level===4">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal  fs-16 custom-black">
+                                                [[usr.first_name]]&nbsp;[[usr.last_name]] <span class="text-muted">([[usr.username]])</span></span>
+                                        </div>
+                                        <button type="button" class="btn-1 btn btn-success fw-medium" @click="startEdit(usr,4)">
+                                            <span class="d-flex align-items-center gap-6">
+                                                <i class="bi bi-pen"></i>
+                                                <span class="white">Промени</span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </li>
+                            </ul>
+                            <!-- Редактиране -->
+                            <div class="card-1 custom-card" v-if="edit.teacher">
+                                <div class="card-header">
+                                    <div class="card-title ">
+                                        <div v-if="formMode === 'create'">Добавяне на учител</div>
+                                        <div v-else>Редактиране на учител</div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3 mt-0">
+                                        <input type="text" style="display:none" aria-hidden="true" autocomplete="username">
+                                        <input type="password" style="display:none" aria-hidden="true" autocomplete="current-password">
+                                        <!-- съобщение за грешка -->
+                                        <div class="col-12 text-center" v-if="!userOK">
+                                            <div class="alert alert-danger" role="alert">
+                                                [[userErrorMsg ]]
+                                            </div>
+                                        </div>
+                                        <!-- потребителско име -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success">
+                                                <input id="ua_6" type="text" class="form-control" v-model="form.username">
+                                                <label for="ua_6">Потребителско име</label>
+                                            </div>
+                                        </div>
+                                        <!-- Парола 1 -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success"
+                                                 v-if="(formMode === 'create')||formChangePassword">
+                                                <input id="ua_7" type="password" class="form-control" v-model="form.password">
+                                                <label for="ua_7">Парола</label>
+                                            </div>
+                                        </div>
+                                        <!-- Парола 2 -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success"
+                                                 v-if="(formMode === 'create')||formChangePassword">
+                                                <input id="ua_8" type="password" class="form-control" v-model="form.password2">
+                                                <label for="ua_8">Парола (повторно)</label>
+                                            </div>
+                                        </div>
+                                        <!-- собствено име -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success">
+                                                <input id="ua_9" type="text" class="form-control" v-model="form.first_name">
+                                                <label for="ua_9">Собствено име</label>
+                                            </div>
+                                        </div>
+                                        <!-- фамилно име -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success">
+                                                <input id="ua_10" type="text" class="form-control" v-model="form.last_name">
+                                                <label for="ua_10">Фамилно име</label>
+                                            </div>
+                                        </div>
+                                        <!-- email -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success">
+                                                <input id="ua_11" type="email" class="form-control" v-model="form.email">
+                                                <label for="ua_11">e-mail</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer d-md-flex d-block align-items-center justify-content-center">
+                                    <div class="form-check"  v-if="formMode === 'edit'">
+                                        <input class="form-check-input" type="checkbox" v-model="formChangePassword" id="invalidCheck2">
+                                        <label class="form-check-label" for="invalidCheck2">
+                                            Промени паролата&nbsp; &nbsp; &nbsp;
+                                        </label>
+                                    </div>
+                                    <!-- Бутони запис/отказ -->
+                                    <button class="btn btn-outline-secondary btn-wave fs-16" @click="clearEditMode()">
+                                        Откажи</button>
+                                    &nbsp; &nbsp; &nbsp;
+                                    <button class="btn btn-outline-success btn-wave fs-16" :disabled="!userOK"
+                                            @click="saveUser">
+                                        Запиши</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Футер - бутон за добавяне на елемент -->
+                        <div class="card-footer d-md-flex d-block align-items-center justify-content-between">
+                            <div>
+                            </div>
+                            <div class="d-flex gap-12 align-items-center" v-if="!edit.editor">
+                                <button type="button" class="btn-1 btn btn-success" @click="startCreate(4)">
+                                    <span class="d-flex align-items-center gap-6">
+                                        <i class="bi bi-plus-circle"></i>
+                                        <span class="white">Добави учител</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ученици -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
+                     v-if="!edit.editor||edit.student">
+                    <div class="card-1 custom-card" >
+                        <!-- Заглавие на секцията -->
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4">
+                            <div class="card-title ">
+                                <div>Ученици</div>
+                            </div>
+                        </div>
+                        <!-- Тяло (списък/редактиране) -->
+                        <div class="card-body">
+                            <!-- Списък ако няма потребители в тази група -->
+                            <ul class="list-unstyled projects-items-danger-list" v-if="(numStudents===0)&&(!edit.editor)">
+                                <!-- ако няма въведени ученици -->
+                                <li>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal fs-16 custom-black">
+                                                Няма създадени потребители с права на ученик</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <!-- Списък ако има потребители в тази група -->
+                            <ul class="list-unstyled projects-items-success-list" v-if="(numStudents>0)&&(!edit.editor)">
+                                <!-- ако има въведен поне 1 ученик -->
+                                <li v-for="(usr, usr_idx) in listOfUsers">
+                                    <div class="d-flex align-items-center gap-3" v-if="usr.userprofile.access_level===5">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal  fs-16 custom-black">
+                                                [[usr.first_name]]&nbsp;[[usr.last_name]]
+                                                <span class="text-muted">([[usr.username]])</span>
+                                            </span>
+                                            <span class="d-block fw-normal  fs-12 text-muted">
+                                                ( клас [[usr.userprofile.grade]]
+                                                <sup>[[usr.userprofile.section]] </sup>, специалност
+                                                <span v-if="usr.userprofile.speciality">"[[usr.userprofile.speciality.specialty_name]]"</span>
+                                                )
+                                            </span>
+                                        </div>
+                                        <button type="button" class="btn-1 btn btn-success fw-medium" @click="startEdit(usr,5)">
+                                            <span class="d-flex align-items-center gap-6">
+                                                <i class="bi bi-pen"></i>
+                                                <span class="white">Промени</span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </li>
+                            </ul>
+                            <!-- Редактиране -->
+                            <div class="card-1 custom-card" v-if="edit.student">
+                                <div class="card-header">
+                                    <div class="card-title ">
+                                        <div v-if="formMode === 'create'">Добавяне на ученик</div>
+                                        <div v-else>Редактиране на ученик</div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3 mt-0">
+                                        <input type="text" style="display:none" aria-hidden="true" autocomplete="username">
+                                        <input type="password" style="display:none" aria-hidden="true" autocomplete="current-password">
+                                        <!-- съобщение за грешка -->
+                                        <div class="col-12 text-center" v-if="!userOK">
+                                            <div class="alert alert-danger" role="alert">
+                                                [[userErrorMsg ]]
+                                            </div>
+                                        </div>
+                                        <!-- потребителско име -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success">
+                                                <input id="ua_12" type="text" class="form-control" v-model="form.username">
+                                                <label for="ua_12">Потребителско име</label>
+                                            </div>
+                                        </div>
+                                        <!-- Парола 1 -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success"
+                                                 v-if="(formMode === 'create')||formChangePassword">
+                                                <input id="ua_13" type="password" class="form-control" v-model="form.password">
+                                                <label for="ua_13">Парола</label>
+                                            </div>
+                                        </div>
+                                        <!-- Парола 2 -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success"
+                                                 v-if="(formMode === 'create')||formChangePassword">
+                                                <input id="ua_14" type="password" class="form-control" v-model="form.password2">
+                                                <label for="ua_14">Парола (повторно)</label>
+                                            </div>
+                                        </div>
+                                        <!-- собствено име -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success">
+                                                <input id="ua_15" type="text" class="form-control" v-model="form.first_name">
+                                                <label for="ua_15">Собствено име</label>
+                                            </div>
+                                        </div>
+                                        <!-- фамилно име -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success">
+                                                <input id="ua_16" type="text" class="form-control" v-model="form.last_name">
+                                                <label for="ua_16">Фамилно име</label>
+                                            </div>
+                                        </div>
+                                        <!-- email -->
+                                        <div class="col-md-4">
+                                            <div class="form-floating mb-4 floating-success">
+                                                <input id="ua_17" type="email" class="form-control" v-model="form.email">
+                                                <label for="ua_17">e-mail</label>
+                                            </div>
+                                        </div>
+                                        <!-- клас -->
+                                        <div class="col-md-3">
+                                            <div class="form-floating mb-4">
+                                                <select class="form-select border-green" id="ua_18" v-model="form.userprofile.grade">
+                                                    <option value="8" class="bg-info">8</option>
+                                                    <option value="9" class="bg-primary">9</option>
+                                                    <option value="10" class="bg-secondary">10</option>
+                                                    <option value="11" class="bg-warning">11</option>
+                                                    <option value="12" class="bg-success">12</option>
+                                                </select>
+                                                <label for="ua_18">Клас</label>
+                                            </div>
+                                        </div>
+                                        <!-- паралелка -->
+                                        <div class="col-md-3">
+                                            <div class="form-floating mb-4">
+                                                <select class="form-select border-green" id="ua_19" v-model="form.userprofile.section">
+                                                    <option value="а" class="bg-info">"а"</option>
+                                                    <option value="б" class="bg-primary">"б"</option>
+                                                    <option value="в" class="bg-secondary">"в"</option>
+                                                    <option value="г" class="bg-warning">"г"</option>
+                                                    <option value="д" class="bg-success">"д"</option>
+                                                </select>
+                                                <label for="ua_19">Паралелка</label>
+                                            </div>
+                                        </div>
+                                        <!-- специалност -->
+                                        <div class="col-md-6">
+                                            <div class="form-floating mb-4">
+                                                <select class="form-select border-green" id="ua_20"
+                                                        v-model="form.userprofile.speciality">
+                                                    <option :value="null" disabled>Изберете специалност</option>
+                                                    <option v-for="sp in listOfSpecialties" :key="sp.id" :value="sp.id">
+                                                        [[ sp.specialty_name ]]
+                                                    </option>
+                                                </select>
+                                                <label for="ua_20">Специалност</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer d-md-flex d-block align-items-center justify-content-center">
+                                    <div class="form-check"  v-if="formMode === 'edit'">
+                                        <input class="form-check-input" type="checkbox" v-model="formChangePassword" id="invalidCheck3">
+                                        <label class="form-check-label" for="invalidCheck3">
+                                            Промени паролата&nbsp; &nbsp; &nbsp;
+                                        </label>
+                                    </div>
+                                    <!-- Бутони запис/отказ -->
+                                    <button class="btn btn-outline-secondary btn-wave fs-16" @click="clearEditMode()">
+                                        Откажи</button>
+                                    &nbsp; &nbsp; &nbsp;
+                                    <button class="btn btn-outline-success btn-wave fs-16" :disabled="!userOK"
+                                            @click="saveUser">
+                                        Запиши</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Футер - бутон за добавяне на елемент -->
+                        <div class="card-footer d-md-flex d-block align-items-center justify-content-between">
+                            <div>
+                            </div>
+                            <div class="d-flex gap-12 align-items-center" v-if="!edit.editor">
+                                <button type="button" class="btn-1 btn btn-success" @click="startCreate(5)">
+                                    <span class="d-flex align-items-center gap-6">
+                                        <i class="bi bi-plus-circle"></i>
+                                        <span class="white">Добави ученик</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        <!-- End::app-content -->
+
+{% endblock %}
+
+{% block page_script %}
+    <script src="{% static 'irida/js/users.js' %}"></script>
+{% endblock %}

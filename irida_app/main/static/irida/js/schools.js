@@ -2,6 +2,7 @@ const App = {
     delimiters: ['[[', ']]'], // Променяме синтаксиса на [[ ]]
     data() {
         return {
+            edit_mode: false,
             listOfSpecialties: [],
             user:{},
             school:{},
@@ -84,6 +85,7 @@ const App = {
             axios.get('/api/schools/'+logged_user.school+'/')
                 .then(function(response){
                     vm.school = response.data
+                    console.log(vm.school)
                 })
         },
         loadUserDetails(){
@@ -137,9 +139,9 @@ const App = {
         },
     },
     created: function(){
-        this.status = 0
+        this.edit_mode = false
         this.loadUserDetails();
     }
 }
 
-Vue.createApp(App).mount('#main')
+Vue.createApp(App).mount('#main_app')
