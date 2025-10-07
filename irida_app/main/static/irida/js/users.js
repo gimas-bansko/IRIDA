@@ -38,6 +38,7 @@ const App = {
                     subject: null,
                 }
             },
+            groupedStudents: {}, // { [grade]: { [section]: [users...] } }
         }
     },
     computed: {
@@ -89,6 +90,7 @@ const App = {
                 .then(function(response){
                     vm.listOfUsers = response.data;
                     vm.recount();
+                    vm.buildGroupedStudents();
                 })
         },
         recount(){
@@ -113,7 +115,41 @@ const App = {
                     console.log(vm.listOfSpecialties)
                 })
         },
+        buildGroupedStudents() {
+            const groups = {};
+            for (const u of this.listOfUsers) {
+                const up = u.userprofile || {};
+                if (up.access_level !== 5) continue; // само ученици
 
+                const grade = up.grade;
+                const section = up.section;
+
+                if (grade == null || !section) continue; // пропускаме невалидни
+
+                if (!groups[grade]) groups[grade] = {};
+                if (!groups[grade][section]) groups[grade][section] = [];
+                groups[grade][section].push(u);
+            }
+
+            // по желание: сортиране на секциите по азбучен ред и учениците по име
+            const sortedGroups = {};
+            const sortedGrades = Object.keys(groups).sort((a, b) => Number(a) - Number(b));
+            for (const g of sortedGrades) {
+                const sections = groups[g];
+                const sortedSections = {};
+                const sectionKeys = Object.keys(sections).sort((a, b) => a.localeCompare(b, 'bg'));
+                for (const s of sectionKeys) {
+                    // сортиране на учениците по фамилия, после собствено име
+                    sortedSections[s] = sections[s].slice().sort((u1, u2) => {
+                        const a = `${u1.first_name || ''} ${u1.last_name || ''} ${u1.userprofile.speciality.specialty_name || ''}`.trim();
+                        const b = `${u2.first_name || ''} ${u2.last_name || ''} ${u2.userprofile.speciality.specialty_name || ''}`.trim();
+                        return a.localeCompare(b, 'bg');
+                    });
+                }
+                sortedGroups[g] = sortedSections;
+            }
+            this.groupedStudents = sortedGroups;
+        },
 
         // UI helpers
         clearEditMode(){

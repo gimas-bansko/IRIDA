@@ -325,31 +325,25 @@
                                 </li>
                             </ul>
                             <!-- Списък ако има потребители в тази група -->
-                            <ul class="list-unstyled projects-items-success-list" v-if="(numStudents>0)&&(!edit.editor)">
-                                <!-- ако има въведен поне 1 ученик -->
-                                <li v-for="(usr, usr_idx) in listOfUsers">
-                                    <div class="d-flex align-items-center gap-3" v-if="usr.userprofile.access_level===5">
-                                        <div class="flex-fill">
-                                            <span class="d-block fw-normal  fs-16 custom-black">
-                                                [[usr.first_name]]&nbsp;[[usr.last_name]]
-                                                <span class="text-muted">([[usr.username]])</span>
-                                            </span>
-                                            <span class="d-block fw-normal  fs-12 text-muted">
-                                                ( клас [[usr.userprofile.grade]]
-                                                <sup>[[usr.userprofile.section]] </sup>, специалност
-                                                <span v-if="usr.userprofile.speciality">"[[usr.userprofile.speciality.specialty_name]]"</span>
-                                                )
-                                            </span>
-                                        </div>
-                                        <button type="button" class="btn-1 btn btn-success fw-medium" @click="startEdit(usr,5)">
-                                            <span class="d-flex align-items-center gap-6">
-                                                <i class="bi bi-pen"></i>
-                                                <span class="white">Промени</span>
-                                            </span>
-                                        </button>
+                            <div class="mt-4">
+                                <div v-for="(sections, grade) in groupedStudents" :key="grade" class="mb-3">
+                                    <div v-for="(students, section) in sections" :key="grade + '-' + section" class="mb-3">
+                                        <h5 class="mb-2">[[ grade ]]<sup>[[ section ]]</sup> клас</h5>
+                                        <ul class="list-unstyled projects-items-success-list">
+                                            <li v-for="u in students" :key="u.id" class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>
+                                                    [[ u.first_name ]] [[ u.last_name ]]
+                                                    <small class="text-muted">([[ u.username ]]) Специалност "[[u.userprofile.speciality.specialty_name]]"</small>
+                                                </span>
+                                                <span>
+                                                    <button class="btn btn-sm btn-outline-primary me-2" @click="startEdit(u, 5)">Редакция</button>
+                                                    <button class="btn btn-sm btn-outline-danger" @click="deleteUser(u)">Изтриване</button>
+                                                </span>
+                                            </li>
+                                        </ul>
                                     </div>
-                                </li>
-                            </ul>
+                                </div>
+                            </div>
                             <!-- Редактиране -->
                             <div class="card-1 custom-card" v-if="edit.student">
                                 <div class="card-header">
