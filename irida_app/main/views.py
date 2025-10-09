@@ -90,11 +90,15 @@ def course_units_view(request):
     context = make_user_context(request)
     return render(request, 'main/course_units.html', context)
 
-def course_sessions_view(request):
+def course_lessons_view(request):
     context = make_user_context(request)
-    return render(request, 'main/course_sessions.html', context)
+    return render(request, 'main/course_lessons.html', context)
 
-def course_lessons_view(request, session_id):
+def session_home_view(request):
+    context = make_user_context(request)
+    return render(request, 'main/session_home.html', context)
+
+def lesson_view(request, session_id):
     user = request.user
     user_profile = user.userprofile
     session = Session.objects.get(id=session_id)

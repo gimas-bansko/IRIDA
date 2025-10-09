@@ -1,0 +1,72 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block main_content %}
+           <div class="container-fluid mt-10">
+               <!-- Училище -->
+               <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                   <div>
+                       <div class="d-flex align-items-top mt-0 flex-wrap">
+                           <div class="lh-1">
+                               <span class="avatar avatar-md me-3 avatar-rounded">
+                                   <img class="avatar" src="{{ user_profile.school.logo.url }}">
+                               </span>
+                           </div>
+                           <div class="flex-fill">
+                               <div class="d-flex align-items-center">
+                                   <div class="mt-sm-0 mt-2">
+                                       <p class="mb-0 fs-14 fw-semibold">
+                                           {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
+                                       <p class="mb-0 text-muted">{{ user_profile.school.full_name}}</p>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+               <!-- Текущи данни -->
+               <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                   <div style="min-height: 250px;">
+                       <h1 class="page-title fw-normal fs-20 mb-12">Провеждане на занятие</h1>
+                       <h3 class="page-title fw-normal fs-14 mb-12">Текущ избор:</h3>
+                       <div class="row g-3 mt-0 fs-12">
+                           <div class="col-1"></div>
+                           <div class="col-2 text-end">Специалност:</div>
+                           <div class="col-6">[[user.profile.speciality.specialty_name]]</div>
+                           <div class="col-3 mt-2 text-end">
+                               <button type="button" class="btn btn-outline-success btn-sm btn-wave fs-12">
+                                   <i class="bi bi-check2-circle"></i>&nbsp;Промени</button>
+                           </div>
+                           <hr>
+                           <div class="col-1"></div>
+                           <div class="col-2 text-end">Предмет:</div>
+                           <div class="col-6">[[user.profile.subject.name]] -
+                               <span v-if="user.profile.subject.subject_type"> теория</span>
+                               <span v-else> практика</span>, [[user.profile.subject.grade]]<sup>-ти</sup> клас
+                           </div>
+                           <div class="col-3 mt-2 text-end">
+                               <button type="button" class="btn btn-outline-success btn-sm btn-wave fs-12">
+                                   <i class="bi bi-check2-circle"></i>&nbsp;Промени</button>
+                           </div>
+                           <hr>
+                           <div class="col-1"></div>
+                           <div class="col-2 text-end">Клас:</div>
+                           <div class="col-6">[[user.profile.grade]]<sup>[[user.profile.section]]</sup></div>
+                           <div class="col-3 mt-2 text-end">
+                               <button type="button" class="btn btn-outline-success btn-sm btn-wave fs-12">
+                                   <i class="bi bi-check2-circle"></i>&nbsp;Промени</button>
+                           </div>
+                           <hr>
+                       </div>
+                       <div class="text-center">
+                           <button type="button" class="btn btn-outline-success btn-wave fs-14">
+                               <i class="bi bi-check2-circle"></i>&nbsp;Продължи</button>
+                       </div>
+                   </div>
+               </div>
+            </div>
+{% endblock %}
+
+{% block page_script %}
+    <script src="{% static 'irida/js/session_home.js' %}"></script>
+{% endblock %}

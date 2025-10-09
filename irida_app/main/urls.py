@@ -12,9 +12,10 @@ urlpatterns = [
     path('schools', schools_list_view, name='schools_list'),
     path('goals', course_goals_view, name='goals_list'),
     path('units', course_units_view, name='units_list'),
-    path('sessions', course_sessions_view, name='sessions_list'),
+    path('lessons', course_lessons_view, name='lessons_list'),
     path('users', users_list_view, name='users_list'),
-    path('lesson/<int:session_id>/', course_lessons_view, name='lesson_details'),
+    path('lesson/<int:session_id>/', lesson_view, name='lesson_details'),
+    path('session_home', session_home_view, name='session_menu'),
     #    path('lesson/<int:session_id>/', test_view, name='lesson_details'),
 
 

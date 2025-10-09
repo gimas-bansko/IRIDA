@@ -256,7 +256,7 @@
                                  <li class="breadcrumb-item"><a href="{% url 'specialty_list' %}">{{ specialty.specialty_name}}</a></li>
                                  <li class="breadcrumb-item"><a href="{% url 'subjects_list' %}">{{ subject.name}}
                                     ({% if subject.subject_type %} теория {% else %} практика {% endif %})</a></li>
-                                 <li class="breadcrumb-item"><a href="{% url 'sessions_list' %}">Занятие [[session.num]]</a></li>
+                                 <li class="breadcrumb-item"><a href="{% url 'lessons_list' %}">Занятие [[session.num]]</a></li>
                                  <li class="breadcrumb-item active" aria-current="page">[[menu_item]]</li>
                              </ol>
                          </nav>
