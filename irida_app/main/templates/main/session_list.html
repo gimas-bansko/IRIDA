@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+{% extends 'main/base.html' %}
+{% load static %}
+{% block main_content %}
+            <div class="container-fluid">
+<!-- ---------------------------------------- -->
+                <!-- Page Header -->
+                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                     <div>
+                         <p class="mb-1 mt-2 text-muted">
+                             <img class="avatar" src="{{ user_profile.school.logo.url }}">
+                             {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
+                         <p class="text-muted" style="margin-left: 3rem;">специалност {{ specialty.specialty_name}}</p>
+                         <h1 class="page-title fw-normal fs-20 mb-12">{{ subject.name}}</h1>
+                         <nav>
+                             <ol class="breadcrumb mb-2">
+                                 <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
+                                 <li class="breadcrumb-item"><a href="{% url 'specialty_list' %}">
+                                     {{user_profile.grade}}<sup>{{user_profile.section}}</sup> клас, {{ specialty.specialty_name}}</a></li>
+                                 <li class="breadcrumb-item"><a href="{% url 'subjects_list' %}">{{ subject.name}}
+                                    ({{ subject.subject_type }})</a></li>
+                                 <li class="breadcrumb-item active" aria-current="page">Уроци</li>
+                             </ol>
+                         </nav>
+                     </div>
+                 </div>
+                <!-- Page Header Close -->
+
+                <!-- ако няма въведени уроци -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
+                     v-if="(listOfSessions.length===0)">
+                    <div class="card-1 custom-card">
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
+                            <div class="card-title ">
+                                <div>Уроци</div>
+                            </div>
+                            <div class="d-flex gap-12 align-items-center">
+                                <button type="button" class="btn-1 btn btn-success" >
+                                    <span class="d-flex align-items-center gap-6">
+                                        <i class="bi bi-plus-circle"></i>
+                                        <span class="white">Добави урок</span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled projects-items-danger-list">
+                                <li>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal fs-16 custom-black">
+                                                Не са намерени разработени уроци по предмета</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- ако има уроци -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
+                     v-if="listOfSessions.length>0">
+                    <div class="card-1 custom-card" >
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
+                            <div class="card-title ">
+                                <div>Уроци</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled projects-items-success-list">
+                                <li v-for="(session, session_idx) in listOfSessions">
+                                    <!-- Общи параметри (заглавка) -->
+                                    <div class="d-flex align-items-center gap-3" style="padding-right: 16px;">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal  fs-16 custom-black">
+                                                Урок [[session.num]]. [[session.name]]<br>
+                                                <span class="text-muted fs-12">Вид на урока: </span>
+
+                                                <span class="badge fs-12"
+                                                      :class="sessionTypeClass(session.session_type)">
+                                                    [[sessionType(session.session_type)]]</span>
+                                                <!-- -->
+                                                <span v-if="session.hours===1" class="text-muted fs-12">, Продължителност [[session.duration]] учебен час, </span>
+                                                <span v-if="session.hours!=1" class="text-muted fs-12">, Продължителност [[session.duration]] учебни часа, </span>
+                                                <span v-if="session.basic_level" class="badge bg-info fs-12">Основен (задължителен) урок</span>
+                                                <span v-else class="badge bg-warning fs-12">Резервен (при необходимост) урок</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div v-if="!session.collapsed">
+                                        <!-- цели -->
+                                        <div class="card-1 custom-card mt-3">
+                                            <div class="card-body">
+                                                <span class="d-block fw-normal  fs-14 custom-black">
+                                                    Цели (очаквани резултати):<br>
+                                                    <span class="text-muted fs-12">[[session.goals]]</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- теми -->
+                                        <div class="card-1 custom-card mt-1" >
+                                            <div class="card-body">
+                                                <span class="d-block fw-normal  fs-14 custom-black">
+                                                    Теми:<br>
+                                                </span>
+                                                <!-- ако няма въведени теми -->
+                                                <ul class="list-unstyled projects-items-danger-list" v-if="session.session_topics.length===0">
+                                                    <li>
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <div class="flex-fill">
+                                                                <span class="d-block fw-normal fs-16 custom-black">
+                                                                    Не са въведени теми към раздела</span>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <!-- ако има въведени теми -->
+                                                <ul class="list-unstyled projects-items-primary-list" v-else>
+                                                    <li v-for="(c_topic, topic_idx) in session.session_topics">
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <div class="flex-fill">
+                                                                <span class="d-block fw-normal  fs-14 custom-black">
+                                                                    [[c_topic.topic.name]]
+                                                                    <span class="text-muted fs-12">([[moscowTextFor(c_topic.topic)]]
+                                                                        <span v-if="c_topic.topic.MoSCoW_rem"> - </span>
+                                                                        [[c_topic.topic.MoSCoW_rem]])<br>
+                                                                        [[c_topic.description]]
+                                                                    </span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                       </div>
+                                        <!-- фокус -->
+                                        <div class="card-1 custom-card mt-1" >
+                                            <div class="card-body">
+                                                <span class="d-block fw-normal  fs-14 custom-black">
+                                                    Фокус (основни акценти):<br>
+                                                    <span class="text-muted fs-12">[[session.focus]]</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="btn-list text-end">
+                                        <!-- бутон "По-малко" -->
+                                        <button v-if="!session.collapsed" type="button" class="btn btn-primary label-btn" @click="session.collapsed=true">
+                                            <i class="ri-arrow-up-s-line label-btn-icon me-2"></i>
+                                            По-малко
+                                        </button>&nbsp;&nbsp;
+                                        <!-- бутон "Виж повече" -->
+                                        <button v-if="session.collapsed" type="button" class="btn btn-primary label-btn" @click="session.collapsed=false">
+                                            <i class="ri-arrow-down-s-line label-btn-icon me-2"></i>
+                                            Виж повече
+                                        </button>
+                                        <!-- бутон "Ресурси" -->
+                                        &nbsp;&nbsp;&nbsp;
+                                        <button type="button" class="btn btn-secondary label-btn" @click="goToLesson(session.id)">
+                                            <i class="ri-stack-line label-btn-icon me-2"></i>
+                                            Ресурси
+                                        </button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+<!-- ---------------------------------------- -->
+            </div>
+{% endblock %}
+
+{% block page_script %}
+    <script src="{% static 'irida/js/session_list.js' %}"></script>
+{% endblock %}

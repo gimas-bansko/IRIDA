@@ -30,37 +30,105 @@
                        <h1 class="page-title fw-normal fs-20 mb-12">Провеждане на занятие</h1>
                        <h3 class="page-title fw-normal fs-14 mb-12">Текущ избор:</h3>
                        <div class="row g-3 mt-0 fs-12">
+                           <!-- Специалност -->
                            <div class="col-1"></div>
                            <div class="col-2 text-end">Специалност:</div>
-                           <div class="col-6">[[user.profile.speciality.specialty_name]]</div>
-                           <div class="col-3 mt-2 text-end">
-                               <button type="button" class="btn btn-outline-success btn-sm btn-wave fs-12">
-                                   <i class="bi bi-check2-circle"></i>&nbsp;Промени</button>
+                           <div class="col-6" v-if="edit_mode==='speciality'">
+                                <div style="margin-top: -1vh;">
+                                    <select class="form-select border-green fs-12" id="sp"
+                                            v-model="speciality.id">
+                                        <option :value="null" disabled>Изберете специалност</option>
+                                        <option v-for="sp in listOfSpecialties" :key="sp.id" :value="sp.id">
+                                            [[ sp.specialty_name ]]
+                                        </option>
+                                    </select>
+                                </div>
+                           </div>
+                           <div class="col-6" v-else>[[user.profile.speciality.specialty_name]]</div>
+                           <div class="col-3 mt-2 text-end" v-if="edit_mode=='speciality'">
+                               <button type="button" class="btn btn-outline-info btn-sm btn-wave fs-12" @click="edit_mode='none'">
+                                   <i class="bi bi-arrow-clockwise"></i>&nbsp;Откажи</button>&nbsp;&nbsp;&nbsp;
+                               <button type="button" class="btn btn-outline-success btn-sm btn-wave fs-12" @click="setSpecialty">
+                                   <i class="bi bi-check2-circle"></i>&nbsp;Запиши</button>
+                           </div>
+                           <div class="col-3 mt-2 text-end" v-else>
+                               <button type="button" class="btn btn-outline-success btn-sm btn-wave fs-12" @click="editSpecialty">
+                                   <i class="bi bi-list"></i>&nbsp;Промени</button>
                            </div>
                            <hr>
+                           <!-- Предмет -->
                            <div class="col-1"></div>
                            <div class="col-2 text-end">Предмет:</div>
-                           <div class="col-6">[[user.profile.subject.name]] -
-                               <span v-if="user.profile.subject.subject_type"> теория</span>
-                               <span v-else> практика</span>, [[user.profile.subject.grade]]<sup>-ти</sup> клас
+                           <div class="col-6" v-if="edit_mode==='subject'">
+                                <div style="margin-top: -1vh;">
+                                    <select class="form-select border-green fs-12" id="sb"
+                                            v-model="subject.id">
+                                        <option :value="null" disabled>Изберете учебен предмет</option>
+                                        <option v-for="sb in listOfSubjects" :key="sb.id" :value="sb.id">
+                                            [[ sb.name ]] - [[sb.subject_type]], [[sb.grade]]-ти клас
+                                        </option>
+                                    </select>
+                                </div>
                            </div>
-                           <div class="col-3 mt-2 text-end">
-                               <button type="button" class="btn btn-outline-success btn-sm btn-wave fs-12">
+                           <div class="col-6" v-else>[[user.profile.subject.name]] - [[user.profile.subject.subject_type]],
+                               [[user.profile.subject.grade]]<sup>-ти</sup> клас
+                           </div>
+                           <div class="col-3 mt-2 text-end" v-if="edit_mode=='subject'">
+                               <button type="button" class="btn btn-outline-info btn-sm btn-wave fs-12" @click="edit_mode='none'">
+                                   <i class="bi bi-arrow-clockwise"></i>&nbsp;Откажи</button>&nbsp;&nbsp;&nbsp;
+                               <button type="button" class="btn btn-outline-success btn-sm btn-wave fs-12" @click="setSubject">
+                                   <i class="bi bi-check2-circle"></i>&nbsp;Запиши</button>
+                           </div>
+                           <div class="col-3 mt-2 text-end" v-else="">
+                               <button type="button" class="btn btn-outline-success btn-sm btn-wave fs-12" @click="editSubject">
                                    <i class="bi bi-check2-circle"></i>&nbsp;Промени</button>
                            </div>
                            <hr>
+                           <!-- Клас -->
                            <div class="col-1"></div>
                            <div class="col-2 text-end">Клас:</div>
-                           <div class="col-6">[[user.profile.grade]]<sup>[[user.profile.section]]</sup></div>
-                           <div class="col-3 mt-2 text-end">
-                               <button type="button" class="btn btn-outline-success btn-sm btn-wave fs-12">
+                           <div class="col-3" v-if="edit_mode==='grade_section'">
+                                <div style="margin-top: -1vh;">
+                                    <select class="form-select border-green fs-12" id="gr"
+                                            v-model="user.profile.grade">
+                                        <option :value="null" disabled>Изберете клас</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                </div>
+                           </div>
+                           <div class="col-3" v-if="edit_mode==='grade_section'">
+                                <div style="margin-top: -1vh;">
+                                    <select class="form-select border-green fs-12" id="sc"
+                                            v-model="user.profile.section">
+                                        <option :value="null" disabled>Изберете паралелка</option>
+                                        <option value="а">"а"</option>
+                                        <option value="б">"б"</option>
+                                        <option value="в">"в"</option>
+                                        <option value="г">"г"</option>
+                                        <option value="д">"д"</option>
+                                    </select>
+                                </div>
+                           </div>
+                           <div class="col-6" v-else>[[user.profile.grade]]<sup>[[user.profile.section]]</sup></div>
+                           <div class="col-3 mt-2 text-end" v-if="edit_mode=='grade_section'">
+                               <button type="button" class="btn btn-outline-info btn-sm btn-wave fs-12" @click="edit_mode='none'">
+                                   <i class="bi bi-arrow-clockwise"></i>&nbsp;Откажи</button>&nbsp;&nbsp;&nbsp;
+                               <button type="button" class="btn btn-outline-success btn-sm btn-wave fs-12" @click="setGradeSection">
+                                   <i class="bi bi-check2-circle"></i>&nbsp;Запиши</button>
+                           </div>
+                           <div class="col-3 mt-2 text-end" v-else>
+                               <button type="button" class="btn btn-outline-success btn-sm btn-wave fs-12" @click="editGradeSection">
                                    <i class="bi bi-check2-circle"></i>&nbsp;Промени</button>
                            </div>
                            <hr>
                        </div>
                        <div class="text-center">
-                           <button type="button" class="btn btn-outline-success btn-wave fs-14">
-                               <i class="bi bi-check2-circle"></i>&nbsp;Продължи</button>
+                           <a type="button" class="btn btn-outline-success btn-wave fs-14" href="{% url 'session_list' %}">
+                               <i class="bi bi-check2-circle"></i>&nbsp;Продължи</a>
                        </div>
                    </div>
                </div>

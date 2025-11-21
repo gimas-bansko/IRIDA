@@ -23,7 +23,7 @@ const App = {
                 id:0,
                 name: '',
                 grade: 12,
-                subject_type: true,
+                subject_type: 'теория',
                 hpy: 18,
                 wpy: 0,
                 hpw1: 0,
@@ -197,7 +197,7 @@ const App = {
             this.subject.id = 0
             this.subject.name = ''
             this.subject.grade = 12
-            this.subject.subject_type = true
+            this.subject.subject_type = 'теория'
             this.subject.hpy = 18
             this.subject.wpy = 0
             this.subject.hpw1 = 0
@@ -214,11 +214,12 @@ const App = {
             this.subject.hpw1 = this.listOfSubjects[idx].hpw1
             this.subject.hpw2 = this.listOfSubjects[idx].hpw2
             this.setEditMode(0, idx)
+            console.log('1:',this.subject)
         },
         saveSubject() {
             vm = this
             vm.clearEditMode()
-
+            console.log('2:',vm.subject)
             // Изпращане на PUT заявка към API
             axios.put('api/specialty/' + vm.user.specialty + '/subjects/' + vm.subject.id + '/', vm.subject, {
                 headers: {
@@ -235,12 +236,6 @@ const App = {
                     console.error("Грешка при запазване на данни:", error);
                     alert("Възникна грешка при запазване на данните!");
                 });
-        },
-        subjectTypeStr(idx) {
-            if (this.listOfSubjects[idx].subject_type) {
-                return 'теория'
-            }
-            return 'практика'
         },
         setSubjectGoal(sb_id) {
             axios.get(`/api/course_set/${sb_id}/`)
@@ -265,7 +260,7 @@ const App = {
         setSubjectSession(sb_id) {
             axios.get(`/api/course_set/${sb_id}/`)
                 .then(() => {
-                    window.location.href = '/sessions';
+                    window.location.href = '/lessons';
                 })
                 .catch(err => {
                     console.error('Грешка:', err);

@@ -20,27 +20,27 @@
                                  <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
                                  <li class="breadcrumb-item"><a href="{% url 'specialty_list' %}">{{ specialty.specialty_name}}</a></li>
                                  <li class="breadcrumb-item"><a href="{% url 'subjects_list' %}">{{ subject.name}}
-                                    ({% if subject.subject_type %} теория {% else %} практика {% endif %})</a></li>
-                                 <li class="breadcrumb-item active" aria-current="page">Занятия</li>
+                                    ({{ subject.subject_type }})</a></li>
+                                 <li class="breadcrumb-item active" aria-current="page">Уроци</li>
                              </ol>
                          </nav>
                      </div>
                  </div>
                 <!-- Page Header Close -->
 
-                <!-- ако няма въведени занятия -->
+                <!-- ако няма въведени уроци -->
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
                      v-if="(listOfSessions.length===0)&&(!edit.editor)">
                     <div class="card-1 custom-card">
                         <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
                             <div class="card-title ">
-                                <div>Учебни занятия</div>
+                                <div>Уроци</div>
                             </div>
                             <div class="d-flex gap-12 align-items-center">
                                 <button type="button" class="btn-1 btn btn-success" @click="newSession()">
                                     <span class="d-flex align-items-center gap-6">
                                         <i class="bi bi-plus-circle"></i>
-                                        <span class="white">Добави занятие</span>
+                                        <span class="white">Добави урок</span>
                                     </span>
                                 </button>
                             </div>
@@ -51,7 +51,7 @@
                                     <div class="d-flex align-items-center gap-3">
                                         <div class="flex-fill">
                                             <span class="d-block fw-normal fs-16 custom-black">
-                                                Не са намерени занятия по предмета</span>
+                                                Не са намерени разработени уроци по предмета</span>
                                         </div>
                                     </div>
                                 </li>
@@ -59,13 +59,13 @@
                         </div>
                     </div>
                 </div>
-                <!-- ако има занятия -->
+                <!-- ако има уроци -->
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
                      v-if="(listOfSessions.length>0)&&(!edit.editor)">
                     <div class="card-1 custom-card" >
                         <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
                             <div class="card-title ">
-                                <div>Учебни занятия</div>
+                                <div>Уроци</div>
                             </div>
                         </div>
                         <div class="card-body">
@@ -75,15 +75,15 @@
                                     <div class="d-flex align-items-center gap-3" v-if="showItem(0,session_idx)" style="padding-right: 16px;">
                                         <div class="flex-fill">
                                             <span class="d-block fw-normal  fs-16 custom-black">
-                                                Занятие [[session.num]]. [[session.name]]<br>
-                                                <span class="text-muted fs-12">Вид на занятието: </span>
+                                                Урок [[session.num]]. [[session.name]]<br>
+                                                <span class="text-muted fs-12">Вид на урока: </span>
                                                 <span class="badge fs-12"
                                                       :class="sessionTypeClass(session.session_type)">
                                                     [[sessionType(session.session_type)]]</span>
                                                 <span v-if="session.hours===1" class="text-muted fs-12">, Продължителност [[session.duration]] учебен час, </span>
                                                 <span v-if="session.hours!=1" class="text-muted fs-12">, Продължителност [[session.duration]] учебни часа, </span>
-                                                <span v-if="session.basic_level" class="badge bg-info fs-12">Основно (задължително) занятие</span>
-                                                <span v-else class="badge bg-warning fs-12">Резервно (при необходимост) занятие</span>
+                                                <span v-if="session.basic_level" class="badge bg-info fs-12">Основен (задължителен) урок</span>
+                                                <span v-else class="badge bg-warning fs-12">Резервен (при необходимост) урок</span>
                                             </span>
                                         </div>
                                     </div>
@@ -153,16 +153,6 @@
                                             <i class="ri-arrow-down-s-line label-btn-icon me-2"></i>
                                             Виж повече
                                         </button>&nbsp;&nbsp;
-                                        <!--
-                                        <button type="button" class="btn btn-primary label-btn" @click="" v-if="">
-                                            <i class="ri-arrow-up-line label-btn-icon me-2"></i>
-                                            Нагоре
-                                        </button>&nbsp;&nbsp;
-                                        <button type="button" class="btn btn-primary label-btn" @click="">
-                                            <i class="ri-arrow-down-line label-btn-icon me-2"></i>
-                                            Надолу
-                                        </button>&nbsp;&nbsp;
-                                        -->
                                         <!-- бутон "Премахни" -->
                                         <button class="btn btn-info label-btn dropdown-toggle" type="button" id="dropdownMenu2"
                                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -172,8 +162,8 @@
                                         <div class="dropdown-menu">
                                             <div class="alert alert-solid-info alert-dismissible fade show">
                                                 <div class="text-center mb-3 mt-1">
-                                                    Премахването на задание е окончателно и не може да се възстанови.<br>
-                                                    Наистина ли искате да премахнете това занятие?
+                                                    Премахването на урок е окончателно и не може да се възстанови.<br>
+                                                    Наистина ли искате да премахнете този урок?
                                                 </div>
                                                 <div class="text-center mb-3 mt-1">
                                                     <button class="btn btn-outline-secondary btn-lg shadow-lg fs-16" @click="clearEditMode()">
@@ -192,7 +182,7 @@
                                         <!-- бутон "Ресурси" -->
                                         <button type="button" class="btn btn-secondary label-btn" @click="goToLesson(session.id)">
                                             <i class="ri-stack-line label-btn-icon me-2"></i>
-                                            Ресурси [[session.id]]
+                                            Ресурси
                                         </button>&nbsp;&nbsp;&nbsp;&nbsp;
                                     </div>
                                 </li>
@@ -201,14 +191,14 @@
                     </div>
                 </div>
 
-                <!-- редактиране на занятие -->
+                <!-- редактиране на урок -->
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
                      v-if="edit.editor">
                     <div class="card-1 custom-card" >
                         <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
                             <div class="card-title">
-                                <div v-if="!editSession.id">Ново занятие</div>
-                                <div v-else>Редактиране на занятие</div>
+                                <div v-if="!editSession.id">Нов урок</div>
+                                <div v-else>Редактиране на урок</div>
                             </div>
                         </div>
                         <div class="card-body">
@@ -229,7 +219,7 @@
                                     </div>
                                 </div>
 
-                                <!-- вид на занятието -->
+                                <!-- вид на урок -->
                                 <div class="col-md-5">
                                     <div class="form-floating mb-4">
                                         <select class="form-select border-green" id="es_vid" v-model="editSession.session_type">
@@ -239,7 +229,7 @@
                                             <option value="ОС" class="bg-warning">Обобщаване и систематизиране</option>
                                             <option value="K" class="bg-success">Комбиниран урок</option>
                                         </select>
-                                        <label for="es_vid">Вид на занятието</label>
+                                        <label for="es_vid">Вид на урока</label>
                                     </div>
                                 </div>
 
@@ -251,14 +241,14 @@
                                     </div>
                                 </div>
 
-                                <!-- тип на занятието -->
+                                <!-- тип на урока -->
                                 <div class="col-md-5">
                                     <div class="form-floating mb-4">
                                         <select class="form-select border-green" id="es_tip" v-model="editSession.basic_level">
-                                            <option value="true" class="bg-info">Основно (задължително) занятие</option>
-                                            <option value="false" class="bg-success">Резервно (при необходимост) занятие</option>
+                                            <option value="true" class="bg-info">Основен (задължителен) урок</option>
+                                            <option value="false" class="bg-success">Резервен (при необходимост) урок</option>
                                         </select>
-                                        <label for="es_tip">Тип на занятието</label>
+                                        <label for="es_tip">Тип на урока</label>
                                     </div>
                                 </div>
 
@@ -267,7 +257,7 @@
                                     <div class="form-floating mb-4">
                                         <textarea class="form-control border-green" id="es_goal" rows="5" v-model="editSession.goals"
                                                   style="height:56px;"></textarea>
-                                        <label for="es_goal">Цели на занятието(урока)</label>
+                                        <label for="es_goal">Цели на урока (очаквани резултати)  </label>
                                     </div>
                                 </div>
 
@@ -276,7 +266,7 @@
                                     <div class="card-header d-md-flex d-block align-items-center justify-content-between my-1"
                                          style="padding-right: 28px; padding: 0.25rem 1.25rem;">
                                         <div class="card-title" style="font-size: 14px;">
-                                            <div>Теми от учебната програма, включени в занятието</div>
+                                            <div>Теми от учебната програма, включени в урока</div>
                                         </div>
                                     </div>
                                     <div class="card-body">
@@ -313,7 +303,7 @@
                                                                 <div class="dropdown-menu">
                                                                     <div class="alert alert-solid-info alert-dismissible fade show">
                                                                         <div class="text-center mb-3 mt-1">
-                                                                            Темата ще бъде премахната от занятието.<br>
+                                                                            Темата ще бъде премахната от урока.<br>
                                                                             Моля, потвърдете премахнването и:
                                                                         </div>
                                                                         <div class="text-center mb-3 mt-1">
@@ -396,7 +386,7 @@
                                     <div class="form-floating mb-4 floating-success">
                                         <textarea class="form-control border-green" id="es_focus" rows="5" v-model="editSession.focus"
                                                   style="height:56px;"></textarea>
-                                        <label for="es_focus">Фокус(основни акценти на занятието)</label>
+                                        <label for="es_focus">Фокус(основни акценти на урока)</label>
                                     </div>
                                 </div>
 
@@ -412,13 +402,13 @@
                         </div>
                     </div>
                 </div>
-                <!-- бутон добави занятие -->
+                <!-- бутон добави урок -->
                 <div class="card-1 custom-card mt-1" v-if="!edit.editor">
                     <div class="card-body">
                         <div class="btn-list text-center">
                             <button type="button" class="btn btn-success label-btn" @click="newSession()">
                                 <i class="bi bi-plus-circle label-btn-icon me-2"></i>
-                                Добави занятие
+                                Добави урок
                             </button>
                         </div>
                     </div>

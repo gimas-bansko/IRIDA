@@ -98,6 +98,14 @@ def session_home_view(request):
     context = make_user_context(request)
     return render(request, 'main/session_home.html', context)
 
+def session_list_view(request):
+    context = make_user_context(request)
+    return render(request, 'main/session_list.html', context)
+
+def session_main_view(request):
+    context = make_user_context(request)
+    return render(request, 'main/session_main.html', context)
+
 def lesson_view(request, session_id):
     user = request.user
     user_profile = user.userprofile
@@ -234,7 +242,7 @@ def specialty_detail(request, specialty_id, school_id=None):
             traceback.print_exc()
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# изпобор на специалност по подразбиране
+# избор на специалност по подразбиране
 @api_view(['GET', 'POST'])  # позволяваме и POST, ако решите да не пращате id в URL
 @permission_classes([IsAuthenticated])
 def set_speciality(request, sp=None):
@@ -254,6 +262,74 @@ def set_speciality(request, sp=None):
     if sp > 0:
         specialty = get_object_or_404(Specialty, id=sp)
         user_profile.speciality = specialty
+        user_profile.save()
+
+    return Response({'ok': True})
+
+
+# избор на предмет по подразбиране
+@api_view(['GET', 'POST'])  # позволяваме и POST, ако решите да не пращате id в URL
+@permission_classes([IsAuthenticated])
+def set_subject(request, sb=None):
+    user = request.user
+    user_profile = user.userprofile
+
+    # Ако искате да вземете sb от body при POST
+    if request.method == 'POST':
+        sp = request.data.get('sb') or request.data.get('subject_id')
+
+    # Валидация
+    try:
+        sb = int(sb) if sb is not None else 0
+    except (TypeError, ValueError):
+        return Response({'ok': False, 'error': 'Невалиден параметър sb'}, status=400)
+
+    if sb > 0:
+        subject = get_object_or_404(Subject, id=sb)
+        user_profile.subject = subject
+        user_profile.save()
+
+    return Response({'ok': True})
+
+# избор на клас и паралелка по подразбиране
+@api_view(['GET', 'POST'])  # позволяваме и POST, ако решите да не пращате id в URL
+@permission_classes([IsAuthenticated])
+def set_grade_section(request, gr=None, se=None):
+    user = request.user
+    user_profile = user.userprofile
+
+    # Ако вземем gr и se от body при POST
+    if request.method == 'POST':
+        gr = request.data.get('gr') or request.data.get('grade')
+        se = request.data.get('se') or request.data.get('section')
+
+    user_profile.grade = gr
+    user_profile.section = se
+    user_profile.save()
+
+    return Response({'ok': True})
+
+
+# избор на клас и паралелка по подразбиране
+@api_view(['GET', 'POST'])  # позволяваме и POST, ако решите да не пращате id в URL
+@permission_classes([IsAuthenticated])
+def set_subject(request, sb=None):
+    user = request.user
+    user_profile = user.userprofile
+
+    # Ако искате да вземете sb от body при POST
+    if request.method == 'POST':
+        sp = request.data.get('sb') or request.data.get('subject_id')
+
+    # Валидация
+    try:
+        sb = int(sb) if sb is not None else 0
+    except (TypeError, ValueError):
+        return Response({'ok': False, 'error': 'Невалиден параметър sb'}, status=400)
+
+    if sb > 0:
+        subject = get_object_or_404(Subject, id=sb)
+        user_profile.subject = subject
         user_profile.save()
 
     return Response({'ok': True})
@@ -290,7 +366,7 @@ def subject_detail(request, subject_id, sp_id=None):
                 'id': 0,
                 'name': '',
                 'grade': 12,
-                'subject_type': True,
+                'subject_type': 'теория',
                 'hpy': 18,
                 'wpy': 0,
                 'hpw1': 0,
@@ -413,8 +489,8 @@ class SubjectUnitsWithTopicsView(generics.ListAPIView):
 class UnitUpsertView(APIView):
     """
     POST:
-      - id == 0  -> create
-      - id > 0   -> update
+      - id == 0 -> create
+      - id > 0 -> update
     Body: { id, num, name, hours, subject }
     """
     def post(self, request):
@@ -467,7 +543,7 @@ class SessionListCreateView(generics.ListCreateAPIView):
     serializer_class = SessionWriteSerializer
 
     def get_queryset(self):
-        # Показва всички на текущия потребител? Или глобално. Ако имаш филтр, добави го.
+        # Показва всички на текущия потребител course_lessons_view? Или глобално. Ако имаш филтър, добави го.
         return Session.objects.all()
 
 # Изглед за детайли/редакция/изтриване на Session
@@ -723,9 +799,6 @@ class UserListCreateView(generics.ListCreateAPIView):
             qs = qs.filter(userprofile__access_level__gte=min_level)
         if max_level:
             qs = qs.filter(userprofile__access_level__lte=max_level)
-
-        # По подразбиране можеш да приложиш текущия контекст: същото училище и под-ниво
-        # но оставям свободно и ползвай съществуващия UserListView при нужда
         return qs
 
 class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
@@ -735,3 +808,4 @@ class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def get_serializer_class(self):
         # GET -> Read; PUT/PATCH -> Write; DELETE -> няма тяло
         return UserReadSerializer if self.request.method == 'GET' else UserSerializer
+

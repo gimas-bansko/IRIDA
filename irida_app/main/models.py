@@ -14,7 +14,7 @@ from .utils import *
 class Subject(models.Model):
     name = models.CharField('Име', max_length=200)
     grade = models.SmallIntegerField('Клас', default=12, validators=[ MinValueValidator(8), MaxValueValidator(12) ])
-    subject_type = models.BooleanField('Тип', choices=[(True, 'теория'), (False, 'практика')], default=True,)
+    subject_type = models.CharField('Тип', max_length=10, choices=[('теория', 'теория'), ('практика', 'практика')], default='теория',)
     hpy = models.PositiveIntegerField('Брой часове годишно', default=54, validators=[MinValueValidator(18)])
     wpy = models.SmallIntegerField('Брой учебни седмици годишно', choices=[(11,11), (18,18), (27,27), (29,29), (36,36)], default=18)
     hpw1 = models.SmallIntegerField('Брой часове седмично (1-ви срок)', default=0)
@@ -71,19 +71,19 @@ class Goal(models.Model):
         verbose_name = 'Цел на обучението'
         verbose_name_plural = 'Цели на обучението'
 
-# Занятие - основен
+# Урок - основен
 class Session(models.Model):
     course = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='course_session')
-    num = models.SmallIntegerField('Занятие №', default=1, validators=[ MinValueValidator(1)])
-    name = models.CharField('Име', max_length=200, help_text='Общо име на занятието')
-    focus = models.TextField('Фокус', default='', blank=True, help_text='Фокус(основни акценти на занятието)')
-    goals = models.TextField('Цели', default='', blank=True, help_text='Оосновни цели на занятието')
+    num = models.SmallIntegerField('Урок №', default=1, validators=[ MinValueValidator(1)])
+    name = models.CharField('Име', max_length=200, help_text='Общо име на урока')
+    focus = models.TextField('Фокус', default='', blank=True, help_text='Фокус(основни акценти на урока)')
+    goals = models.TextField('Цели', default='', blank=True, help_text='Оосновни цели на урока')
     duration = models.SmallIntegerField('Продължителност', default=1, validators=[ MinValueValidator(1), MaxValueValidator(7)])
     session_type = models.CharField('Вид на урочната единица', default='', max_length=3, blank=True,
                                   choices=[('НЗ', 'Нови знания'), ('УПР', 'Упражнение'), ('ПК', 'Проверка и контрол'),
                                            ('ОС', 'Обобщаване и систематизиране'), ('K', 'Комбиниран урок')])
-    basic_level = models.BooleanField('Тип на занятието', default=True,
-                                  choices=[(True, 'Основно(задължително) занятие'), (False, 'Резервно(при необходимост) занятие')])
+    basic_level = models.BooleanField('Тип на урока', default=True,
+                                  choices=[(True, 'Основен(задължителен) урок'), (False, 'Резервен(при необходимост) урок')])
     collapsed = models.BooleanField('Показва се "свито"', default=True,
                                   choices=[(True, 'Да'), (False, 'Не')])
 
@@ -91,11 +91,11 @@ class Session(models.Model):
         return f'{self.num}. {self.name}'
 
     class Meta:
-        verbose_name = 'Занятие'
-        verbose_name_plural = 'Занятия'
+        verbose_name = 'Урок'
+        verbose_name_plural = 'Уроци'
         ordering = ['num', 'id']
 
-# Занятие - теми
+# Урок - теми
 class SessionTopic(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='session_topics', verbose_name='Занятие')
     topic = models.ForeignKey(Topic, on_delete=models.PROTECT, related_name='topic_sessions', verbose_name='Тема')
@@ -105,8 +105,8 @@ class SessionTopic(models.Model):
         return self.topic.name if self.topic_id else self.description
 
     class Meta:
-        verbose_name = 'Занятие (тема)'
-        verbose_name_plural = 'Занятие (теми)'
+        verbose_name = 'Урок (тема)'
+        verbose_name_plural = 'Урок (теми)'
         constraints = [
             models.UniqueConstraint(fields=['session', 'topic'], name='unique_session_topic')
         ]

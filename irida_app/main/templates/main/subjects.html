@@ -63,7 +63,7 @@
                                                 <div class="flex-fill">
                                                     <div class="d-flex align-items-center">
                                                         <div class="mt-sm-0 mt-2">
-                                                            <p class="mb-0 fs-14 fw-semibold">[[sbj.name]] ([[sbj.grade]]<sup>-ти</sup> клас, [[subjectTypeStr(sbj_idx)]])</p>
+                                                            <p class="mb-0 fs-14 fw-semibold">[[sbj.name]] ([[sbj.grade]]<sup>-ти</sup> клас, [[sbj.subject_type]])</p>
                                                         </div>
                                                         <div class="ms-auto">
                                                             <div class="btn-list">
@@ -133,8 +133,8 @@
                             <div class="col-md-2">
                                 <label for="inputTip" class="form-label">Тип</label>
                                 <select id="inputTip" class="form-select" v-model="subject.subject_type">
-                                    <option :value=true>теория</option>
-                                    <option :value=false>практика</option>
+                                    <option value='теория'>теория</option>
+                                    <option value='практика'>практика</option>
                                 </select>
                             </div>
 

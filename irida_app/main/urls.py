@@ -16,6 +16,8 @@ urlpatterns = [
     path('users', users_list_view, name='users_list'),
     path('lesson/<int:session_id>/', lesson_view, name='lesson_details'),
     path('session_home', session_home_view, name='session_menu'),
+    path('session_list', session_list_view, name='session_list'),
+    path('session_main', session_main_view, name='session_main'),
     #    path('lesson/<int:session_id>/', test_view, name='lesson_details'),
 
 
@@ -29,6 +31,10 @@ urlpatterns = [
 
     path('api/specialty/<int:specialty_id>/', specialty_detail, name='specialty_detail'),
     path('api/speciality_select/<int:sp>/', set_speciality, name='set_speciality'),
+
+    path('api/subject_select/<int:sb>/', set_subject, name='set_subject'),
+    path('api/grade_section_select/<int:gr>/<int:se>/', set_subject, name='set_grade_section'),
+    path('api/grade_section_select/', set_grade_section),
 
     path('api/specialty/<int:sp_id>/subjects/', SpecialtySubjectsView.as_view(), name='specialty-subjects'),
     path('api/specialty/<int:sp_id>/subjects/<int:subject_id>/', subject_detail, name='specialty-subjects-detail'),
