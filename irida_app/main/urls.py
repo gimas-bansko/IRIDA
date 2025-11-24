@@ -33,8 +33,9 @@ urlpatterns = [
     path('api/speciality_select/<int:sp>/', set_speciality, name='set_speciality'),
 
     path('api/subject_select/<int:sb>/', set_subject, name='set_subject'),
-    path('api/grade_section_select/<int:gr>/<int:se>/', set_subject, name='set_grade_section'),
+    path('api/grade_section_select/<int:gr>/<int:se>/', set_grade_section, name='set_grade_section'),
     path('api/grade_section_select/', set_grade_section),
+    path('api/session_select/<int:se>/', set_session, name='set_session'),
 
     path('api/specialty/<int:sp_id>/subjects/', SpecialtySubjectsView.as_view(), name='specialty-subjects'),
     path('api/specialty/<int:sp_id>/subjects/<int:subject_id>/', subject_detail, name='specialty-subjects-detail'),

@@ -310,26 +310,26 @@ def set_grade_section(request, gr=None, se=None):
     return Response({'ok': True})
 
 
-# избор на клас и паралелка по подразбиране
+# избор на занятие по подразбиране
 @api_view(['GET', 'POST'])  # позволяваме и POST, ако решите да не пращате id в URL
 @permission_classes([IsAuthenticated])
-def set_subject(request, sb=None):
+def set_session(request, se=None):
     user = request.user
     user_profile = user.userprofile
 
-    # Ако искате да вземете sb от body при POST
+    # Ако искам да взема se от body при POST
     if request.method == 'POST':
-        sp = request.data.get('sb') or request.data.get('subject_id')
+        se = request.data.get('se') or request.data.get('session_id')
 
     # Валидация
     try:
-        sb = int(sb) if sb is not None else 0
+        se = int(se) if se is not None else 0
     except (TypeError, ValueError):
-        return Response({'ok': False, 'error': 'Невалиден параметър sb'}, status=400)
+        return Response({'ok': False, 'error': 'Невалиден параметър se'}, status=400)
 
-    if sb > 0:
-        subject = get_object_or_404(Subject, id=sb)
-        user_profile.subject = subject
+    if se > 0:
+        session = get_object_or_404(Session, id=se)
+        user_profile.session = session
         user_profile.save()
 
     return Response({'ok': True})

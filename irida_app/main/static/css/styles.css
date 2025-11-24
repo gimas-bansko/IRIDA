@@ -16438,7 +16438,7 @@ code[class*=language-] {
   margin: 0;
 }
 .app-sidebar .side-menu__item {
-  padding: 12px 16px;
+  padding: 6px 16px;
   position: relative;
   font-family: var(--default-font-family);
   display: flex;
@@ -16506,7 +16506,7 @@ code[class*=language-] {
 .app-sidebar .side-menu__icon {
   margin-inline-end: 0.625rem;
   width: 1.15rem;
-  height: 1.15rem;
+  /* height: 1.15rem; */
   font-size: 1.15rem;
   text-align: center;
   border-radius: 16px;
@@ -20944,4 +20944,13 @@ option.moscow-w { color: #F04438; }      /* Won't */
 
 .note-content [style*="position:absolute"] {
   position: static !important; /* предотвратява изскачане извън потока */
+}
+.table th, .table td {
+        padding: 0.5rem;
+        line-height: 14px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+.side-menu__item_my {
+    padding: 6px 10px;
 }

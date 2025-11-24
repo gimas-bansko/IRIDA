@@ -103,6 +103,16 @@ const App = {
             const code = topic?.MoSCoW_cat
             return this.moscowMap[code] || code || ''
         },
+        setSession(id) {
+            axios.get(`/api/session_select/${id}/`)
+                .then(() => {
+                    window.location.href = `session_main`;
+                })
+                .catch(err => {
+                    console.error('Грешка:', err);
+                    alert('Възникна грешка!');
+                });
+        },
     },
     created(){
         this.loadUserDetails()

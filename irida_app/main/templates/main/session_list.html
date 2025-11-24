@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% extends 'main/base.html' %}
+{% extends 'main/session_list_base.html' %}
 {% load static %}
 {% block main_content %}
             <div class="container-fluid">
@@ -156,9 +156,9 @@
                                         </button>
                                         <!-- бутон "Ресурси" -->
                                         &nbsp;&nbsp;&nbsp;
-                                        <button type="button" class="btn btn-secondary label-btn" @click="goToLesson(session.id)">
+                                        <button type="button" class="btn btn-secondary label-btn" @click="setSession(session.id)">
                                             <i class="ri-stack-line label-btn-icon me-2"></i>
-                                            Ресурси
+                                            Проведи
                                         </button>&nbsp;&nbsp;&nbsp;&nbsp;
                                     </div>
                                 </li>
