@@ -6,11 +6,11 @@ from django.dispatch import receiver
 from datetime import datetime
 from django.utils import timezone
 from .utils import *
-""" 
-***************************************
-        Предмети 
-***************************************
-"""
+
+
+# ***************************************
+#        Предмети
+# ***************************************
 class Subject(models.Model):
     name = models.CharField('Име', max_length=200)
     grade = models.SmallIntegerField('Клас', default=12, validators=[ MinValueValidator(8), MaxValueValidator(12) ])
@@ -163,11 +163,10 @@ class SessionTask(models.Model):
         verbose_name = 'Задача към точка от план'
         verbose_name_plural = 'Задачи към точка от план'
 
-""" 
-***************************************
-               Специалности
-***************************************
-"""
+
+# ***************************************
+#                Специалности
+# ***************************************
 class Specialty(models.Model):
 
     specialty_num = models.CharField('Специалност - номер', max_length=8, default='', blank=True)
@@ -183,11 +182,10 @@ class Specialty(models.Model):
         verbose_name = 'Специалност'
         verbose_name_plural = 'Специалности'
 
-""" 
-***************************************
-               Училища
-***************************************
-"""
+
+# ***************************************
+#                Училища
+# ***************************************
 def school_pic_path(instance, filename):
     ext = filename.split('.')[-1]
     new_filename = f"school_logo_{instance.id}.{ext}"
@@ -215,11 +213,10 @@ class School(models.Model):
         verbose_name = 'Училище/организация'
         verbose_name_plural = 'Училища/организации'
 
-""" 
-***************************************
-            Документи
-***************************************
-"""
+
+# ***************************************
+#             Документи
+# ***************************************
 class Documents(models.Model):
     title = models.CharField('Име', max_length=200)
     attachment = models.FileField('Файл', upload_to='docs/')
@@ -231,11 +228,10 @@ class Documents(models.Model):
         verbose_name = 'Документ'
         verbose_name_plural = 'Документи'
 
-"""
-***************************************
-            Потребители
-***************************************
-"""
+
+# ***************************************
+#             Потребители
+# ***************************************
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     gender = models.BooleanField('Пол', default=True, choices=[(True, 'мъж'), (False, 'жена'), ] )
@@ -276,11 +272,9 @@ def save_user_profile(sender, instance, **kwargs):
     instance.userprofile.save()
 
 
-""" 
-***************************************
-        Логове 
-***************************************
-"""
+# ***************************************
+#         Логове
+# ***************************************
 class Log(models.Model):
     user_id = models.IntegerField('id на потребител', default=0)
     user_name = models.CharField('Име на потребител', max_length=50, default='', null=True)
