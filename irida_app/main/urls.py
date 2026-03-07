@@ -18,7 +18,7 @@ urlpatterns = [
     path('session_home', session_home_view, name='session_menu'),
     path('session_list', session_list_view, name='session_list'),
     path('session_main', session_main_view, name='session_main'),
-    #    path('lesson/<int:session_id>/', test_view, name='lesson_details'),
+    path('session_main_old', session_main_view, name='session_main_old'),
 
 
     # API

@@ -106,6 +106,11 @@ def session_main_view(request):
     context = make_user_context(request)
     return render(request, 'main/session_main.html', context)
 
+# TEST only
+def session_main_view_old(request):
+    context = make_user_context(request)
+    return render(request, 'main/session_main_old.html', context)
+
 def lesson_view(request, session_id):
     user = request.user
     user_profile = user.userprofile
@@ -116,17 +121,6 @@ def lesson_view(request, session_id):
     context = make_user_context(request)
     context['session_id'] = session_id
     return render(request, 'main/lesson.html', context)
-
-def test_view(request, session_id):
-    user = request.user
-    user_profile = user.userprofile
-    session = Session.objects.get(id=session_id)
-    user_profile.session = session
-    user_profile.save()
-
-    context = make_user_context(request)
-    context['session_id'] = session_id
-    return render(request, 'main/test.html', context)
 
 """ 
 ***************************************
