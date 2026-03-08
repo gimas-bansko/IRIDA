@@ -260,7 +260,7 @@
                                      :aria-valuenow="scheduleInfo.elapsedSeconds"
                                      aria-valuemin="0"
                                      :aria-valuemax="scheduleInfo.intervalSeconds"
-                                     style="margin-right: 60px;">
+                                     style="margin-right: 13px;">
                                     <div class="progress-bar bg-primary" :style="{ width: scheduleInfo.elapsedPercentage + '%' }">
                                     </div>
                                 </div>
@@ -270,13 +270,43 @@
                             <li class="slide">
                                 <div class="side-menu__item">
                                     <i class="bi bi-book side-menu__icon"></i>
-                                    <button class="btn btn-outline-secondary btn-sm btn-wave fs-16" @click="clearEditMode()">
-                                                                        Откажи
+                                    <button class="btn btn-outline-success btn-sm btn-wave fs-16"
+                                            v-if="isLessonRunning"
+                                            @click="stopLesson">
+                                        Завърши урока
                                     </button>
-                                    <br>
-                                    <button class="btn btn-outline-success btn-sm btn-wave fs-16" @click="saveTopic()">
-                                        Запиши
+                                    <button class="btn btn-outline-secondary btn-sm btn-wave fs-16"
+                                            v-else
+                                            @click="startLesson">
+                                        Започни урока
                                     </button>
+                                </div>
+                            </li>
+                            <li class="slide">
+                                <div class="side-menu__item">
+                                    <i class="bi bi-hourglass-split side-menu__icon"></i>
+                                    <div v-if="!isLessonRunning" class="fs-12 text-muted">
+                                        Урокът не е стартиран
+                                    </div>
+                                    <div v-else>
+                                        <div class="fs-14">Таймер на урока</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="slide" v-if="isLessonRunning">
+                                <div  class="fs-16 mt-2">
+                                    <div>Изминало време: [[ lessonRun.totalElapsed ]]</div>
+                                    <div>Оставащо време: [[ lessonRun.totalRemaining ]]</div>
+                                    <div>status: [[ lessonRun.status ]]</div>
+                                </div>
+                                <div class="progress progress-sm mt-3" role="progressbar"
+                                     :aria-valuenow="lessonRun.totalElapsedSeconds"
+                                     aria-valuemin="0"
+                                     :aria-valuemax="lessonRun.totalPlannedSeconds"
+                                     style="margin-right: 13px;">
+                                    <div class="progress-bar bg-success"
+                                         :style="{ width: lessonRun.totalPlannedSeconds > 0 ? Math.min(100, Math.floor((lessonRun.totalElapsedSeconds * 100) / lessonRun.totalPlannedSeconds)) + '%' : '0%' }">
+                                    </div>
                                 </div>
                             </li>
                         </ul>
