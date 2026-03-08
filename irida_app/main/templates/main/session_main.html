@@ -209,13 +209,13 @@
                         <!-- Меню -->
                         <ul class="main-menu">
                             <!-- Група Главно меню -->
-                            <li class="slide__category"><span class="category-name">Главно меню</span></li>
+                            <li class="slide__category"><span class="category-name">Сега:</span></li>
                             <!-- Училище -->
                             <li class="slide">
-                                <a href="{% url 'schools_list' %}" class="side-menu__item">
-                                    <i class="bi bi-house side-menu__icon"></i>
-                                    <span class="side-menu__label">Училище</span>
-                                </a>
+                                <div class="side-menu__item">
+                                    <i class="bi bi-clock side-menu__icon"></i>
+                                    <span class="fs-34 fw-bold">[[ currentTime ]]</span>
+                                </div>
                             </li>
                             <!-- Специалности -->
                             <li class="slide">
@@ -355,7 +355,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body" v-show="!pointEditMode">
+                            <div ref="pointsContainer" class="card-body points-container">
                                 <!-- Когато няма точки -->
                                 <ul class="list-unstyled projects-items-danger-list" v-if="points.length===0">
                                     <li>
@@ -370,21 +370,214 @@
                                 <!-- Списък на точки -->
                                 <div v-else>
                                     <ul class="list-unstyled projects-items-primary-list">
-                                        <li v-for="p in points" :key="p.id">
+                                        <li v-for="(p, index) in points"
+                                            :key="p.id || index"
+                                            :ref="el => setPointRef(el, index)"
+                                            :class="{ 'selected-point': isSelectedPoint(p) }">
                                             <div class="mb-3">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div>
                                                         <span class="badge bg-secondary me-2">[[ p.num ]]</span>
                                                         <strong>[[ p.name ]]</strong>
-                                                        <small class="text-muted ms-2"> <span v-if="p.description">([[ p.description ]])</span> - [[ p.duration ]] мин.</small>
+                                                        <small class="text-muted ms-2">
+                                                            <span v-if="p.description">([[ p.description ]])</span> - [[ p.duration ]] мин.
+                                                        </small>
                                                     </div>
-                                                    <div class="d-flex gap-2">
+                                                    <div class="d-flex gap-2" v-if="isSelectedPoint(p)">
                                                     </div>
                                                 </div>
-                                                <!-- Показване на съдържанието като форматиран HTML -->
-                                                <div class="mt-2 fs-12 note-content">
-                                                <!-- Почистваме HTML с DOMPurify преди да го инжектираме -->
-                                                    <div v-html="sanitize(p.content)"></div>
+                                                <!-- съдържание и приложения -->
+                                                <ul class="list-unstyled projects-items-danger-list">
+                                                    <li>
+                                                        <!-- Съдържание -->
+                                                        <div class="card-1 custom-card" v-if="isSelectedPoint(p)" style="margin-bottom: 0;">
+                                                            <div class="card-header d-flex justify-content-between align-items-center"
+                                                                 style="padding-top: 0; padding-bottom: 5px;">
+                                                                    <div>
+                                                                        Съдържание:
+                                                                    </div>
+                                                                    <div class="d-flex gap-2" v-if="isSelectedPoint(p)">
+                                                                        <button type="button" class="btn btn-primary btn-sm fs-12 label-btn"
+                                                                                v-if="showSelectedPointContent.content"
+                                                                                @click="showSelectedPointContent.content=false"
+                                                                                style="width: 90px;">
+                                                                            <i class="bi bi-eye-slash label-btn-icon me-2"></i>
+                                                                            Скрий&nbsp;&nbsp;&nbsp;
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-primary btn-sm fs-12 label-btn"
+                                                                                v-else
+                                                                                @click="showSelectedPointContent.content=true"
+                                                                                style="width: 90px;">
+                                                                            <i class="bi bi-eye label-btn-icon me-2"></i>
+                                                                            Покажи
+                                                                        </button>
+                                                                    </div>
+                                                            </div>
+                                                            <div class="card-body" v-if="showSelectedPointContent.content">
+                                                                <!-- Показване на съдържанието като форматиран HTML -->
+                                                                <div class="mt-2 fs-12 note-content">
+                                                                    <!-- Почистваме HTML с DOMPurify преди да го инжектираме -->
+                                                                    <div v-html="sanitize(p.content)"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Съдържание край -->
+                                                    </li>
+                                                    <li>
+                                                        <!-- Бележки и примери -->
+                                                        <div class="card-1 custom-card" v-if="isSelectedPoint(p)" style="margin-bottom: 0;">
+                                                            <div class="card-header d-flex justify-content-between align-items-center"
+                                                                 style="padding-top: 0; padding-bottom: 5px;">
+                                                                    <div>
+                                                                        Бележки и примери:
+                                                                    </div>
+                                                                    <div class="d-flex gap-2" v-if="isSelectedPoint(p)">
+                                                                        <button type="button" class="btn btn-primary btn-sm fs-12 label-btn"
+                                                                                v-if="showSelectedPointContent.notes"
+                                                                                @click="showSelectedPointContent.notes=false"
+                                                                                style="width: 90px;">
+                                                                            <i class="bi bi-eye-slash label-btn-icon me-2"></i>
+                                                                            Скрий
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-primary btn-sm fs-12 label-btn" v-else
+                                                                                @click="showSelectedPointContent.notes=true"
+                                                                                style="width: 90px;">
+                                                                            <i class="bi bi-eye label-btn-icon me-2"></i>
+                                                                            Покажи
+                                                                        </button>
+                                                                    </div>
+                                                            </div>
+                                                            <div class="card-body" v-if="showSelectedPointContent.notes">
+                                                                <!-- Показване на съдържанието като форматиран HTML -->
+                                                                <div class="mt-2 fs-12 note-content">
+                                                                    <!-- Почистваме HTML с DOMPurify преди да го инжектираме -->
+                                                                    <div v-html="sanitize(p.content)"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Бележки и примери край -->
+                                                    </li>
+                                                    <li>
+                                                        <!-- Задачи -->
+                                                        <div class="card-1 custom-card mt-3" v-if="isSelectedPoint(p)" style="margin-bottom: 0;">
+                                                            <div class="card-header d-flex justify-content-between align-items-center"
+                                                                 style="padding-top: 0; padding-bottom: 5px;">
+                                                                    <div>
+                                                                        Задачи:
+                                                                    </div>
+                                                                    <div class="d-flex gap-2" v-if="isSelectedPoint(p)">
+                                                                        <button type="button" class="btn btn-primary btn-sm fs-12 label-btn"
+                                                                                v-if="showSelectedPointContent.tasks"
+                                                                                @click="showSelectedPointContent.tasks=false"
+                                                                                style="width: 90px;">
+                                                                            <i class="bi bi-eye-slash label-btn-icon me-2"></i>
+                                                                            Скрий
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-primary btn-sm fs-12 label-btn" v-else
+                                                                                @click="showSelectedPointContent.tasks=true"
+                                                                                style="width: 90px;">
+                                                                            <i class="bi bi-eye label-btn-icon me-2"></i>
+                                                                            Покажи
+                                                                        </button>
+                                                                    </div>
+                                                            </div>
+                                                            <div class="card-body" v-if="showSelectedPointContent.tasks">
+                                                                <!-- Показване на съдържанието като форматиран HTML -->
+                                                                <div class="mt-2 fs-12 note-content">
+                                                                    <!-- Почистваме HTML с DOMPurify преди да го инжектираме -->
+                                                                    <div v-html="sanitize(p.content)"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Задачи край -->
+                                                    </li>
+                                                    <li>
+                                                        <!-- Тестове -->
+                                                        <div class="card-1 custom-card mt-3" v-if="isSelectedPoint(p)" style="margin-bottom: 0;">
+                                                            <div class="card-header d-flex justify-content-between align-items-center"
+                                                                 style="padding-top: 0; padding-bottom: 5px;">
+                                                                    <div>
+                                                                        Тест:
+                                                                    </div>
+                                                                    <div class="d-flex gap-2" v-if="isSelectedPoint(p)">
+                                                                        <button type="button" class="btn btn-primary btn-sm fs-12 label-btn"
+                                                                                v-if="showSelectedPointContent.tests"
+                                                                                @click="showSelectedPointContent.tests=false"
+                                                                                style="width: 90px;">
+                                                                            <i class="bi bi-eye-slash label-btn-icon me-2"></i>
+                                                                            Скрий
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-primary btn-sm fs-12 label-btn" v-else
+                                                                                @click="showSelectedPointContent.tests=true"
+                                                                                style="width: 90px;">
+                                                                            <i class="bi bi-eye label-btn-icon me-2"></i>
+                                                                            Покажи
+                                                                        </button>
+                                                                    </div>
+                                                            </div>
+                                                            <div class="card-body" v-if="showSelectedPointContent.tests">
+                                                                <!-- Показване на съдържанието като форматиран HTML -->
+                                                                <div class="mt-2 fs-12 note-content">
+                                                                    <!-- Почистваме HTML с DOMPurify преди да го инжектираме -->
+                                                                    <div v-html="sanitize(p.content)"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Тестове край -->
+                                                    </li>
+                                                    <li>
+                                                        <!-- Приложения -->
+                                                        <div class="card-1 custom-card mt-3" v-if="isSelectedPoint(p)" style="margin-bottom: 0;">
+                                                            <div class="card-header d-flex justify-content-between align-items-center"
+                                                                 style="padding-top: 0; padding-bottom: 5px;">
+                                                                    <div>
+                                                                        Приложения:
+                                                                    </div>
+                                                                    <div class="d-flex gap-2" v-if="isSelectedPoint(p)">
+                                                                        <button type="button" class="btn btn-primary btn-sm fs-12 label-btn"
+                                                                                v-if="showSelectedPointContent.attachments"
+                                                                                @click="showSelectedPointContent.attachments=false"
+                                                                                style="width: 90px;">
+                                                                            <i class="bi bi-eye-slash label-btn-icon me-2"></i>
+                                                                            Скрий
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-primary btn-sm fs-12 label-btn" v-else
+                                                                                @click="showSelectedPointContent.attachments=true"
+                                                                                style="width: 90px;">
+                                                                            <i class="bi bi-eye label-btn-icon me-2"></i>
+                                                                            Покажи
+                                                                        </button>
+                                                                    </div>
+                                                            </div>
+                                                            <div class="card-body" v-if="showSelectedPointContent.attachments">
+                                                                <!-- Показване на съдържанието като форматиран HTML -->
+                                                                <div class="mt-2 fs-12 note-content">
+                                                                    <!-- Почистваме HTML с DOMPurify преди да го инжектираме -->
+                                                                    <div v-html="sanitize(p.content)"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Приложения край -->
+                                                    </li>
+                                                </ul>
+                                                <!-- съдържание и приложения край -->
+                                            </div>
+                                            <div class="card-footer" style="padding-right: 0;">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                    </div>
+                                                    <div class="d-flex gap-2" v-if="isSelectedPoint(p)">
+                                                        <button type="button" class="btn btn-outline-secondary btn-sm fs-12 label-btn"
+                                                                @click="prevSelectedPoint" v-if="selectedPointPosition !== 'first'">
+                                                            <i class="bi bi-arrow-90deg-left label-btn-icon me-2"></i>
+                                                            Върни се
+                                                        </button>
+                                                        <button type="button" class="btn btn-outline-success btn-sm fs-12 label-btn"
+                                                                @click="nextSelectedPoint" v-if="selectedPointPosition !== 'last'">
+                                                            <i class="bi bi-arrow-90deg-right label-btn-icon me-2"></i>
+                                                            Продължи
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </li>

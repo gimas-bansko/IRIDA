@@ -20849,6 +20849,15 @@ a:hover {
   background-color: var(--custom-blue);
 }
 
+.projects-items-primary-list li.selected-point::before {
+  background-color: #12B76A;
+}
+
+.points-container {
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
 /* изключваме ефекта за списъци във вътрешното съдържание */
 .projects-items-primary-list .mt-2 [class] ul,
 .projects-items-primary-list .mt-2 ul {
