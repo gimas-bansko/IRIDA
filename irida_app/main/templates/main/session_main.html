@@ -208,84 +208,76 @@
 
                         <!-- Меню -->
                         <ul class="main-menu">
-                            <!-- Група Главно меню -->
+                            <!-- Група ВРЕМЕ -->
                             <li class="slide__category"><span class="category-name">Сега:</span></li>
-                            <!-- Училище -->
+                            <!-- Часовник -->
                             <li class="slide">
                                 <div class="side-menu__item">
                                     <i class="bi bi-clock side-menu__icon"></i>
                                     <span class="fs-34 fw-bold">[[ currentTime ]]</span>
                                 </div>
                             </li>
-                            <!-- Специалности -->
+                            <!-- Час/междучасие -->
                             <li class="slide">
-                                <a href="{% url 'specialty_list' %}" class="side-menu__item">
-                                    <i class="bi bi-tools side-menu__icon"></i>
-                                    <span class="side-menu__label">Специалности</span>
-                                </a>
-                            </li>
-                            <!-- Предмети -->
-                            <li class="slide">
-                                <a href="{% url 'subjects_list' %}" class="side-menu__item">
-                                    <i class="bi bi-book side-menu__icon"></i>
-                                    <span class="side-menu__label">Предмети</span>
-                                </a>
-                            </li>
-                            <!-- Потребители -->
-                            <li class="slide">
-                                <a href="{% url 'users_list' %}" class="side-menu__item">
-                                    <i class="bi bi-people side-menu__icon"></i>
-                                    <span class="side-menu__label">Потребители</span>
-                                </a>
-                            </li>
+                                <div class="side-menu__item">
+                                    <i class="bi bi-clock-history side-menu__icon"></i>
+                                    <div v-if="scheduleInfo.state === 'before'" class="fs-12 text-muted">
+                                        До началото остават: [[ scheduleInfo.remaining ]]
+                                    </div>
 
-                            {% if subject %}
-                            <!-- Група Предмет -->
-                            <li class="slide__category"><span class="category-name">Предмет</span></li>
-                            <!-- Цели и задачи -->
-                            <li class="slide">
-                                <a href="{% url 'goals_list' %}" class="side-menu__item">
-                                    <i class="bi bi-check2-circle side-menu__icon"></i>
-                                    <span class="side-menu__label">Цели и задачи</span>
-                                </a>
+                                    <div v-else-if="scheduleInfo.state === 'lesson'">
+                                        <div class="fs-14">
+                                            [[ scheduleInfo.lessonNumber ]]
+                                            <sup v-if="scheduleInfo.lessonNumber===1">- ви</sup>
+                                            <sup v-else-if="scheduleInfo.lessonNumber===2">- ри</sup>
+                                            <sup v-else>- ти</sup>
+                                            &nbsp;учебен час
+                                        </div>
+                                    </div>
+
+                                    <div v-else-if="scheduleInfo.state === 'break'">
+                                        <div>междучасие</div>
+                                    </div>
+
+                                    <div v-else-if="scheduleInfo.state === 'after'" class="fs-12 text-muted">
+                                        Учебните часове за деня са приключили
+                                    </div>
+                                </div>
                             </li>
-                            <!-- Раздели и теми -->
+                            <!-- Изминало/остава -->
                             <li class="slide">
-                                <a href="{% url 'units_list' %}" class="side-menu__item">
-                                    <i class="bi bi-list-ol side-menu__icon"></i>
-                                    <span class="side-menu__label">Раздели и теми</span>
-                                </a>
+                                <div class="fs-16">
+                                    <div v-if="scheduleInfo.state === 'lesson'">
+                                        <div>Изминало време: [[ scheduleInfo.elapsed ]]</div>
+                                        <div>Оставащо време: [[ scheduleInfo.remaining ]]</div>
+                                    </div>
+                                    <div v-else-if="scheduleInfo.state === 'break'">
+                                        <div>Изминало време: [[ scheduleInfo.elapsed ]]</div>
+                                        <div>Оставащо време: [[ scheduleInfo.remaining ]]</div>
+                                    </div>
+                                </div>
+                                <div class="progress progress-sm mt-3" role="progressbar"
+                                     :aria-valuenow="scheduleInfo.elapsedSeconds"
+                                     aria-valuemin="0"
+                                     :aria-valuemax="scheduleInfo.intervalSeconds"
+                                     style="margin-right: 60px;">
+                                    <div class="progress-bar bg-primary" :style="{ width: scheduleInfo.elapsedPercentage + '%' }">
+                                    </div>
+                                </div>
                             </li>
-                            <!-- Уроци -->
+                            <!-- Група УРОК -->
+                            <li class="slide__category"><span class="category-name">Урок:</span></li>
                             <li class="slide">
-                                <a href="{% url 'lessons_list' %}" class="side-menu__item">
-                                    <i class="bi bi-calendar-check side-menu__icon"></i>
-                                    <span class="side-menu__label">Уроци</span>
-                                </a>
-                            </li>
-                            {% endif %}
-                            <!-- Група Учебен процес -->
-                            <li class="slide__category"><span class="category-name">Учебен процес</span></li>
-                            <!-- Занятие - избор -->
-                            <li class="slide">
-                                <a href="{% url 'session_menu' %}" class="side-menu__item">
-                                    <i class="bi bi-check2-circle side-menu__icon"></i>
-                                    <span class="side-menu__label">Занятие</span>
-                                </a>
-                            </li>
-                            <!-- Раздели и теми -->
-                            <li class="slide">
-                                <a href="{% url 'units_list' %}" class="side-menu__item">
-                                    <i class="bi bi-list-ol side-menu__icon"></i>
-                                    <span class="side-menu__label">Раздели и теми</span>
-                                </a>
-                            </li>
-                            <!-- Занятия -->
-                            <li class="slide">
-                                <a href="{% url 'lessons_list' %}" class="side-menu__item">
-                                    <i class="bi bi-calendar-check side-menu__icon"></i>
-                                    <span class="side-menu__label">Занятия</span>
-                                </a>
+                                <div class="side-menu__item">
+                                    <i class="bi bi-book side-menu__icon"></i>
+                                    <button class="btn btn-outline-secondary btn-sm btn-wave fs-16" @click="clearEditMode()">
+                                                                        Откажи
+                                    </button>
+                                    <br>
+                                    <button class="btn btn-outline-success btn-sm btn-wave fs-16" @click="saveTopic()">
+                                        Запиши
+                                    </button>
+                                </div>
                             </li>
                         </ul>
                         <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191"

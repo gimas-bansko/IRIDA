@@ -39,14 +39,19 @@ const App = {
 
             // време
             currentTime: '',
-            schoolDayStart: '08:00',
+            schoolDayStart: '15:00',
             scheduleInfo: {
                 state: 'before',
                 lessonNumber: null,
                 breakAfterLesson: null,
                 elapsed: '00:00',
-                remaining: '00:00'
+                remaining: '00:00',
+                elapsedSeconds: 0,
+                remainingSeconds: 0,
+                intervalSeconds: 0,
+                elapsedPercentage: 0,
             },
+
         }
     },
     computed: {
@@ -297,6 +302,117 @@ const App = {
             this.currentTime = `${hours}:${minutes}:${seconds}`;
         },
         
+        formatMMSS(totalSeconds) {
+            const safeSeconds = Math.max(0, Number(totalSeconds) || 0);
+            const minutes = String(Math.floor(safeSeconds / 60)).padStart(2, '0');
+            const seconds = String(safeSeconds % 60).padStart(2, '0');
+            return `${minutes}:${seconds}`;
+        },
+
+        parseStartTimeToTodayDate() {
+            const [hours, minutes] = (this.schoolDayStart || '08:00').split(':').map(Number);
+            const now = new Date();
+            return new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                now.getDate(),
+                hours || 0,
+                minutes || 0,
+                0
+            );
+        },
+
+        updateScheduleInfo() {
+            const startDate = this.parseStartTimeToTodayDate();
+            const now = new Date();
+
+            const diffSeconds = Math.floor((now - startDate) / 1000);
+
+            if (diffSeconds < 0) {
+                this.scheduleInfo = {
+                    state: 'before',
+                    lessonNumber: null,
+                    breakAfterLesson: null,
+                    elapsed: '00:00',
+                    remaining: this.formatMMSS(Math.abs(diffSeconds))
+                };
+                return;
+            }
+
+            const lessonDuration = 45 * 60;
+            const firstBreakDuration = 20 * 60;
+            const regularBreakDuration = 10 * 60;
+
+            let cursor = 0;
+            let lessonNumber = 1;
+
+            while (lessonNumber <= 7) {
+                const lessonStart = cursor;
+                const lessonEnd = lessonStart + lessonDuration;
+
+                if (diffSeconds >= lessonStart && diffSeconds < lessonEnd) {
+                    this.scheduleInfo = {
+                        state: 'lesson',
+                        lessonNumber,
+                        breakAfterLesson: null,
+                        elapsedSeconds: diffSeconds - lessonStart,
+                        remainingSeconds: lessonEnd - diffSeconds,
+                        elapsed: this.formatMMSS(diffSeconds - lessonStart),
+                        remaining: this.formatMMSS(lessonEnd - diffSeconds),
+                        intervalSeconds: lessonDuration,
+                        elapsedPercentage: Math.floor((diffSeconds - lessonStart)*100 / lessonDuration),
+                    };
+                    return;
+                }
+
+                cursor = lessonEnd;
+
+                const breakDuration = lessonNumber === 1 ? firstBreakDuration : regularBreakDuration;
+                const breakStart = cursor;
+                const breakEnd = breakStart + breakDuration;
+
+                if (diffSeconds >= breakStart && diffSeconds < breakEnd) {
+                    this.scheduleInfo = {
+                        state: 'break',
+                        lessonNumber: null,
+                        breakAfterLesson: lessonNumber,
+                        elapsedSeconds: diffSeconds - breakStart,
+                        remainingSeconds: breakEnd - diffSeconds,
+                        elapsed: this.formatMMSS(diffSeconds - breakStart),
+                        remaining: this.formatMMSS(breakEnd - diffSeconds),
+                        intervalSeconds: breakDuration,
+                        elapsedPercentage: Math.floor((diffSeconds - breakStart)*100 / breakDuration),
+                    };
+                    return;
+                }
+
+                cursor = breakEnd;
+                lessonNumber += 1;
+            }
+
+            this.scheduleInfo = {
+                state: 'after',
+                lessonNumber: null,
+                breakAfterLesson: null,
+                elapsed: '00:00',
+                remaining: '00:00',
+                elapsedSeconds: 0,
+                remainingSeconds: 0,
+                intervalSeconds: 0,
+                elapsedPercentage: 0,
+            };
+        },
+
+        updateCurrentTime() {
+            const now = new Date();
+
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            this.currentTime = `${hours}:${minutes}:${seconds}`;
+            this.updateScheduleInfo();
+        }
     },
     created: function(){
         this.loadUserDetails();
