@@ -345,6 +345,58 @@ const App = {
             return sum;
         },
 
+        getPointTimingStatus(point, now = new Date()) {
+            if (!point || !this.lessonRun.started || !this.lessonRun.anchoredLessonStartDate) {
+                return 'idle';
+            }
+
+            const sortedPoints = this.getSortedPoints();
+            const targetPointNum = Number(point.num);
+            const pointIndex = sortedPoints.findIndex(p => Number(p?.num) === targetPointNum);
+
+            if (pointIndex === -1) return 'idle';
+
+            const elapsed = this.getEffectiveLessonSecondsBetween(this.lessonRun.anchoredLessonStartDate, now);
+
+            let startOffsetSeconds = 0;
+            for (let i = 0; i < pointIndex; i++) {
+                startOffsetSeconds += this.toNumberSafe(sortedPoints[i]?.duration, 0) * 60;
+            }
+
+            const plannedSeconds = this.toNumberSafe(point.duration, 0) * 60;
+            const endOffsetSeconds = startOffsetSeconds + plannedSeconds;
+            const isLastPoint = pointIndex === sortedPoints.length - 1;
+
+            if (elapsed < startOffsetSeconds) {
+                return 'upcoming';
+            }
+
+            if (elapsed < endOffsetSeconds) {
+                return 'current';
+            }
+
+            if (elapsed === endOffsetSeconds) {
+                return 'finished';
+            }
+
+            if (isLastPoint) {
+                return 'overdue';
+            }
+
+            return 'finished';
+        },
+
+        getPointStatusBadgeClass(point) {
+            const status = this.getPointTimingStatus(point);
+
+            return {
+                'bg-secondary': status === 'upcoming' || status === 'idle',
+                'bg-info': status === 'current',
+                'bg-primary': status === 'finished',
+                'bg-success': status === 'overdue'
+            };
+        },
+
         // =====================================================
         // ЗАРЕЖДАНЕ НА ДАННИ
         // =====================================================
@@ -707,7 +759,7 @@ const App = {
         },
 
         startLesson() {
-        const anchor = this.getLessonAnchorForStart();
+            const anchor = this.getLessonAnchorForStart();
             if (!anchor) {
                 alert('Не можете да стартирате урок извън учебното време');
                 return;

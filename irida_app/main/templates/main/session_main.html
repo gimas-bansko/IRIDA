@@ -400,7 +400,10 @@
                                             <div class="mb-3">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div>
-                                                        <span class="badge bg-secondary me-2">[[ p.num ]]</span>
+                                                        <span class="badge me-2"
+                                                              :class="getPointStatusBadgeClass(p)">
+                                                            [[ p.num ]]
+                                                        </span>
                                                         <strong>[[ p.name ]]</strong>
                                                         <small class="text-muted ms-2">
                                                             <span v-if="p.description">([[ p.description ]])</span> - [[ p.duration ]] мин.
@@ -449,14 +452,14 @@
                                                                         <div class="col-md-4 text-muted text-end">
                                                                             Изминало време:
                                                                         </div>
-                                                                        <div class="col-md-8">[[ pointTiming.elapsed
+                                                                        <div class="col-md-8">[[ pointTiming.pointElapsed
                                                                             ]]
                                                                         </div>
 
                                                                         <div class="col-md-4 text-muted text-end">
                                                                             Оставащо време:
                                                                         </div>
-                                                                        <div class="col-md-8">[[ pointTiming.remaining
+                                                                        <div class="col-md-8">[[ pointTiming.pointRemaining
                                                                             ]]
                                                                         </div>
 
@@ -468,11 +471,11 @@
                                                                     </div>
                                                                     <div class="progress progress-sm mt-3"
                                                                          role="progressbar"
-                                                                         :aria-valuenow="pointTiming.elapsedSeconds"
+                                                                         :aria-valuenow="pointTiming.pointElapsedSeconds"
                                                                          aria-valuemin="0"
-                                                                         :aria-valuemax="pointTiming.plannedSeconds">
+                                                                         :aria-valuemax="pointTiming.pointPlannedSeconds">
                                                                         <div class="progress-bar bg-info"
-                                                                             :style="{ width: pointTiming.plannedSeconds > 0 ? Math.min(100, Math.floor((pointTiming.elapsedSeconds * 100) / pointTiming.plannedSeconds)) + '%' : '0%' }">
+                                                                             :style="{ width: pointTiming.pointPlannedSeconds > 0 ? Math.min(100, Math.floor((pointTiming.pointElapsedSeconds * 100) / pointTiming.pointPlannedSeconds)) + '%' : '0%' }">
                                                                         </div>
                                                                     </div>
                                                                 </div>
