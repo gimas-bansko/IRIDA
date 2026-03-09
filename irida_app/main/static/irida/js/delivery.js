@@ -21,6 +21,7 @@ const App = {
             pointRefs: [],
 
             showSelectedPointContent: {
+                timing: false,
                 content: false,
                 notes: false,
                 tasks: false,
@@ -41,7 +42,7 @@ const App = {
             currentTime: '',
 
             // конфигурация на учебния ден
-            schoolDayStart: '00:00',
+            schoolDayStart: '20:00',
             schoolLessonsCount: 7,
             lessonDurationSeconds: 45 * 60,
             firstBreakDurationSeconds: 20 * 60,
@@ -234,6 +235,7 @@ const App = {
                 return;
             }
 
+            this.showSelectedPointContent.timing = false;
             this.showSelectedPointContent.content = false;
             this.showSelectedPointContent.notes = false;
             this.showSelectedPointContent.tasks = false;
