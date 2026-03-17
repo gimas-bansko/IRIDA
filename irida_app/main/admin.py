@@ -31,6 +31,7 @@ admin.site.register(Goal)
 admin.site.register(Session)
 admin.site.register(SessionTopic)
 admin.site.register(SessionPoint)
+admin.site.register(SessionNote)
 
 @admin.register(Log)
 class LogV(admin.ModelAdmin):

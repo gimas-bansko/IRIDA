@@ -462,12 +462,6 @@
                                                                         <div class="col-md-8">[[ pointTiming.pointRemaining
                                                                             ]]
                                                                         </div>
-
-                                                                        <div class="col-md-4 text-muted text-end">
-                                                                            Статус:
-                                                                        </div>
-                                                                        <div class="col-md-8">[[ pointTiming.status ]]
-                                                                        </div>
                                                                     </div>
                                                                     <div class="progress progress-sm mt-3"
                                                                          role="progressbar"
@@ -543,10 +537,16 @@
                                                                     </div>
                                                             </div>
                                                             <div class="card-body" v-if="showSelectedPointContent.notes">
-                                                                <!-- Показване на съдържанието като форматиран HTML -->
-                                                                <div class="mt-2 fs-12 note-content">
-                                                                    <!-- Почистваме HTML с DOMPurify преди да го инжектираме -->
-                                                                    <div v-html="sanitize(p.content)"></div>
+                                                                <div v-if="filteredNotes.length === 0" class="mt-2 fs-12 text-muted">
+                                                                    Няма бележки за тази точка.
+                                                                </div>
+                                                                <div v-else>
+                                                                    <div v-for="(note, noteIndex) in filteredNotes" :key="note.id || noteIndex" class="mt-2 fs-12 note-content">
+                                                                        <h6>[[ note.name ]] (Бележка №[[ note.num ]])</h6>
+                                                                        <!-- Показване на съдържанието на бележката -->
+                                                                        <div v-html="sanitize(note.content)"></div>
+                                                                        <hr v-if="noteIndex < filteredNotes.length - 1" />
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -681,6 +681,7 @@
                             </div>
                             <div class="card-footer" style="padding-right: 15px;">
                                 <div class="d-flex gap-12 justify-content-between">
+                                    <!--
                                     <div></div>
                                     <button type="button" class="btn-1 btn btn-success" @click="startCreatePoint">
                                         <span class="d-flex align-items-center gap-6">
@@ -688,7 +689,47 @@
                                             <span class="white">Добави точка в плана</span>
                                         </span>
                                     </button>
+                                    -->
                                 </div>
+                                <!-- Нов раздел за общи бележки -->
+                                <div class="card-1 custom-card mt-3" style="margin-bottom: 0;">
+                                    <div class="card-header d-flex justify-content-between align-items-center"
+                                         style="padding-top: 0; padding-bottom: 5px;">
+                                            <div>
+                                                Общи бележки (без връзка към точка):
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button type="button" class="btn btn-primary btn-sm fs-12 label-btn"
+                                                        v-if="showGeneralNotes"
+                                                        @click="showGeneralNotes=false"
+                                                        style="width: 90px;">
+                                                    <i class="bi bi-eye-slash label-btn-icon me-2"></i>
+                                                    Скрий
+                                                </button>
+                                                <button type="button" class="btn btn-primary btn-sm fs-12 label-btn" v-else
+                                                        @click="showGeneralNotes=true"
+                                                        style="width: 90px;">
+                                                    <i class="bi bi-eye label-btn-icon me-2"></i>
+                                                    Покажи
+                                                </button>
+                                            </div>
+                                    </div>
+                                    <div class="card-body" v-if="showGeneralNotes">
+                                        <div v-if="generalNotes.length === 0" class="mt-2 fs-12 text-muted">
+                                            Няма общи бележки.
+                                        </div>
+                                        <div v-else>
+                                            <div v-for="(note, noteIndex) in generalNotes" :key="note.id || noteIndex" class="mt-2 fs-12 note-content">
+                                                <h6>[[ note.name ]] (Бележка №[[ note.num ]])</h6>
+                                                <!-- Показване на съдържанието на бележката -->
+                                                <div v-html="sanitize(note.content)"></div>
+                                                <hr v-if="noteIndex < generalNotes.length - 1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             </div>
                         </div>
                     </div>

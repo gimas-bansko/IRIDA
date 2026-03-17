@@ -28,6 +28,7 @@ const App = {
                 tests: false,
                 attachments: false,
             },
+            showGeneralNotes: false,
 
             moscowMap: {
                 M: 'Задължителна тема',
@@ -42,7 +43,7 @@ const App = {
             currentTime: '',
 
             // конфигурация на учебния ден
-            schoolDayStart: '20:00',
+            schoolDayStart: '22:50',
             schoolLessonsCount: 7,
             lessonDurationSeconds: 45 * 60,
             firstBreakDurationSeconds: 20 * 60,
@@ -120,6 +121,16 @@ const App = {
         }
     },
     computed: {
+        filteredNotes() {
+            const selectedPointId = this.selectedPoint?.id;
+            if (!selectedPointId) return [];
+            return this.notes.filter(note => note.point === selectedPointId);
+        },
+
+        generalNotes() {
+            return this.notes.filter(note => note.point === null);
+        },
+
         sortedPoints() {
             return this.getSortedPoints();
         },
