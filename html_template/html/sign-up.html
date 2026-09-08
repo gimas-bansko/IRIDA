@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-vertical-style="overlay" data-theme-mode="light" data-header-styles="light" data-menu-styles="light" data-toggled="close">
+
+<head>
+
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> Bizlyt - Bootstrap 5 Premium Admin & Dashboard Template </title>
+    <meta name="Description" content="Bootstrap Responsive Admin Web Dashboard HTML5 Template">
+    <meta name="Author" content="Spruko Technologies Private Limited">
+	<meta name="keywords" content="admin,admin dashboard,admin panel,admin template,bootstrap,clean,dashboard,flat,jquery,modern,responsive,premium admin templates,responsive admin,ui,ui kit.">
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/images/brand-logos/favicon.ico.png" type="image/x-icon">
+
+    <!-- Main Theme Js -->
+    <script src="../assets/js/authentication-main.js"></script>
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+
+    <!-- Style Css -->
+    <link href="../assets/css/styles.css" rel="stylesheet" >
+
+    <!-- Icons Css -->
+    <link href="../assets/css/icons.min.css" rel="stylesheet" >
+
+
+</head>
+
+<body>
+
+    <!-- Start Switcher -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="switcher-canvas" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title text-default" id="offcanvasRightLabel">Switcher</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <nav class="border-bottom border-block-end-dashed">
+                <div class="nav nav-tabs nav-justified" id="switcher-main-tab" role="tablist">
+                    <button class="nav-link active" id="switcher-home-tab" data-bs-toggle="tab" data-bs-target="#switcher-home"
+                        type="button" role="tab" aria-controls="switcher-home" aria-selected="true">Theme Styles</button>
+                    <button class="nav-link" id="switcher-profile-tab" data-bs-toggle="tab" data-bs-target="#switcher-profile"
+                        type="button" role="tab" aria-controls="switcher-profile" aria-selected="false">Theme Colors</button>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active border-0" id="switcher-home" role="tabpanel" aria-labelledby="switcher-home-tab"
+                    tabindex="0">
+                    <div class="">
+                        <p class="switcher-style-head">Theme Color Mode:</p>
+                        <div class="row switcher-style">
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-light-theme">
+                                        Light
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="theme-style" id="switcher-light-theme"
+                                        checked>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-dark-theme">
+                                        Dark
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="theme-style" id="switcher-dark-theme">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <p class="switcher-style-head">Directions:</p>
+                        <div class="row switcher-style">
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-ltr">
+                                        LTR
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="direction" id="switcher-ltr" checked>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-rtl">
+                                        RTL
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="direction" id="switcher-rtl">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <p class="switcher-style-head">Navigation Styles:</p>
+                        <div class="row switcher-style">
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-vertical">
+                                        Vertical
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-style" id="switcher-vertical"
+                                        checked>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-horizontal">
+                                        Horizontal
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-style"
+                                        id="switcher-horizontal">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="navigation-menu-styles">
+                        <p class="switcher-style-head">Navigation Menu Style:</p>
+                        <div class="row switcher-style pb-2">
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-menu-click">
+                                        Menu Click
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-menu-styles"
+                                        id="switcher-menu-click">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-menu-hover">
+                                        Menu Hover
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-menu-styles"
+                                        id="switcher-menu-hover">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-icon-click">
+                                        Icon Click
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-menu-styles"
+                                        id="switcher-icon-click">
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-icon-hover">
+                                        Icon Hover
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-menu-styles"
+                                        id="switcher-icon-hover">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-4 pb-3 text-secondary fs-11"><span class="fw-semibold fs-12 text-dark me-2 d-inline-block">Note:</span>Works same for both Vertical and Horizontal</div>
+                    </div>
+                    <div class="">
+                        <p class="switcher-style-head">Page Styles:</p>
+                        <div class="row switcher-style">
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-regular">
+                                        Regular
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="page-styles" id="switcher-regular"
+                                        checked>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-classic">
+                                        Classic
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="page-styles" id="switcher-classic">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-modern">
+                                        Modern
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="page-styles" id="switcher-modern">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <p class="switcher-style-head">Layout Width Styles:</p>
+                        <div class="row switcher-style">
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-full-width">
+                                        Full Width
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="layout-width" id="switcher-full-width"
+                                        checked>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-boxed">
+                                        Boxed
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="layout-width" id="switcher-boxed">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <p class="switcher-style-head">Menu Positions:</p>
+                        <div class="row switcher-style">
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-menu-fixed">
+                                        Fixed
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="menu-positions" id="switcher-menu-fixed"
+                                        checked>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-menu-scroll">
+                                        Scrollable
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="menu-positions" id="switcher-menu-scroll">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <p class="switcher-style-head">Header Positions:</p>
+                        <div class="row switcher-style">
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-header-fixed">
+                                        Fixed
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="header-positions"
+                                        id="switcher-header-fixed" checked>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-header-scroll">
+                                        Scrollable
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="header-positions"
+                                        id="switcher-header-scroll">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sidemenu-layout-styles">
+                        <p class="switcher-style-head">Sidemenu Layout Syles:</p>
+                        <div class="row switcher-style pb-2">
+                            <div class="col-sm-6">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-default-menu">
+                                        Default Menu
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="sidemenu-layout-styles"
+                                        id="switcher-default-menu" checked>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-closed-menu">
+                                        Closed Menu
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="sidemenu-layout-styles"
+                                        id="switcher-closed-menu">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-icontext-menu">
+                                        Icon Text
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="sidemenu-layout-styles"
+                                        id="switcher-icontext-menu">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-icon-overlay">
+                                        Icon Overlay
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="sidemenu-layout-styles"
+                                        id="switcher-icon-overlay">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-detached">
+                                        Detached
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="sidemenu-layout-styles"
+                                        id="switcher-detached">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-double-menu">
+                                        Double Menu
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="sidemenu-layout-styles"
+                                        id="switcher-double-menu">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-4 pb-3 text-secondary fs-11"><span class="fw-semibold fs-12 text-dark me-2 d-inline-block">Note:</span>Navigation menu styles won't work here.</div>
+                    </div>
+                </div>
+                <div class="tab-pane fade border-0" id="switcher-profile" role="tabpanel" aria-labelledby="switcher-profile-tab" tabindex="0">
+                    <div>
+                        <div class="theme-colors">
+                            <p class="switcher-style-head">Menu Colors:</p>
+                            <div class="d-flex switcher-style pb-2">
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-white" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Light Menu" type="radio" name="menu-colors"
+                                        id="switcher-menu-light" checked>
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-dark" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Dark Menu" type="radio" name="menu-colors"
+                                        id="switcher-menu-dark">
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-primary" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Color Menu" type="radio" name="menu-colors"
+                                        id="switcher-menu-primary">
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-gradient" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Gradient Menu" type="radio" name="menu-colors"
+                                        id="switcher-menu-gradient">
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-transparent"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Transparent Menu"
+                                        type="radio" name="menu-colors" id="switcher-menu-transparent">
+                                </div>
+                            </div>
+                            <div class="px-4 pb-3 text-muted fs-11">Note:If you want to change color Menu dynamically change from below Theme Primary color picker</div>
+                        </div>
+                        <div class="theme-colors">
+                            <p class="switcher-style-head">Header Colors:</p>
+                            <div class="d-flex switcher-style pb-2">
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-white" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Light Header" type="radio" name="header-colors"
+                                        id="switcher-header-light" checked>
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-dark" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Dark Header" type="radio" name="header-colors"
+                                        id="switcher-header-dark">
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-primary" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Color Header" type="radio" name="header-colors"
+                                        id="switcher-header-primary">
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-gradient" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Gradient Header" type="radio" name="header-colors"
+                                        id="switcher-header-gradient">
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-transparent" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Transparent Header" type="radio" name="header-colors"
+                                        id="switcher-header-transparent">
+                                </div>
+                            </div>
+                            <div class="px-4 pb-3 text-muted fs-11">Note:If you want to change color Header dynamically change from below Theme Primary color picker</div>
+                        </div>
+                        <div class="theme-colors">
+                            <p class="switcher-style-head">Theme Primary:</p>
+                            <div class="d-flex flex-wrap align-items-center switcher-style">
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-primary-1" type="radio"
+                                        name="theme-primary" id="switcher-primary">
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-primary-2" type="radio"
+                                        name="theme-primary" id="switcher-primary1">
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-primary-3" type="radio" name="theme-primary"
+                                        id="switcher-primary2">
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-primary-4" type="radio" name="theme-primary"
+                                        id="switcher-primary3">
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-primary-5" type="radio" name="theme-primary"
+                                        id="switcher-primary4">
+                                </div>
+                                <div class="form-check switch-select ps-0 mt-1 color-primary-light">
+                                    <div class="theme-container-primary"></div>
+                                    <div class="pickr-container-primary"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="theme-colors">
+                            <p class="switcher-style-head">Theme Background:</p>
+                            <div class="d-flex flex-wrap align-items-center switcher-style">
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-bg-1" type="radio"
+                                        name="theme-background" id="switcher-background" checked>
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-bg-2" type="radio"
+                                        name="theme-background" id="switcher-background1">
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-bg-3" type="radio" name="theme-background"
+                                        id="switcher-background2">
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-bg-4" type="radio"
+                                        name="theme-background" id="switcher-background3">
+                                </div>
+                                <div class="form-check switch-select me-3">
+                                    <input class="form-check-input color-input color-bg-5" type="radio"
+                                        name="theme-background" id="switcher-background4">
+                                </div>
+                                <div class="form-check switch-select ps-0 mt-1 tooltip-static-demo color-bg-transparent">
+                                    <div class="theme-container-background"></div>
+                                    <div class="pickr-container-background"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="menu-image mb-3">
+                            <p class="switcher-style-head">Menu With Background Image:</p>
+                            <div class="d-flex flex-wrap align-items-center switcher-style">
+                                <div class="form-check switch-select m-2">
+                                    <input class="form-check-input bgimage-input bg-img1" type="radio"
+                                        name="theme-background" id="switcher-bg-img" checked>
+                                </div>
+                                <div class="form-check switch-select m-2">
+                                    <input class="form-check-input bgimage-input bg-img2" type="radio"
+                                        name="theme-background" id="switcher-bg-img1">
+                                </div>
+                                <div class="form-check switch-select m-2">
+                                    <input class="form-check-input bgimage-input bg-img3" type="radio" name="theme-background"
+                                        id="switcher-bg-img2">
+                                </div>
+                                <div class="form-check switch-select m-2">
+                                    <input class="form-check-input bgimage-input bg-img4" type="radio"
+                                        name="theme-background" id="switcher-bg-img3">
+                                </div>
+                                <div class="form-check switch-select m-2">
+                                    <input class="form-check-input bgimage-input bg-img5" type="radio"
+                                        name="theme-background" id="switcher-bg-img4">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between canvas-footer">
+                    <a href="#" class="btn btn-primary">Buy Now</a>
+                    <a href="https://themeforest.net/user/spruko/portfolio" class="btn btn-secondary">Our Portfolio</a>
+                    <a href="javascript:void(0);" id="reset-all" class="btn btn-danger">Reset</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Switcher -->
+    <div class="page error-bg" id="particles-js">
+        <!-- Start::error-page -->
+        <div class="error-page">
+    <div class="container-lg">
+        <div class="row justify-content-center align-items-center authentication authentication-basic h-100">
+            <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-6 col-sm-8 col-12">
+                <div class="my-5 d-flex justify-content-center">
+                    <a href="index.html">
+                        <img src="../assets/images/brand-logos/desktop-logo.png" alt="logo" class="desktop-dark">
+                    </a>
+                </div>
+                <div class="card-1 custom-card">
+                    <div class="card-body p-5">
+                            <div class="block-password">
+                            <div  class="svg-block text-center mb-2">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"
+                                fill="none">
+                                <path
+                                    d="M30.5938 30.2188H19.1306C18.3552 30.2188 17.7244 29.5879 17.7244 28.8125V24.5938H1.40625C0.630813 24.5938 0 23.9629 0 23.1875V7.9375C0 7.67856 0.209875 7.46875 0.46875 7.46875C0.727625 7.46875 0.9375 7.67856 0.9375 7.9375V21.7812H16.3181C16.577 21.7812 16.7869 21.9911 16.7869 22.25C16.7869 22.5089 16.577 22.7188 16.3181 22.7188H0.9375V23.1875C0.9375 23.446 1.14775 23.6562 1.40625 23.6562H17.7244V16.4062H4.11938C3.34394 16.4062 2.71312 15.7754 2.71312 15V10.75C2.71312 9.97462 3.34394 9.34375 4.11938 9.34375H16.3181C16.577 9.34375 16.7869 9.55356 16.7869 9.8125C16.7869 10.0714 16.577 10.2812 16.3181 10.2812H4.11938C3.86094 10.2812 3.65062 10.4915 3.65062 10.75V15C3.65062 15.2585 3.86094 15.4688 4.11938 15.4688H17.7244V8.875C17.7244 8.09963 18.3552 7.46875 19.1306 7.46875H27.3125V6.53125H0.46875C0.209875 6.53125 0 6.32144 0 6.0625V3.1875C0 2.41212 0.630813 1.78125 1.40625 1.78125H22.0938C22.3526 1.78125 22.5625 1.99106 22.5625 2.25C22.5625 2.50894 22.3526 2.71875 22.0938 2.71875H1.40625C1.14775 2.71875 0.9375 2.929 0.9375 3.1875V5.59375H29.1875V3.1875C29.1875 2.929 28.9772 2.71875 28.7188 2.71875H23.9688C23.7099 2.71875 23.5 2.50894 23.5 2.25C23.5 1.99106 23.7099 1.78125 23.9688 1.78125H28.7188C29.4942 1.78125 30.125 2.41212 30.125 3.1875V7.46875H30.5938C31.3692 7.46875 32 8.09963 32 8.875V28.8125C32 29.5879 31.3692 30.2188 30.5938 30.2188ZM18.6619 28.3438V28.8125C18.6619 29.071 18.8721 29.2812 19.1306 29.2812H30.5938C30.8522 29.2812 31.0625 29.071 31.0625 28.8125V28.3438H18.6619ZM18.6619 27.4062H31.0625V10.2812H18.6619V27.4062ZM18.6619 9.34375H31.0625V8.875C31.0625 8.6165 30.8522 8.40625 30.5938 8.40625H19.1306C18.8721 8.40625 18.6619 8.6165 18.6619 8.875V9.34375ZM28.25 7.46875H29.1875V6.53125H28.25V7.46875ZM24.8622 24.5938C21.9603 24.5938 19.5994 22.2329 19.5994 19.3309C19.5994 16.429 21.9603 14.0681 24.8622 14.0681C25.8597 14.0681 26.8307 14.3486 27.6702 14.8792C27.8891 15.0175 27.9544 15.307 27.8161 15.5259C27.6778 15.7448 27.3883 15.8101 27.1694 15.6717C26.4799 15.2359 25.6821 15.0057 24.8622 15.0057C22.4772 15.0057 20.5369 16.946 20.5369 19.331C20.5369 21.716 22.4772 23.6563 24.8622 23.6563C27.2472 23.6563 29.1875 21.7159 29.1875 19.3309C29.1875 18.6436 29.0273 17.9766 28.7205 17.3735L24.8213 21.2728C24.6382 21.4558 24.3414 21.4558 24.1584 21.2728L21.8633 18.9777C21.6803 18.7946 21.6803 18.4978 21.8633 18.3148C22.0464 18.1318 22.3432 18.1318 22.5262 18.3148L24.4898 20.2784L28.4784 16.2899C28.4811 16.287 28.4839 16.2843 28.4867 16.2815L29.3248 15.4434C29.5078 15.2604 29.8046 15.2604 29.9876 15.4434C30.1707 15.6266 30.1707 15.9233 29.9876 16.1064L29.4111 16.6829C29.8792 17.4847 30.1249 18.3924 30.1249 19.331C30.125 22.2329 27.7641 24.5938 24.8622 24.5938ZM14.6138 20.2437C14.4938 20.2437 14.3738 20.198 14.2823 20.1065C14.0992 19.9234 14.0992 19.6266 14.2823 19.4436L14.5071 19.2188H8.995C8.73612 19.2188 8.52625 19.0089 8.52625 18.75C8.52625 18.4911 8.73612 18.2812 8.995 18.2812H14.5071L14.2823 18.0564C14.0992 17.8733 14.0992 17.5766 14.2823 17.3935C14.4654 17.2105 14.7622 17.2105 14.9452 17.3935L15.9702 18.4185C16.1532 18.6016 16.1532 18.8984 15.9702 19.0814L14.9452 20.1064C14.8537 20.198 14.7337 20.2437 14.6138 20.2437ZM15.0625 14.6597C14.8036 14.6597 14.5938 14.4499 14.5938 14.1909V13.6869L14.1573 13.9389C13.9331 14.0682 13.6464 13.9916 13.517 13.7674C13.3876 13.5432 13.4644 13.2565 13.6886 13.1271L14.125 12.875L13.6886 12.623C13.4644 12.4936 13.3876 12.2069 13.517 11.9827C13.6464 11.7584 13.9331 11.6817 14.1573 11.8111L14.5938 12.0631V11.5591C14.5938 11.3002 14.8036 11.0904 15.0625 11.0904C15.3214 11.0904 15.5312 11.3002 15.5312 11.5591V12.0631L15.9677 11.8111C16.1919 11.6818 16.4786 11.7584 16.608 11.9827C16.7374 12.2069 16.6606 12.4936 16.4364 12.623L16 12.875L16.4364 13.127C16.6606 13.2564 16.7374 13.5431 16.608 13.7673C16.4786 13.9916 16.1918 14.0682 15.9677 13.9389L15.5312 13.6869V14.1909C15.5312 14.4498 15.3214 14.6597 15.0625 14.6597ZM10.6875 14.6597C10.4286 14.6597 10.2188 14.4499 10.2188 14.1909V13.6869L9.78231 13.9389C9.55812 14.0682 9.27144 13.9916 9.142 13.7674C9.01256 13.5432 9.08937 13.2565 9.31356 13.1271L9.75 12.875L9.31356 12.623C9.08937 12.4936 9.01256 12.2069 9.142 11.9827C9.27144 11.7584 9.55806 11.6817 9.78231 11.8111L10.2188 12.0631V11.5591C10.2188 11.3002 10.4286 11.0904 10.6875 11.0904C10.9464 11.0904 11.1562 11.3002 11.1562 11.5591V12.0631L11.5927 11.8111C11.8169 11.6818 12.1036 11.7584 12.233 11.9827C12.3624 12.2069 12.2856 12.4936 12.0614 12.623L11.625 12.875L12.0614 13.127C12.2856 13.2564 12.3624 13.5431 12.233 13.7673C12.1035 13.9916 11.8168 14.0682 11.5927 13.9389L11.1562 13.6869V14.1909C11.1562 14.4498 10.9464 14.6597 10.6875 14.6597ZM6.3125 14.6597C6.05363 14.6597 5.84375 14.4499 5.84375 14.1909V13.6869L5.40731 13.9389C5.18313 14.0682 4.89644 13.9916 4.767 13.7674C4.63756 13.5432 4.71438 13.2565 4.93856 13.1271L5.375 12.875L4.93856 12.623C4.71438 12.4936 4.63756 12.2069 4.767 11.9827C4.89638 11.7584 5.18306 11.6817 5.40731 11.8111L5.84375 12.0631V11.5591C5.84375 11.3002 6.05363 11.0904 6.3125 11.0904C6.57137 11.0904 6.78125 11.3002 6.78125 11.5591V12.0631L7.21769 11.8111C7.44187 11.6818 7.72856 11.7584 7.858 11.9827C7.98744 12.2069 7.91062 12.4936 7.68644 12.623L7.25 12.875L7.68644 13.127C7.91062 13.2564 7.98744 13.5431 7.858 13.7673C7.72856 13.9916 7.44181 14.0682 7.21769 13.9389L6.78125 13.6869V14.1909C6.78125 14.4498 6.57137 14.6597 6.3125 14.6597ZM27.75 4.65625C27.4743 4.65625 27.25 4.43194 27.25 4.15625C27.25 3.88056 27.4743 3.65625 27.75 3.65625C28.0257 3.65625 28.25 3.88056 28.25 4.15625C28.25 4.43194 28.0257 4.65625 27.75 4.65625ZM25.875 4.65625C25.5993 4.65625 25.375 4.43194 25.375 4.15625C25.375 3.88056 25.5993 3.65625 25.875 3.65625C26.1507 3.65625 26.375 3.88056 26.375 4.15625C26.375 4.43194 26.1507 4.65625 25.875 4.65625ZM24 4.65625C23.7243 4.65625 23.5 4.43194 23.5 4.15625C23.5 3.88056 23.7243 3.65625 24 3.65625C24.2757 3.65625 24.5 3.88056 24.5 4.15625C24.5 4.43194 24.2757 4.65625 24 4.65625Z"
+                                    fill="#2E90FA" />
+                            </svg>
+                            </div>
+                           <p class="h5 fw-semibold mb-2 text-center">Sign Up</p>
+                        <p class="mb-4 text-muted op-7 fw-normal text-center">Welcome & Join us by creating a free account !</p>
+                            </div>
+                        
+                        <div class="row gy-3">
+                            <div class="col-xl-12">
+                                <label for="signup-firstname" class="form-label text-default">First Name</label>
+                                <input type="text" class="form-control form-control-lg" id="signup-firstname" placeholder="first name">
+                            </div>
+                            <div class="col-xl-12">
+                                <label for="signup-lastname" class="form-label text-default">Last Name</label>
+                                <input type="text" class="form-control form-control-lg" id="signup-lastname" placeholder="last name">
+                            </div>
+                            <div class="col-xl-12">
+                                <label for="signup-password" class="form-label text-default">Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control form-control-lg" id="signup-password" placeholder="password">
+                                    <button class="btn btn-light" onclick="createpassword('signup-password',this)" type="button" id="button-addon2"><i class="ri-eye-off-line align-middle"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 mb-2">
+                                <label for="signup-confirmpassword" class="form-label text-default">Confirm Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control form-control-lg" id="signup-confirmpassword" placeholder="confirm password">
+                                    <button class="btn btn-light" onclick="createpassword('signup-confirmpassword',this)" type="button" id="button-addon21"><i class="ri-eye-off-line align-middle"></i></button>
+                                </div>
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                    <label class="form-check-label text-muted fw-normal" for="defaultCheck1">
+                                        By creating a account you agree to our  and <a class="text-success"><u>Privacy Policy</u></a>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 d-grid mt-2">
+                                <button class="btn-1 white">Create Account</button>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <p class="fs-12 text-muted mt-3">Already have an account? <a href="sign-in-basic.html" class="custom-blue">Sign In</a></p>
+                        </div>
+                        <div class="text-center my-3 authentication-barrier">
+                            <span>OR</span>
+                        </div>
+                        <div class="btn-list text-center d-flex gap-12 justify-content-center">
+                                <button class="svg-block">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"
+                                        fill="none">
+                                        <circle cx="24" cy="24" r="21" fill="url(#paint0_linear_27815_2809)" />
+                                        <path
+                                            d="M31.8206 30.4223L32.7534 24.4951H26.9178V20.6505C26.9178 19.0286 27.7315 17.4466 30.3452 17.4466H33V12.4005C33 12.4005 30.5918 12 28.2904 12C23.4823 12 20.3425 14.8394 20.3425 19.9777V24.4951H15V30.4223H20.3425V44.7517C21.4151 44.9159 22.5124 45 23.6302 45C24.748 45 25.8453 44.9159 26.9178 44.7517V30.4223H31.8206Z"
+                                            fill="white" />
+                                        <defs>
+                                            <linearGradient id="paint0_linear_27815_2809" x1="24" y1="3" x2="24"
+                                                y2="44.8754" gradientUnits="userSpaceOnUse">
+                                                <stop stop-color="#18ACFE" />
+                                                <stop offset="1" stop-color="#0163E0" />
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                </button>
+                                <button class="svg-block">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"
+                                        fill="none">
+                                        <path
+                                            d="M45.003 24.4664C45.003 22.7397 44.8601 21.4797 44.5507 20.1731H24.4316V27.9663H36.2411C36.0031 29.9031 34.7173 32.8197 31.8602 34.7796L31.8201 35.0405L38.1814 39.87L38.6221 39.9131C42.6696 36.2497 45.003 30.8597 45.003 24.4664Z"
+                                            fill="#4285F4" />
+                                        <path
+                                            d="M24.4299 45C30.2156 45 35.0726 43.1333 38.6203 39.9133L31.8584 34.7798C30.049 36.0165 27.6203 36.8798 24.4299 36.8798C18.7633 36.8798 13.9539 33.2166 12.2394 28.1532L11.9881 28.1741L5.37361 33.1908L5.28711 33.4265C8.81087 40.2865 16.049 45 24.4299 45Z"
+                                            fill="#34A853" />
+                                        <path
+                                            d="M12.2399 28.1533C11.7876 26.8467 11.5258 25.4466 11.5258 24C11.5258 22.5532 11.7876 21.1533 12.2161 19.8466L12.2042 19.5683L5.50674 14.4711L5.28761 14.5732C3.83529 17.4199 3.00195 20.6166 3.00195 24C3.00195 27.3833 3.83529 30.5799 5.28761 33.4266L12.2399 28.1533Z"
+                                            fill="#FBBC05" />
+                                        <path
+                                            d="M24.4301 11.1199C28.4538 11.1199 31.168 12.8233 32.7157 14.2467L38.7633 8.46C35.0492 5.07668 30.2157 3 24.4301 3C16.049 3 8.81089 7.7133 5.28711 14.5732L12.2157 19.8466C13.9539 14.7833 18.7634 11.1199 24.4301 11.1199Z"
+                                            fill="#EB4335" />
+                                    </svg>
+                                </button>
+                                <button class="svg-block">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"
+                                        fill="none">
+                                        <rect x="3" y="3" width="42" height="42" rx="9"
+                                            fill="url(#paint0_radial_27815_3158)" />
+                                        <rect x="3" y="3" width="42" height="42" rx="9"
+                                            fill="url(#paint1_radial_27815_3158)" />
+                                        <rect x="3" y="3" width="42" height="42" rx="9"
+                                            fill="url(#paint2_radial_27815_3158)" />
+                                        <path
+                                            d="M34.5 15.75C34.5 16.9926 33.4926 18 32.25 18C31.0074 18 30 16.9926 30 15.75C30 14.5074 31.0074 13.5 32.25 13.5C33.4926 13.5 34.5 14.5074 34.5 15.75Z"
+                                            fill="white" />
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                            d="M24 31.5C28.1421 31.5 31.5 28.1421 31.5 24C31.5 19.8579 28.1421 16.5 24 16.5C19.8579 16.5 16.5 19.8579 16.5 24C16.5 28.1421 19.8579 31.5 24 31.5ZM24 28.5C26.4853 28.5 28.5 26.4853 28.5 24C28.5 21.5147 26.4853 19.5 24 19.5C21.5147 19.5 19.5 21.5147 19.5 24C19.5 26.4853 21.5147 28.5 24 28.5Z"
+                                            fill="white" />
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                            d="M9 23.4C9 18.3595 9 15.8393 9.98094 13.9141C10.8438 12.2206 12.2206 10.8438 13.9141 9.98094C15.8393 9 18.3595 9 23.4 9H24.6C29.6405 9 32.1607 9 34.0859 9.98094C35.7794 10.8438 37.1562 12.2206 38.0191 13.9141C39 15.8393 39 18.3595 39 23.4V24.6C39 29.6405 39 32.1607 38.0191 34.0859C37.1562 35.7794 35.7794 37.1562 34.0859 38.0191C32.1607 39 29.6405 39 24.6 39H23.4C18.3595 39 15.8393 39 13.9141 38.0191C12.2206 37.1562 10.8438 35.7794 9.98094 34.0859C9 32.1607 9 29.6405 9 24.6V23.4ZM23.4 12H24.6C27.1697 12 28.9166 12.0023 30.2669 12.1127C31.5821 12.2201 32.2547 12.4149 32.7239 12.654C33.8529 13.2292 34.7708 14.1471 35.346 15.2761C35.5851 15.7453 35.7799 16.4179 35.8873 17.7331C35.9977 19.0834 36 20.8303 36 23.4V24.6C36 27.1697 35.9977 28.9166 35.8873 30.2669C35.7799 31.5821 35.5851 32.2547 35.346 32.7239C34.7708 33.8529 33.8529 34.7708 32.7239 35.346C32.2547 35.5851 31.5821 35.7799 30.2669 35.8873C28.9166 35.9977 27.1697 36 24.6 36H23.4C20.8303 36 19.0834 35.9977 17.7331 35.8873C16.4179 35.7799 15.7453 35.5851 15.2761 35.346C14.1471 34.7708 13.2292 33.8529 12.654 32.7239C12.4149 32.2547 12.2201 31.5821 12.1127 30.2669C12.0023 28.9166 12 27.1697 12 24.6V23.4C12 20.8303 12.0023 19.0834 12.1127 17.7331C12.2201 16.4179 12.4149 15.7453 12.654 15.2761C13.2292 14.1471 14.1471 13.2292 15.2761 12.654C15.7453 12.4149 16.4179 12.2201 17.7331 12.1127C19.0834 12.0023 20.8303 12 23.4 12Z"
+                                            fill="white" />
+                                        <defs>
+                                            <radialGradient id="paint0_radial_27815_3158" cx="0" cy="0" r="1"
+                                                gradientUnits="userSpaceOnUse"
+                                                gradientTransform="translate(18 34.5) rotate(-55.3758) scale(38.2794)">
+                                                <stop stop-color="#B13589" />
+                                                <stop offset="0.79309" stop-color="#C62F94" />
+                                                <stop offset="1" stop-color="#8A3AC8" />
+                                            </radialGradient>
+                                            <radialGradient id="paint1_radial_27815_3158" cx="0" cy="0" r="1"
+                                                gradientUnits="userSpaceOnUse"
+                                                gradientTransform="translate(16.5 46.5) rotate(-65.1363) scale(33.8914)">
+                                                <stop stop-color="#E0E8B7" />
+                                                <stop offset="0.444662" stop-color="#FB8A2E" />
+                                                <stop offset="0.71474" stop-color="#E2425C" />
+                                                <stop offset="1" stop-color="#E2425C" stop-opacity="0" />
+                                            </radialGradient>
+                                            <radialGradient id="paint2_radial_27815_3158" cx="0" cy="0" r="1"
+                                                gradientUnits="userSpaceOnUse"
+                                                gradientTransform="translate(0.750002 4.5) rotate(-8.1301) scale(58.3363 12.4775)">
+                                                <stop offset="0.156701" stop-color="#406ADC" />
+                                                <stop offset="0.467799" stop-color="#6A45BE" />
+                                                <stop offset="1" stop-color="#6A45BE" stop-opacity="0" />
+                                            </radialGradient>
+                                        </defs>
+                                    </svg>
+                                </button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+
+    <!-- Custom-Switcher JS -->
+    <script src="../assets/js/custom-switcher.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Show Password JS -->
+    <script src="../assets/js/show-password.js"></script>
+
+            <!-- Particles JS -->
+    <script src="../assets/libs/particles.js/particles.js"></script>
+        <!-- Error JS -->
+    <script src="../assets/js/error.js"></script>
+
+</body>
+
+</html>

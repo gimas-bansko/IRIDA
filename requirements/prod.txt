@@ -1,0 +1,11 @@
+# Production обкръжение.
+# Инсталиране: pip install -r requirements/prod.txt
+
+-r base.txt
+
+# Раздаване на статични файлове от самото приложение
+whitenoise==6.12.0
+
+# WSGI сървър. Не работи под Windows - при Windows хостинг ползвай
+# waitress вместо gunicorn.
+gunicorn==23.0.0

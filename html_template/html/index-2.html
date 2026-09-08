@@ -1,0 +1,1609 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-theme-mode="light" data-header-styles="light"
+    data-menu-styles="dark" data-toggled="close">
+
+<head>
+
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> Bizlyt - Bootstrap 5 Premium Admin & Dashboard Template </title>
+    <meta name="Description" content="Bootstrap Responsive Admin Web Dashboard HTML5 Template">
+    <meta name="Author" content="Spruko Technologies Private Limited">
+    <meta name="keywords"
+        content="admin,admin dashboard,admin panel,admin template,bootstrap,clean,dashboard,flat,jquery,modern,responsive,premium admin templates,responsive admin,ui,ui kit.">
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/images/brand-logos/favicon.ico.png" type="image/x-icon">
+
+    <!-- Choices JS -->
+    <script src="../assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+
+    <!-- Main Theme Js -->
+    <script src="../assets/js/main.js"></script>
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Style Css -->
+    <link href="../assets/css/styles.css" rel="stylesheet">
+
+    <!-- Icons Css -->
+    <link href="../assets/css/icons.css" rel="stylesheet">
+
+    <!-- Node Waves Css -->
+    <link href="../assets/libs/node-waves/waves.min.css" rel="stylesheet">
+
+    <!-- Simplebar Css -->
+    <link href="../assets/libs/simplebar/simplebar.min.css" rel="stylesheet">
+
+    <!-- Color Picker Css -->
+    <link rel="stylesheet" href="../assets/libs/flatpickr/flatpickr.min.css">
+    <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css">
+
+    <!-- Choices Css -->
+    <link rel="stylesheet" href="../assets/libs/choices.js/public/assets/styles/choices.min.css">
+
+
+</head>
+<body>
+
+    <!-- Start Switcher -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="switcher-canvas" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title text-default" id="offcanvasRightLabel">Switcher</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <nav class="border-bottom border-block-end-dashed">
+                <div class="nav nav-tabs nav-justified" id="switcher-main-tab" role="tablist">
+                    <button class="nav-link active" id="switcher-home-tab" data-bs-toggle="tab"
+                        data-bs-target="#switcher-home" type="button" role="tab" aria-controls="switcher-home"
+                        aria-selected="true">Theme Styles</button>
+
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active border-0" id="switcher-home" role="tabpanel"
+                    aria-labelledby="switcher-home-tab" tabindex="0">
+                    <div class="">
+                        <p class="switcher-style-head">Theme Color Mode:</p>
+                        <div class="row switcher-style gx-0">
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-light-theme">
+                                        Light
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="theme-style"
+                                        id="switcher-light-theme" checked>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-dark-theme">
+                                        Dark
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="theme-style"
+                                        id="switcher-dark-theme">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="navigation-menu-styles">
+                        <p class="switcher-style-head">Vertical & Horizontal Menu Styles:</p>
+                        <div class="row switcher-style gx-0 pb-2 gy-2">
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-menu-click">
+                                        Menu Click
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-menu-styles"
+                                        id="switcher-menu-click">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-menu-hover">
+                                        Menu Hover
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-menu-styles"
+                                        id="switcher-menu-hover">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-icon-click">
+                                        Icon Click
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-menu-styles"
+                                        id="switcher-icon-click">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-icon-hover">
+                                        Icon Hover
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-menu-styles"
+                                        id="switcher-icon-hover">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sidemenu-layout-styles">
+                        <p class="switcher-style-head">Sidemenu Layout Styles:</p>
+                        <div class="row switcher-style gx-0 pb-2 gy-2">
+                            <div class="col-sm-6">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-default-menu">
+                                        Default Menu
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="sidemenu-layout-styles"
+                                        id="switcher-default-menu" checked>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-closed-menu">
+                                        Closed Menu
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="sidemenu-layout-styles"
+                                        id="switcher-closed-menu">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="">
+                        <p class="switcher-style-head">Menu Positions:</p>
+                        <div class="row switcher-style gx-0">
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-menu-fixed">
+                                        Fixed
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="menu-positions"
+                                        id="switcher-menu-fixed" checked>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-menu-scroll">
+                                        Scrollable
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="menu-positions"
+                                        id="switcher-menu-scroll">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="canvas-footer d-grid">
+                    <a href="javascript:void(0);" id="reset-all" class="btn btn-danger m-1">Reset</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Switcher -->
+
+    <div class="page">
+        <!-- app-header -->
+        <header class="app-header">
+
+            <!-- Start::main-header-container -->
+            <div class="main-header-container container-fluid">
+
+                <!-- Start::header-content-left -->
+                <div class="header-content-left">
+
+                    <!-- Start::header-element -->
+                    <div class="header-element">
+                        <div class="horizontal-logo">
+                            <a href="index.html" class="header-logo">
+                                <img src="../assets/images/brand-logos/desktop-logo.png" alt="logo"
+                                    class="desktop-logo">
+                                <img src="../assets/images/brand-logos/toggle-logo.png" alt="logo" class="toggle-logo">
+                                <img src="../assets/images/brand-logos/desktop-dark.png" alt="logo"
+                                    class="desktop-dark">
+                                <img src="../assets/images/brand-logos/toggle-dark.png" alt="logo" class="toggle-dark">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element ">
+                        <!-- Start::header-link -->
+                        <a aria-label="Hide Sidebar"
+                            class="sidemenu-toggle header-link animated-arrow hor-toggle horizontal-navtoggle"
+                            data-bs-toggle="sidebar" href="javascript:void(0);"><span></span></a>
+                        <!-- Start::header-element -->
+                        <div class="header-element header-search">
+                            <!-- Start::header-link -->
+
+                            <a href="javascript:void(0);" class="header-link" data-bs-toggle="modal"
+                                data-bs-target="#searchModal">
+                                <i class="bx bx-search-alt-2 header-link-icon"></i>
+                            </a>
+                            <!-- End::header-link -->
+                        </div>
+                    </div>
+                    <!-- End::header-element -->
+
+                </div>
+                <!-- End::header-content-left -->
+
+                <!-- Start::header-content-right -->
+                <div class="header-content-right">
+
+
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element header-theme-mode">
+                        <!-- Start::header-link|layout-setting -->
+                        <a href="javascript:void(0);" class="header-link layout-setting">
+                            <span class="light-layout">
+                                <!-- Start::header-link-icon -->
+                                <i class="bx bx-moon header-link-icon"></i>
+                                <!-- End::header-link-icon -->
+                            </span>
+                            <span class="dark-layout">
+                                <!-- Start::header-link-icon -->
+                                <i class="bx bx-sun header-link-icon"></i>
+                                <!-- End::header-link-icon -->
+                            </span>
+                        </a>
+                        <!-- End::header-link|layout-setting -->
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element notifications-dropdown">
+                        <!-- Start::header-link|dropdown-toggle -->
+                        <a href="javascript:void(0);" class="header-link-1 dropdown-toggle" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" id="messageDropdown1" aria-expanded="false">
+                            <svg class="header-link-icon-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none">
+                                <path
+                                    d="M2 7L10.1649 12.7154C10.8261 13.1783 11.1567 13.4097 11.5163 13.4993C11.8339 13.5785 12.1661 13.5785 12.4837 13.4993C12.8433 13.4097 13.1739 13.1783 13.8351 12.7154L22 7M6.8 20H17.2C18.8802 20 19.7202 20 20.362 19.673C20.9265 19.3854 21.3854 18.9265 21.673 18.362C22 17.7202 22 16.8802 22 15.2V8.8C22 7.11984 22 6.27976 21.673 5.63803C21.3854 5.07354 20.9265 4.6146 20.362 4.32698C19.7202 4 18.8802 4 17.2 4H6.8C5.11984 4 4.27976 4 3.63803 4.32698C3.07354 4.6146 2.6146 5.07354 2.32698 5.63803C2 6.27976 2 7.11984 2 8.8V15.2C2 16.8802 2 17.7202 2.32698 18.362C2.6146 18.9265 3.07354 19.3854 3.63803 19.673C4.27976 20 5.11984 20 6.8 20Z"
+                                    stroke="#3D3D3D" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg> <span class="badge rounded-pill header-icon-badge pulse pulse-secondary"
+                                id="notification-icon-badge"><svg xmlns="http://www.w3.org/2000/svg" width="10"
+                                    height="10" viewBox="0 0 10 10" fill="none">
+                                    <circle cx="5.20039" cy="4.8" r="4.3" fill="#2E90FA" stroke="#FAFAFA" />
+                                </svg></span>
+                        </a>
+                        <!-- End::header-link|dropdown-toggle -->
+                        <!-- Start::main-header-dropdown -->
+                        <div class="main-header-dropdown dropdown-menu dropdown-menu-end" data-popper-placement="none">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <p class="mb-0 fs-17 fw-semibold">Notifications</p>
+                                    <span class="badge bg-secondary-transparent" id="notifiation-data">5 Unread</span>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <ul class="list-unstyled mb-0" id="header-notification-scroll-1">
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-primary-transparent avatar-rounded"><i
+                                                    class="ti ti-gift fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Your Order Has
+                                                        Been Shipped</a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    No: 123456 Has Shipped To Your Delivery Address</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-secondary-transparent avatar-rounded"><i
+                                                    class="ti ti-discount-2 fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Discount
+                                                        Available</a></p>
+                                                <span
+                                                    class="text-muted fw-normal fs-12 header-notification-text">Discount
+                                                    Available On Selected Products</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-pink-transparent avatar-rounded"><i
+                                                    class="ti ti-user-check fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Account Has
+                                                        Been Verified</a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Your
+                                                    Account Has Been Verified Sucessfully</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-warning-transparent avatar-rounded"><i
+                                                    class="ti ti-circle-check fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Placed
+                                                        <span class="text-warning">ID: #1116773</span></a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    Placed Successfully</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-success-transparent avatar-rounded"><i
+                                                    class="ti ti-clock fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Delayed
+                                                        <span class="text-success">ID: 7731116</span></a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    Delayed Unfortunately</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="p-3 empty-header-item1 border-top">
+                                <div class="d-grid">
+                                    <a href="notifications.html" class="btn btn-primary  white">View All</a>
+                                </div>
+                            </div>
+                            <div class="p-5 empty-item1 d-none">
+                                <div class="text-center">
+                                    <span class="avatar avatar-xl avatar-rounded bg-secondary-transparent">
+                                        <i class="ri-notification-off-line fs-2"></i>
+                                    </span>
+                                    <h6 class="fw-semibold mt-3">No New Notifications</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End::main-header-dropdown -->
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element notifications-dropdown">
+                        <!-- Start::header-link|dropdown-toggle -->
+                        <a href="javascript:void(0);" class="header-link-1 dropdown-toggle" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" id="messageDropdown" aria-expanded="false">
+                            <i class="bx bx-bell header-link-icon"></i>
+                            <span class="badge rounded-pill header-icon-badge pulse pulse-secondary"
+                                id="notification-icon-badge-1"><svg xmlns="http://www.w3.org/2000/svg" width="10"
+                                    height="10" viewBox="0 0 10 10" fill="none">
+                                    <circle cx="5.20039" cy="4.8" r="4.3" fill="#2E90FA" stroke="#FAFAFA" />
+                                </svg></span>
+                        </a>
+                        <!-- End::header-link|dropdown-toggle -->
+                        <!-- Start::main-header-dropdown -->
+                        <div class="main-header-dropdown dropdown-menu dropdown-menu-end" data-popper-placement="none">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <p class="mb-0 fs-17 fw-semibold">Notifications</p>
+                                    <span class="badge bg-secondary-transparent" id="notifiation-data-1">5 Unread</span>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <ul class="list-unstyled mb-0" id="header-notification-scroll">
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-primary-transparent avatar-rounded"><i
+                                                    class="ti ti-gift fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Your Order Has
+                                                        Been Shipped</a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    No: 123456 Has Shipped To Your Delivery Address</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-secondary-transparent avatar-rounded"><i
+                                                    class="ti ti-discount-2 fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Discount
+                                                        Available</a></p>
+                                                <span
+                                                    class="text-muted fw-normal fs-12 header-notification-text">Discount
+                                                    Available On Selected Products</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-pink-transparent avatar-rounded"><i
+                                                    class="ti ti-user-check fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Account Has
+                                                        Been Verified</a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Your
+                                                    Account Has Been Verified Sucessfully</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-warning-transparent avatar-rounded"><i
+                                                    class="ti ti-circle-check fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Placed
+                                                        <span class="text-warning">ID: #1116773</span></a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    Placed Successfully</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-success-transparent avatar-rounded"><i
+                                                    class="ti ti-clock fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Delayed
+                                                        <span class="text-success">ID: 7731116</span></a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    Delayed Unfortunately</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="p-3 empty-header-item1 border-top">
+                                <div class="d-grid">
+                                    <a href="notifications.html" class="btn btn-primary  white">View All</a>
+                                </div>
+                            </div>
+                            <div class="p-5 empty-item1 d-none">
+                                <div class="text-center">
+                                    <span class="avatar avatar-xl avatar-rounded bg-secondary-transparent">
+                                        <i class="ri-notification-off-line fs-2"></i>
+                                    </span>
+                                    <h6 class="fw-semibold mt-3">No New Notifications</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End::main-header-dropdown -->
+                    </div>
+                    <!-- End::header-element -->
+
+
+
+                    <!-- Start::header-element -->
+                    <div class="header-element">
+                        <!-- Start::header-link|dropdown-toggle -->
+                        <a href="#" class="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <div class="me-sm-2 me-0">
+                                    <img src="../assets/images/faces/9.jpg" alt="img" width="32" height="32"
+                                        class="rounded-circle">
+                                </div>
+                                <div class="d-sm-block d-none">
+                                    <p class="fw-semibold mb-0 lh-1">Tom Raynor</p>
+                                </div>
+                            </div>
+                        </a>
+                        <!-- End::header-link|dropdown-toggle -->
+                        <ul class="main-header-dropdown dropdown-menu pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end"
+                            aria-labelledby="mainHeaderProfile">
+                            <li><a class="dropdown-item d-flex" href="profile.html"><i
+                                        class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
+                            <li><a class="dropdown-item d-flex" href="mail.html"><i
+                                        class="ti ti-inbox fs-18 me-2 op-7"></i>Inbox <span
+                                        class="badge bg-success-transparent ms-auto">25</span></a></li>
+
+                            <li><a class="dropdown-item d-flex" href="mail-settings.html"><i
+                                        class="ti ti-adjustments-horizontal fs-18 me-2 op-7"></i>Settings</a></li>
+                            <li><a class="dropdown-item d-flex border-block-end" href="javascript:void(0);"><i
+                                        class="ti ti-wallet fs-18 me-2 op-7"></i>Bal: $7,12,950</a></li>
+
+                            <li><a class="dropdown-item d-flex" href="sign-in-cover.html"><i
+                                        class="ti ti-logout fs-18 me-2 op-7"></i>Log Out</a></li>
+                        </ul>
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element">
+                        <!-- Start::header-link|switcher-icon -->
+                        <a href="#" class="header-link switcher-icon" data-bs-toggle="offcanvas"
+                            data-bs-target="#switcher-canvas">
+                            <i class="bx bx-cog header-link-icon"></i>
+                        </a>
+                        <!-- End::header-link|switcher-icon -->
+                    </div>
+                    <!-- End::header-element -->
+
+                </div>
+                <!-- End::header-content-right -->
+
+            </div>
+            <!-- End::main-header-container -->
+
+        </header>
+        <!-- /app-header -->
+        <aside class="app-sidebar sticky" id="sidebar">
+
+            <!-- Start::main-sidebar-header -->
+
+            <!-- End::main-sidebar-header -->
+
+            <!-- Start::main-sidebar -->
+            <div class="main-sidebar" id="sidebar-scroll">
+
+                <!-- Start::nav -->
+                <nav class="main-menu-container nav nav-pills flex-column sub-open">
+                    <div class="main-sidebar-header mb-24">
+                        <a href="index.html" class="header-logo">
+                            <img src="../assets/images/brand-logos/desktop-logo.png" alt="logo" class="desktop-logo">
+                            <img src="../assets/images/brand-logos/toggle-logo.png" alt="logo" class="toggle-logo">
+                            <img src="../assets/images/brand-logos/desktop-dark.png" alt="logo" class="desktop-dark">
+                            <img src="../assets/images/brand-logos/toggle-dark.png" alt="logo" class="toggle-dark">
+                        </a>
+                    </div>
+                    <div class="slide-left" id="slide-left">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24"
+                            viewBox="0 0 24 24">
+                            <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path>
+                        </svg>
+                    </div>
+                    <ul class="main-menu">
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">Main Menu</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-home side-menu__icon"></i>
+                                <span class="side-menu__label">Dashboards</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Dashboards</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="index.html" class="side-menu__item">CRM</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="index-1.html" class="side-menu__item">Ecommerce</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="index-2.html" class="side-menu__item">Pos system</a>
+                                </li>
+
+                                <li class="slide">
+                                    <a href="index-3.html" class="side-menu__item">Analytics</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="index-4.html" class="side-menu__item">Projects</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">Pages</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-file-blank side-menu__icon"></i>
+                                <span class="side-menu__label">Pages</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Pages</a>
+                                </li>
+                                <li class="slide has-sub">
+                                    <a href="javascript:void(0);" class="side-menu__item">Email
+                                        <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                    <ul class="slide-menu child2">
+                                        <li class="slide">
+                                            <a href="mail.html" class="side-menu__item">Mail App</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="mail-settings.html" class="side-menu__item">Mail Settings</a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li class="slide">
+                                    <a href="faq's.html" class="side-menu__item">FAQ's</a>
+                                </li>
+
+                                <li class="slide">
+                                    <a href="notifications.html" class="side-menu__item">Notifications</a>
+                                </li>
+
+                                <li class="slide">
+                                    <a href="profile.html" class="side-menu__item">Profile</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="reviews.html" class="side-menu__item">Reviews</a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-fingerprint side-menu__icon"></i>
+                                <span class="side-menu__label">Authentication</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Authentication</a>
+                                </li>
+
+
+                                <li class="slide has-sub">
+                                    <a href="reset-password.html" class="side-menu__item">Reset Password
+                                    </a>
+                                <li class="slide has-sub">
+                                    <a href="sign-up.html" class="side-menu__item">Sign Up
+                                    </a>
+
+                                </li>
+                                <li class="slide has-sub">
+                                    <a href="sign-in.html" class="side-menu__item">Sign In
+                                    </a>
+                                </li>
+                                <li class="slide">
+                                    <a href="under-maintenance.html" class="side-menu__item">Under Maintenance</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-error side-menu__icon"></i>
+                                <span class="side-menu__label">Error</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Error</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="401-error.html" class="side-menu__item">401 - Error</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="404-error.html" class="side-menu__item">404 - Error</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="500-error.html" class="side-menu__item">500 - Error</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">General</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-box side-menu__icon"></i>
+                                <span class="side-menu__label">Ui Elements</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1 mega-menu">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Ui Elements</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="alerts.html" class="side-menu__item">Alerts</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="badge.html" class="side-menu__item">Badge</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="breadcrumb.html" class="side-menu__item">Breadcrumb</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="buttons.html" class="side-menu__item">Buttons</a>
+                                </li>
+
+                                <li class="slide">
+                                    <a href="images_figures.html" class="side-menu__item">Images & Figures</a>
+                                </li>
+
+                                <li class="slide">
+                                    <a href="navs_tabs.html" class="side-menu__item">Navs & Tabs</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="cards.html" class="side-menu__item">Cards</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="pagination.html" class="side-menu__item">Pagination</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="spinners.html" class="side-menu__item">Spinners</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="progress.html" class="side-menu__item">Progress</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="dropdowns.html" class="side-menu__item">Dropdowns</a>
+                                </li>
+
+                                <li class="slide">
+                                    <a href="tooltips.html" class="side-menu__item">Tooltips</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="typography.html" class="side-menu__item">Typography</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-file side-menu__icon"></i>
+                                <span class="side-menu__label">Forms</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Forms</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="floating_labels.html" class="side-menu__item">Floating Labels</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="form_layout.html" class="side-menu__item">Form Layouts</a>
+                                </li>
+                                <li class="slide has-sub">
+                                    <a href="javascript:void(0);" class="side-menu__item">Form Editors
+                                        <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                    <ul class="slide-menu child2">
+                                        <li class="slide">
+                                            <a href="quill_editor.html" class="side-menu__item">Quill Editor</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+
+
+                        <!-- Start::slide -->
+
+                        <!-- End::slide -->
+
+
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">Tables & Charts</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-table side-menu__icon"></i>
+                                <span class="side-menu__label">Tables</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Tables</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="tables.html" class="side-menu__item">Tables</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="grid-tables.html" class="side-menu__item">Grid JS Tables</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="data-tables.html" class="side-menu__item">Data Tables</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-bar-chart-square side-menu__icon"></i>
+                                <span class="side-menu__label">Charts</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Charts</a>
+                                </li>
+                                <li class="slide has-sub">
+                                    <a href="javascript:void(0);" class="side-menu__item">Apex Charts
+                                        <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                    <ul class="slide-menu child2">
+                                        <li class="slide">
+                                            <a href="apex-line-charts.html" class="side-menu__item">Line Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-area-charts.html" class="side-menu__item">Area Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-column-charts.html" class="side-menu__item">Column Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-bar-charts.html" class="side-menu__item">Bar Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-mixed-charts.html" class="side-menu__item">Mixed Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-rangearea-charts.html" class="side-menu__item">Range Area
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-timeline-charts.html" class="side-menu__item">Timeline
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-candlestick-charts.html" class="side-menu__item">CandleStick
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-boxplot-charts.html" class="side-menu__item">Boxplot
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-bubble-charts.html" class="side-menu__item">Bubble Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-scatter-charts.html" class="side-menu__item">Scatter
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-heatmap-charts.html" class="side-menu__item">Heatmap
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-treemap-charts.html" class="side-menu__item">Treemap
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-pie-charts.html" class="side-menu__item">Pie Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-radialbar-charts.html" class="side-menu__item">Radialbar
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-radar-charts.html" class="side-menu__item">Radar Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-polararea-charts.html" class="side-menu__item">Polararea
+                                                Charts</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="slide">
+                                    <a href="chartjs-charts.html" class="side-menu__item">Chartjs Charts</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="echarts.html" class="side-menu__item">Echart Charts</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">Maps & Icons</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-map side-menu__icon"></i>
+                                <span class="side-menu__label">Maps</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Maps</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="google-maps.html" class="side-menu__item">Google Maps</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="leaflet-maps.html" class="side-menu__item">Leaflet Maps</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="vector-maps.html" class="side-menu__item">Vector Maps</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide">
+                            <a href="icons.html" class="side-menu__item">
+                                <i class="bx bx-store-alt side-menu__icon"></i>
+                                <span class="side-menu__label">Icons</span>
+                            </a>
+                        </li>
+                        <!-- End::slide -->
+                    </ul>
+                    <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191"
+                            width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path>
+                        </svg></div>
+                </nav>
+                <!-- End::nav -->
+
+            </div>
+            <!-- End::main-sidebar -->
+
+        </aside>
+        <!-- End::app-sidebar -->
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- Page Header -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                    <div>
+                        <h1 class="page-title fw-normal fs-20 mb-12">Pos System</h1>
+                        <nav>
+                            <ol class="breadcrumb mb-2">
+                                <li class="breadcrumb-item"><a href="#">Dashboards</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Pos System</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="d-flex gap-12 align-items-center">
+                        <button type="button" class="btn-1 btn btn-secondary">
+                            <span class="d-flex align-items-center gap-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
+                                    fill="none">
+                                    <path
+                                        d="M2.08295 7.5H17.9163M8.33295 2.5L6.66628 7.5L9.99961 17.0833L13.3329 7.5L11.6663 2.5M10.5118 16.8854L17.9773 7.92679C18.1038 7.77496 18.1671 7.69905 18.1912 7.6143C18.2126 7.53959 18.2126 7.46041 18.1912 7.38569C18.1671 7.30095 18.1038 7.22504 17.9773 7.07321L14.3662 2.73988C14.2927 2.6517 14.256 2.60762 14.2109 2.57592C14.171 2.54784 14.1265 2.52698 14.0794 2.51431C14.0262 2.5 13.9688 2.5 13.854 2.5H6.1452C6.03042 2.5 5.97303 2.5 5.91985 2.51431C5.87273 2.52698 5.82821 2.54784 5.7883 2.57592C5.74327 2.60762 5.70653 2.6517 5.63305 2.73988L2.02194 7.07321C1.89541 7.22504 1.83215 7.30095 1.80798 7.38569C1.78666 7.46041 1.78666 7.53959 1.80798 7.6143C1.83215 7.69904 1.89541 7.77496 2.02194 7.92679L9.48747 16.8854C9.66335 17.0965 9.75129 17.202 9.85657 17.2405C9.94894 17.2743 10.0503 17.2743 10.1427 17.2405C10.2479 17.202 10.3359 17.0965 10.5118 16.8854Z"
+                                        stroke="#FAFAFA" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                <span class="white">Plan Upgrade</span>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-primary  white">
+                            <span class="d-flex align-items-center gap-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
+                                    fill="none">
+                                    <path d="M17.5 17.5H2.5M15 9.16667L10 14.1667M10 14.1667L5 9.16667M10 14.1667V2.5"
+                                        stroke="#FAFAFA" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                <span class="white">Export report</span>
+                            </span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+            <!-- Page Header Close -->
+
+            <div class="filters">
+                <div class="row w-100 row-gap-3">
+                    <div class="col-xxl-2 col-xl-6 col-md-6 ">
+                        <button class="filter-btn active card-1" data-filter="all">
+                            <span class="text-center fiters-tab">
+                                <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="65" height="64"
+                                    viewBox="0 0 65 64" fill="none">
+                                    <path
+                                        d="M32.6667 53.3333H14.5333C11.5464 53.3333 10.0529 53.3333 8.91205 52.752C7.90852 52.2407 7.09262 51.4248 6.5813 50.4213C6 49.2804 6 47.7869 6 44.8V19.2C6 16.213 6 14.7196 6.5813 13.5787C7.09262 12.5752 7.90852 11.7593 8.91205 11.248C10.0529 10.6667 11.5464 10.6667 14.5333 10.6667H15.6C21.5739 10.6667 24.5608 10.6667 26.8426 11.8293C28.8496 12.8519 30.4814 14.4837 31.5041 16.4908C32.6667 18.7725 32.6667 21.7594 32.6667 27.7333M32.6667 53.3333V27.7333M32.6667 53.3333H50.8C53.7869 53.3333 55.2804 53.3333 56.4213 52.752C57.4248 52.2407 58.2407 51.4248 58.752 50.4213C59.3333 49.2804 59.3333 47.7869 59.3333 44.8V19.2C59.3333 16.213 59.3333 14.7196 58.752 13.5787C58.2407 12.5752 57.4248 11.7593 56.4213 11.248C55.2804 10.6667 53.7869 10.6667 50.8 10.6667H49.7333C43.7594 10.6667 40.7725 10.6667 38.4908 11.8293C36.4837 12.8519 34.8519 14.4837 33.8293 16.4908C32.6667 18.7725 32.6667 21.7594 32.6667 27.7333"
+                                        stroke="#2E90FA" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                <span class="fs-16 fw-400 custom-black mb-2">All Books</span>
+                                <span class="fs-16 fw-400 text-muted mb-2">80 Books</span>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="col-xxl-2 col-xl-6 col-md-6 ">
+                        <button class="filter-btn" data-filter="action">
+                            <span class="text-center fiters-tab">
+                                <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="64" height="64"
+                                    viewBox="0 0 64 64" fill="none">
+                                    <path
+                                        d="M31.9997 56L31.7329 55.5998C29.8805 52.8212 28.9543 51.4319 27.7306 50.4262C26.6473 49.5358 25.399 48.8678 24.0573 48.4603C22.5417 48 20.872 48 17.5325 48H13.8663C10.8794 48 9.38592 48 8.24506 47.4187C7.24153 46.9074 6.42563 46.0915 5.91431 45.088C5.33301 43.9471 5.33301 42.4536 5.33301 39.4667V16.5333C5.33301 13.5464 5.33301 12.0529 5.91431 10.9121C6.42563 9.90852 7.24153 9.09262 8.24506 8.5813C9.38592 8 10.8794 8 13.8663 8H14.933C20.9069 8 23.8938 8 26.1756 9.1626C28.1826 10.1852 29.8144 11.817 30.8371 13.8241C31.9997 16.1058 31.9997 19.0928 31.9997 25.0667M31.9997 56V25.0667M31.9997 56L32.2665 55.5998C34.1189 52.8212 35.0451 51.4319 36.2687 50.4262C37.3521 49.5358 38.6003 48.8678 39.9421 48.4603C41.4577 48 43.1274 48 46.4668 48H50.133C53.12 48 54.6134 48 55.7543 47.4187C56.7578 46.9074 57.5737 46.0915 58.085 45.088C58.6663 43.9471 58.6663 42.4536 58.6663 39.4667V16.5333C58.6663 13.5464 58.6663 12.0529 58.085 10.9121C57.5737 9.90852 56.7578 9.09262 55.7543 8.5813C54.6134 8 53.12 8 50.133 8H49.0663C43.0924 8 40.1055 8 37.8238 9.1626C35.8167 10.1852 34.1849 11.817 33.1623 13.8241C31.9997 16.1058 31.9997 19.0928 31.9997 25.0667"
+                                        stroke="#2E90FA" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                <span class="fs-16 fw-400 custom-black mb-2">Action and adventure</span>
+                                <span class="fs-16 fw-400 text-muted mb-2">80 Books</span>
+
+                            </span>
+                        </button>
+                    </div>
+                    <div class="col-xxl-2 col-xl-6 col-md-6 ">
+                        <button class="filter-btn" data-filter="history">
+                            <span class="text-center fiters-tab">
+                                <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="65" height="64"
+                                    viewBox="0 0 65 64" fill="none">
+                                    <path
+                                        d="M5.66699 18.6667L27.4401 33.9078C29.2032 35.142 30.0848 35.7591 31.0437 35.9981C31.8907 36.2093 32.7766 36.2093 33.6236 35.9981C34.5825 35.7591 35.4641 35.142 37.2272 33.9078L59.0003 18.6667M18.467 53.3333H46.2003C50.6807 53.3333 52.921 53.3333 54.6322 52.4614C56.1375 51.6944 57.3614 50.4705 58.1284 48.9652C59.0003 47.254 59.0003 45.0137 59.0003 40.5333V23.4667C59.0003 18.9862 59.0003 16.746 58.1284 15.0347C57.3614 13.5294 56.1375 12.3056 54.6322 11.5386C52.921 10.6667 50.6807 10.6667 46.2003 10.6667H18.467C13.9866 10.6667 11.7464 10.6667 10.0351 11.5386C8.52977 12.3056 7.30593 13.5294 6.53894 15.0347C5.66699 16.746 5.66699 18.9862 5.66699 23.4667V40.5333C5.66699 45.0137 5.66699 47.254 6.53894 48.9652C7.30593 50.4705 8.52977 51.6944 10.0351 52.4614C11.7464 53.3333 13.9866 53.3333 18.467 53.3333Z"
+                                        stroke="#2E90FA" stroke-width="4" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                <span class="fs-16 fw-400 custom-black mb-2">History Books</span>
+                                <span class="fs-16 fw-400 text-muted mb-2">50 Books</span>
+
+                            </span>
+                        </button>
+                    </div>
+                    <div class="col-xxl-2 col-xl-6 col-md-6 ">
+                        <button class="filter-btn" data-filter="comics">
+                            <span class="text-center fiters-tab">
+                                <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="65" height="64"
+                                    viewBox="0 0 65 64" fill="none">
+                                    <path
+                                        d="M6 18.6667L27.7731 33.9078C29.5362 35.142 30.4178 35.7591 31.3767 35.9981C32.2237 36.2093 33.1096 36.2093 33.9566 35.9981C34.9155 35.7591 35.7971 35.142 37.5602 33.9078L59.3333 18.6667M18.8 53.3333H46.5333C51.0138 53.3333 53.254 53.3333 54.9653 52.4614C56.4706 51.6944 57.6944 50.4705 58.4614 48.9652C59.3333 47.254 59.3333 45.0137 59.3333 40.5333V23.4667C59.3333 18.9862 59.3333 16.746 58.4614 15.0347C57.6944 13.5294 56.4706 12.3056 54.9653 11.5386C53.254 10.6667 51.0138 10.6667 46.5333 10.6667H18.8C14.3196 10.6667 12.0794 10.6667 10.3681 11.5386C8.86278 12.3056 7.63893 13.5294 6.87195 15.0347C6 16.746 6 18.9862 6 23.4667V40.5333C6 45.0137 6 47.254 6.87195 48.9652C7.63893 50.4705 8.86278 51.6944 10.3681 52.4614C12.0794 53.3333 14.3196 53.3333 18.8 53.3333Z"
+                                        stroke="#2E90FA" stroke-width="4" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                <span class="fs-16 fw-400 custom-black mb-2">Comics Books</span>
+                                <span class="fs-16 fw-400 text-muted mb-2">70 Books</span>
+
+                            </span>
+                        </button>
+                    </div>
+                    <div class="col-xxl-2 col-xl-6 col-md-6 ">
+                        <button class="filter-btn" data-filter="graphic">
+                            <span class="text-center fiters-tab">
+                                <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="65" height="64"
+                                    viewBox="0 0 65 64" fill="none">
+                                    <path
+                                        d="M6 18.6667L27.7731 33.9078C29.5362 35.142 30.4178 35.7591 31.3767 35.9981C32.2237 36.2093 33.1096 36.2093 33.9566 35.9981C34.9155 35.7591 35.7971 35.142 37.5602 33.9078L59.3333 18.6667M18.8 53.3333H46.5333C51.0138 53.3333 53.254 53.3333 54.9653 52.4614C56.4706 51.6944 57.6944 50.4705 58.4614 48.9652C59.3333 47.254 59.3333 45.0137 59.3333 40.5333V23.4667C59.3333 18.9862 59.3333 16.746 58.4614 15.0347C57.6944 13.5294 56.4706 12.3056 54.9653 11.5386C53.254 10.6667 51.0138 10.6667 46.5333 10.6667H18.8C14.3196 10.6667 12.0794 10.6667 10.3681 11.5386C8.86278 12.3056 7.63893 13.5294 6.87195 15.0347C6 16.746 6 18.9862 6 23.4667V40.5333C6 45.0137 6 47.254 6.87195 48.9652C7.63893 50.4705 8.86278 51.6944 10.3681 52.4614C12.0794 53.3333 14.3196 53.3333 18.8 53.3333Z"
+                                        stroke="#2E90FA" stroke-width="4" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                <span class="fs-16 fw-400 custom-black mb-2">Graphic Books</span>
+                                <span class="fs-16 fw-400 text-muted mb-2">80 Books</span>
+
+                            </span>
+                        </button>
+                    </div>
+                    <div class="col-xxl-2 col-xl-6 col-md-6 ">
+                        <button class="filter-btn" data-filter="crime">
+                            <span class="text-center fiters-tab">
+                                <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="65" height="64"
+                                    viewBox="0 0 65 64" fill="none">
+                                    <path
+                                        d="M32.6667 53.3333H14.5333C11.5464 53.3333 10.0529 53.3333 8.91205 52.752C7.90852 52.2407 7.09262 51.4248 6.5813 50.4213C6 49.2804 6 47.7869 6 44.8V19.2C6 16.213 6 14.7196 6.5813 13.5787C7.09262 12.5752 7.90852 11.7593 8.91205 11.248C10.0529 10.6667 11.5464 10.6667 14.5333 10.6667H15.6C21.5739 10.6667 24.5608 10.6667 26.8426 11.8293C28.8496 12.8519 30.4814 14.4837 31.5041 16.4908C32.6667 18.7725 32.6667 21.7594 32.6667 27.7333M32.6667 53.3333V27.7333M32.6667 53.3333H50.8C53.7869 53.3333 55.2804 53.3333 56.4213 52.752C57.4248 52.2407 58.2407 51.4248 58.752 50.4213C59.3333 49.2804 59.3333 47.7869 59.3333 44.8V19.2C59.3333 16.213 59.3333 14.7196 58.752 13.5787C58.2407 12.5752 57.4248 11.7593 56.4213 11.248C55.2804 10.6667 53.7869 10.6667 50.8 10.6667H49.7333C43.7594 10.6667 40.7725 10.6667 38.4908 11.8293C36.4837 12.8519 34.8519 14.4837 33.8293 16.4908C32.6667 18.7725 32.6667 21.7594 32.6667 27.7333"
+                                        stroke="#2E90FA" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                <span class="fs-16 fw-400 custom-black mb-2">Crime Books</span>
+                                <span class="fs-16 fw-400 text-muted mb-2">80 Books</span>
+
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row w-100 row-gap-4">
+                <div class="col-xxl-3 col-xl-6 col-md-6 filter-item" data-category="action">
+                    <div class="item">
+                        <img src="../assets/images/ecommerce/jpg/13.jpg" alt="Book">
+                        <div class="filter-card">
+                            <p class="fs-20 mb-1 fw-400 custom-black">The Art of Knotting Shoelaces</p>
+                            <p class="fs-14 fw-400 text-muted mb-12">Historical Fiction</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="d-flex align-items-center gap-6">
+                                    <span class="fs-20 fw-400 custom-black">$24.00</span>
+                                    <span class="fs-14 fw-400 text-muted decoration mb-12">$30.00</span>
+                                </span> <!-- ✅ closed span -->
+                                <div>
+                                    <button type="button" class="btn btn-primary">
+                                        <span class="d-flex align-items-center gap-6">
+                                            <span class="white fw-medium">Add To Cart</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                viewBox="0 0 20 20" fill="none">
+                                                <path
+                                                    d="M17.5 17.5H2.5M15 9.16667L10 14.1667M10 14.1667L5 9.16667M10 14.1667V2.5"
+                                                    stroke="#FAFAFA" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round"></path>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xxl-3 col-xl-6 col-md-6 filter-item" data-category="history">
+                    <div class="item">
+                        <img src="../assets/images/ecommerce/jpg/14.jpg" alt="Book">
+                        <div class="filter-card">
+                            <p class="fs-20 mb-1 fw-400 custom-black">The Art of Knotting Shoelaces</p>
+                            <p class="fs-14 fw-400 text-muted mb-12">Historical Fiction</p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="d-flex align-items-center gap-6">
+                                    <span class="fs-20 fw-400 custom-black">$24.00</span>
+                                    <span class="fs-14 fw-400 text-muted decoration mb-12">$30.00</span>
+                                </span> <!-- ✅ Closed the span -->
+
+                                <button type="button" class="btn btn-primary">
+                                    <span class="d-flex align-items-center gap-6">
+                                        <span class="white fw-medium">Add To Cart</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            viewBox="0 0 20 20" fill="none">
+                                            <path
+                                                d="M17.5 17.5H2.5M15 9.16667L10 14.1667M10 14.1667L5 9.16667M10 14.1667V2.5"
+                                                stroke="#FAFAFA" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div> <!-- d-flex end -->
+                        </div> <!-- filter-card end -->
+                    </div> <!-- item end -->
+                </div> <!-- col end -->
+
+
+
+                <div class="col-xxl-3 col-xl-6 col-md-6 filter-item" data-category="action">
+                    <div class="item">
+                        <img src="../assets/images/ecommerce/jpg/15.jpg" alt="Book">
+                        <div class="filter-card">
+                            <p class="fs-20 mb-1 fw-400 custom-black">The Art of Knotting Shoelaces</p>
+                            <p class="fs-14 fw-400 text-muted mb-12">Historical Fiction</p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="d-flex align-items-center gap-6">
+                                    <span class="fs-20 fw-400 custom-black">$24.00</span>
+                                    <span class="fs-14 fw-400 text-muted decoration mb-12">$30.00</span>
+                                </span>
+                                <button type="button" class="btn btn-primary">
+                                    <span class="d-flex align-items-center gap-6">
+                                        <span class="white fw-medium">Add To Cart</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            viewBox="0 0 20 20" fill="none">
+                                            <path
+                                                d="M17.5 17.5H2.5M15 9.16667L10 14.1667M10 14.1667L5 9.16667M10 14.1667V2.5"
+                                                stroke="#FAFAFA" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div> <!-- d-flex -->
+                        </div> <!-- filter-card -->
+                    </div> <!-- item -->
+                </div> <!-- col -->
+
+
+                <div class="col-xxl-3 col-xl-6 col-md-6 filter-item" data-category="crime">
+                    <div class="item">
+                        <img src="../assets/images/ecommerce/jpg/16.jpg" alt="Book">
+                        <div class="filter-card">
+                            <p class="fs-20 mb-1 fw-400 custom-black">The Art of Knotting Shoelaces</p>
+                            <p class="fs-14 fw-400 text-muted mb-12">Historical Fiction</p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="d-flex align-items-center gap-6">
+                                    <span class="fs-20 fw-400 custom-black">$24.00</span>
+                                    <span class="fs-14 fw-400 text-muted decoration mb-12">$30.00</span>
+                                </span>
+                                <button type="button" class="btn btn-primary">
+                                    <span class="d-flex align-items-center gap-6">
+                                        <span class="white fw-medium">Add To Cart</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            viewBox="0 0 20 20" fill="none">
+                                            <path
+                                                d="M17.5 17.5H2.5M15 9.16667L10 14.1667M10 14.1667L5 9.16667M10 14.1667V2.5"
+                                                stroke="#FAFAFA" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div> <!-- end d-flex -->
+                        </div> <!-- end filter-card -->
+                    </div> <!-- end item -->
+                </div> <!-- end col -->
+
+                <div class="col-xxl-3 col-xl-6 col-md-6 filter-item" data-category="action">
+                    <div class="item">
+                        <img src="../assets/images/ecommerce/jpg/17.jpg" alt="Book">
+                        <div class="filter-card">
+                            <p class="fs-20 mb-1 fw-400 custom-black">The Art of Knotting Shoelaces</p>
+                            <p class="fs-14 fw-400 text-muted mb-12">Historical Fiction</p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="d-flex align-items-center gap-6">
+                                    <span class="fs-20 fw-400 custom-black">$24.00</span>
+                                    <span class="fs-14 fw-400 text-muted decoration mb-12">$30.00</span>
+                                </span>
+                                <button type="button" class="btn btn-primary">
+                                    <span class="d-flex align-items-center gap-6">
+                                        <span class="white fw-medium">Add To Cart</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            viewBox="0 0 20 20" fill="none">
+                                            <path
+                                                d="M17.5 17.5H2.5M15 9.16667L10 14.1667M10 14.1667L5 9.16667M10 14.1667V2.5"
+                                                stroke="#FAFAFA" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div> <!-- end price & button -->
+                        </div> <!-- end filter-card -->
+                    </div> <!-- end item -->
+                </div> <!-- end col -->
+
+
+                <div class="col-xxl-3 col-xl-6 col-md-6 filter-item" data-category="history">
+                    <div class="item">
+                        <img src="../assets/images/ecommerce/jpg/18.jpg" alt="Book">
+                        <div class="filter-card">
+                            <p class="fs-20 mb-1 fw-400 custom-black">The Art of Knotting Shoelaces</p>
+                            <p class="fs-14 fw-400 text-muted mb-12">Historical Fiction</p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="d-flex align-items-center gap-6">
+                                    <span class="fs-20 fw-400 custom-black">$24.00</span>
+                                    <span class="fs-14 fw-400 text-muted decoration mb-12">$30.00</span>
+                                </span>
+                                <button type="button" class="btn btn-primary">
+                                    <span class="d-flex align-items-center gap-6">
+                                        <span class="white fw-medium">Add To Cart</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            viewBox="0 0 20 20" fill="none">
+                                            <path
+                                                d="M17.5 17.5H2.5M15 9.16667L10 14.1667M10 14.1667L5 9.16667M10 14.1667V2.5"
+                                                stroke="#FAFAFA" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div> <!-- end price & button -->
+                        </div> <!-- end filter-card -->
+                    </div> <!-- end item -->
+                </div> <!-- end col -->
+
+
+                <div class="col-xxl-3 col-xl-6 col-md-6 filter-item" data-category="comics">
+                    <div class="item">
+                        <img src="../assets/images/ecommerce/jpg/19.jpg" alt="Book">
+                        <div class="filter-card">
+                            <p class="fs-20 mb-1 fw-400 custom-black">The Art of Knotting Shoelaces</p>
+                            <p class="fs-14 fw-400 text-muted mb-12">Historical Fiction</p>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="d-flex align-items-center gap-6">
+                                    <span class="fs-20 mb-2 fw-400 custom-black">$24.00</span>
+                                    <span class="fs-14 fw-400 text-muted decoration mb-12">$30.00</span>
+                                </span>
+                                <button type="button" class="btn btn-primary">
+                                    <span class="d-flex align-items-center gap-6">
+                                        <span class="white fw-medium">Add To Cart</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                            viewBox="0 0 20 20" fill="none">
+                                            <path
+                                                d="M17.5 17.5H2.5M15 9.16667L10 14.1667M10 14.1667L5 9.16667M10 14.1667V2.5"
+                                                stroke="#FAFAFA" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div> <!-- end price & button -->
+                        </div> <!-- end filter-card -->
+                    </div> <!-- end item -->
+                </div> <!-- end col -->
+
+
+                <div class="col-xxl-3 col-xl-6 col-md-6 filter-item" data-category="graphic">
+                    <div class="item">
+                        <img src="../assets/images/ecommerce/jpg/20.jpg" alt="Book">
+                        <div class="filter-card">
+                            <p class="fs-20 mb-1 fw-400 custom-black">The Art of Knotting Shoelaces</p>
+                            <p class="fs-14 fw-400 text-muted mb-12">Historical Fiction</p>
+
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="d-flex align-items-center gap-6">
+                                    <span class="fs-20 fw-400 custom-black">$24.00</span>
+                                    <span class="fs-14 fw-400 text-muted decoration mb-12">$30.00</span>
+                                </span>
+                            </div>
+
+                            <button type="button" class="btn btn-primary">
+                                <span class="d-flex align-items-center gap-6">
+                                    <span class="white fw-medium">Add To Cart</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
+                                        fill="none">
+                                        <path
+                                            d="M17.5 17.5H2.5M15 9.16667L10 14.1667M10 14.1667L5 9.16667M10 14.1667V2.5"
+                                            stroke="#FAFAFA" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
+                                    </svg>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <!-- Repeat more items -->
+        </div>
+
+        <!-- End::app-content -->
+
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <a href="javascript:void(0);" class="input-group-text" id="Search-Grid"><i
+                                    class="fe fe-search header-link-icon fs-18"></i></a>
+                            <input type="search" class="form-control border-0 px-2" placeholder="Search"
+                                aria-label="Username">
+                            <a href="javascript:void(0);" class="input-group-text" id="voice-search"><i
+                                    class="fe fe-mic header-link-icon"></i></a>
+                            <a href="javascript:void(0);" class="btn btn-light btn-icon" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="fe fe-more-vertical"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">Separated link</a></li>
+                            </ul>
+                        </div>
+                        <div class="mt-4">
+                            <p class="font-weight-semibold text-muted mb-2">Are You Looking For...</p>
+                            <span class="search-tags"><i class="fe fe-user me-2"></i>People<a href="javascript:void(0)"
+                                    class="tag-addon"><i class="fe fe-x"></i></a></span>
+                            <span class="search-tags"><i class="fe fe-file-text me-2"></i>Pages<a
+                                    href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                            <span class="search-tags"><i class="fe fe-align-left me-2"></i>Articles<a
+                                    href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                            <span class="search-tags"><i class="fe fe-server me-2"></i>Tags<a href="javascript:void(0)"
+                                    class="tag-addon"><i class="fe fe-x"></i></a></span>
+                        </div>
+                        <div class="my-4">
+                            <p class="font-weight-semibold text-muted mb-2">Recent Search :</p>
+                            <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                                <a href="notifications.html"><span>Notifications</span></a>
+                                <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert"
+                                    aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                            </div>
+                            <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                                <a href="alerts.html"><span>Alerts</span></a>
+                                <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert"
+                                    aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                            </div>
+                            <div class="p-2 border br-5 d-flex align-items-center text-muted mb-0 alert">
+                                <a href="mail.html"><span>Mail</span></a>
+                                <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert"
+                                    aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="btn-group ms-auto">
+                            <button class="btn btn-sm btn-primary-light">Search</button>
+                            <button class="btn btn-sm btn-primary">Clear Recents</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer Start -->
+        <footer class="footer mt-auto py-3 menu-bg text-center">
+            <div class="container">
+                <span class=" fw-normal  gray-3 fs-16"> <span id="year"></span> <a href="javascript:void(0);"
+                        class="gray-9 fw-semibold">Bizlyt</a>.
+                    Designed & Developed by <a href="javascript:void(0);">
+                        <span class="gray-9 fw-semibold">UIPARADOX</span>
+                    </a>
+                </span>
+            </div>
+        </footer>
+        <!-- Footer End -->
+
+    </div>
+
+
+    <div class="scrollToTop">
+        <span class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"
+                fill="none">
+                <path d="M8 15V1M8 1L1 8M8 1L15 8" stroke="#888888" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg></span>
+    </div>
+    <div id="responsive-overlay"></div>
+
+    <!-- Popper JS -->
+    <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Defaultmenu JS -->
+    <script src="../assets/js/defaultmenu.min.js"></script>
+
+    <!-- Node Waves JS-->
+
+    <!-- Sticky JS -->
+    <script src="../assets/js/sticky.js"></script>
+
+    <!-- Simplebar JS -->
+    <script src="../assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="../assets/js/simplebar.js"></script>
+
+    <!-- Node Waves JS-->
+    <script src="../assets/libs/node-waves/waves.min.js"></script>
+
+    <!-- Color Picker JS -->
+    <script src="../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+
+
+    <!-- Apex Charts JS -->
+
+
+    <!-- Internal Apex Mixed Charts JS -->
+
+    <!-- Ecommerce-Dashboard JS -->
+
+    <!-- Analytics-Dashboard JS -->
+
+    <!-- Custom-Switcher JS -->
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+    <script>
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const items = document.querySelectorAll('.filter-item');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.filter-btn.active')?.classList.remove('active');
+                btn.classList.add('active');
+
+                const filterValue = btn.getAttribute('data-filter');
+
+                items.forEach(item => {
+                    const itemCategory = item.getAttribute('data-category');
+
+                    if (filterValue === 'all' || itemCategory === filterValue) {
+                        item.classList.remove('hide');
+                    } else {
+                        item.classList.add('hide');
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+"""
+DRF сериализатори, групирани по домейн - в същия ред на зависимости
+като models/: curriculum -> schools -> lessons -> accounts.
+
+Реекспортът пази `from main.serializers import SubjectSerializer`.
+"""
+
+from .accounts import (
+    UserProfileExpandedSerializer,
+    UserProfileSerializer,
+    UserProfileSpecSerializer,
+    UserReadSerializer,
+    UserSerializer,
+)
+from .curriculum import (
+    GoalSerializer,
+    SubjectMiniSerializer,
+    SubjectSerializer,
+    TopicSerializer,
+    TopicWriteSerializer,
+    UnitSerializer,
+    UnitWriteSerializer,
+)
+from .lessons import (
+    SessionMiniSerializer,
+    SessionNoteSerializer,
+    SessionPointSerializer,
+    SessionReadSerializer,
+    SessionSerializer,
+    SessionTaskSerializer,
+    SessionTopicReadSerializer,
+    SessionTopicReadSerializerDetailed,
+    SessionTopicWriteSerializer,
+    SessionWriteSerializer,
+)
+from .schools import (
+    SchoolLogoSerializer,
+    SchoolMiniSerializer,
+    SchoolSerializer,
+    SchoolSerializer2,
+    SpecialtyMiniSerializer,
+    SpecialtySerializer,
+)
+
+__all__ = [
+    # curriculum
+    'SubjectSerializer',
+    'SubjectMiniSerializer',
+    'GoalSerializer',
+    'TopicSerializer',
+    'TopicWriteSerializer',
+    'UnitSerializer',
+    'UnitWriteSerializer',
+    # schools
+    'SpecialtySerializer',
+    'SpecialtyMiniSerializer',
+    'SchoolSerializer',
+    'SchoolSerializer2',
+    'SchoolMiniSerializer',
+    'SchoolLogoSerializer',
+    # lessons
+    'SessionWriteSerializer',
+    'SessionReadSerializer',
+    'SessionSerializer',
+    'SessionMiniSerializer',
+    'SessionTopicWriteSerializer',
+    'SessionTopicReadSerializer',
+    'SessionTopicReadSerializerDetailed',
+    'SessionPointSerializer',
+    'SessionNoteSerializer',
+    'SessionTaskSerializer',
+    # accounts
+    'UserSerializer',
+    'UserReadSerializer',
+    'UserProfileSerializer',
+    'UserProfileSpecSerializer',
+    'UserProfileExpandedSerializer',
+]

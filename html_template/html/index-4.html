@@ -1,0 +1,2480 @@
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-theme-mode="light" data-header-styles="light"
+    data-menu-styles="dark" data-toggled="close">
+
+<head>
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> Bizlyt - Bootstrap 5 Premium Admin & Dashboard Template </title>
+    <meta name="Description" content="Bootstrap Responsive Admin Web Dashboard HTML5 Template">
+    <meta name="Author" content="Spruko Technologies Private Limited">
+    <meta name="keywords"
+        content="admin,admin dashboard,admin panel,admin template,bootstrap,clean,dashboard,flat,jquery,modern,responsive,premium admin templates,responsive admin,ui,ui kit.">
+
+    <!-- Favicon -->
+    <link rel="icon" href="../assets/images/brand-logos/favicon.ico.png" type="image/x-icon">
+
+    <!-- Choices JS -->
+    <script src="../assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+
+    <!-- Main Theme Js -->
+    <script src="../assets/js/main.js"></script>
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="../assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Style Css -->
+    <link href="../assets/css/styles.css" rel="stylesheet">
+
+    <!-- Icons Css -->
+    <link href="../assets/css/icons.css" rel="stylesheet">
+
+    <!-- Node Waves Css -->
+    <link href="../assets/libs/node-waves/waves.min.css" rel="stylesheet">
+
+    <!-- Simplebar Css -->
+    <link href="../assets/libs/simplebar/simplebar.min.css" rel="stylesheet">
+
+    <!-- Color Picker Css -->
+    <link rel="stylesheet" href="../assets/libs/flatpickr/flatpickr.min.css">
+    <link rel="stylesheet" href="../assets/libs/@simonwep/pickr/themes/nano.min.css">
+
+    <!-- Choices Css -->
+    <link rel="stylesheet" href="../assets/libs/choices.js/public/assets/styles/choices.min.css">
+
+
+</head>
+<body>
+
+   <!-- Start Switcher -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="switcher-canvas" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title text-default" id="offcanvasRightLabel">Switcher</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <nav class="border-bottom border-block-end-dashed">
+                <div class="nav nav-tabs nav-justified" id="switcher-main-tab" role="tablist">
+                    <button class="nav-link active" id="switcher-home-tab" data-bs-toggle="tab"
+                        data-bs-target="#switcher-home" type="button" role="tab" aria-controls="switcher-home"
+                        aria-selected="true">Theme Styles</button>
+          
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active border-0" id="switcher-home" role="tabpanel"
+                    aria-labelledby="switcher-home-tab" tabindex="0">
+                    <div class="">
+                        <p class="switcher-style-head">Theme Color Mode:</p>
+                        <div class="row switcher-style gx-0">
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-light-theme">
+                                        Light
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="theme-style"
+                                        id="switcher-light-theme" checked>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-dark-theme">
+                                        Dark
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="theme-style"
+                                        id="switcher-dark-theme">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               
+                    <div class="navigation-menu-styles">
+                        <p class="switcher-style-head">Vertical & Horizontal Menu Styles:</p>
+                        <div class="row switcher-style gx-0 pb-2 gy-2">
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-menu-click">
+                                        Menu Click
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-menu-styles"
+                                        id="switcher-menu-click">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-menu-hover">
+                                        Menu Hover
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-menu-styles"
+                                        id="switcher-menu-hover">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-icon-click">
+                                        Icon Click
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-menu-styles"
+                                        id="switcher-icon-click">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-icon-hover">
+                                        Icon Hover
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="navigation-menu-styles"
+                                        id="switcher-icon-hover">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sidemenu-layout-styles">
+                        <p class="switcher-style-head">Sidemenu Layout Styles:</p>
+                        <div class="row switcher-style gx-0 pb-2 gy-2">
+                            <div class="col-sm-6">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-default-menu">
+                                        Default Menu
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="sidemenu-layout-styles"
+                                        id="switcher-default-menu" checked>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-closed-menu">
+                                        Closed Menu
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="sidemenu-layout-styles"
+                                        id="switcher-closed-menu">
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+               
+                    <div class="">
+                        <p class="switcher-style-head">Menu Positions:</p>
+                        <div class="row switcher-style gx-0">
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-menu-fixed">
+                                        Fixed
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="menu-positions"
+                                        id="switcher-menu-fixed" checked>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-check switch-select">
+                                    <label class="form-check-label" for="switcher-menu-scroll">
+                                        Scrollable
+                                    </label>
+                                    <input class="form-check-input" type="radio" name="menu-positions"
+                                        id="switcher-menu-scroll">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                              
+          
+                </div>
+           
+                <div class="canvas-footer d-grid">
+                    <a href="javascript:void(0);" id="reset-all" class="btn btn-danger m-1">Reset</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Switcher -->
+
+    <div class="page">
+        <!-- app-header -->
+               <!-- app-header -->
+        <header class="app-header">
+
+            <!-- Start::main-header-container -->
+            <div class="main-header-container container-fluid">
+
+                <!-- Start::header-content-left -->
+                <div class="header-content-left">
+
+                    <!-- Start::header-element -->
+                    <div class="header-element">
+                        <div class="horizontal-logo">
+                            <a href="index.html" class="header-logo">
+                                <img src="../assets/images/brand-logos/desktop-logo.png" alt="logo"
+                                    class="desktop-logo">
+                                <img src="../assets/images/brand-logos/toggle-logo.png" alt="logo" class="toggle-logo">
+                                <img src="../assets/images/brand-logos/desktop-dark.png" alt="logo"
+                                    class="desktop-dark">
+                                <img src="../assets/images/brand-logos/toggle-dark.png" alt="logo" class="toggle-dark">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element ">
+                        <!-- Start::header-link -->
+                        <a aria-label="Hide Sidebar"
+                            class="sidemenu-toggle header-link animated-arrow hor-toggle horizontal-navtoggle"
+                            data-bs-toggle="sidebar" href="javascript:void(0);"><span></span></a>
+                        <!-- Start::header-element -->
+                        <div class="header-element header-search">
+                            <!-- Start::header-link -->
+
+                            <a href="javascript:void(0);" class="header-link" data-bs-toggle="modal"
+                                data-bs-target="#searchModal">
+                                <i class="bx bx-search-alt-2 header-link-icon"></i>
+                            </a>
+                            <!-- End::header-link -->
+                        </div>
+                    </div>
+                    <!-- End::header-element -->
+
+                </div>
+                <!-- End::header-content-left -->
+
+                <!-- Start::header-content-right -->
+                <div class="header-content-right">
+
+
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element header-theme-mode">
+                        <!-- Start::header-link|layout-setting -->
+                        <a href="javascript:void(0);" class="header-link layout-setting">
+                            <span class="light-layout">
+                                <!-- Start::header-link-icon -->
+                                <i class="bx bx-moon header-link-icon"></i>
+                                <!-- End::header-link-icon -->
+                            </span>
+                            <span class="dark-layout">
+                                <!-- Start::header-link-icon -->
+                                <i class="bx bx-sun header-link-icon"></i>
+                                <!-- End::header-link-icon -->
+                            </span>
+                        </a>
+                        <!-- End::header-link|layout-setting -->
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element notifications-dropdown">
+                        <!-- Start::header-link|dropdown-toggle -->
+                        <a href="javascript:void(0);" class="header-link-1 dropdown-toggle" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" id="messageDropdown1" aria-expanded="false">
+                            <svg class="header-link-icon-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none">
+                                <path
+                                    d="M2 7L10.1649 12.7154C10.8261 13.1783 11.1567 13.4097 11.5163 13.4993C11.8339 13.5785 12.1661 13.5785 12.4837 13.4993C12.8433 13.4097 13.1739 13.1783 13.8351 12.7154L22 7M6.8 20H17.2C18.8802 20 19.7202 20 20.362 19.673C20.9265 19.3854 21.3854 18.9265 21.673 18.362C22 17.7202 22 16.8802 22 15.2V8.8C22 7.11984 22 6.27976 21.673 5.63803C21.3854 5.07354 20.9265 4.6146 20.362 4.32698C19.7202 4 18.8802 4 17.2 4H6.8C5.11984 4 4.27976 4 3.63803 4.32698C3.07354 4.6146 2.6146 5.07354 2.32698 5.63803C2 6.27976 2 7.11984 2 8.8V15.2C2 16.8802 2 17.7202 2.32698 18.362C2.6146 18.9265 3.07354 19.3854 3.63803 19.673C4.27976 20 5.11984 20 6.8 20Z"
+                                    stroke="#3D3D3D" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg> <span class="badge rounded-pill header-icon-badge pulse pulse-secondary"
+                                id="notification-icon-badge"><svg xmlns="http://www.w3.org/2000/svg" width="10"
+                                    height="10" viewBox="0 0 10 10" fill="none">
+                                    <circle cx="5.20039" cy="4.8" r="4.3" fill="#2E90FA" stroke="#FAFAFA" />
+                                </svg></span>
+                        </a>
+                        <!-- End::header-link|dropdown-toggle -->
+                        <!-- Start::main-header-dropdown -->
+                        <div class="main-header-dropdown dropdown-menu dropdown-menu-end" data-popper-placement="none">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <p class="mb-0 fs-17 fw-semibold">Notifications</p>
+                                    <span class="badge bg-secondary-transparent" id="notifiation-data">5 Unread</span>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <ul class="list-unstyled mb-0" id="header-notification-scroll-1">
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-primary-transparent avatar-rounded"><i
+                                                    class="ti ti-gift fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Your Order Has
+                                                        Been Shipped</a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    No: 123456 Has Shipped To Your Delivery Address</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-secondary-transparent avatar-rounded"><i
+                                                    class="ti ti-discount-2 fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Discount
+                                                        Available</a></p>
+                                                <span
+                                                    class="text-muted fw-normal fs-12 header-notification-text">Discount
+                                                    Available On Selected Products</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-pink-transparent avatar-rounded"><i
+                                                    class="ti ti-user-check fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Account Has
+                                                        Been Verified</a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Your
+                                                    Account Has Been Verified Sucessfully</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-warning-transparent avatar-rounded"><i
+                                                    class="ti ti-circle-check fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Placed
+                                                        <span class="text-warning">ID: #1116773</span></a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    Placed Successfully</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-success-transparent avatar-rounded"><i
+                                                    class="ti ti-clock fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Delayed
+                                                        <span class="text-success">ID: 7731116</span></a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    Delayed Unfortunately</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="p-3 empty-header-item1 border-top">
+                                <div class="d-grid">
+                                    <a href="notifications.html" class="btn btn-primary  white">View All</a>
+                                </div>
+                            </div>
+                            <div class="p-5 empty-item1 d-none">
+                                <div class="text-center">
+                                    <span class="avatar avatar-xl avatar-rounded bg-secondary-transparent">
+                                        <i class="ri-notification-off-line fs-2"></i>
+                                    </span>
+                                    <h6 class="fw-semibold mt-3">No New Notifications</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End::main-header-dropdown -->
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element notifications-dropdown">
+                        <!-- Start::header-link|dropdown-toggle -->
+                        <a href="javascript:void(0);" class="header-link-1 dropdown-toggle" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" id="messageDropdown" aria-expanded="false">
+                            <i class="bx bx-bell header-link-icon"></i>
+                            <span class="badge rounded-pill header-icon-badge pulse pulse-secondary"
+                                id="notification-icon-badge-1"><svg xmlns="http://www.w3.org/2000/svg" width="10"
+                                    height="10" viewBox="0 0 10 10" fill="none">
+                                    <circle cx="5.20039" cy="4.8" r="4.3" fill="#2E90FA" stroke="#FAFAFA" />
+                                </svg></span>
+                        </a>
+                        <!-- End::header-link|dropdown-toggle -->
+                        <!-- Start::main-header-dropdown -->
+                        <div class="main-header-dropdown dropdown-menu dropdown-menu-end" data-popper-placement="none">
+                            <div class="p-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <p class="mb-0 fs-17 fw-semibold">Notifications</p>
+                                    <span class="badge bg-secondary-transparent" id="notifiation-data-1">5 Unread</span>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <ul class="list-unstyled mb-0" id="header-notification-scroll">
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-primary-transparent avatar-rounded"><i
+                                                    class="ti ti-gift fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Your Order Has
+                                                        Been Shipped</a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    No: 123456 Has Shipped To Your Delivery Address</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-secondary-transparent avatar-rounded"><i
+                                                    class="ti ti-discount-2 fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Discount
+                                                        Available</a></p>
+                                                <span
+                                                    class="text-muted fw-normal fs-12 header-notification-text">Discount
+                                                    Available On Selected Products</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-pink-transparent avatar-rounded"><i
+                                                    class="ti ti-user-check fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Account Has
+                                                        Been Verified</a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Your
+                                                    Account Has Been Verified Sucessfully</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-warning-transparent avatar-rounded"><i
+                                                    class="ti ti-circle-check fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Placed
+                                                        <span class="text-warning">ID: #1116773</span></a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    Placed Successfully</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="dropdown-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="pe-2">
+                                            <span class="avatar avatar-md bg-success-transparent avatar-rounded"><i
+                                                    class="ti ti-clock fs-18"></i></span>
+                                        </div>
+                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Delayed
+                                                        <span class="text-success">ID: 7731116</span></a></p>
+                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
+                                                    Delayed Unfortunately</span>
+                                            </div>
+                                            <div>
+                                                <a href="javascript:void(0);"
+                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
+                                                        class="ti ti-x fs-16"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="p-3 empty-header-item1 border-top">
+                                <div class="d-grid">
+                                    <a href="notifications.html" class="btn btn-primary  white">View All</a>
+                                </div>
+                            </div>
+                            <div class="p-5 empty-item1 d-none">
+                                <div class="text-center">
+                                    <span class="avatar avatar-xl avatar-rounded bg-secondary-transparent">
+                                        <i class="ri-notification-off-line fs-2"></i>
+                                    </span>
+                                    <h6 class="fw-semibold mt-3">No New Notifications</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End::main-header-dropdown -->
+                    </div>
+                    <!-- End::header-element -->
+
+
+
+                    <!-- Start::header-element -->
+                    <div class="header-element">
+                        <!-- Start::header-link|dropdown-toggle -->
+                        <a href="#" class="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <div class="me-sm-2 me-0">
+                                    <img src="../assets/images/faces/9.jpg" alt="img" width="32" height="32"
+                                        class="rounded-circle">
+                                </div>
+                                <div class="d-sm-block d-none">
+                                    <p class="fw-semibold mb-0 lh-1">Tom Raynor</p>
+                                </div>
+                            </div>
+                        </a>
+                        <!-- End::header-link|dropdown-toggle -->
+                        <ul class="main-header-dropdown dropdown-menu pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end"
+                            aria-labelledby="mainHeaderProfile">
+                            <li><a class="dropdown-item d-flex" href="profile.html"><i
+                                        class="ti ti-user-circle fs-18 me-2 op-7"></i>Profile</a></li>
+                            <li><a class="dropdown-item d-flex" href="mail.html"><i
+                                        class="ti ti-inbox fs-18 me-2 op-7"></i>Inbox <span
+                                        class="badge bg-success-transparent ms-auto">25</span></a></li>
+                       
+                            <li><a class="dropdown-item d-flex" href="mail-settings.html"><i
+                                        class="ti ti-adjustments-horizontal fs-18 me-2 op-7"></i>Settings</a></li>
+                            <li><a class="dropdown-item d-flex border-block-end" href="javascript:void(0);"><i
+                                        class="ti ti-wallet fs-18 me-2 op-7"></i>Bal: $7,12,950</a></li>
+                           
+                            <li><a class="dropdown-item d-flex" href="sign-in-cover.html"><i
+                                        class="ti ti-logout fs-18 me-2 op-7"></i>Log Out</a></li>
+                        </ul>
+                    </div>
+                    <!-- End::header-element -->
+
+                    <!-- Start::header-element -->
+                    <div class="header-element">
+                        <!-- Start::header-link|switcher-icon -->
+                        <a href="#" class="header-link switcher-icon" data-bs-toggle="offcanvas"
+                            data-bs-target="#switcher-canvas">
+                            <i class="bx bx-cog header-link-icon"></i>
+                        </a>
+                        <!-- End::header-link|switcher-icon -->
+                    </div>
+                    <!-- End::header-element -->
+
+                </div>
+                <!-- End::header-content-right -->
+
+            </div>
+            <!-- End::main-header-container -->
+
+        </header>
+        <!-- /app-header -->
+        <aside class="app-sidebar sticky" id="sidebar">
+
+            <!-- Start::main-sidebar-header -->
+
+            <!-- End::main-sidebar-header -->
+
+            <!-- Start::main-sidebar -->
+            <div class="main-sidebar" id="sidebar-scroll">
+
+                <!-- Start::nav -->
+                <nav class="main-menu-container nav nav-pills flex-column sub-open">
+                    <div class="main-sidebar-header mb-24">
+                        <a href="index.html" class="header-logo">
+                            <img src="../assets/images/brand-logos/desktop-logo.png" alt="logo" class="desktop-logo">
+                            <img src="../assets/images/brand-logos/toggle-logo.png" alt="logo" class="toggle-logo">
+                            <img src="../assets/images/brand-logos/desktop-dark.png" alt="logo" class="desktop-dark">
+                            <img src="../assets/images/brand-logos/toggle-dark.png" alt="logo" class="toggle-dark">
+                        </a>
+                    </div>
+                    <div class="slide-left" id="slide-left">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24"
+                            viewBox="0 0 24 24">
+                            <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path>
+                        </svg>
+                    </div>
+                    <ul class="main-menu">
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">Main Menu</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-home side-menu__icon"></i>
+                                <span class="side-menu__label">Dashboards</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                                 <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Dashboards</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="index.html" class="side-menu__item">CRM</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="index-1.html" class="side-menu__item">Ecommerce</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="index-2.html" class="side-menu__item">Pos system</a>
+                                </li>
+                              
+                                <li class="slide">
+                                    <a href="index-3.html" class="side-menu__item">Analytics</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="index-4.html" class="side-menu__item">Projects</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">Pages</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-file-blank side-menu__icon"></i>
+                                <span class="side-menu__label">Pages</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Pages</a>
+                                </li>
+                                <li class="slide has-sub">
+                                    <a href="javascript:void(0);" class="side-menu__item">Email
+                                        <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                    <ul class="slide-menu child2">
+                                        <li class="slide">
+                                            <a href="mail.html" class="side-menu__item">Mail App</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="mail-settings.html" class="side-menu__item">Mail Settings</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                          
+                                <li class="slide">
+                                    <a href="faq's.html" class="side-menu__item">FAQ's</a>
+                                </li>
+                             
+                                <li class="slide">
+                                    <a href="notifications.html" class="side-menu__item">Notifications</a>
+                                </li>
+                             
+                                <li class="slide">
+                                    <a href="profile.html" class="side-menu__item">Profile</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="reviews.html" class="side-menu__item">Reviews</a>
+                                </li>
+                           
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-fingerprint side-menu__icon"></i>
+                                <span class="side-menu__label">Authentication</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                        <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Authentication</a>
+                                </li>
+                              
+                               
+                                <li class="slide has-sub">
+                                    <a href="reset-password.html" class="side-menu__item">Reset Password
+                                        </a>
+                                <li class="slide has-sub">
+                                    <a href="sign-up.html" class="side-menu__item">Sign Up
+                                        </a>
+                                  
+                                </li>
+                                <li class="slide has-sub">
+                                    <a href="sign-in.html" class="side-menu__item">Sign In
+                                       </a>
+                                </li>
+                                  <li class="slide">
+                                    <a href="under-maintenance.html" class="side-menu__item">Under Maintenance</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-error side-menu__icon"></i>
+                                <span class="side-menu__label">Error</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Error</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="401-error.html" class="side-menu__item">401 - Error</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="404-error.html" class="side-menu__item">404 - Error</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="500-error.html" class="side-menu__item">500 - Error</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">General</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-box side-menu__icon"></i>
+                                <span class="side-menu__label">Ui Elements</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1 mega-menu">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Ui Elements</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="alerts.html" class="side-menu__item">Alerts</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="badge.html" class="side-menu__item">Badge</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="breadcrumb.html" class="side-menu__item">Breadcrumb</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="buttons.html" class="side-menu__item">Buttons</a>
+                                </li>
+                           
+                                <li class="slide">
+                                    <a href="images_figures.html" class="side-menu__item">Images & Figures</a>
+                                </li>
+                              
+                                <li class="slide">
+                                    <a href="navs_tabs.html" class="side-menu__item">Navs & Tabs</a>
+                                </li>
+                                 <li class="slide">
+                                    <a href="cards.html" class="side-menu__item">Cards</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="pagination.html" class="side-menu__item">Pagination</a>
+                                </li>
+                           <li class="slide">
+                                    <a href="spinners.html" class="side-menu__item">Spinners</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="progress.html" class="side-menu__item">Progress</a>
+                                </li>
+                               <li class="slide">
+                                    <a href="dropdowns.html" class="side-menu__item">Dropdowns</a>
+                                </li>
+                             
+                                <li class="slide">
+                                    <a href="tooltips.html" class="side-menu__item">Tooltips</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="typography.html" class="side-menu__item">Typography</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                     
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-file side-menu__icon"></i>
+                                <span class="side-menu__label">Forms</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Forms</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="floating_labels.html" class="side-menu__item">Floating Labels</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="form_layout.html" class="side-menu__item">Form Layouts</a>
+                                </li>
+                                <li class="slide has-sub">
+                                    <a href="javascript:void(0);" class="side-menu__item">Form Editors
+                                        <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                    <ul class="slide-menu child2">
+                                        <li class="slide">
+                                            <a href="quill_editor.html" class="side-menu__item">Quill Editor</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+            
+
+                        <!-- Start::slide -->
+                     
+                        <!-- End::slide -->
+
+
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">Tables & Charts</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-table side-menu__icon"></i>
+                                <span class="side-menu__label">Tables</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Tables</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="tables.html" class="side-menu__item">Tables</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="grid-tables.html" class="side-menu__item">Grid JS Tables</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="data-tables.html" class="side-menu__item">Data Tables</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-bar-chart-square side-menu__icon"></i>
+                                <span class="side-menu__label">Charts</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Charts</a>
+                                </li>
+                                <li class="slide has-sub">
+                                    <a href="javascript:void(0);" class="side-menu__item">Apex Charts
+                                        <i class="fe fe-chevron-right side-menu__angle"></i></a>
+                                    <ul class="slide-menu child2">
+                                        <li class="slide">
+                                            <a href="apex-line-charts.html" class="side-menu__item">Line Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-area-charts.html" class="side-menu__item">Area Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-column-charts.html" class="side-menu__item">Column Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-bar-charts.html" class="side-menu__item">Bar Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-mixed-charts.html" class="side-menu__item">Mixed Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-rangearea-charts.html" class="side-menu__item">Range Area
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-timeline-charts.html" class="side-menu__item">Timeline
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-candlestick-charts.html" class="side-menu__item">CandleStick
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-boxplot-charts.html" class="side-menu__item">Boxplot
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-bubble-charts.html" class="side-menu__item">Bubble Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-scatter-charts.html" class="side-menu__item">Scatter
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-heatmap-charts.html" class="side-menu__item">Heatmap
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-treemap-charts.html" class="side-menu__item">Treemap
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-pie-charts.html" class="side-menu__item">Pie Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-radialbar-charts.html" class="side-menu__item">Radialbar
+                                                Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-radar-charts.html" class="side-menu__item">Radar Charts</a>
+                                        </li>
+                                        <li class="slide">
+                                            <a href="apex-polararea-charts.html" class="side-menu__item">Polararea
+                                                Charts</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="slide">
+                                    <a href="chartjs-charts.html" class="side-menu__item">Chartjs Charts</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="echarts.html" class="side-menu__item">Echart Charts</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide__category -->
+                        <li class="slide__category"><span class="category-name">Maps & Icons</span></li>
+                        <!-- End::slide__category -->
+
+                        <!-- Start::slide -->
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bx bx-map side-menu__icon"></i>
+                                <span class="side-menu__label">Maps</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <li class="slide side-menu__label1">
+                                    <a href="javascript:void(0)">Maps</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="google-maps.html" class="side-menu__item">Google Maps</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="leaflet-maps.html" class="side-menu__item">Leaflet Maps</a>
+                                </li>
+                                <li class="slide">
+                                    <a href="vector-maps.html" class="side-menu__item">Vector Maps</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- End::slide -->
+
+                        <!-- Start::slide -->
+                        <li class="slide">
+                            <a href="icons.html" class="side-menu__item">
+                                <i class="bx bx-store-alt side-menu__icon"></i>
+                                <span class="side-menu__label">Icons</span>
+                            </a>
+                        </li>
+                        <!-- End::slide -->
+                    </ul>
+                    <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191"
+                            width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path>
+                        </svg></div>
+                </nav>
+                <!-- End::nav -->
+
+            </div>
+            <!-- End::main-sidebar -->
+
+        </aside>
+        <!-- End::app-sidebar -->
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- Start::page-header -->
+
+                <!-- Page Header -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                    <div>
+                        <h1 class="page-title fw-normal fs-20 mb-12">Ecommerce</h1>
+                        <nav>
+                            <ol class="breadcrumb mb-2">
+                                <li class="breadcrumb-item"><a href="index.html">Dashboards</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Projects</li>
+                            </ol>
+                        </nav>
+                    </div>
+                         <div class="d-flex gap-12 align-items-center">
+                        <button type="button" class="btn-1 btn btn-secondary">
+                            <span class="d-flex align-items-center gap-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
+                                    fill="none">
+                                    <path
+                                        d="M2.08295 7.5H17.9163M8.33295 2.5L6.66628 7.5L9.99961 17.0833L13.3329 7.5L11.6663 2.5M10.5118 16.8854L17.9773 7.92679C18.1038 7.77496 18.1671 7.69905 18.1912 7.6143C18.2126 7.53959 18.2126 7.46041 18.1912 7.38569C18.1671 7.30095 18.1038 7.22504 17.9773 7.07321L14.3662 2.73988C14.2927 2.6517 14.256 2.60762 14.2109 2.57592C14.171 2.54784 14.1265 2.52698 14.0794 2.51431C14.0262 2.5 13.9688 2.5 13.854 2.5H6.1452C6.03042 2.5 5.97303 2.5 5.91985 2.51431C5.87273 2.52698 5.82821 2.54784 5.7883 2.57592C5.74327 2.60762 5.70653 2.6517 5.63305 2.73988L2.02194 7.07321C1.89541 7.22504 1.83215 7.30095 1.80798 7.38569C1.78666 7.46041 1.78666 7.53959 1.80798 7.6143C1.83215 7.69904 1.89541 7.77496 2.02194 7.92679L9.48747 16.8854C9.66335 17.0965 9.75129 17.202 9.85657 17.2405C9.94894 17.2743 10.0503 17.2743 10.1427 17.2405C10.2479 17.202 10.3359 17.0965 10.5118 16.8854Z"
+                                        stroke="#FAFAFA" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                <span class="white">Plan Upgrade</span>
+                                </span>
+                        </button>
+                        <button type="button" class="btn btn-primary  white">
+                            <span class="d-flex align-items-center gap-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"
+                                    fill="none">
+                                    <path d="M17.5 17.5H2.5M15 9.16667L10 14.1667M10 14.1667L5 9.16667M10 14.1667V2.5"
+                                        stroke="#FAFAFA" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                                <span class="white">Export report</span>
+                                </span>
+                        </button>
+                    </div>
+
+                </div>
+                <!-- Page Header Close -->
+
+                <!-- End::page-header -->
+
+                <!-- Start::row-1 -->
+                <div class="row">
+                    <div class="col-xxl-9">
+                        <div class="row">
+                            <div class="col-xxl-7">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="card-1 custom-card overflow-hidden">
+                                            <div class="card-body-1">
+                                                <div class="d-flex align-items-top justify-content-between">
+                                                    <div class="flex-fill">
+                                                        <div
+                                                            class="d-flex align-items-center justify-content-between flex-wrap">
+                                                            <div>
+                                                                <p class="fw-normal text-muted fs-16 mb-12">Total Sales
+                                                                </p>
+
+                                                            </div>
+                                                            <div class="block-svg">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20"
+                                                                    height="20" viewBox="0 0 20 20" fill="none">
+                                                                    <path
+                                                                        d="M4.6 2.19999L3.3 3.93332C3.04251 4.27664 2.91377 4.4483 2.91676 4.59198C2.91936 4.71702 2.97799 4.83428 3.07646 4.91139C3.18962 4.99999 3.40419 4.99999 3.83333 4.99999H16.1667C16.5958 4.99999 16.8104 4.99999 16.9235 4.91139C17.022 4.83428 17.0806 4.71702 17.0832 4.59198C17.0862 4.4483 16.9575 4.27664 16.7 3.93332L15.4 2.19999M4.6 2.19999C4.74667 2.00443 4.82 1.90666 4.91294 1.83614C4.99525 1.77368 5.08846 1.72707 5.18782 1.69869C5.3 1.66666 5.42222 1.66666 5.66667 1.66666H14.3333C14.5778 1.66666 14.7 1.66666 14.8122 1.69869C14.9115 1.72707 15.0047 1.77368 15.0871 1.83614C15.18 1.90666 15.2533 2.00443 15.4 2.19999M4.6 2.19999L3.03333 4.28888C2.83545 4.55272 2.73651 4.68465 2.66625 4.82992C2.6039 4.95884 2.55843 5.09525 2.53096 5.23579C2.5 5.39417 2.5 5.55907 2.5 5.88888L2.5 15.6667C2.5 16.6001 2.5 17.0668 2.68166 17.4233C2.84144 17.7369 3.09641 17.9919 3.41002 18.1517C3.76654 18.3333 4.23325 18.3333 5.16667 18.3333L14.8333 18.3333C15.7668 18.3333 16.2335 18.3333 16.59 18.1517C16.9036 17.9919 17.1586 17.7369 17.3183 17.4233C17.5 17.0668 17.5 16.6001 17.5 15.6667V5.88888C17.5 5.55907 17.5 5.39417 17.469 5.23579C17.4416 5.09525 17.3961 4.95884 17.3338 4.82993C17.2635 4.68465 17.1646 4.55272 16.9667 4.28888L15.4 2.19999M13.3333 8.33332C13.3333 9.21738 12.9821 10.0652 12.357 10.6903C11.7319 11.3155 10.8841 11.6667 10 11.6667C9.11594 11.6667 8.2681 11.3155 7.64298 10.6903C7.01786 10.0652 6.66667 9.21738 6.66667 8.33332"
+                                                                        stroke="#F0F5CC" stroke-width="2"
+                                                                        stroke-linecap="round"
+                                                                        stroke-linejoin="round" />
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex gap-8">
+                                                            <h4 class="fw-normal mb-0 fs-36">10,145</h4>
+                                                            <div class="d-flex gap-6 align-items-center">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12"
+                                                                    height="12" viewBox="0 0 12 12" fill="none">
+                                                                    <path d="M6 2V10M6 10L9 7M6 10L3 7" stroke="#F04438"
+                                                                        stroke-width="2" stroke-linecap="round"
+                                                                        stroke-linejoin="round" />
+                                                                </svg>
+                                                                <p class="fs-14 custom-red mb-0 fw-normal">1.50%</p>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="card-1 custom-card overflow-hidden">
+                                            <div class="card-body-2">
+                                                <div class="d-flex align-items-top justify-content-between">
+                                                    <div class="flex-fill">
+                                                        <div
+                                                            class="d-flex align-items-center justify-content-between flex-wrap">
+                                                            <div>
+                                                                <p class="fw-normal fs-16 mb-12 gray-9">Total Revenue
+                                                                </p>
+
+                                                            </div>
+                                                            <div class="block-svg-1">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20"
+                                                                    height="20" viewBox="0 0 20 20" fill="none">
+                                                                    <path
+                                                                        d="M5 13.3333C5 15.1743 6.49238 16.6667 8.33333 16.6667H11.6667C13.5076 16.6667 15 15.1743 15 13.3333C15 11.4924 13.5076 9.99999 11.6667 9.99999H8.33333C6.49238 9.99999 5 8.50761 5 6.66666C5 4.82571 6.49238 3.33332 8.33333 3.33332H11.6667C13.5076 3.33332 15 4.82571 15 6.66666M10 1.66666V18.3333"
+                                                                        stroke="#FFFAEB" stroke-width="2"
+                                                                        stroke-linecap="round"
+                                                                        stroke-linejoin="round" />
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex gap-8">
+                                                            <h4 class="fw-normal mb-0 fs-36">10,145</h4>
+                                                            <div class="d-flex gap-6 align-items-center">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12"
+                                                                    height="12" viewBox="0 0 12 12" fill="none">
+                                                                    <path d="M6 10V2M6 2L3 5M6 2L9 5" stroke="#12B76A"
+                                                                        stroke-width="2" stroke-linecap="round"
+                                                                        stroke-linejoin="round" />
+                                                                </svg>
+                                                                <p class="fs-14 green mb-0 fw-normal">1.50%</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="card-1 custom-card overflow-hidden">
+                                            <div class="card-body-3">
+                                                <div class="d-flex align-items-top justify-content-between">
+                                                    <div class="flex-fill">
+                                                        <div
+                                                            class="d-flex align-items-center justify-content-between flex-wrap">
+                                                            <div>
+                                                                <p class="fw-normal fs-16 mb-12 gray-9">Page Views
+                                                                </p>
+
+                                                            </div>
+                                                            <div class="block-svg-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20"
+                                                                    height="20" viewBox="0 0 20 20" fill="none">
+                                                                    <path
+                                                                        d="M13.3333 2.8898C14.5681 3.50343 15.4166 4.77762 15.4166 6.25C15.4166 7.72238 14.5681 8.99657 13.3333 9.6102M15 13.972C16.2595 14.5419 17.3937 15.4708 18.3333 16.6667M1.66663 16.6667C3.2887 14.6021 5.49094 13.3333 7.91663 13.3333C10.3423 13.3333 12.5446 14.6021 14.1666 16.6667M11.6666 6.25C11.6666 8.32107 9.98769 10 7.91663 10C5.84556 10 4.16663 8.32107 4.16663 6.25C4.16663 4.17893 5.84556 2.5 7.91663 2.5C9.98769 2.5 11.6666 4.17893 11.6666 6.25Z"
+                                                                        stroke="#ECFDF3" stroke-width="2"
+                                                                        stroke-linecap="round"
+                                                                        stroke-linejoin="round" />
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex gap-8">
+
+                                                            <h4 class="fw-normal mb-0 fs-36">90,380</h4>
+                                                            <div class="d-flex gap-6 align-items-center">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12"
+                                                                    height="12" viewBox="0 0 12 12" fill="none">
+                                                                    <path d="M6 2V10M6 10L9 7M6 10L3 7" stroke="#F04438"
+                                                                        stroke-width="2" stroke-linecap="round"
+                                                                        stroke-linejoin="round" />
+                                                                </svg>
+                                                                <p class="fs-14 custom-red mb-0 fw-normal">1.20%</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="card-1 custom-card overflow-hidden">
+                                            <div class="card-body-4">
+                                                <div class="d-flex align-items-top justify-content-between">
+                                                    <div class="flex-fill">
+                                                        <div
+                                                            class="d-flex align-items-center justify-content-between flex-wrap">
+                                                            <div>
+                                                                <p class="fw-normal fs-16 mb-12 gray-9">Profit By Sale
+                                                                </p>
+
+                                                            </div>
+                                                            <div class="block-svg-3">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20"
+                                                                    height="20" viewBox="0 0 20 20" fill="none">
+                                                                    <path
+                                                                        d="M5 13.3333C5 15.1743 6.49238 16.6667 8.33333 16.6667H11.6667C13.5076 16.6667 15 15.1743 15 13.3333C15 11.4924 13.5076 9.99999 11.6667 9.99999H8.33333C6.49238 9.99999 5 8.50761 5 6.66666C5 4.82571 6.49238 3.33332 8.33333 3.33332H11.6667C13.5076 3.33332 15 4.82571 15 6.66666M10 1.66666V18.3333"
+                                                                        stroke="#FFFAEB" stroke-width="2"
+                                                                        stroke-linecap="round"
+                                                                        stroke-linejoin="round" />
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex gap-8">
+                                                            <h4 class="fw-normal mb-0 fs-36">$23,214</h4>
+                                                            <div class="d-flex gap-6 align-items-center">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12"
+                                                                    height="12" viewBox="0 0 12 12" fill="none">
+                                                                    <path d="M6 10V2M6 2L3 5M6 2L9 5" stroke="#12B76A"
+                                                                        stroke-width="2" stroke-linecap="round"
+                                                                        stroke-linejoin="round" />
+                                                                </svg>
+                                                                <p class="fs-14 green mb-0 fw-normal">1.50%</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-xxl-5">
+                                <div class="card-1 custom-card">
+                                    <div class="card-header justify-content-between mb-12">
+                                        <div class="card-title"> Project categories </div><a
+                                            class="text-primary fw-normal  fs-14" href="javascript:void(0);">View all
+                                            sale</a>
+                                    </div>
+                                    <div class="card-body p-4">
+                                        <div class="progress-stacked progress-sm mb-3">
+                                            <div class="progress-bar rounded" role="progressbar" style="width: 20%"
+                                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            <div class="progress-bar bg-secondary rounded" role="progressbar"
+                                                style="width: 20%" aria-valuenow="15" aria-valuemin="0"
+                                                aria-valuemax="100"></div>
+                                            <div class="progress-bar bg-success rounded" role="progressbar"
+                                                style="width: 20%" aria-valuenow="20" aria-valuemin="0"
+                                                aria-valuemax="100"></div>
+                                            <div class="progress-bar bg-info rounded" role="progressbar"
+                                                style="width: 20%" aria-valuenow="20" aria-valuemin="0"
+                                                aria-valuemax="100"></div>
+                                            <div class="progress-bar bg-white-1 rounded" role="progressbar"
+                                                style="width: 20%" aria-valuenow="20" aria-valuemin="0"
+                                                aria-valuemax="100"></div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between mb-4"> <span
+                                                class="d-block text-muted">Total number of projects</span>
+                                            <h6 class="fw-semibold mb-0">18,643</h6>
+                                        </div>
+                                        <div class="row gy-3">
+                                            <div class="col-xl-6"> <span
+                                                    class="mb-0 me-1 fs-16 custom-black fw-normal project-category category1">UI
+                                                    Projects</span> <span class="text-success fw-semibold fs-12"> <span
+                                                        class="me-1"><i
+                                                            class="ti ti-trending-up align-middle"></i></span> <span
+                                                        class="">(42.34%)</span> </span> </div>
+                                            <div class="col-xl-6"> <span
+                                                    class="mb-0 me-1 fs-16 fw-normal custom-black project-category category2">UX
+                                                    Projects</span> <span class="text-danger fw-semibold fs-12"> <span
+                                                        class="me-1"><i
+                                                            class="ti ti-trending-down  align-middle"></i></span> <span
+                                                        class="">(13%)</span> </span> </div>
+                                            <div class="col-xl-6"> <span
+                                                    class="mb-0 me-1 project-category fs-16 custom-black fw-normal category3">Finance</span>
+                                                <span class="text-success fw-semibold fs-12"> <span class="me-1"><i
+                                                            class="ti ti-trending-up align-middle"></i></span> <span
+                                                        class="">(62%)</span> </span>
+                                            </div>
+                                            <div class="col-xl-6"> <span
+                                                    class="mb-0 me-1 project-category fs-16 custom-black fw-normal category4">Banking</span>
+                                                <span class="text-success fw-semibold fs-12"> <span class="me-1"><i
+                                                            class="ti ti-trending-up align-middle"></i></span> <span
+                                                        class="">(22.46%)</span> </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-8">
+                                <div class="card-1 custom-card">
+                                    <div class="card-header justify-content-between">
+                                        <div class="card-title">
+                                            Project Analysis
+                                        </div>
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0);" class="p-2 fs-12 text-muted"
+                                                data-bs-toggle="dropdown">
+                                                View All<i
+                                                    class="ri-arrow-down-s-line align-middle ms-1 d-inline-block"></i>
+                                            </a>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a class="dropdown-item" href="javascript:void(0);">Download</a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);">Import</a>
+                                                </li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);">Export</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row ps-5 mb-4">
+                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
+                                                <div class="mb-1 fs-14 custom-black">Active Projects</div>
+                                                <div class="mb-1 d-flex align-items-center gap-8 flex-wrap"> <span
+                                                        class="mt-1 h6 mb-0 fw-normal custom-blue">166
+
+                                                    </span>
+                                                    <div class="d-flex gap-6 align-items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                                            viewBox="0 0 12 12" fill="none">
+                                                            <path d="M6 10V2M6 2L3 5M6 2L9 5" stroke="#12B76A"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round"></path>
+                                                        </svg>
+                                                        <p class="fs-14 green mb-0 fw-normal">1.50%</p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-muted fs-14">More Projects are yet to start</div>
+                                            </div>
+                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
+                                                <div class="mb-1  fs-14 custom-black">Completed Projects</div>
+                                                <div class="mb-1 d-flex align-items-center flex-wrap gap-8"> <span
+                                                        class="mt-1 h6 mb-0 fw-medium custom-blue">538</span>
+                                                    <div class="d-flex gap-6 align-items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                                            viewBox="0 0 12 12" fill="none">
+                                                            <path d="M6 10V2M6 2L3 5M6 2L9 5" stroke="#12B76A"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round"></path>
+                                                        </svg>
+                                                        <p class="fs-14 green mb-0 fw-normal">1.50%</p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-muted fs-14">32 Completed this year</div>
+                                            </div>
+                                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4">
+                                                <div class="mb-1  fs-14 custom-black">Project Revenue</div>
+                                                <div class="mb-0 d-flex align-items-center flex-wrap gap-6"> <span
+                                                        class="mt-1 h6 mb-0 fw-semibold red">$32,124.00</span>
+                                                    <div class="d-flex gap-6 align-items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                                            viewBox="0 0 12 12" fill="none">
+                                                            <path d="M6 2V10M6 10L9 7M6 10L3 7" stroke="#F04438"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round"></path>
+                                                        </svg>
+                                                        <p class="fs-14 custom-red mb-0 fw-normal">1.20%</p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-muted fs-14">Reached yearly target</div>
+                                            </div>
+                                        </div>
+                                        <div id="projectAnalysis"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-4">
+                                <div class="card-1 custom-card">
+                                    <div class="card-header">
+                                        <div class="card-title"> To-Do List </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled projects-to-do-list">
+                                            <li>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="form-check form-check-md">
+                                                        <input class="form-check-input" type="checkbox" value=""
+                                                               id="defaultCheck1" checked="">
+                                                    </div>
+                                                    <div class="flex-fill">
+                                                        <span class="d-block fw-normal  fs-16 custom-black">Finish
+                                                            Presentation Slides</span>
+                                                        <span class="fs-14 text-muted">May 29, 2025</span>
+                                                    </div>
+                                                    <button class="btn bg-white-1 fw-medium">Edit</button>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="form-check form-check-md"> <input
+                                                            class="form-check-input form-checked-secondary"
+                                                            type="checkbox" value="" id="defaultCheck2" checked="">
+                                                    </div>
+                                                    <div class="flex-fill"> <span
+                                                            class="d-block fw-normal fs-16 custom-black">Send
+                                                            Follow-up Emails</span> <span class="fs-14 text-muted">May
+                                                            27, 2025</span> </div> <button
+                                                        class="btn bg-white-1 ">Edit</button>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="form-check form-check-md"> <input
+                                                            class="form-check-input form-checked-success"
+                                                            type="checkbox" value="" id="defaultCheck3"> </div>
+                                                    <div class="flex-fill"> <span
+                                                            class="d-block fw-normal fs-16 custom-black">Research
+                                                            New Software</span> <span class="fs-14 text-muted">May 30,
+                                                            2025</span> </div> <button
+                                                        class="btn bg-white-1 ">Edit</button>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="form-check form-check-md"> <input
+                                                            class="form-check-input form-checked-warning"
+                                                            type="checkbox" value="" id="defaultCheck4"> </div>
+                                                    <div class="flex-fill"> <span
+                                                            class="d-block fw-normal fs-16 custom-black">Schedule
+                                                            Training Session</span> <span class="fs-14 text-muted">May
+                                                            29, 2025</span> </div> <button
+                                                        class="btn bg-white-1 ">Edit</button>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="form-check form-check-md"> <input
+                                                            class="form-check-input form-checked-info" type="checkbox"
+                                                            value="" id="defaultCheck5" checked=""> </div>
+                                                    <div class="flex-fill"> <span
+                                                            class="d-block fw-normal fs-16 custom-black">Update
+                                                            Task Board</span> <span class="fs-14 text-muted">May 27,
+                                                            2025</span> </div> <button
+                                                        class="btn bg-white-1 ">Edit</button>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="form-check form-check-md"> <input
+                                                            class="form-check-input form-checked-danger" type="checkbox"
+                                                            value="" id="defaultCheck6"> </div>
+                                                    <div class="flex-fill"> <span
+                                                            class="d-block fw-normal fs-16 custom-black">Attend
+                                                            Team Meeting</span> <span class="fs-14 text-muted">May 28,
+                                                            2025</span> </div> <button
+                                                        class="btn bg-white-1 border">Edit</button>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="card-1 custom-card">
+                                    <div class="card-header">
+                                        <div class="card-title"> Recent Transactions </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled project-recent-transactions-list">
+                                            <li class="mb-2">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="lh-1"> <span
+                                                            class="avatar avatar-ms avatar-rounded bg-primary-transparent fw-semibold fs-14">
+                                                            S </span> </div>
+                                                    <div class="flex-fill"> <span
+                                                            class="fw-normal fs-16 custom-black">Swift
+                                                            Ads</span> <span
+                                                            class="d-block fs-14 text-muted">Payment</span> </div>
+                                                    <div class="text-end"> <span
+                                                            class="h6 mb-0 fw-normal text-danger fs-16">-$500</span>
+                                                        <span class="d-block text-muted fs-14">May 25, 2025</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="mb-2">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="lh-1"> <span
+                                                            class="avatar avatar-ms avatar-rounded bg-secondary-transparent fw-semibold fs-14">
+                                                            E </span> </div>
+                                                    <div class="flex-fill"> <span
+                                                            class="fw-normal fs-16 custom-black">Eco
+                                                            Build</span> <span
+                                                            class="d-block fs-14 text-muted">Expense</span> </div>
+                                                    <div class="text-end"> <span
+                                                            class="h6 mb-0 fw-normal text-danger fs-16">-$200</span>
+                                                        <span class="d-block text-muted fs-14">May 24, 2025</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="mb-2">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="lh-1"> <span
+                                                            class="avatar avatar-ms avatar-rounded bg-success-transparent fw-semibold fs-14">
+                                                            H </span> </div>
+                                                    <div class="flex-fill"> <span
+                                                            class="fw-normal fs-16 custom-black">Health
+                                                            Track</span> <span
+                                                            class="d-block fs-14 text-muted">Income</span> </div>
+                                                    <div class="text-end"> <span
+                                                            class="h6 mb-0 fw-normal text-success">+$1000</span> <span
+                                                            class="d-block text-muted fs-14">May 23, 2025</span> </div>
+                                                </div>
+                                            </li>
+                                            <li class="mb-2">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="lh-1"> <span
+                                                            class="avatar avatar-ms avatar-rounded bg-info-transparent fw-semibold fs-14">
+                                                            S </span> </div>
+                                                    <div class="flex-fill"> <span
+                                                            class="fw-normal fs-16 custom-black">Solar
+                                                            Grid</span> <span
+                                                            class="d-block fs-14 text-muted">Expense</span> </div>
+                                                    <div class="text-end"> <span
+                                                            class="h6 mb-0 fw-normal text-danger fs-16">-$300</span>
+                                                        <span class="d-block text-muted fs-14">May 22, 2025</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div class="lh-1"> <span
+                                                            class="avatar avatar-ms avatar-rounded bg-warning-transparent fw-semibold fs-14">
+                                                            D </span> </div>
+                                                    <div class="flex-fill"> <span
+                                                            class="fw-normal fs-16 custom-black">Data
+                                                            Stream</span> <span
+                                                            class="d-block fs-14 text-muted">Income</span> </div>
+                                                    <div class="text-end"> <span
+                                                            class="h6 mb-0 fw-normal text-success">+$700</span> <span
+                                                            class="d-block text-muted fs-14">May 19, 2025</span> </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-6">
+                                <div class="card-1 custom-card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div> <span class="d-block fs-16 mb-3">Completed Projects</span>
+                                                <h3 class="mb-3 fw-semibold">28</h3> <span
+                                                    class="d-block text-muted">Increased by <span
+                                                        class="text-green ms-1">0.45%<i
+                                                            class="ti ti-arrow-narrow-up"></i></span></span>
+                                            </div>
+                                            <div class="radialbar-basic">
+                                                <div id="radialbar-basic">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-12 col-xl-6">
+                                <div class="card-1 custom-card overflow-hidden">
+                                    <div class="card-body">
+                                        <div class=" mb-0">
+                                            <div class="mb-3">
+                                                <h6 class="mb-3 fw-normal fs-18 custom-black">Projects In Progress</h6>
+                                                <span
+                                                    class=" mb-0 fw-normal fs-36 custom-black d-flex align-items-center">55.3%
+                                                    <span class="d-flex gap-6 align-items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                                            viewBox="0 0 12 12" fill="none">
+                                                            <path d="M6 2V10M6 10L9 7M6 10L3 7" stroke="#F04438"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round"></path>
+                                                        </svg>
+                                                        <span class="fs-14 custom-red mb-0 fw-normal">1.20%</span>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div id="Track1">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End::row-1 -->
+
+                <!-- Start::row-3 -->
+                <div class="row">
+                    <div class="col-xxl-3 col-xl-6">
+                        <div class="card-1 custom-card">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title">
+                                    Sessions By Device
+                                </div>
+
+                            </div>
+                            <div class="card-body my-2 py-4">
+                                <div class="parent-svg">
+                                    <div id="sessions">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <ul class="list-group segmentation-list list-unstyled padding-block-3">
+                                    <li class="list-group-item-1 border-bottom male">
+                                        <div class="d-flex align-items-start justify-content-between">
+                                            <div> <span class="d-block fw-normal  fs-16 custom-black">Male<span
+                                                        class="text-success fw-medium ms-1 d-inline-flex align-items-center"><i
+                                                            class="ti ti-arrow-narrow-up"></i>0.78%</span></span> </div>
+                                            <div class="d-block fw-normal  fs-18 custom-black"> 18,235 </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item-1  border-bottom female">
+                                        <div class="d-flex align-items-start justify-content-between">
+                                            <div> <span class="d-block fw-normal  fs-16 custom-black">Female<span
+                                                        class="text-danger fw-medium ms-1 d-inline-flex"><i
+                                                            class="ti ti-arrow-narrow-down"></i>1.57%</span></span>
+                                            </div>
+                                            <div class="d-block fw-normal  fs-18 custom-black"> 12,743 </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item-1  border-bottom others">
+                                        <div class="d-flex align-items-start justify-content-between">
+                                            <div> <span class="d-block fw-normal  fs-16 custom-black">Others<span
+                                                        class="text-success fw-medium ms-1 d-inline-flex align-items-center"><i
+                                                            class="ti ti-arrow-narrow-up"></i>0.32%</span></span> </div>
+                                            <div class="d-block fw-normal  fs-18 custom-black"> 5,369 </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item-1  dot">
+                                        <div class="d-flex align-items-start justify-content-between">
+                                            <div> <span class="d-block fw-normal  fs-16 custom-black">Not Mentioned<span
+                                                        class="text-success fw-medium ms-1 d-inline-flex align-items-center"><i
+                                                            class="ti ti-arrow-narrow-up"></i>19.45%</span></span>
+                                            </div>
+                                            <div class="d-block fw-normal  fs-18 custom-black"> 16,458 </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-6">
+                        <div class="card-1 custom-card">
+                            <div class="card-header">
+                                <div class="card-title"> Employee Profile </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table text-nowrap mb-3">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Member</th>
+                                                <th scope="col">Role</th>
+                                                <th scope="col">Hours</th>
+                                                <th scope="col">Tasks</th>
+                                                <th scope="col">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="top-selling">
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex"> <span class="avatar">
+                                                            <img src="../assets/images/faces/17.jpg" class="" alt="">
+                                                        </span>
+                                                        <div class="flex-1 ms-2"> <span
+                                                                class="d-block fw-normal custom-black fs-14">Richard
+                                                                Dom</span> <a href="javascript:void(0);"
+                                                                class="text-muted fs-12">richarddom1116@demo.com</a>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td> <span class="fs-14 text-muted fw-normal">Team Leader</span> </td>
+                                                <td> <span class="">31h <span class="text-muted">/ 36h</span></span>
+                                                </td>
+                                                <td> <span class="">143</span> </td>
+                                                <td> <span class="badge bg-success-transparent">Online</span> </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex"> <span class="avatar">
+                                                            <img src="../assets/images/faces/18.jpg" class="" alt="">
+                                                        </span>
+                                                        <div class="flex-1 ms-2"> <span
+                                                                class="d-block fw-normal custom-black fs-14">Jennifer
+                                                                Tab</span> <a href="javascript:void(0);"
+                                                                class="text-muted fs-12">jenny258@demo.com</a> </div>
+                                                    </div>
+                                                </td>
+                                                <td> <span class="fs-14 text-muted fw-normal">Project Manager</span>
+                                                </td>
+                                                <td> <span class="">11h <span class="text-muted">/ 20h</span></span>
+                                                </td>
+                                                <td> <span class="fw-normal">186</span> </td>
+                                                <td> <span class="badge bg-success-transparent">Online</span> </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex"> <span class="avatar">
+                                                            <img src="../assets/images/faces/19.jpg" class="" alt="">
+                                                        </span>
+                                                        <div class="flex-1 ms-2"> <span
+                                                                class="d-block fw-normal custom-black fs-14">Nikki
+                                                                Jey</span> <a href="javascript:void(0);"
+                                                                class="text-muted fs-12">nikkiJ141@demo.com</a> </div>
+                                                    </div>
+                                                </td>
+                                                <td> <span class="fs-14 text-muted fw-normal">UI Developer</span> </td>
+                                                <td> <span class="">20h <span class="text-muted">/ 22h</span></span>
+                                                </td>
+                                                <td> <span class="fw-normal">652</span> </td>
+                                                <td> <span class="badge bg-light-1">Offline</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex"> <span class="avatar">
+                                                            <img src="../assets/images/faces/20.jpg" class="" alt="">
+                                                        </span>
+                                                        <div class="flex-1 ms-2"> <span
+                                                                class="d-block fw-normal custom-black fs-14">Arifa
+                                                                Zed</span> <a href="javascript:void(0);"
+                                                                class="text-muted fs-12">arifaZ@demo.com</a> </div>
+                                                    </div>
+                                                </td>
+                                                <td> <span class="fs-14 text-muted fw-normal">Web Developer</span> </td>
+                                                <td> <span class="">83h <span class="text-muted">/83h</span></span>
+                                                </td>
+                                                <td> <span class="fw-normal">752</span> </td>
+                                                <td> <span class="badge bg-success-transparent">Online</span> </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-3">
+                        <div class="card-1 custom-card">
+                            <div class="card-body">
+                                <div class="d-flex gap-3 align-items-start mb-3">
+                                    <div> <span> <img src="../assets/images/company-logos/2.png" alt=""> </span> </div>
+                                    <div class="flex-fill">
+                                        <h6 class="mb-0 fw-semibold">Project Nebula</h6> <span
+                                            class="d-block fs-13 text-muted">Opened Yesterday</span>
+                                        <div><span>28 Tasks</span><span class="ms-2 custom-blue fs-14 d-inline-flex">11
+                                                Nov 2025 - Due Date</span></div>
+                                    </div>
+                                    <div class="d-flex align-items-start lh-1">
+                                        <div class="stars-main me-3 text-warning"> <svg
+                                                xmlns="http://www.w3.org/2000/svg" width="20" height="21"
+                                                viewBox="0 0 20 21" fill="none">
+                                                <path
+                                                    d="M9.40205 3.6278C9.59412 3.23869 9.69015 3.04413 9.82053 2.98197C9.93396 2.92789 10.0657 2.92789 10.1792 2.98197C10.3095 3.04413 10.4056 3.23869 10.5977 3.6278L12.4199 7.31944C12.4766 7.43432 12.5049 7.49176 12.5464 7.53635C12.5831 7.57584 12.6271 7.60783 12.6759 7.63056C12.7311 7.65623 12.7945 7.66549 12.9213 7.68402L16.9973 8.2798C17.4266 8.34253 17.6412 8.3739 17.7405 8.47874C17.8269 8.56995 17.8675 8.69529 17.8511 8.81985C17.8322 8.96302 17.6768 9.11436 17.3661 9.41702L14.4177 12.2887C14.3258 12.3782 14.2798 12.423 14.2502 12.4763C14.2239 12.5234 14.2071 12.5752 14.2006 12.6288C14.1933 12.6893 14.2041 12.7525 14.2258 12.879L14.9215 16.9351C14.9948 17.3629 15.0315 17.5769 14.9626 17.7038C14.9026 17.8142 14.796 17.8917 14.6724 17.9146C14.5304 17.9409 14.3383 17.8399 13.9541 17.6379L10.3102 15.7216C10.1966 15.6619 10.1398 15.632 10.08 15.6203C10.0271 15.6099 9.97262 15.6099 9.91966 15.6203C9.85986 15.632 9.80309 15.6619 9.68955 15.7216L6.04561 17.6379C5.66143 17.8399 5.46935 17.9409 5.32731 17.9146C5.20374 17.8917 5.09711 17.8142 5.03712 17.7038C4.96817 17.5769 5.00486 17.3629 5.07823 16.9351L5.77391 12.879C5.7956 12.7525 5.80644 12.6893 5.7991 12.6288C5.79261 12.5752 5.77576 12.5234 5.74951 12.4763C5.71986 12.423 5.6739 12.3782 5.58199 12.2887L2.63364 9.41702C2.32289 9.11436 2.16752 8.96302 2.14861 8.81985C2.13216 8.69529 2.1728 8.56995 2.25921 8.47874C2.35853 8.3739 2.57315 8.34253 3.00237 8.2798L7.07843 7.68402C7.20519 7.66549 7.26857 7.65623 7.32377 7.63056C7.37264 7.60783 7.41664 7.57584 7.45332 7.53635C7.49476 7.49176 7.52311 7.43432 7.57981 7.31944L9.40205 3.6278Z"
+                                                    fill="#F79009" />
+                                            </svg>
+                                        </div>
+                                        <div class="dropdown"> <a aria-label="anchor" href="javascript:void(0);"
+                                                class="op-4" data-bs-toggle="dropdown" aria-expanded="true"><svg
+                                                    xmlns="http://www.w3.org/2000/svg" width="20" height="21"
+                                                    viewBox="0 0 20 21" fill="none">
+                                                    <path
+                                                        d="M7 3.25H3.83333C3.36662 3.25 3.13327 3.25 2.95501 3.34083C2.79821 3.42072 2.67072 3.54821 2.59083 3.70501C2.5 3.88327 2.5 4.11662 2.5 4.58333V7.75C2.5 8.21671 2.5 8.45007 2.59083 8.62833C2.67072 8.78513 2.79821 8.91261 2.95501 8.99251C3.13327 9.08333 3.36662 9.08333 3.83333 9.08333H7C7.46671 9.08333 7.70007 9.08333 7.87833 8.99251C8.03513 8.91261 8.16261 8.78513 8.24251 8.62833C8.33333 8.45007 8.33333 8.21671 8.33333 7.75V4.58333C8.33333 4.11662 8.33333 3.88327 8.24251 3.70501C8.16261 3.54821 8.03513 3.42072 7.87833 3.34083C7.70007 3.25 7.46671 3.25 7 3.25Z"
+                                                        stroke="#2E90FA" stroke-width="1.66667" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M16.1667 3.25H13C12.5333 3.25 12.2999 3.25 12.1217 3.34083C11.9649 3.42072 11.8374 3.54821 11.7575 3.70501C11.6667 3.88327 11.6667 4.11662 11.6667 4.58333V7.75C11.6667 8.21671 11.6667 8.45007 11.7575 8.62833C11.8374 8.78513 11.9649 8.91261 12.1217 8.99251C12.2999 9.08333 12.5333 9.08333 13 9.08333H16.1667C16.6334 9.08333 16.8667 9.08333 17.045 8.99251C17.2018 8.91261 17.3293 8.78513 17.4092 8.62833C17.5 8.45007 17.5 8.21671 17.5 7.75V4.58333C17.5 4.11662 17.5 3.88327 17.4092 3.70501C17.3293 3.54821 17.2018 3.42072 17.045 3.34083C16.8667 3.25 16.6334 3.25 16.1667 3.25Z"
+                                                        stroke="#2E90FA" stroke-width="1.66667" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M16.1667 12.4167H13C12.5333 12.4167 12.2999 12.4167 12.1217 12.5075C11.9649 12.5874 11.8374 12.7149 11.7575 12.8717C11.6667 13.0499 11.6667 13.2833 11.6667 13.75V16.9167C11.6667 17.3834 11.6667 17.6167 11.7575 17.795C11.8374 17.9518 11.9649 18.0793 12.1217 18.1592C12.2999 18.25 12.5333 18.25 13 18.25H16.1667C16.6334 18.25 16.8667 18.25 17.045 18.1592C17.2018 18.0793 17.3293 17.9518 17.4092 17.795C17.5 17.6167 17.5 17.3834 17.5 16.9167V13.75C17.5 13.2833 17.5 13.0499 17.4092 12.8717C17.3293 12.7149 17.2018 12.5874 17.045 12.5075C16.8667 12.4167 16.6334 12.4167 16.1667 12.4167Z"
+                                                        stroke="#2E90FA" stroke-width="1.66667" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M7 12.4167H3.83333C3.36662 12.4167 3.13327 12.4167 2.95501 12.5075C2.79821 12.5874 2.67072 12.7149 2.59083 12.8717C2.5 13.0499 2.5 13.2833 2.5 13.75V16.9167C2.5 17.3834 2.5 17.6167 2.59083 17.795C2.67072 17.9518 2.79821 18.0793 2.95501 18.1592C3.13327 18.25 3.36662 18.25 3.83333 18.25H7C7.46671 18.25 7.70007 18.25 7.87833 18.1592C8.03513 18.0793 8.16261 17.9518 8.24251 17.795C8.33333 17.6167 8.33333 17.3834 8.33333 16.9167V13.75C8.33333 13.2833 8.33333 13.0499 8.24251 12.8717C8.16261 12.7149 8.03513 12.5874 7.87833 12.5075C7.70007 12.4167 7.46671 12.4167 7 12.4167Z"
+                                                        stroke="#2E90FA" stroke-width="1.66667" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </svg> </a>
+                                            <ul class="dropdown-menu" role="menu" data-popper-placement="bottom-start">
+                                                <li><a class="dropdown-item" href="javascript:void(0);"><i
+                                                            class="ri-pencil-line me-1"></i>Edit</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"><i
+                                                            class="ri-share-forward-line me-1"></i>Share</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"><i
+                                                            class="ri-file-copy-2-line me-1"></i>Clone</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"><i
+                                                            class="ri-delete-bin-line me-1"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-start justify-content-between mb-3">
+                                    <div> <span class="d-block">Members</span>
+                                        <div class="avatar-list-stacked"> <span class="avatar avatar-sm"> <img
+                                                    src="../assets/images/faces/2.jpg" alt="img"> </span> <span
+                                                class="avatar avatar-sm"> <img src="../assets/images/faces/8.jpg"
+                                                    alt="img"> </span> <span class="avatar avatar-sm"> <img
+                                                    src="../assets/images/faces/2.jpg" alt="img"> </span> <span
+                                                class="avatar avatar-sm"> <img src="../assets/images/faces/10.jpg"
+                                                    alt="img"> </span> <span class="avatar avatar-sm"> <img
+                                                    src="../assets/images/faces/4.jpg" alt="img"> </span> <span
+                                                class="avatar avatar-sm"> <img src="../assets/images/faces/13.jpg"
+                                                    alt="img"> </span> </div>
+                                    </div>
+                                    <div class="text-end"> <span class="d-block">Due date</span> <span
+                                            class="d-block text-success fw-normal fs-14">June 20, 2025</span> </div>
+                                </div>
+                                <div>
+                                    <div class="d-flex align-items-center mb-1 justify-content-between"> <span
+                                            class="d-block">Project Progress</span> <span
+                                            class="d-block fs-12">60%</span> </div>
+                                    <div class="progress progress-xs" role="progressbar" aria-valuenow="60"
+                                        aria-valuemin="0" aria-valuemax="100">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                            style="width: 60%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-1 custom-card">
+                            <div class="card-body">
+                                <div class="d-flex gap-3 align-items-start mb-3">
+                                    <div> <span> <img src="../assets/images/company-logos/7.png" alt=""> </span> </div>
+                                    <div class="flex-fill">
+                                        <h6 class="mb-0 fw-semibold">Web Design</h6> <span
+                                            class="d-block fs-13 text-muted">Opened Today</span>
+                                        <div><span>16 Tasks</span><span class="ms-2 custom-blue fs-14 d-inline-flex">12
+                                                May 2025 - Due Date</span></div>
+                                    </div>
+                                    <div class="d-flex align-items-start lh-1">
+                                        <div class="stars-main me-3 text-muted"> <svg xmlns="http://www.w3.org/2000/svg"
+                                                width="20" height="21" viewBox="0 0 20 21" fill="none">
+                                                <path
+                                                    d="M9.40205 3.6278C9.59412 3.23869 9.69015 3.04413 9.82053 2.98197C9.93396 2.92789 10.0657 2.92789 10.1792 2.98197C10.3095 3.04413 10.4056 3.23869 10.5977 3.6278L12.4199 7.31944C12.4766 7.43432 12.5049 7.49176 12.5464 7.53635C12.5831 7.57584 12.6271 7.60783 12.6759 7.63056C12.7311 7.65623 12.7945 7.66549 12.9213 7.68402L16.9973 8.2798C17.4266 8.34253 17.6412 8.3739 17.7405 8.47874C17.8269 8.56995 17.8675 8.69529 17.8511 8.81985C17.8322 8.96302 17.6768 9.11436 17.3661 9.41702L14.4177 12.2887C14.3258 12.3782 14.2798 12.423 14.2502 12.4763C14.2239 12.5234 14.2071 12.5752 14.2006 12.6288C14.1933 12.6893 14.2041 12.7525 14.2258 12.879L14.9215 16.9351C14.9948 17.3629 15.0315 17.5769 14.9626 17.7038C14.9026 17.8142 14.796 17.8917 14.6724 17.9146C14.5304 17.9409 14.3383 17.8399 13.9541 17.6379L10.3102 15.7216C10.1966 15.6619 10.1398 15.632 10.08 15.6203C10.0271 15.6099 9.97262 15.6099 9.91966 15.6203C9.85986 15.632 9.80309 15.6619 9.68955 15.7216L6.04561 17.6379C5.66143 17.8399 5.46935 17.9409 5.32731 17.9146C5.20374 17.8917 5.09711 17.8142 5.03712 17.7038C4.96817 17.5769 5.00486 17.3629 5.07823 16.9351L5.77391 12.879C5.7956 12.7525 5.80644 12.6893 5.7991 12.6288C5.79261 12.5752 5.77576 12.5234 5.74951 12.4763C5.71986 12.423 5.6739 12.3782 5.58199 12.2887L2.63364 9.41702C2.32289 9.11436 2.16752 8.96302 2.14861 8.81985C2.13216 8.69529 2.1728 8.56995 2.25921 8.47874C2.35853 8.3739 2.57315 8.34253 3.00237 8.2798L7.07843 7.68402C7.20519 7.66549 7.26857 7.65623 7.32377 7.63056C7.37264 7.60783 7.41664 7.57584 7.45332 7.53635C7.49476 7.49176 7.52311 7.43432 7.57981 7.31944L9.40205 3.6278Z"
+                                                    fill="#F79009" />
+                                            </svg>
+                                        </div>
+                                        <div class="dropdown"> <a aria-label="anchor" href="javascript:void(0);"
+                                                class="op-4" data-bs-toggle="dropdown" aria-expanded="true"> <svg
+                                                    xmlns="http://www.w3.org/2000/svg" width="20" height="21"
+                                                    viewBox="0 0 20 21" fill="none">
+                                                    <path
+                                                        d="M7 2.75H3.83333C3.36662 2.75 3.13327 2.75 2.95501 2.84083C2.79821 2.92072 2.67072 3.04821 2.59083 3.20501C2.5 3.38327 2.5 3.61662 2.5 4.08333V7.25C2.5 7.71671 2.5 7.95007 2.59083 8.12833C2.67072 8.28513 2.79821 8.41261 2.95501 8.49251C3.13327 8.58333 3.36662 8.58333 3.83333 8.58333H7C7.46671 8.58333 7.70007 8.58333 7.87833 8.49251C8.03513 8.41261 8.16261 8.28513 8.24251 8.12833C8.33333 7.95007 8.33333 7.71671 8.33333 7.25V4.08333C8.33333 3.61662 8.33333 3.38327 8.24251 3.20501C8.16261 3.04821 8.03513 2.92072 7.87833 2.84083C7.70007 2.75 7.46671 2.75 7 2.75Z"
+                                                        stroke="#2E90FA" stroke-width="1.66667" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M16.1667 2.75H13C12.5333 2.75 12.2999 2.75 12.1217 2.84083C11.9649 2.92072 11.8374 3.04821 11.7575 3.20501C11.6667 3.38327 11.6667 3.61662 11.6667 4.08333V7.25C11.6667 7.71671 11.6667 7.95007 11.7575 8.12833C11.8374 8.28513 11.9649 8.41261 12.1217 8.49251C12.2999 8.58333 12.5333 8.58333 13 8.58333H16.1667C16.6334 8.58333 16.8667 8.58333 17.045 8.49251C17.2018 8.41261 17.3293 8.28513 17.4092 8.12833C17.5 7.95007 17.5 7.71671 17.5 7.25V4.08333C17.5 3.61662 17.5 3.38327 17.4092 3.20501C17.3293 3.04821 17.2018 2.92072 17.045 2.84083C16.8667 2.75 16.6334 2.75 16.1667 2.75Z"
+                                                        stroke="#2E90FA" stroke-width="1.66667" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M16.1667 11.9167H13C12.5333 11.9167 12.2999 11.9167 12.1217 12.0075C11.9649 12.0874 11.8374 12.2149 11.7575 12.3717C11.6667 12.5499 11.6667 12.7833 11.6667 13.25V16.4167C11.6667 16.8834 11.6667 17.1167 11.7575 17.295C11.8374 17.4518 11.9649 17.5793 12.1217 17.6592C12.2999 17.75 12.5333 17.75 13 17.75H16.1667C16.6334 17.75 16.8667 17.75 17.045 17.6592C17.2018 17.5793 17.3293 17.4518 17.4092 17.295C17.5 17.1167 17.5 16.8834 17.5 16.4167V13.25C17.5 12.7833 17.5 12.5499 17.4092 12.3717C17.3293 12.2149 17.2018 12.0874 17.045 12.0075C16.8667 11.9167 16.6334 11.9167 16.1667 11.9167Z"
+                                                        stroke="#2E90FA" stroke-width="1.66667" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                    <path
+                                                        d="M7 11.9167H3.83333C3.36662 11.9167 3.13327 11.9167 2.95501 12.0075C2.79821 12.0874 2.67072 12.2149 2.59083 12.3717C2.5 12.5499 2.5 12.7833 2.5 13.25V16.4167C2.5 16.8834 2.5 17.1167 2.59083 17.295C2.67072 17.4518 2.79821 17.5793 2.95501 17.6592C3.13327 17.75 3.36662 17.75 3.83333 17.75H7C7.46671 17.75 7.70007 17.75 7.87833 17.6592C8.03513 17.5793 8.16261 17.4518 8.24251 17.295C8.33333 17.1167 8.33333 16.8834 8.33333 16.4167V13.25C8.33333 12.7833 8.33333 12.5499 8.24251 12.3717C8.16261 12.2149 8.03513 12.0874 7.87833 12.0075C7.70007 11.9167 7.46671 11.9167 7 11.9167Z"
+                                                        stroke="#2E90FA" stroke-width="1.66667" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </svg> </a>
+                                            <ul class="dropdown-menu" role="menu" data-popper-placement="bottom-start">
+                                                <li><a class="dropdown-item" href="javascript:void(0);"><i
+                                                            class="ri-pencil-line me-1"></i>Edit</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"><i
+                                                            class="ri-share-forward-line me-1"></i>Share</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"><i
+                                                            class="ri-file-copy-2-line me-1"></i>Clone</a></li>
+                                                <li><a class="dropdown-item" href="javascript:void(0);"><i
+                                                            class="ri-delete-bin-line me-1"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-start justify-content-between mb-3">
+                                    <div> <span class="d-block">Members</span>
+                                        <div class="avatar-list-stacked"> <span class="avatar avatar-sm"> <img
+                                                    src="../assets/images/faces/5.jpg" alt="img"> </span> <span
+                                                class="avatar avatar-sm"> <img src="../assets/images/faces/10.jpg"
+                                                    alt="img"> </span> <span class="avatar avatar-sm"> <img
+                                                    src="../assets/images/faces/12.jpg" alt="img"> </span> </div>
+                                    </div>
+                                    <div class="text-end"> <span class="d-block">Due date</span> <span
+                                            class="d-block text-success fw-normal fs-14">28,May 2025</span> </div>
+                                </div>
+                                <div>
+                                    <div class="d-flex align-items-center mb-1 justify-content-between"> <span
+                                            class="d-block">Project Progress</span> <span
+                                            class="d-block fs-12">39%</span> </div>
+                                    <div class="progress progress-xs" role="progressbar" aria-valuenow="39"
+                                        aria-valuemin="0" aria-valuemax="100">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                                            style="width: 39%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End::row-3 -->
+
+                <div class="row">
+                    <div class="col-xxl-3">
+                        <div class="card-1 custom-card overflow-hidden">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title"> Project Status </div> <a class="text-primary fw-normal  fs-14" href="javascript:void(0);">View all
+                                            </a>
+                            </div>
+                            <div class="card-body p-0 overflow-auto">
+                                <table class="table mb-0 text-nowrap Project-status ">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex gap-2 align-items-center"> <span
+                                                        class="avatar avatar-sm p-1  bg-success-transparent avatar-rounded">
+                                                        <img src="../assets/images/company-logos/4.png" alt=""> </span>
+                                                    <p class="mb-0">Wordpress Template</p>
+                                                </div>
+                                            </td>
+                                            <td class=""> <span class="fw-medium fs-14">25%</span> </td>
+                                            <td class=""> <span class="badge bg-primary-transparent">Progress</span> </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex gap-2 align-items-center"> <span
+                                                        class="avatar avatar-sm p-1  bg-success-transparent avatar-rounded">
+                                                        <img src="../assets/images/company-logos/1.png" alt=""> </span>
+                                                    <p class="mb-0">Blog Page</p>
+                                                </div>
+                                            </td>
+                                            <td class=""> <span class="fw-medium fs-14">60%</span> </td>
+                                            <td class=""> <span class="badge bg-warning-transparent">Pending</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex gap-2 align-items-center"> <span
+                                                        class="avatar avatar-sm p-1  bg-success-transparent avatar-rounded">
+                                                        <img src="../assets/images/company-logos/11.png" alt=""> </span>
+                                                    <p class="mb-0">E commerce Blog</p>
+                                                </div>
+                                            </td>
+                                            <td class=""> <span class="fw-medium fs-14">75%</span> </td>
+                                            <td class=""> <span class="badge bg-info-transparent">Progress</span> </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex gap-2 align-items-center"> <span
+                                                        class="avatar avatar-sm p-1  bg-success-transparent avatar-rounded">
+                                                        <img src="../assets/images/company-logos/12.png" alt=""> </span>
+                                                    <p class="mb-0">E-mail Templates</p>
+                                                </div>
+                                            </td>
+                                            <td class=""> <span class="fw-medium fs-14">100%</span> </td>
+                                            <td class=""> <span class="badge bg-success-transparent">Finished</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex gap-2 align-items-center"> <span
+                                                        class="avatar avatar-sm p-1  bg-success-transparent avatar-rounded">
+                                                        <img src="../assets/images/company-logos/13.png" alt=""> </span>
+                                                    <p class="mb-0">Business Website</p>
+                                                </div>
+                                            </td>
+                                            <td class=""> <span class="fw-medium fs-14">100%</span> </td>
+                                            <td class=""> <span class="badge bg-success-transparent">Finished</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex gap-2 align-items-center"> <span
+                                                        class="avatar avatar-sm p-1  bg-success-transparent avatar-rounded">
+                                                        <img src="../assets/images/company-logos/14.png" alt=""> </span>
+                                                    <p class="mb-0">Admin Templates</p>
+                                                </div>
+                                            </td>
+                                            <td class=""> <span class="fw-medium fs-14">90%</span> </td>
+                                            <td class=""> <span class="badge bg-info-transparent">Progress</span> </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border-bottom-0 rounded">
+                                                <div class="d-flex gap-2 align-items-center"> <span
+                                                        class="avatar avatar-sm p-1 bg-success-transparent avatar-rounded">
+                                                        <img src="../assets/images/company-logos/15.png" alt=""> </span>
+                                                    <p class="mb-0">Beauty Templates</p>
+                                                </div>
+                                            </td>
+                                            <td class="border-bottom-0 rounded"> <span
+                                                    class="fw-medium fs-14">50%</span> </td>
+                                            <td class="border-bottom-0 rounded"> <span
+                                                    class="badge bg-warning-transparent">Pending</span> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-9">
+                        <div class="card-1 custom-card">
+                            <div class="card-header justify-content-between">
+                                <div class="card-title"> Projects Summary </div>
+                             
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table text-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">S.No</th>
+                                                <th scope="col">Poject Title</th>
+                                                <th scope="col">Assigned Team</th>
+                                                <th scope="col">Tasks</th>
+                                                <th scope="col">Progress</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Due Date</th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td> 1 </td>
+                                                <td> <span class="fw-normal fs-14 custom-black"> Home Page</span> </td>
+                                                <td>
+                                                    <div class="avatar-list-stacked"> <span
+                                                            class=""> <img
+                                                                src="../assets/images/faces/8.jpg" alt="img"> </span>
+                                                        <span class="img-6"> <img
+                                                                src="../assets/images/faces/4.jpg" alt="img"> </span>
+                                                        <span class="img-6"> <img
+                                                                src="../assets/images/faces/6.jpg" alt="img"> </span>
+                                                        <span class=""> <img
+                                                                src="../assets/images/faces/7.jpg" alt="img"> </span>
+                                                    </div>
+                                                </td>
+                                                <td>110 <span class="text-muted">/180</span></td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="progress progress-sm w-100" role="progressbar"
+                                                            aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                                            <div class="progress-bar  bg-primary" style="width: 25%">
+                                                            </div>
+                                                        </div>
+                                                        <div class="ms-2">25%</div>
+                                                    </div>
+                                                </td>
+                                                <td> <span class="badge bg-success-transparent">In Progress</span> </td>
+                                                <td> 14-04-2023 </td>
+                                                <td>
+                                                    <div class="btn-list"> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="View"
+                                                            class="btn  btn-icon btn-sm bg-gray-6"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M1.61342 8.47549C1.52262 8.33173 1.47723 8.25985 1.45182 8.14898C1.43273 8.06571 1.43273 7.93437 1.45182 7.8511C1.47723 7.74023 1.52262 7.66835 1.61341 7.52459C2.36369 6.3366 4.59693 3.33337 8.00027 3.33337C11.4036 3.33337 13.6369 6.3366 14.3871 7.52459C14.4779 7.66835 14.5233 7.74023 14.5487 7.8511C14.5678 7.93437 14.5678 8.06571 14.5487 8.14898C14.5233 8.25985 14.4779 8.33173 14.3871 8.47549C13.6369 9.66348 11.4036 12.6667 8.00027 12.6667C4.59693 12.6667 2.36369 9.66348 1.61342 8.47549Z" stroke="#F79009" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M8.00027 10C9.10484 10 10.0003 9.10461 10.0003 8.00004C10.0003 6.89547 9.10484 6.00004 8.00027 6.00004C6.8957 6.00004 6.00027 6.89547 6.00027 8.00004C6.00027 9.10461 6.8957 10 8.00027 10Z" stroke="#F79009" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="Edit"
+                                                            class="btn  btn-icon btn-sm bg-light-green"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M7.99998 13.3333H14M2 13.3333H3.11636C3.44248 13.3333 3.60554 13.3333 3.75899 13.2964C3.89504 13.2638 4.0251 13.2099 4.1444 13.1368C4.27895 13.0543 4.39425 12.939 4.62486 12.7084L13 4.33328C13.5523 3.781 13.5523 2.88557 13 2.33328C12.4477 1.781 11.5523 1.781 11 2.33328L2.62484 10.7084C2.39424 10.939 2.27894 11.0543 2.19648 11.1889C2.12338 11.3082 2.0695 11.4383 2.03684 11.5743C2 11.7278 2 11.8908 2 12.2169V13.3333Z" stroke="#12B76A" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="Delete"
+                                                            class="btn btn-sm btn-icon btn-secondary-light btn-wave waves-effect waves-light"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M10.6667 4.00004V3.46671C10.6667 2.71997 10.6667 2.3466 10.5213 2.06139C10.3935 1.8105 10.1895 1.60653 9.93865 1.4787C9.65344 1.33337 9.28007 1.33337 8.53333 1.33337H7.46667C6.71993 1.33337 6.34656 1.33337 6.06135 1.4787C5.81046 1.60653 5.60649 1.8105 5.47866 2.06139C5.33333 2.3466 5.33333 2.71997 5.33333 3.46671V4.00004M6.66667 7.66671V11M9.33333 7.66671V11M2 4.00004H14M12.6667 4.00004V11.4667C12.6667 12.5868 12.6667 13.1469 12.4487 13.5747C12.2569 13.951 11.951 14.257 11.5746 14.4487C11.1468 14.6667 10.5868 14.6667 9.46667 14.6667H6.53333C5.41323 14.6667 4.85318 14.6667 4.42535 14.4487C4.04903 14.257 3.74307 13.951 3.55132 13.5747C3.33333 13.1469 3.33333 12.5868 3.33333 11.4667V4.00004" stroke="#F04438" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td> 2 </td>
+                                                <td> <span class="fw-normal fs-14 custom-black"> Landing Design </span> </td>
+                                                <td>
+                                                  <div class="avatar-list-stacked"> <span
+                                                            class=""> <img
+                                                                src="../assets/images/faces/10.jpg" alt="img"> </span>
+                                                        <span class="img-6"> <img
+                                                                src="../assets/images/faces/11.jpg" alt="img"> </span>
+                                                        <span class="img-6"> <img
+                                                                src="../assets/images/faces/12.jpg" alt="img"> </span>
+                                                        <span class=""> <img
+                                                                src="../assets/images/faces/13.jpg" alt="img"> </span>
+                                                    </div>
+                                                </td>
+                                                <td>95 <span class="op-8">/100</span></td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="progress progress-sm w-100" role="progressbar"
+                                                            aria-valuenow="95" aria-valuemin="0" aria-valuemax="100">
+                                                            <div class="progress-bar  bg-primary" style="width: 95%">
+                                                            </div>
+                                                        </div>
+                                                        <div class="ms-2">95%</div>
+                                                    </div>
+                                                </td>
+                                                <td> <span class="badge bg-primary-transparent">In Progress</span> </td>
+                                                <td> 20-04-2023 </td>
+                                                <td>
+                                                    <div class="btn-list"> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="View"
+                                                            class="btn  btn-icon btn-sm bg-gray-6"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M1.61342 8.47549C1.52262 8.33173 1.47723 8.25985 1.45182 8.14898C1.43273 8.06571 1.43273 7.93437 1.45182 7.8511C1.47723 7.74023 1.52262 7.66835 1.61341 7.52459C2.36369 6.3366 4.59693 3.33337 8.00027 3.33337C11.4036 3.33337 13.6369 6.3366 14.3871 7.52459C14.4779 7.66835 14.5233 7.74023 14.5487 7.8511C14.5678 7.93437 14.5678 8.06571 14.5487 8.14898C14.5233 8.25985 14.4779 8.33173 14.3871 8.47549C13.6369 9.66348 11.4036 12.6667 8.00027 12.6667C4.59693 12.6667 2.36369 9.66348 1.61342 8.47549Z" stroke="#F79009" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M8.00027 10C9.10484 10 10.0003 9.10461 10.0003 8.00004C10.0003 6.89547 9.10484 6.00004 8.00027 6.00004C6.8957 6.00004 6.00027 6.89547 6.00027 8.00004C6.00027 9.10461 6.8957 10 8.00027 10Z" stroke="#F79009" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="Edit"
+                                                            class="btn  btn-icon btn-sm bg-light-green"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M7.99998 13.3333H14M2 13.3333H3.11636C3.44248 13.3333 3.60554 13.3333 3.75899 13.2964C3.89504 13.2638 4.0251 13.2099 4.1444 13.1368C4.27895 13.0543 4.39425 12.939 4.62486 12.7084L13 4.33328C13.5523 3.781 13.5523 2.88557 13 2.33328C12.4477 1.781 11.5523 1.781 11 2.33328L2.62484 10.7084C2.39424 10.939 2.27894 11.0543 2.19648 11.1889C2.12338 11.3082 2.0695 11.4383 2.03684 11.5743C2 11.7278 2 11.8908 2 12.2169V13.3333Z" stroke="#12B76A" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="Delete"
+                                                            class="btn btn-sm btn-icon btn-secondary-light btn-wave waves-effect waves-light"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M10.6667 4.00004V3.46671C10.6667 2.71997 10.6667 2.3466 10.5213 2.06139C10.3935 1.8105 10.1895 1.60653 9.93865 1.4787C9.65344 1.33337 9.28007 1.33337 8.53333 1.33337H7.46667C6.71993 1.33337 6.34656 1.33337 6.06135 1.4787C5.81046 1.60653 5.60649 1.8105 5.47866 2.06139C5.33333 2.3466 5.33333 2.71997 5.33333 3.46671V4.00004M6.66667 7.66671V11M9.33333 7.66671V11M2 4.00004H14M12.6667 4.00004V11.4667C12.6667 12.5868 12.6667 13.1469 12.4487 13.5747C12.2569 13.951 11.951 14.257 11.5746 14.4487C11.1468 14.6667 10.5868 14.6667 9.46667 14.6667H6.53333C5.41323 14.6667 4.85318 14.6667 4.42535 14.4487C4.04903 14.257 3.74307 13.951 3.55132 13.5747C3.33333 13.1469 3.33333 12.5868 3.33333 11.4667V4.00004" stroke="#F04438" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td> 3 </td>
+                                                <td> <span class="fw-normal fs-14 custom-black"> New Template Design</span> </td>
+                                                <td>
+                                                      <div class="avatar-list-stacked"> <span
+                                                            class=""> <img
+                                                                src="../assets/images/faces/8.jpg" alt="img"> </span>
+                                                        <span class="img-6"> <img
+                                                                src="../assets/images/faces/4.jpg" alt="img"> </span>
+                                                        <span class="img-6"> <img
+                                                                src="../assets/images/faces/6.jpg" alt="img"> </span>
+                                                        <span class=""> <img
+                                                                src="../assets/images/faces/7.jpg" alt="img"> </span>
+                                                    </div>
+                                                </td>
+                                                <td> 0 <span class="text-muted">/100</span></td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="progress progress-animate progress-sm w-100"
+                                                            role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                                                            aria-valuemax="100">
+                                                            <div class="progress-bar bg-primary" style="width: 0%">
+                                                            </div>
+                                                        </div>
+                                                        <div class="ms-2">0%</div>
+                                                    </div>
+                                                </td>
+                                                <td> <span class="badge bg-secondary-transparent">Pending</span> </td>
+                                                <td> 29-05-2023 </td>
+                                                <td>
+                                                    <div class="btn-list"> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="View"
+                                                            class="btn  btn-icon btn-sm bg-gray-6"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M1.61342 8.47549C1.52262 8.33173 1.47723 8.25985 1.45182 8.14898C1.43273 8.06571 1.43273 7.93437 1.45182 7.8511C1.47723 7.74023 1.52262 7.66835 1.61341 7.52459C2.36369 6.3366 4.59693 3.33337 8.00027 3.33337C11.4036 3.33337 13.6369 6.3366 14.3871 7.52459C14.4779 7.66835 14.5233 7.74023 14.5487 7.8511C14.5678 7.93437 14.5678 8.06571 14.5487 8.14898C14.5233 8.25985 14.4779 8.33173 14.3871 8.47549C13.6369 9.66348 11.4036 12.6667 8.00027 12.6667C4.59693 12.6667 2.36369 9.66348 1.61342 8.47549Z" stroke="#F79009" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M8.00027 10C9.10484 10 10.0003 9.10461 10.0003 8.00004C10.0003 6.89547 9.10484 6.00004 8.00027 6.00004C6.8957 6.00004 6.00027 6.89547 6.00027 8.00004C6.00027 9.10461 6.8957 10 8.00027 10Z" stroke="#F79009" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="Edit"
+                                                            class="btn  btn-icon btn-sm bg-light-green"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M7.99998 13.3333H14M2 13.3333H3.11636C3.44248 13.3333 3.60554 13.3333 3.75899 13.2964C3.89504 13.2638 4.0251 13.2099 4.1444 13.1368C4.27895 13.0543 4.39425 12.939 4.62486 12.7084L13 4.33328C13.5523 3.781 13.5523 2.88557 13 2.33328C12.4477 1.781 11.5523 1.781 11 2.33328L2.62484 10.7084C2.39424 10.939 2.27894 11.0543 2.19648 11.1889C2.12338 11.3082 2.0695 11.4383 2.03684 11.5743C2 11.7278 2 11.8908 2 12.2169V13.3333Z" stroke="#12B76A" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="Delete"
+                                                            class="btn btn-sm btn-icon btn-secondary-light btn-wave waves-effect waves-light"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M10.6667 4.00004V3.46671C10.6667 2.71997 10.6667 2.3466 10.5213 2.06139C10.3935 1.8105 10.1895 1.60653 9.93865 1.4787C9.65344 1.33337 9.28007 1.33337 8.53333 1.33337H7.46667C6.71993 1.33337 6.34656 1.33337 6.06135 1.4787C5.81046 1.60653 5.60649 1.8105 5.47866 2.06139C5.33333 2.3466 5.33333 2.71997 5.33333 3.46671V4.00004M6.66667 7.66671V11M9.33333 7.66671V11M2 4.00004H14M12.6667 4.00004V11.4667C12.6667 12.5868 12.6667 13.1469 12.4487 13.5747C12.2569 13.951 11.951 14.257 11.5746 14.4487C11.1468 14.6667 10.5868 14.6667 9.46667 14.6667H6.53333C5.41323 14.6667 4.85318 14.6667 4.42535 14.4487C4.04903 14.257 3.74307 13.951 3.55132 13.5747C3.33333 13.1469 3.33333 12.5868 3.33333 11.4667V4.00004" stroke="#F04438" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td> 4 </td>
+                                                <td> <span class="fw-normal fs-14 custom-black"> HR Management Design </span> </td>
+                                                <td>
+                                                        <div class="avatar-list-stacked"> <span
+                                                            class=""> <img
+                                                                src="../assets/images/faces/10.jpg" alt="img"> </span>
+                                                        <span class="img-6"> <img
+                                                                src="../assets/images/faces/11.jpg" alt="img"> </span>
+                                                        <span class="img-6"> <img
+                                                                src="../assets/images/faces/12.jpg" alt="img"> </span>
+                                                        <span class=""> <img
+                                                                src="../assets/images/faces/13.jpg" alt="img"> </span>
+                                                    </div>
+                                                </td>
+                                                <td>26 <span class="text-muted">/71</span></td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="progress progress-animate progress-sm w-100"
+                                                            role="progressbar" aria-valuenow="35" aria-valuemin="0"
+                                                            aria-valuemax="100">
+                                                            <div class="progress-bar bg-primary" style="width: 35%">
+                                                            </div>
+                                                        </div>
+                                                        <div class="ms-2">35%</div>
+                                                    </div>
+                                                </td>
+                                                <td> <span class="badge bg-success-transparent">In Progress</span> </td>
+                                                <td> 18-04-2023 </td>
+                                                <td>
+                                                    <div class="btn-list"> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="View"
+                                                            class="btn  btn-icon btn-sm bg-gray-6"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M1.61342 8.47549C1.52262 8.33173 1.47723 8.25985 1.45182 8.14898C1.43273 8.06571 1.43273 7.93437 1.45182 7.8511C1.47723 7.74023 1.52262 7.66835 1.61341 7.52459C2.36369 6.3366 4.59693 3.33337 8.00027 3.33337C11.4036 3.33337 13.6369 6.3366 14.3871 7.52459C14.4779 7.66835 14.5233 7.74023 14.5487 7.8511C14.5678 7.93437 14.5678 8.06571 14.5487 8.14898C14.5233 8.25985 14.4779 8.33173 14.3871 8.47549C13.6369 9.66348 11.4036 12.6667 8.00027 12.6667C4.59693 12.6667 2.36369 9.66348 1.61342 8.47549Z" stroke="#F79009" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M8.00027 10C9.10484 10 10.0003 9.10461 10.0003 8.00004C10.0003 6.89547 9.10484 6.00004 8.00027 6.00004C6.8957 6.00004 6.00027 6.89547 6.00027 8.00004C6.00027 9.10461 6.8957 10 8.00027 10Z" stroke="#F79009" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="Edit"
+                                                            class="btn  btn-icon btn-sm bg-light-green"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M7.99998 13.3333H14M2 13.3333H3.11636C3.44248 13.3333 3.60554 13.3333 3.75899 13.2964C3.89504 13.2638 4.0251 13.2099 4.1444 13.1368C4.27895 13.0543 4.39425 12.939 4.62486 12.7084L13 4.33328C13.5523 3.781 13.5523 2.88557 13 2.33328C12.4477 1.781 11.5523 1.781 11 2.33328L2.62484 10.7084C2.39424 10.939 2.27894 11.0543 2.19648 11.1889C2.12338 11.3082 2.0695 11.4383 2.03684 11.5743C2 11.7278 2 11.8908 2 12.2169V13.3333Z" stroke="#12B76A" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="Delete"
+                                                            class="btn btn-sm btn-icon btn-secondary-light btn-wave waves-effect waves-light"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M10.6667 4.00004V3.46671C10.6667 2.71997 10.6667 2.3466 10.5213 2.06139C10.3935 1.8105 10.1895 1.60653 9.93865 1.4787C9.65344 1.33337 9.28007 1.33337 8.53333 1.33337H7.46667C6.71993 1.33337 6.34656 1.33337 6.06135 1.4787C5.81046 1.60653 5.60649 1.8105 5.47866 2.06139C5.33333 2.3466 5.33333 2.71997 5.33333 3.46671V4.00004M6.66667 7.66671V11M9.33333 7.66671V11M2 4.00004H14M12.6667 4.00004V11.4667C12.6667 12.5868 12.6667 13.1469 12.4487 13.5747C12.2569 13.951 11.951 14.257 11.5746 14.4487C11.1468 14.6667 10.5868 14.6667 9.46667 14.6667H6.53333C5.41323 14.6667 4.85318 14.6667 4.42535 14.4487C4.04903 14.257 3.74307 13.951 3.55132 13.5747C3.33333 13.1469 3.33333 12.5868 3.33333 11.4667V4.00004" stroke="#F04438" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> </div>
+                                                </td>
+                                            </tr>
+                                                <tr>
+                                                <td> 5 </td>
+                                                <td> <span class="fw-normal fs-14 custom-black"> HR Management Design </span> </td>
+                                                <td>
+                                                        <div class="avatar-list-stacked"> <span
+                                                            class=""> <img
+                                                                src="../assets/images/faces/10.jpg" alt="img"> </span>
+                                                        <span class="img-6"> <img
+                                                                src="../assets/images/faces/11.jpg" alt="img"> </span>
+                                                        <span class="img-6"> <img
+                                                                src="../assets/images/faces/12.jpg" alt="img"> </span>
+                                                        <span class=""> <img
+                                                                src="../assets/images/faces/13.jpg" alt="img"> </span>
+                                                    </div>
+                                                </td>
+                                                <td>26 <span class="text-muted">/71</span></td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="progress progress-animate progress-sm w-100"
+                                                            role="progressbar" aria-valuenow="35" aria-valuemin="0"
+                                                            aria-valuemax="100">
+                                                            <div class="progress-bar bg-primary" style="width: 35%">
+                                                            </div>
+                                                        </div>
+                                                        <div class="ms-2">35%</div>
+                                                    </div>
+                                                </td>
+                                                <td> <span class="badge bg-primary-transparent">In Progress</span> </td>
+                                                <td> 18-04-2023 </td>
+                                                <td>
+                                                    <div class="btn-list"> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="View"
+                                                            class="btn  btn-icon btn-sm bg-gray-6"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M1.61342 8.47549C1.52262 8.33173 1.47723 8.25985 1.45182 8.14898C1.43273 8.06571 1.43273 7.93437 1.45182 7.8511C1.47723 7.74023 1.52262 7.66835 1.61341 7.52459C2.36369 6.3366 4.59693 3.33337 8.00027 3.33337C11.4036 3.33337 13.6369 6.3366 14.3871 7.52459C14.4779 7.66835 14.5233 7.74023 14.5487 7.8511C14.5678 7.93437 14.5678 8.06571 14.5487 8.14898C14.5233 8.25985 14.4779 8.33173 14.3871 8.47549C13.6369 9.66348 11.4036 12.6667 8.00027 12.6667C4.59693 12.6667 2.36369 9.66348 1.61342 8.47549Z" stroke="#F79009" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M8.00027 10C9.10484 10 10.0003 9.10461 10.0003 8.00004C10.0003 6.89547 9.10484 6.00004 8.00027 6.00004C6.8957 6.00004 6.00027 6.89547 6.00027 8.00004C6.00027 9.10461 6.8957 10 8.00027 10Z" stroke="#F79009" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="Edit"
+                                                            class="btn  btn-icon btn-sm bg-light-green"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M7.99998 13.3333H14M2 13.3333H3.11636C3.44248 13.3333 3.60554 13.3333 3.75899 13.2964C3.89504 13.2638 4.0251 13.2099 4.1444 13.1368C4.27895 13.0543 4.39425 12.939 4.62486 12.7084L13 4.33328C13.5523 3.781 13.5523 2.88557 13 2.33328C12.4477 1.781 11.5523 1.781 11 2.33328L2.62484 10.7084C2.39424 10.939 2.27894 11.0543 2.19648 11.1889C2.12338 11.3082 2.0695 11.4383 2.03684 11.5743C2 11.7278 2 11.8908 2 12.2169V13.3333Z" stroke="#12B76A" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> <a aria-label="anchor"
+                                                            href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top" data-bs-title="Delete"
+                                                            class="btn btn-sm btn-icon btn-secondary-light btn-wave waves-effect waves-light"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M10.6667 4.00004V3.46671C10.6667 2.71997 10.6667 2.3466 10.5213 2.06139C10.3935 1.8105 10.1895 1.60653 9.93865 1.4787C9.65344 1.33337 9.28007 1.33337 8.53333 1.33337H7.46667C6.71993 1.33337 6.34656 1.33337 6.06135 1.4787C5.81046 1.60653 5.60649 1.8105 5.47866 2.06139C5.33333 2.3466 5.33333 2.71997 5.33333 3.46671V4.00004M6.66667 7.66671V11M9.33333 7.66671V11M2 4.00004H14M12.6667 4.00004V11.4667C12.6667 12.5868 12.6667 13.1469 12.4487 13.5747C12.2569 13.951 11.951 14.257 11.5746 14.4487C11.1468 14.6667 10.5868 14.6667 9.46667 14.6667H6.53333C5.41323 14.6667 4.85318 14.6667 4.42535 14.4487C4.04903 14.257 3.74307 13.951 3.55132 13.5747C3.33333 13.1469 3.33333 12.5868 3.33333 11.4667V4.00004" stroke="#F04438" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></a> </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-footer border-top-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="fs-14 fw-normal custom-black"> Showing 6 Entries <i class="bi bi-arrow-right ms-2 fw-medium"></i> </div>
+                                 <div class="ms-auto">
+                                                <nav aria-label="Page navigation" class="pagination-style-4">
+                                                    <ul class="pagination mb-0 gap-8">
+                                                        <li class="page-item"> <a class="page-link" href="javascript:void(0);"> Prev </a> </li>
+                                                        <li class="page-item active"><a class="page-link" href="javascript:void(0);">1</a></li>
+                                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
+                                                        <li class="page-item"> <a class="page-link " href="javascript:void(0);"> next </a> </li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="input-group">
+                            <a href="javascript:void(0);" class="input-group-text" id="Search-Grid"><i
+                                    class="fe fe-search header-link-icon fs-18"></i></a>
+                            <input type="search" class="form-control border-0 px-2" placeholder="Search"
+                                aria-label="Username">
+                            <a href="javascript:void(0);" class="input-group-text" id="voice-search"><i
+                                    class="fe fe-mic header-link-icon"></i></a>
+                            <a href="javascript:void(0);" class="btn btn-light btn-icon" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="fe fe-more-vertical"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Action</a></li>
+                                <li><a class="dropdown-item" href="#">Another action</a></li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">Separated link</a></li>
+                            </ul>
+                        </div>
+                        <div class="mt-4">
+                            <p class="font-weight-semibold text-muted mb-2">Are You Looking For...</p>
+                            <span class="search-tags"><i class="fe fe-user me-2"></i>People<a href="javascript:void(0)"
+                                    class="tag-addon"><i class="fe fe-x"></i></a></span>
+                            <span class="search-tags"><i class="fe fe-file-text me-2"></i>Pages<a
+                                    href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                            <span class="search-tags"><i class="fe fe-align-left me-2"></i>Articles<a
+                                    href="javascript:void(0)" class="tag-addon"><i class="fe fe-x"></i></a></span>
+                            <span class="search-tags"><i class="fe fe-server me-2"></i>Tags<a href="javascript:void(0)"
+                                    class="tag-addon"><i class="fe fe-x"></i></a></span>
+                        </div>
+                        <div class="my-4">
+                            <p class="font-weight-semibold text-muted mb-2">Recent Search :</p>
+                            <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                                <a href="notifications.html"><span>Notifications</span></a>
+                                <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert"
+                                    aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                            </div>
+                            <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                                <a href="alerts.html"><span>Alerts</span></a>
+                                <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert"
+                                    aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                            </div>
+                            <div class="p-2 border br-5 d-flex align-items-center text-muted mb-0 alert">
+                                <a href="mail.html"><span>Mail</span></a>
+                                <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert"
+                                    aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="btn-group ms-auto">
+                            <button class="btn btn-sm bg-gray-6">Search</button>
+                            <button class="btn btn-sm btn-primary">Clear Recents</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer Start -->
+        <footer class="footer mt-auto py-3 menu-bg text-center">
+            <div class="container">
+                <span class=" fw-normal  gray-3 fs-16"> <span id="year"></span> <a href="javascript:void(0);"
+                        class="gray-9 fw-semibold">Bizlyt</a>.
+                    Designed & Developed by <a href="javascript:void(0);">
+                        <span class="gray-9 fw-semibold">UIPARADOX</span>
+                    </a>
+                </span>
+            </div>
+        </footer>
+        <!-- Footer End -->
+
+    </div>
+
+
+
+    <div class="scrollToTop">
+        <span class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+  <path d="M8 15V1M8 1L1 8M8 1L15 8" stroke="#888888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></span>
+    </div>
+    <div id="responsive-overlay"></div>
+
+    <!-- Popper JS -->
+    <script src="../assets/libs/@popperjs/core/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Defaultmenu JS -->
+    <script src="../assets/js/defaultmenu.min.js"></script>
+
+    <!-- Node Waves JS-->
+    <script src="../assets/libs/node-waves/waves.min.js"></script>
+
+    <!-- Sticky JS -->
+    <script src="../assets/js/sticky.js"></script>
+
+    <!-- Simplebar JS -->
+    <script src="../assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="../assets/js/simplebar.js"></script>
+
+    <!-- Color Picker JS -->
+    <script src="../assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+
+
+    <!-- Apex Charts JS -->
+    <script src="../assets/libs/apexcharts/apexcharts.min.js"></script>
+
+    <!-- Used For Multiple Colored Timeline Chart -->
+    <script src="../assets/libs/moment/moment.js"></script>
+
+    <!-- Internal Apex Radialbar Charts JS -->
+    <script src="../assets/js/apexcharts-radialbar.js"></script>
+
+    <!-- Projects-Dashboard JS -->
+    <script src="../assets/js/projects-dashboard.js"></script>
+    <!-- HRM Dashboard JS -->
+    <script src="../assets/js/personal-dashboard.js"></script>
+
+    <script src="../assets/js/analytics-dashboard.js"></script>
+
+    <!-- Custom-Switcher JS -->
+    <script src="../assets/js/custom-switcher.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="../assets/js/custom.js"></script>
+
+</body>
+
+</html>

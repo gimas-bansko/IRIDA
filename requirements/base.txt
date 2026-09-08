@@ -1,0 +1,20 @@
+# Зависимости, необходими и в development, и в production.
+# Инсталиране: pip install -r requirements/base.txt
+
+Django==4.2.24
+djangorestframework==3.16.1
+django-environ==0.14.0
+
+# База данни
+mysqlclient==2.2.7
+
+# Работа с изображения (ImageField в School, качване на картинки)
+pillow==11.3.0
+
+# Часови зони под Windows (zoneinfo няма системна база)
+tzdata==2025.2
+
+# Засега не се използват в кода, но са част от планирания API слой.
+# Ако не потрябват до края на рефакторинга - махни ги.
+django-filter==25.1
+Markdown==3.8.2

@@ -6,7 +6,9 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'irida_app.settings')
+    # Development по подразбиране. За production подай изрично:
+    #   set DJANGO_SETTINGS_MODULE=config.settings.prod
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.dev')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

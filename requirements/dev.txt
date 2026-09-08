@@ -1,0 +1,14 @@
+# Development обкръжение.
+# Инсталиране: pip install -r requirements/dev.txt
+
+-r base.txt
+
+# Type checking
+django-stubs==5.2.9
+django-stubs-ext==5.2.9
+djangorestframework-stubs==3.16.8
+types-PyYAML==6.0.12.20250915
+
+# Профилиране на заявки и шаблони.
+# config/settings/dev.py го включва само ако е инсталиран.
+django-debug-toolbar==4.4.6

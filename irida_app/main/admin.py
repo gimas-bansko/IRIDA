@@ -1,11 +1,28 @@
 from django.contrib import admin
-from .models import *
 
-from django.contrib import messages
+from .models import (
+    Documents,
+    Goal,
+    Log,
+    School,
+    Session,
+    SessionNote,
+    SessionPoint,
+    SessionTopic,
+    Specialty,
+    Subject,
+    Topic,
+    Unit,
+    UserProfile,
+)
 
 admin.site.register(UserProfile)
 
+
 # Персонализиран филтър за Specialty
+# ЗАСЕГА НЕ СЕ ПОЛЗВА и е неработещ: queryset() филтрира по
+# theme_id__specialty__id, а поле theme_id няма в нито един модел.
+# Трябва да се пренапише, преди да се добави в list_filter на някой ModelAdmin.
 class SpecialtyFilter(admin.SimpleListFilter):
     title = 'Специалност'  # Име на филтъра в админ панела
     parameter_name = 'specialty'  # Параметърът, който ще се използва в заявката
@@ -21,6 +38,7 @@ class SpecialtyFilter(admin.SimpleListFilter):
             return queryset.filter(theme_id__specialty__id=self.value())
         return queryset
 
+
 admin.site.register(School)
 admin.site.register(Specialty)
 admin.site.register(Documents)
@@ -33,12 +51,10 @@ admin.site.register(SessionTopic)
 admin.site.register(SessionPoint)
 admin.site.register(SessionNote)
 
+
 @admin.register(Log)
 class LogV(admin.ModelAdmin):
     list_display = ('user_name', 'action', 'date' )
     list_display_links = ('user_name', 'action', )
     list_filter = ('user_name', 'action', )
     ordering = ('-date', )
-
-
-
