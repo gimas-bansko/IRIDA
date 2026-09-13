@@ -11,19 +11,40 @@
                  <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
                      <div>
                          <p class="mb-1 mt-2 text-muted">
-                             <img class="avatar" src="{{ user_profile.school.logo.url }}">
+                             <img class="avatar" src="{{ user_profile.school.logo.url }}" alt="{{ user_profile.school.short_name}}">
                              {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
-                         <p class="text-muted" style="margin-left: 3rem;">специалност {{ specialty.specialty_name}}</p>
-                         <h1 class="page-title fw-normal fs-20 mb-12">{{ subject.name}}</h1>
-                         <nav>
-                            <ol class="breadcrumb mb-2 ">
-                                <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
-                                <li class="breadcrumb-item"><a href="{% url 'specialty_list' %}">{{ specialty.specialty_name}}</a></li>
-                                <li class="breadcrumb-item"><a href="{% url 'subjects_list' %}">{{ subject.name}}
-                                ({{ subject.subject_type }})</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Цели и задачи</li>
-                            </ol>
-                        </nav>
+                         <h1 class="page-title fw-normal fs-20 mb-12">Цели и задачи на обучението по предмета </h1>
+                         <div class="d-flex align-items-center flex-wrap gap-3 mb-2">
+                             <div class="d-flex align-items-center gap-2">
+                                 <label for="selectSpecialty" class="form-label mb-0 fw-semibold fs-14">Специалност/професия:</label>
+                                 <select id="selectSpecialty" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
+                                         v-model="user.specialty" @change="setSpecialty(user.specialty)">
+                                     <option v-for="sp in listOfSpecialties" :key="sp.id" :value="sp.id">
+                                         [[sp.specialty_type]] [[ sp.specialty_num ]] - [[ sp.specialty_name ]]
+                                     </option>
+                                 </select>
+                             </div>
+                             <div class="d-flex align-items-center gap-2">
+                                 <label for="selectGrade" class="form-label mb-0 fw-semibold fs-14">Клас:</label>
+                                 <select id="selectGrade" class="form-select form-select-sm border-green fs-14" style="min-width: 140px; width: auto;"
+                                         v-model="selectedGrade" @change="onGradeChange()">
+                                     <option :value="0">Всички предмети</option>
+                                     <option :value="9">9 клас</option>
+                                     <option :value="10">10 клас</option>
+                                     <option :value="11">11 клас</option>
+                                     <option :value="12">12 клас</option>
+                                 </select>
+                             </div>
+                             <div class="d-flex align-items-center gap-2">
+                                 <label for="selectSubject" class="form-label mb-0 fw-semibold fs-14">Предмет:</label>
+                                 <select id="selectSubject" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
+                                         v-model="user.subject" @change="setSubject(user.subject)">
+                                     <option v-for="sb in filteredSubjects" :key="sb.id" :value="sb.id">
+                                         [[ sb.name ]] ([[ sb.subject_type ]])
+                                     </option>
+                                 </select>
+                             </div>
+                         </div>
                      </div>
                 </div>
                 <!-- Page Header Close -->
@@ -36,11 +57,9 @@
                                 <div>Цели на обучението по предмета</div>
                             </div>
                             <div class="d-flex gap-12 align-items-center" v-if="!edit.editor">
-                                <button type="button" class="btn-1 btn btn-success" @click="newGoal()">
+                                <button type="button" class="btn-1 btn btn-outline-success btn-sm" @click="newGoal()">
                                     <span class="d-flex align-items-center gap-6">
-                                        <i class="bi bi-plus-circle"></i>
-                                        <span class="white">Добави цел</span>
-                                    </span>
+                                        <i class="bi bi-plus-circle"></i>Добави цел</span>
                                 </button>
                             </div>
                         </div>
@@ -92,17 +111,17 @@
                                             <span class="d-block fw-normal  fs-16 custom-black">
                                                 [[g.num]]. [[g.name]]</span>
                                         </div>
-                                        <button type="button" class="btn-1 btn btn-success fw-medium" @click="editGoal(g_idx)"
+                                        <button type="button" class="btn btn-outline-success btn-wave btn-sm" @click="editGoal(g_idx)"
                                                 v-if="!edit.editor">
                                             <span class="d-flex align-items-center gap-6">
                                                 <i class="bi bi-pen"></i>
-                                                <span class="white">Промени</span>
+                                                <span>Промени</span>
                                             </span>
                                         </button>
                                     </div>
                                     <div class="d-flex align-items-center gap-3" v-if="showEditor(0,g_idx)">
                                         <div class="flex-fill">
-                                            <div class="row g-3 mt-0">
+                                            <div class="row g-2 mt-0">
                                                 <!-- номер -->
                                                 <div class="col-md-1">
                                                     <input type="number" class="form-control" v-model="goal.num">
@@ -114,11 +133,11 @@
                                                 </div>
 
                                                 <!-- Бутони запис/отказ -->
-                                                <div class="col-3 text-center">
-                                                    <button class="btn btn-outline-secondary btn-wave fs-16" @click="clearEditMode()">
+                                                <div class="col-md-3 text-center">
+                                                    <button class="btn btn-outline-secondary btn-wave fs-16 btn-sm" @click="clearEditMode()">
                                                         Откажи</button>
                                                     &nbsp; &nbsp; &nbsp;
-                                                    <button class="btn btn-outline-success btn-wave fs-16" @click="saveGoal()">
+                                                    <button class="btn btn-outline-success btn-wave fs-16 btn-sm" @click="saveGoal()">
                                                         Запиши</button>
                                                 </div>
                                             </div>

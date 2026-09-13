@@ -8,68 +8,119 @@ const App = {
                 C: 'Пожелателно',
                 W: 'Не влиза, Отпада'
             },
-            user:{
-                "user_id": 1,
-                "user_nick": "superadmin",
-                "user_name": "Георги Бориков",
-                "user_level_num": 1,
-                "user_level_text": "Системен администратор",
-                "profile": {
-                    "access_level": 1,
-                    "session_screen": 1,
-                    "school": {
-                        "id": 1,
-                        "short_name": "ПГЕЕ",
-                        "full_name": "Професионална гимназия по елктроника и енергетика",
-                        "city": "гр. Банско",
-                        "logo": "/media_files/sys_pics/school_logo_None_lZ6TrUT.png"
-                    },
-                    "speciality": {
-                        "id": 3,
-                        "specialty_num": "4810201",
-                        "specialty_name": "Системно програмиране",
-                        "level": 3
-                    },
-                    "grade": 11,
-                    "section": "а",
-                    "subject": {
-                        "id": 1,
-                        "name": "Интернет програмиране",
-                        "grade": 12,
-                        "subject_type": 'теория'
-                    },
-                    "session": {
-                        "id": 1,
-                        "num": 1,
-                        "name": "Първо занятие 1",
-                        "focus": "някакъв фокус на занятието 2",
-                        "goals": "основните цели на занятието 1",
-                        "duration": 3,
-                        "session_type": "НЗ",
-                        "basic_level": true
-                    }
-                }
-            },
-            listOfSessions:[],
-            session:{},
+            listOfSpecialties: [],
+            listOfSubjects: [],
+            selectedGrade: 0,
+            user: {},
+            listOfSessions: [],
+            session: {},
         }
     },
     computed: {
+        filteredSubjects() {
+            if (!Array.isArray(this.listOfSubjects)) return [];
+            if (!this.selectedGrade || Number(this.selectedGrade) === 0) {
+                return this.listOfSubjects;
+            }
+            return this.listOfSubjects.filter(sbj => Number(sbj.grade) === Number(this.selectedGrade));
+        }
     },
     methods: {
         loadUserDetails() {
             const vm = this;
-            axios.get('/api/context/expanded/')
+            axios.get('/api/context/')
                 .then(function (response) {
-                    vm.user = response.data
-                    vm.session = response.data.profile.session
-                    vm.loadSessions(vm.user)
+                    vm.user = response.data;
+                    vm.loadSpecialties(vm.user);
+                    vm.loadSubjects(vm.user);
+                    vm.loadSessions(vm.user);
                 })
+                .catch(function (error) {
+                    console.error("Грешка при зареждане на потребителския контекст:", error);
+                });
         },
-        loadSessions() {
+        loadSpecialties(logged_user) {
             const vm = this;
-            const subjectName = this.user.profile.subject.name;
-            const subjectId = this.user.profile.subject.id;
+            if (!logged_user || !logged_user.school) return;
+            axios.get('/api/schools/' + logged_user.school + '/specialties/')
+                .then(function (response) {
+                    vm.listOfSpecialties = response.data;
+                })
+                .catch(function (error) {
+                    console.error("Грешка при зареждане на специалности:", error);
+                });
+        },
+        loadSubjects(logged_user) {
+            const vm = this;
+            if (!logged_user || !logged_user.specialty) return;
+            axios.get('/api/specialty/' + logged_user.specialty + '/subjects/')
+                .then(function (response) {
+                    vm.listOfSubjects = response.data;
+                })
+                .catch(function (error) {
+                    console.error("Грешка при зареждане на предмети:", error);
+                });
+        },
+        setSpecialty(sp_id) {
+            const vm = this;
+            if (!sp_id) return;
+            axios.get('/api/speciality_select/' + sp_id + '/')
+                .then(function (response) {
+                    vm.user.specialty = sp_id;
+                    axios.get('/api/specialty/' + sp_id + '/subjects/')
+                        .then(function (res) {
+                            vm.listOfSubjects = res.data;
+                            const availableSubjects = vm.filteredSubjects;
+                            if (availableSubjects && availableSubjects.length > 0) {
+                                const hasCurrent = availableSubjects.some(s => s.id === vm.user.subject);
+                                if (!hasCurrent) {
+                                    vm.setSubject(availableSubjects[0].id);
+                                } else {
+                                    vm.loadSessions(vm.user);
+                                }
+                            } else {
+                                vm.user.subject = 0;
+                                vm.listOfSessions = [];
+                            }
+                        });
+                })
+                .catch(function (error) {
+                    console.error("Грешка при смяна на специалност:", error);
+                    alert("Възникна грешка при смяна на специалността!");
+                });
+        },
+        onGradeChange() {
+            const availableSubjects = this.filteredSubjects;
+            if (availableSubjects && availableSubjects.length > 0) {
+                const hasCurrent = availableSubjects.some(s => s.id === this.user.subject);
+                if (!hasCurrent) {
+                    this.setSubject(availableSubjects[0].id);
+                }
+            } else {
+                this.user.subject = 0;
+                this.listOfSessions = [];
+            }
+        },
+        setSubject(sb_id) {
+            const vm = this;
+            if (!sb_id) return;
+            axios.get(`/api/course_set/${sb_id}/`)
+                .then(res => {
+                    vm.user.subject = sb_id;
+                    vm.loadSessions(vm.user);
+                })
+                .catch(err => {
+                    console.error('Грешка при избор на предмет:', err);
+                    alert('Възникна грешка!');
+                });
+        },
+        loadSessions(logged_user) {
+            const vm = this;
+            const subjectId = (logged_user && logged_user.subject) || vm.user.subject;
+            if (!subjectId) {
+                vm.listOfSessions = [];
+                return;
+            }
             axios.get(`/api/subjects/${subjectId}/sessions-with-topics/`)
                 .then(res => {
                     vm.listOfSessions = res.data;

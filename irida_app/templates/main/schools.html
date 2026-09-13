@@ -9,12 +9,14 @@
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
                      <div>
                          <h1 class="page-title fw-normal fs-20 mb-12">Училище</h1>
+                         <!--
                          <nav>
                             <ol class="breadcrumb mb-2">
                                 <li class="breadcrumb-item"><a href="#">Начало</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Училище</li>
                             </ol>
                         </nav>
+                        -->
                      </div>
                  </div>
                 <!-- Page Header Close -->
@@ -109,38 +111,38 @@
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label" for="ShortName">Съкратено име</label>
-                                <input type="text" class="form-control" placeholder="Съкратено име" id="ShortName">
+                                <label class="form-label" for="ShortName">Съкратено име [[school.shortName]]</label>
+                                <input type="text" class="form-control" placeholder="Съкратено име" id="ShortName" v-model="school.short_name">
                             </div>
 
                             <div class="col-md-8">
                                 <label class="form-label">Пълно име</label>
-                                <input type="text" class="form-control" placeholder="Пълно име на училището"
+                                <input type="text" class="form-control" placeholder="Пълно име на училището" v-model="school.full_name"
                                     aria-label="Last name">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Населено място</label>
-                                <input type="text" class="form-control" placeholder="Населено място">
+                                <input type="text" class="form-control" placeholder="Населено място" v-model="school.city">
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Адрес</label>
                                 <input type="text" class="form-control" placeholder="Адрес"
-                                    aria-label="Last name">
+                                    aria-label="Last name" v-model="school.address">
                             </div>
                             <div class="col-md-6">
                                 <label for="inputEmail4" class="form-label">Електронна поща</label>
-                                <input type="email" class="form-control" id="inputEmail4">
+                                <input type="email" class="form-control" id="inputEmail4" v-model="school.email">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Телефон</label>
                                 <input type="number" class="form-control" placeholder="Телефонен номер"
-                                       aria-label="Phone number">
+                                       aria-label="Phone number" v-model="school.phone">
                             </div>
                             <div class="col-md-6">
                                 <label for="inputBoss" class="form-label">Директор</label>
                                 <input type="text" class="form-control" id="inputBoss"
-                                    placeholder="Директор">
+                                    placeholder="Директор" v-model="school.boss">
                             </div>
                             <div class="col-12 text-center">
                                 <button type="submit" class="btn btn-outline-secondary btn-wave fs-16" @click="edit_mode=false">Откажи</button>

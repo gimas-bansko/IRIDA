@@ -95,15 +95,6 @@
                             class="sidemenu-toggle header-link animated-arrow hor-toggle horizontal-navtoggle"
                             data-bs-toggle="sidebar" href="javascript:void(0);"><span></span></a>
                         <!-- Start::header-element -->
-                        <div class="header-element header-search">
-                            <!-- Start::header-link -->
-
-                            <a href="javascript:void(0);" class="header-link" data-bs-toggle="modal"
-                                data-bs-target="#searchModal">
-                                <i class="bx bx-search-alt-2 header-link-icon"></i>
-                            </a>
-                            <!-- End::header-link -->
-                        </div>
                     </div>
                     <!-- End::header-element -->
                 </div>
@@ -144,309 +135,7 @@
                     </div>
                     <!-- End::header-element -->
 
-                    <!-- Start::header-element -->
-                    <div class="header-element notifications-dropdown">
-                        <!-- Start::header-link|dropdown-toggle -->
-                        <a href="javascript:void(0);" class="header-link-1 dropdown-toggle" data-bs-toggle="dropdown"
-                            data-bs-auto-close="outside" id="messageDropdown1" aria-expanded="false">
-                            <svg class="header-link-icon-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                viewBox="0 0 24 24" fill="none">
-                                <path
-                                    d="M2 7L10.1649 12.7154C10.8261 13.1783 11.1567 13.4097 11.5163 13.4993C11.8339 13.5785 12.1661 13.5785 12.4837 13.4993C12.8433 13.4097 13.1739 13.1783 13.8351 12.7154L22 7M6.8 20H17.2C18.8802 20 19.7202 20 20.362 19.673C20.9265 19.3854 21.3854 18.9265 21.673 18.362C22 17.7202 22 16.8802 22 15.2V8.8C22 7.11984 22 6.27976 21.673 5.63803C21.3854 5.07354 20.9265 4.6146 20.362 4.32698C19.7202 4 18.8802 4 17.2 4H6.8C5.11984 4 4.27976 4 3.63803 4.32698C3.07354 4.6146 2.6146 5.07354 2.32698 5.63803C2 6.27976 2 7.11984 2 8.8V15.2C2 16.8802 2 17.7202 2.32698 18.362C2.6146 18.9265 3.07354 19.3854 3.63803 19.673C4.27976 20 5.11984 20 6.8 20Z"
-                                    stroke="#3D3D3D" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg> <span class="badge rounded-pill header-icon-badge pulse pulse-secondary"
-                                id="notification-icon-badge"><svg xmlns="http://www.w3.org/2000/svg" width="10"
-                                    height="10" viewBox="0 0 10 10" fill="none">
-                                    <circle cx="5.20039" cy="4.8" r="4.3" fill="#2E90FA" stroke="#FAFAFA" />
-                                </svg></span>
-                        </a>
-                        <!-- End::header-link|dropdown-toggle -->
-
-                        <!-- Start::main-header-dropdown -->
-                        <div class="main-header-dropdown dropdown-menu dropdown-menu-end" data-popper-placement="none">
-                            <div class="p-3">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <p class="mb-0 fs-17 fw-semibold">Notifications</p>
-                                    <span class="badge bg-secondary-transparent" id="notifiation-data">5 Unread</span>
-                                </div>
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <ul class="list-unstyled mb-0" id="header-notification-scroll-1">
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                        <div class="pe-2">
-                                            <span class="avatar avatar-md bg-primary-transparent avatar-rounded"><i
-                                                    class="ti ti-gift fs-18"></i></span>
-                                        </div>
-                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
-                                            <div>
-                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Your Order Has
-                                                        Been Shipped</a></p>
-                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
-                                                    No: 123456 Has Shipped To Your Delivery Address</span>
-                                            </div>
-                                            <div>
-                                                <a href="javascript:void(0);"
-                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
-                                                        class="ti ti-x fs-16"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                        <div class="pe-2">
-                                            <span class="avatar avatar-md bg-secondary-transparent avatar-rounded"><i
-                                                    class="ti ti-discount-2 fs-18"></i></span>
-                                        </div>
-                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
-                                            <div>
-                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Discount
-                                                        Available</a></p>
-                                                <span
-                                                    class="text-muted fw-normal fs-12 header-notification-text">Discount
-                                                    Available On Selected Products</span>
-                                            </div>
-                                            <div>
-                                                <a href="javascript:void(0);"
-                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
-                                                        class="ti ti-x fs-16"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                        <div class="pe-2">
-                                            <span class="avatar avatar-md bg-pink-transparent avatar-rounded"><i
-                                                    class="ti ti-user-check fs-18"></i></span>
-                                        </div>
-                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
-                                            <div>
-                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Account Has
-                                                        Been Verified</a></p>
-                                                <span class="text-muted fw-normal fs-12 header-notification-text">Your
-                                                    Account Has Been Verified Sucessfully</span>
-                                            </div>
-                                            <div>
-                                                <a href="javascript:void(0);"
-                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
-                                                        class="ti ti-x fs-16"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                        <div class="pe-2">
-                                            <span class="avatar avatar-md bg-warning-transparent avatar-rounded"><i
-                                                    class="ti ti-circle-check fs-18"></i></span>
-                                        </div>
-                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
-                                            <div>
-                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Placed
-                                                        <span class="text-warning">ID: #1116773</span></a></p>
-                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
-                                                    Placed Successfully</span>
-                                            </div>
-                                            <div>
-                                                <a href="javascript:void(0);"
-                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
-                                                        class="ti ti-x fs-16"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                        <div class="pe-2">
-                                            <span class="avatar avatar-md bg-success-transparent avatar-rounded"><i
-                                                    class="ti ti-clock fs-18"></i></span>
-                                        </div>
-                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
-                                            <div>
-                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Delayed
-                                                        <span class="text-success">ID: 7731116</span></a></p>
-                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
-                                                    Delayed Unfortunately</span>
-                                            </div>
-                                            <div>
-                                                <a href="javascript:void(0);"
-                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
-                                                        class="ti ti-x fs-16"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                            <div class="p-3 empty-header-item1 border-top">
-                                <div class="d-grid">
-                                    <a href="notifications.html" class="btn btn-primary  white">View All</a>
-                                </div>
-                            </div>
-                            <div class="p-5 empty-item1 d-none">
-                                <div class="text-center">
-                                    <span class="avatar avatar-xl avatar-rounded bg-secondary-transparent">
-                                        <i class="ri-notification-off-line fs-2"></i>
-                                    </span>
-                                    <h6 class="fw-semibold mt-3">No New Notifications</h6>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End::main-header-dropdown -->
-                    </div>
-                    <!-- End::header-element -->
-
-                    <!-- Start::header-element -->
-                    <div class="header-element notifications-dropdown">
-                        <!-- Start::header-link|dropdown-toggle -->
-                        <a href="javascript:void(0);" class="header-link-1 dropdown-toggle" data-bs-toggle="dropdown"
-                            data-bs-auto-close="outside" id="messageDropdown" aria-expanded="false">
-                            <i class="bx bx-bell header-link-icon"></i>
-                            <span class="badge rounded-pill header-icon-badge pulse pulse-secondary"
-                                id="notification-icon-badge-1"><svg xmlns="http://www.w3.org/2000/svg" width="10"
-                                    height="10" viewBox="0 0 10 10" fill="none">
-                                    <circle cx="5.20039" cy="4.8" r="4.3" fill="#2E90FA" stroke="#FAFAFA" />
-                                </svg></span>
-                        </a>
-                        <!-- End::header-link|dropdown-toggle -->
-                        <!-- Start::main-header-dropdown -->
-                        <div class="main-header-dropdown dropdown-menu dropdown-menu-end" data-popper-placement="none">
-                            <div class="p-3">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <p class="mb-0 fs-17 fw-semibold">Notifications</p>
-                                    <span class="badge bg-secondary-transparent" id="notifiation-data-1">5 Unread</span>
-                                </div>
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <ul class="list-unstyled mb-0" id="header-notification-scroll">
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                        <div class="pe-2">
-                                            <span class="avatar avatar-md bg-primary-transparent avatar-rounded"><i
-                                                    class="ti ti-gift fs-18"></i></span>
-                                        </div>
-                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
-                                            <div>
-                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Your Order Has
-                                                        Been Shipped</a></p>
-                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
-                                                    No: 123456 Has Shipped To Your Delivery Address</span>
-                                            </div>
-                                            <div>
-                                                <a href="javascript:void(0);"
-                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
-                                                        class="ti ti-x fs-16"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                        <div class="pe-2">
-                                            <span class="avatar avatar-md bg-secondary-transparent avatar-rounded"><i
-                                                    class="ti ti-discount-2 fs-18"></i></span>
-                                        </div>
-                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
-                                            <div>
-                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Discount
-                                                        Available</a></p>
-                                                <span
-                                                    class="text-muted fw-normal fs-12 header-notification-text">Discount
-                                                    Available On Selected Products</span>
-                                            </div>
-                                            <div>
-                                                <a href="javascript:void(0);"
-                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
-                                                        class="ti ti-x fs-16"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                        <div class="pe-2">
-                                            <span class="avatar avatar-md bg-pink-transparent avatar-rounded"><i
-                                                    class="ti ti-user-check fs-18"></i></span>
-                                        </div>
-                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
-                                            <div>
-                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Account Has
-                                                        Been Verified</a></p>
-                                                <span class="text-muted fw-normal fs-12 header-notification-text">Your
-                                                    Account Has Been Verified Sucessfully</span>
-                                            </div>
-                                            <div>
-                                                <a href="javascript:void(0);"
-                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
-                                                        class="ti ti-x fs-16"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                        <div class="pe-2">
-                                            <span class="avatar avatar-md bg-warning-transparent avatar-rounded"><i
-                                                    class="ti ti-circle-check fs-18"></i></span>
-                                        </div>
-                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
-                                            <div>
-                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Placed
-                                                        <span class="text-warning">ID: #1116773</span></a></p>
-                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
-                                                    Placed Successfully</span>
-                                            </div>
-                                            <div>
-                                                <a href="javascript:void(0);"
-                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
-                                                        class="ti ti-x fs-16"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="dropdown-item">
-                                    <div class="d-flex align-items-start">
-                                        <div class="pe-2">
-                                            <span class="avatar avatar-md bg-success-transparent avatar-rounded"><i
-                                                    class="ti ti-clock fs-18"></i></span>
-                                        </div>
-                                        <div class="flex-grow-1 d-flex align-items-center justify-content-between">
-                                            <div>
-                                                <p class="mb-0 fw-semibold"><a href="notifications.html">Order Delayed
-                                                        <span class="text-success">ID: 7731116</span></a></p>
-                                                <span class="text-muted fw-normal fs-12 header-notification-text">Order
-                                                    Delayed Unfortunately</span>
-                                            </div>
-                                            <div>
-                                                <a href="javascript:void(0);"
-                                                    class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i
-                                                        class="ti ti-x fs-16"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                            <div class="p-3 empty-header-item1 border-top">
-                                <div class="d-grid">
-                                    <a href="notifications.html" class="btn btn-primary  white">View All</a>
-                                </div>
-                            </div>
-                            <div class="p-5 empty-item1 d-none">
-                                <div class="text-center">
-                                    <span class="avatar avatar-xl avatar-rounded bg-secondary-transparent">
-                                        <i class="ri-notification-off-line fs-2"></i>
-                                    </span>
-                                    <h6 class="fw-semibold mt-3">No New Notifications</h6>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End::main-header-dropdown -->
-                    </div>
-                    <!-- End::header-element -->
-
-                    <!-- Start::header-element -->
+                    <!-- Start::header-element тема-->
                     <div class="header-element header-theme-mode">
                         <!-- Start::header-link|layout-setting -->
                         <a href="javascript:void(0);" class="header-link layout-setting">
@@ -462,17 +151,6 @@
                             </span>
                         </a>
                         <!-- End::header-link|layout-setting -->
-                    </div>
-                    <!-- End::header-element -->
-
-                    <!-- Start::header-element switcher-icon -->
-                    <div class="header-element">
-                        <!-- Start::header-link|switcher-icon -->
-                        <a href="#" class="header-link switcher-icon" data-bs-toggle="offcanvas"
-                            data-bs-target="#switcher-canvas">
-                            <i class="bx bx-cog header-link-icon"></i>
-                        </a>
-                        <!-- End::header-link|switcher-icon -->
                     </div>
                     <!-- End::header-element -->
 
@@ -509,70 +187,80 @@
 
                     <!-- Меню -->
                     <ul class="main-menu">
-                        <!-- Група Главно меню -->
-                        <li class="slide__category"><span class="category-name">Главно меню</span></li>
-                        <!-- Училище -->
-                        <li class="slide">
-                            <a href="{% url 'schools_list' %}" class="side-menu__item">
-                                <i class="bi bi-house side-menu__icon"></i>
-                                <span class="side-menu__label">Училище</span>
-                            </a>
-                        </li>
-                        <!-- Специалности -->
-                        <li class="slide">
-                            <a href="{% url 'specialty_list' %}" class="side-menu__item">
-                                <i class="bi bi-tools side-menu__icon"></i>
-                                <span class="side-menu__label">Специалности</span>
-                            </a>
-                        </li>
-                        <!-- Предмети -->
-                        <li class="slide">
-                            <a href="{% url 'subjects_list' %}" class="side-menu__item">
-                                <i class="bi bi-book side-menu__icon"></i>
-                                <span class="side-menu__label">Предмети</span>
-                            </a>
-                        </li>
-                        <!-- Потребители -->
-                        <li class="slide">
-                            <a href="{% url 'users_list' %}" class="side-menu__item">
-                                <i class="bi bi-people side-menu__icon"></i>
-                                <span class="side-menu__label">Потребители</span>
-                            </a>
-                        </li>
 
                         {% if subject %}
                         <!-- Група Предмет -->
                         <li class="slide__category"><span class="category-name">Предмет</span></li>
                         <!-- Цели и задачи -->
-                        <li class="slide">
-                            <a href="{% url 'goals_list' %}" class="side-menu__item">
-                                <i class="bi bi-check2-circle side-menu__icon"></i>
-                                <span class="side-menu__label">Цели и задачи</span>
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bi bi-book side-menu__icon"></i>
+                                <span class="side-menu__label">Предмет</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
                             </a>
-                        </li>
-                        <!-- Раздели и теми -->
-                        <li class="slide">
-                            <a href="{% url 'units_list' %}" class="side-menu__item">
-                                <i class="bi bi-list-ol side-menu__icon"></i>
-                                <span class="side-menu__label">Раздели и теми</span>
-                            </a>
-                        </li>
-                        <!-- Уроци -->
-                        <li class="slide">
-                            <a href="{% url 'lessons_list' %}" class="side-menu__item">
-                                <i class="bi bi-calendar-check side-menu__icon"></i>
-                                <span class="side-menu__label">Уроци</span>
-                            </a>
-                        </li>
+                            <ul class="slide-menu child1">
+                                <li class="slide">
+                                    <a href="{% url 'goals_list' %}" class="side-menu__item">
+                                        <span class="side-menu__label">Цели и задачи</span>
+                                    </a>
+                                </li>
+                                <!-- Раздели и теми -->
+                                <li class="slide">
+                                    <a href="{% url 'units_list' %}" class="side-menu__item">
+                                        <span class="side-menu__label">Раздели и теми</span>
+                                    </a>
+                                </li>
+                                <!-- Уроци -->
+                                <li class="slide">
+                                    <a href="{% url 'lessons_list' %}" class="side-menu__item">
+                                        <span class="side-menu__label">Уроци</span>
+                                    </a>
+                                </li>
+                            </ul>
                         {% endif %}
                         <!-- Група Учебен процес -->
                         <li class="slide__category"><span class="category-name">Учебен процес</span></li>
                         <!-- Занятие - избор -->
                         <li class="slide">
-                            <a href="{% url 'session_menu' %}" class="side-menu__item">
+                            <a href="{% url 'session_list' %}" class="side-menu__item">
                                 <i class="bi bi-check2-circle side-menu__icon"></i>
-                                <span class="side-menu__label">Занятие</span>
+                                <span class="side-menu__label">Урок</span>
                             </a>
+                        </li>
+                        <!-- Група Настройки -->
+                        <li class="slide__category"><span class="category-name">Системни настройки</span></li>
+                        <li class="slide has-sub">
+                            <a href="javascript:void(0);" class="side-menu__item">
+                                <i class="bi bi-tools side-menu__icon"></i>
+                                <span class="side-menu__label">Настройки</span>
+                                <i class="fe fe-chevron-right side-menu__angle"></i>
+                            </a>
+                            <ul class="slide-menu child1">
+                                <!-- Училище -->
+                                <li class="slide">
+                                    <a href="{% url 'schools_list' %}" class="side-menu__item">
+                                        <span class="side-menu__label">Училище</span>
+                                    </a>
+                                </li>
+                                <!-- Специалности -->
+                                <li class="slide">
+                                    <a href="{% url 'specialty_list' %}" class="side-menu__item">
+                                        <span class="side-menu__label">Специалности/<br>професии</span>
+                                    </a>
+                                </li>
+                                <!-- Предмети -->
+                                <li class="slide">
+                                    <a href="{% url 'subjects_list' %}" class="side-menu__item">
+                                        <span class="side-menu__label">Предмети</span>
+                                    </a>
+                                </li>
+                                <!-- Потребители -->
+                                <li class="slide">
+                                    <a href="{% url 'users_list' %}" class="side-menu__item">
+                                        <span class="side-menu__label">Потребители</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                     <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191"

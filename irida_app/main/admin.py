@@ -6,8 +6,10 @@ from .models import (
     Log,
     School,
     Session,
+    SessionAttachment,
     SessionNote,
     SessionPoint,
+    SessionTask,
     SessionTopic,
     Specialty,
     Subject,
@@ -50,6 +52,8 @@ admin.site.register(Session)
 admin.site.register(SessionTopic)
 admin.site.register(SessionPoint)
 admin.site.register(SessionNote)
+admin.site.register(SessionTask)
+admin.site.register(SessionAttachment)
 
 
 @admin.register(Log)

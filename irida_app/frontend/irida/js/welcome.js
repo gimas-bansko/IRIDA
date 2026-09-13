@@ -8,6 +8,7 @@ const App = {
             school:{},
             specialty:{
                 id:0,
+                specialty_type:'специалност',
                 specialty_num:'123',
                 specialty_name:"",
                 level:3,
@@ -104,6 +105,7 @@ const App = {
         },
         newSpecialty(){
             this.specialty.id = 0
+            this.specialty.specialty_type = 'специалност'
             this.specialty.specialty_num = ''
             this.specialty.specialty_name = ''
             this.specialty.level = 3
@@ -111,17 +113,18 @@ const App = {
         },
         editSpecialty(idx){
             this.specialty.id = this.listOfSpecialties[idx].id
+            this.specialty.specialty_type = this.listOfSpecialties[idx].specialty_type || 'специалност'
             this.specialty.specialty_num = this.listOfSpecialties[idx].specialty_num
             this.specialty.specialty_name = this.listOfSpecialties[idx].specialty_name
             this.specialty.level = this.listOfSpecialties[idx].level
             this.edit_mode = true
         },
         saveSpecialty() {
-            vm = this
+            const vm = this
             vm.edit_mode = false
 
             // Изпращане на PUT заявка към API
-            axios.put('api/schools/'+vm.user.user_id+'/specialty/'+vm.specialty.id+'/', vm.specialty, {
+            axios.put('/api/schools/'+vm.user.school+'/specialty/'+vm.specialty.id+'/', vm.specialty, {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': CSRF_TOKEN

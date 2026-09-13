@@ -13,6 +13,7 @@ const App = {
             points: [],
             notes: [],
             tasks: [],
+            attachments: [],
 
             selectedPointNum: null,
             minPointNum: null,
@@ -25,6 +26,7 @@ const App = {
                 content: false,
                 notes: false,
                 tasks: false,
+                theory: false,
                 tests: false,
                 attachments: false,
             },
@@ -124,7 +126,25 @@ const App = {
         filteredNotes() {
             const selectedPointId = this.selectedPoint?.id;
             if (!selectedPointId) return [];
-            return this.notes.filter(note => note.point === selectedPointId);
+            return this.getNotesForPoint(selectedPointId);
+        },
+
+        filteredTasks() {
+            const selectedPointId = this.selectedPoint?.id;
+            if (!selectedPointId) return [];
+            return this.getTasksForPoint(selectedPointId);
+        },
+
+        filteredTheoryAttachments() {
+            const selectedPointId = this.selectedPoint?.id;
+            if (!selectedPointId) return [];
+            return this.getTheoryAttachmentsForPoint(selectedPointId);
+        },
+
+        filteredOtherAttachments() {
+            const selectedPointId = this.selectedPoint?.id;
+            if (!selectedPointId) return [];
+            return this.getOtherAttachmentsForPoint(selectedPointId);
         },
 
         generalNotes() {
@@ -250,6 +270,7 @@ const App = {
             this.showSelectedPointContent.content = false;
             this.showSelectedPointContent.notes = false;
             this.showSelectedPointContent.tasks = false;
+            this.showSelectedPointContent.theory = false;
             this.showSelectedPointContent.tests = false;
             this.showSelectedPointContent.attachments = false;
 
@@ -422,6 +443,7 @@ const App = {
                     vm.loadSessionPoints()
                     vm.loadSessionNotes();
                     vm.loadSessionTasks();
+                    vm.loadSessionAttachments();
                 })
         },
 
@@ -463,6 +485,15 @@ const App = {
                 });
         },
 
+        loadSessionAttachments() {
+            const vm = this;
+            axios.get('/api/sessions/' + vm.session.id + '/attachments/')
+                .then(res => {
+                    vm.attachments = res.data;
+                    vm.addCollapsedToAttachments();
+                });
+        },
+
         addCollapsedToNotes() {
             if (!Array.isArray(this.notes)) return;
             for (const n of this.notes) {
@@ -477,6 +508,15 @@ const App = {
             for (const n of this.tasks) {
                 if (n && typeof n === 'object' && !Object.prototype.hasOwnProperty.call(n, 'collapsed')) {
                     n.collapsed = true;
+                }
+            }
+        },
+
+        addCollapsedToAttachments() {
+            if (!Array.isArray(this.attachments)) return;
+            for (const a of this.attachments) {
+                if (a && typeof a === 'object' && !Object.prototype.hasOwnProperty.call(a, 'collapsed')) {
+                    a.collapsed = true;
                 }
             }
         },
@@ -513,6 +553,30 @@ const App = {
             const p = this.points.find(pt => Number(pt.id) === pointId);
             if (!p) return null;
             return `към точка ${p.num}. ${p.name}`
+        },
+
+        getNotesForPoint(id) {
+            if (!Array.isArray(this.notes) || id == null) return [];
+            const pointId = Number(id);
+            return this.notes.filter(note => note.point != null && Number(note.point) === pointId);
+        },
+
+        getTasksForPoint(id) {
+            if (!Array.isArray(this.tasks) || id == null) return [];
+            const pointId = Number(id);
+            return this.tasks.filter(task => task.point != null && Number(task.point) === pointId);
+        },
+
+        getTheoryAttachmentsForPoint(id) {
+            if (!Array.isArray(this.attachments) || id == null) return [];
+            const pointId = Number(id);
+            return this.attachments.filter(a => a.point != null && Number(a.point) === pointId && a.attachment_type === 'theory');
+        },
+
+        getOtherAttachmentsForPoint(id) {
+            if (!Array.isArray(this.attachments) || id == null) return [];
+            const pointId = Number(id);
+            return this.attachments.filter(a => a.point != null && Number(a.point) === pointId && (a.attachment_type === 'other' || !a.attachment_type));
         },
 
         getTotalMinutes() {

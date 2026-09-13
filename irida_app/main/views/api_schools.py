@@ -45,6 +45,7 @@ def specialty_detail(request, specialty_id, school_id=None):
             # По избор: върнете празен шаблон за форми
             return Response({
                 'id': 0,
+                'specialty_type': 'специалност',
                 'specialty_num': '',
                 'specialty_name': '',
                 'level': None,

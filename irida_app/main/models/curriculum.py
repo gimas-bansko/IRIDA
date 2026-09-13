@@ -49,7 +49,7 @@ class Topic(models.Model):
     name = models.CharField('Име', max_length=200)
     MoSCoW_cat = models.CharField('MoSCoW категория', default='', max_length=1, blank=True,
                                   choices=[('M', 'must'), ('S', 'should'), ('C', 'could'), ('W', 'won`t')],)
-    MoSCoW_rem = models.CharField('MoSCoW обосновка', max_length=200, default='', blank=True)
+    MoSCoW_rem = models.TextField('MoSCoW обосновка', default='', blank=True)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name='unit_topic')
 
     def __str__(self):

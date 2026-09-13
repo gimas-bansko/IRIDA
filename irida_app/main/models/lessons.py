@@ -102,3 +102,30 @@ class SessionTask(models.Model):
     class Meta:
         verbose_name = 'Задача към точка от план'
         verbose_name_plural = 'Задачи към точка от план'
+
+
+# Занятие - Приложения (прикачени файлове - теория и други)
+class SessionAttachment(models.Model):
+    THEORY = 'theory'
+    OTHER = 'other'
+    ATTACHMENT_TYPE_CHOICES = [
+        (THEORY, 'Теория'),
+        (OTHER, 'Други'),
+    ]
+
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='session_attachments', verbose_name='Занятие')
+    point = models.ForeignKey(SessionPoint, verbose_name='Точка от плана на урока', on_delete=models.SET_NULL,
+                              null=True, blank=True, related_name='point_attachments')
+    num = models.SmallIntegerField('№', default=1, validators=[MinValueValidator(1)])
+    name = models.CharField('Име / Заглавие', max_length=200, blank=True, default='')
+    attachment_type = models.CharField('Тип', max_length=20, choices=ATTACHMENT_TYPE_CHOICES, default=OTHER)
+    file = models.FileField('Файл', upload_to='session_attachments/', blank=True, null=True)
+    description = models.TextField('Коментар / Описание', default='', blank=True, help_text='Коментар или описание на файла')
+
+    def __str__(self):
+        return f'{self.id} {self.name or (self.file.name if self.file else "")}'
+
+    class Meta:
+        verbose_name = 'Приложение / Файл към занятие'
+        verbose_name_plural = 'Приложения / Файлове към занятие'
+        ordering = ['num', 'id']

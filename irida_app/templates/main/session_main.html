@@ -339,10 +339,7 @@
                             <nav>
                                 <ol class="breadcrumb mb-2">
                                     <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
-                                    <li class="breadcrumb-item"><a href="{% url 'specialty_list' %}">{{ specialty.specialty_name}}</a></li>
-                                    <li class="breadcrumb-item"><a href="{% url 'subjects_list' %}">{{ subject.name}}
-                                        ({{ subject.subject_type }})</a></li>
-                                    <li class="breadcrumb-item"><a href="{% url 'lessons_list' %}">Занятие [[session.num]]</a></li>
+                                    <li class="breadcrumb-item"><a href="{% url 'session_list' %}">Урок(списък уроци)</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">[[menu_item]]</li>
                                 </ol>
                             </nav>
@@ -537,16 +534,43 @@
                                                                     </div>
                                                             </div>
                                                             <div class="card-body" v-if="showSelectedPointContent.notes">
-                                                                <div v-if="filteredNotes.length === 0" class="mt-2 fs-12 text-muted">
-                                                                    Няма бележки за тази точка.
-                                                                </div>
+                                                                <ul class="list-unstyled projects-items-danger-list" v-if="getNotesForPoint(p.id).length===0">
+                                                                    <li>
+                                                                        <div class="d-flex align-items-center gap-3">
+                                                                            <div class="flex-fill">
+                                                                                <span class="d-block fw-normal fs-16 custom-black">
+                                                                                    Няма бележки и примери</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </li>
+                                                                </ul>
+                                                                <!-- Списък бележки и примери -->
                                                                 <div v-else>
-                                                                    <div v-for="(note, noteIndex) in filteredNotes" :key="note.id || noteIndex" class="mt-2 fs-12 note-content">
-                                                                        <h6>[[ note.name ]] (Бележка №[[ note.num ]])</h6>
-                                                                        <!-- Показване на съдържанието на бележката -->
-                                                                        <div v-html="sanitize(note.content)"></div>
-                                                                        <hr v-if="noteIndex < filteredNotes.length - 1" />
-                                                                    </div>
+                                                                    <ul class="list-unstyled projects-items-primary-list">
+                                                                        <li v-for="(n, noteIndex) in getNotesForPoint(p.id)" :key="n.id">
+                                                                            <div class="mb-3">
+                                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                                    <div>
+                                                                                        <span class="badge bg-secondary me-2">[[ noteIndex + 1 ]]</span>
+                                                                                        <strong>[[ n.name ]]</strong>
+                                                                                    </div>
+                                                                                    <div class="d-flex gap-2">
+                                                                                        <button class="btn btn-outline-primary btn-sm label-btn" v-show="!n.collapsed" @click="n.collapsed=!n.collapsed">
+                                                                                            <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
+                                                                                            покажи по-малко
+                                                                                        </button>
+                                                                                        <button class="btn btn-outline-primary btn-sm label-btn" v-show="n.collapsed" @click="n.collapsed=!n.collapsed">
+                                                                                            <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
+                                                                                            покажи повече
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="mt-2 fs-12 note-content" v-if="!n.collapsed">
+                                                                                    <div v-html="sanitize(n.content)"></div>
+                                                                                </div>
+                                                                            </div><hr>
+                                                                        </li>
+                                                                    </ul>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -577,48 +601,122 @@
                                                                     </div>
                                                             </div>
                                                             <div class="card-body" v-if="showSelectedPointContent.tasks">
-                                                                <!-- Показване на съдържанието като форматиран HTML -->
-                                                                <div class="mt-2 fs-12 note-content">
-                                                                    <!-- Почистваме HTML с DOMPurify преди да го инжектираме -->
-                                                                    <div v-html="sanitize(p.content)"></div>
+                                                                <ul class="list-unstyled projects-items-danger-list" v-if="getTasksForPoint(p.id).length===0">
+                                                                    <li>
+                                                                        <div class="d-flex align-items-center gap-3">
+                                                                            <div class="flex-fill">
+                                                                                <span class="d-block fw-normal fs-16 custom-black">
+                                                                                    Няма задачи</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </li>
+                                                                </ul>
+                                                                <!-- Списък задачи -->
+                                                                <div v-else>
+                                                                    <ul class="list-unstyled projects-items-primary-list">
+                                                                        <li v-for="(t, taskIndex) in getTasksForPoint(p.id)" :key="t.id">
+                                                                            <div class="mb-3">
+                                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                                    <div>
+                                                                                        <span class="badge bg-secondary me-2">[[ taskIndex + 1 ]]</span>
+                                                                                        <strong>[[ t.name ]]</strong>
+                                                                                    </div>
+                                                                                    <div class="d-flex gap-2">
+                                                                                        <button class="btn btn-outline-primary btn-sm label-btn" v-show="!t.collapsed" @click="t.collapsed=!t.collapsed">
+                                                                                            <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
+                                                                                            покажи по-малко
+                                                                                        </button>
+                                                                                        <button class="btn btn-outline-primary btn-sm label-btn" v-show="t.collapsed" @click="t.collapsed=!t.collapsed">
+                                                                                            <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
+                                                                                            покажи повече
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="mt-2 fs-12 note-content" v-if="!t.collapsed">
+                                                                                    <div class="fw-bold">Условие:</div>
+                                                                                    <div v-html="sanitize(t.condition)"></div>
+                                                                                    <div class="fw-bold mt-2">Отговор:</div>
+                                                                                    <div v-html="sanitize(t.answer)"></div>
+                                                                                </div>
+                                                                            </div><hr>
+                                                                        </li>
+                                                                    </ul>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <!-- Задачи край -->
                                                     </li>
-                                                    <!-- Тестове -->
+                                                    <!-- Теория -->
                                                     <li>
                                                         <div class="card-1 custom-card mt-3" v-if="isSelectedPoint(p)" style="margin-bottom: 0;">
                                                             <div class="card-header d-flex justify-content-between align-items-center"
                                                                  style="padding-top: 0; padding-bottom: 5px;">
                                                                     <div>
-                                                                        Тест:
+                                                                        Теория:
                                                                     </div>
                                                                     <div class="d-flex gap-2" v-if="isSelectedPoint(p)">
                                                                         <button type="button" class="btn btn-primary btn-sm fs-12 label-btn"
-                                                                                v-if="showSelectedPointContent.tests"
-                                                                                @click="showSelectedPointContent.tests=false"
+                                                                                v-if="showSelectedPointContent.theory"
+                                                                                @click="showSelectedPointContent.theory=false"
                                                                                 style="width: 90px;">
                                                                             <i class="bi bi-eye-slash label-btn-icon me-2"></i>
                                                                             Скрий
                                                                         </button>
                                                                         <button type="button" class="btn btn-primary btn-sm fs-12 label-btn" v-else
-                                                                                @click="showSelectedPointContent.tests=true"
+                                                                                @click="showSelectedPointContent.theory=true"
                                                                                 style="width: 90px;">
                                                                             <i class="bi bi-eye label-btn-icon me-2"></i>
                                                                             Покажи
                                                                         </button>
                                                                     </div>
                                                             </div>
-                                                            <div class="card-body" v-if="showSelectedPointContent.tests">
-                                                                <!-- Показване на съдържанието като форматиран HTML -->
-                                                                <div class="mt-2 fs-12 note-content">
-                                                                    <!-- Почистваме HTML с DOMPurify преди да го инжектираме -->
-                                                                    <div v-html="sanitize(p.content)"></div>
+                                                            <div class="card-body" v-if="showSelectedPointContent.theory">
+                                                                <ul class="list-unstyled projects-items-danger-list" v-if="getTheoryAttachmentsForPoint(p.id).length===0">
+                                                                    <li>
+                                                                        <div class="d-flex align-items-center gap-3">
+                                                                            <div class="flex-fill">
+                                                                                <span class="d-block fw-normal fs-16 custom-black">
+                                                                                    Няма теоретични материали</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </li>
+                                                                </ul>
+                                                                <!-- Списък файлове Теория -->
+                                                                <div v-else>
+                                                                    <ul class="list-unstyled projects-items-primary-list">
+                                                                        <li v-for="(a, theoryIndex) in getTheoryAttachmentsForPoint(p.id)" :key="a.id">
+                                                                            <div class="mb-3">
+                                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                                    <div>
+                                                                                        <span class="badge bg-secondary me-2">[[ theoryIndex + 1 ]]</span>
+                                                                                        <strong>[[ a.name ]]</strong>
+                                                                                        <span class="ms-3" v-if="a.file_url">
+                                                                                            <a :href="a.file_url" target="_blank" class="badge bg-primary-transparent text-primary fs-12 text-decoration-none">
+                                                                                                <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.file_name || 'Свали файл' ]]
+                                                                                            </a>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    <div class="d-flex gap-2" v-if="a.description">
+                                                                                        <button class="btn btn-outline-primary btn-sm label-btn" v-show="!a.collapsed" @click="a.collapsed=!a.collapsed">
+                                                                                            <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
+                                                                                            покажи по-малко
+                                                                                        </button>
+                                                                                        <button class="btn btn-outline-primary btn-sm label-btn" v-show="a.collapsed" @click="a.collapsed=!a.collapsed">
+                                                                                            <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
+                                                                                            покажи повече
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="mt-2 fs-12 text-muted" v-if="a.description && !a.collapsed">
+                                                                                    <strong>Коментар / Описание:</strong> [[ a.description ]]
+                                                                                </div>
+                                                                            </div><hr>
+                                                                        </li>
+                                                                    </ul>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <!-- Тестове край -->
+                                                        <!-- Теория край -->
                                                     </li>
                                                     <!-- Приложения -->
                                                     <li>
@@ -645,10 +743,48 @@
                                                                     </div>
                                                             </div>
                                                             <div class="card-body" v-if="showSelectedPointContent.attachments">
-                                                                <!-- Показване на съдържанието като форматиран HTML -->
-                                                                <div class="mt-2 fs-12 note-content">
-                                                                    <!-- Почистваме HTML с DOMPurify преди да го инжектираме -->
-                                                                    <div v-html="sanitize(p.content)"></div>
+                                                                <ul class="list-unstyled projects-items-danger-list" v-if="getOtherAttachmentsForPoint(p.id).length===0">
+                                                                    <li>
+                                                                        <div class="d-flex align-items-center gap-3">
+                                                                            <div class="flex-fill">
+                                                                                <span class="d-block fw-normal fs-16 custom-black">
+                                                                                    Няма приложения</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </li>
+                                                                </ul>
+                                                                <!-- Списък приложения -->
+                                                                <div v-else>
+                                                                    <ul class="list-unstyled projects-items-primary-list">
+                                                                        <li v-for="(a, attIndex) in getOtherAttachmentsForPoint(p.id)" :key="a.id">
+                                                                            <div class="mb-3">
+                                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                                    <div>
+                                                                                        <span class="badge bg-secondary me-2">[[ attIndex + 1 ]]</span>
+                                                                                        <strong>[[ a.name ]]</strong>
+                                                                                        <span class="ms-3" v-if="a.file_url">
+                                                                                            <a :href="a.file_url" target="_blank" class="badge bg-primary-transparent text-primary fs-12 text-decoration-none">
+                                                                                                <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.file_name || 'Свали файл' ]]
+                                                                                            </a>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    <div class="d-flex gap-2" v-if="a.description">
+                                                                                        <button class="btn btn-outline-primary btn-sm label-btn" v-show="!a.collapsed" @click="a.collapsed=!a.collapsed">
+                                                                                            <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
+                                                                                            покажи по-малко
+                                                                                        </button>
+                                                                                        <button class="btn btn-outline-primary btn-sm label-btn" v-show="a.collapsed" @click="a.collapsed=!a.collapsed">
+                                                                                            <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
+                                                                                            покажи повече
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="mt-2 fs-12 text-muted" v-if="a.description && !a.collapsed">
+                                                                                    <strong>Коментар / Описание:</strong> [[ a.description ]]
+                                                                                </div>
+                                                                            </div><hr>
+                                                                        </li>
+                                                                    </ul>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -680,18 +816,7 @@
                                 </div>
                             </div>
                             <div class="card-footer" style="padding-right: 15px;">
-                                <div class="d-flex gap-12 justify-content-between">
-                                    <!--
-                                    <div></div>
-                                    <button type="button" class="btn-1 btn btn-success" @click="startCreatePoint">
-                                        <span class="d-flex align-items-center gap-6">
-                                           <i class="bi bi-plus-circle"></i>
-                                            <span class="white">Добави точка в плана</span>
-                                        </span>
-                                    </button>
-                                    -->
-                                </div>
-                                <!-- Нов раздел за общи бележки -->
+                                <!-- Общи бележки -->
                                 <div class="card-1 custom-card mt-3" style="margin-bottom: 0;">
                                     <div class="card-header d-flex justify-content-between align-items-center"
                                          style="padding-top: 0; padding-bottom: 5px;">

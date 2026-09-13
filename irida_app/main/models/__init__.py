@@ -21,6 +21,7 @@ from .accounts import (
 from .curriculum import Goal, Subject, Topic, Unit
 from .lessons import (
     Session,
+    SessionAttachment,
     SessionNote,
     SessionPoint,
     SessionTask,
@@ -40,6 +41,7 @@ __all__ = [
     'SessionPoint',
     'SessionNote',
     'SessionTask',
+    'SessionAttachment',
     # schools
     'Specialty',
     'School',

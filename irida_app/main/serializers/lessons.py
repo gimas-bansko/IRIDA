@@ -7,6 +7,7 @@ from rest_framework import serializers
 
 from ..models import (
     Session,
+    SessionAttachment,
     SessionNote,
     SessionPoint,
     SessionTask,
@@ -83,3 +84,31 @@ class SessionTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = SessionTask
         fields = ['id', 'session', 'point', 'num', 'name', 'condition', 'answer']
+
+
+import os
+
+
+class SessionAttachmentSerializer(serializers.ModelSerializer):
+    file_url = serializers.SerializerMethodField(read_only=True)
+    file_name = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = SessionAttachment
+        fields = ['id', 'session', 'point', 'num', 'name', 'attachment_type', 'file', 'file_url', 'file_name', 'description']
+        extra_kwargs = {
+            'file': {'required': False, 'allow_null': True}
+        }
+
+    def get_file_url(self, obj):
+        if obj.file:
+            try:
+                return obj.file.url
+            except Exception:
+                return None
+        return None
+
+    def get_file_name(self, obj):
+        if obj.file:
+            return os.path.basename(obj.file.name)
+        return ''

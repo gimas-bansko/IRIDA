@@ -11,6 +11,7 @@ urlpatterns = [
 # Раздаване на качените файлове от Django. При DEBUG=False static()
 # връща празен списък - в production media се раздава от nginx/whitenoise.
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static('/media_files/', document_root=settings.MEDIA_ROOT)
 
 # django-debug-toolbar се включва само в dev и само ако е инсталиран
 # (dev.py го добавя в INSTALLED_APPS при същото условие).

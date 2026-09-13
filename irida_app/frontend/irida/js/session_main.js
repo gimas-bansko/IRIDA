@@ -420,6 +420,10 @@ const App = {
                     height: 300,
                     branding: false,
                     id: targetEl?.id || undefined,
+                    relative_urls: false,
+                    remove_script_host: false,
+                    convert_urls: false,
+                    document_base_url: window.location.origin + '/',
                     images_upload_handler: async (blobInfo, progress) => {
                         const form = new FormData();
                         form.append('file', blobInfo.blob(), blobInfo.filename());

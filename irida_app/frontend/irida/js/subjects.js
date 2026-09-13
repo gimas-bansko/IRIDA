@@ -44,13 +44,29 @@ const App = {
             editSession: null,           // { id, course, unit, num, name, focus, goals, duration, session_topics: [...] }
             editSessionTopics: [],       // копие на session_topics за редакция (локално)
             unitsList_idx:0,
+            selectedGrade: 0,
 
         }
     },
     computed: {
+        currentSpecialty() {
+            if (!this.listOfSpecialties || !this.user.specialty) return {};
+            return this.listOfSpecialties.find(sp => sp.id === this.user.specialty) || {};
+        },
+        currentSpecialtyType() {
+            const sp = this.currentSpecialty;
+            return sp?.specialty_type || 'специалност';
+        },
         currentTopicMoSCoWText() {
             const code = this.topic?.MoSCoW_cat || 'M'
             return this.moscowMap[code] || code
+        },
+        filteredSubjects() {
+            if (!Array.isArray(this.listOfSubjects)) return [];
+            if (!this.selectedGrade || Number(this.selectedGrade) === 0) {
+                return this.listOfSubjects;
+            }
+            return this.listOfSubjects.filter(sbj => Number(sbj.grade) === Number(this.selectedGrade));
         },
         totalHours() {
             // защита при липсващ или неинициализиран списък
@@ -67,7 +83,6 @@ const App = {
             return (id) => {
                 if (!Array.isArray(this.listOfUnits)) return [];
                 const idx = this.indexOfUnitById(id);
-                console.log(`id=${id}, idx=${idx}`)
                 if (idx < 0) return [];
                 const unit = this.listOfUnits[idx];
                 return Array.isArray(unit?.topics) ? unit.topics : [];
@@ -184,13 +199,73 @@ const App = {
                     vm.listOfSpecialties = response.data
                 })
         },
+        setSpecialty(sp_id) {
+            const vm = this;
+            if (!sp_id) return;
+            axios.get('/api/speciality_select/' + sp_id + '/')
+                .then(function (response) {
+                    vm.user.specialty = sp_id;
+                    axios.get('/api/specialty/' + sp_id + '/subjects/')
+                        .then(function (res) {
+                            vm.listOfSubjects = res.data;
+                            const availableSubjects = vm.filteredSubjects;
+                            if (availableSubjects && availableSubjects.length > 0) {
+                                const hasCurrent = availableSubjects.some(s => s.id === vm.user.subject);
+                                if (!hasCurrent) {
+                                    vm.setSubject(availableSubjects[0].id);
+                                } else {
+                                    vm.loadGoals(vm.user);
+                                    vm.loadUnits(vm.user);
+                                    vm.loadSessions(vm.user);
+                                }
+                            } else {
+                                vm.user.subject = 0;
+                                vm.listOfGoals = [];
+                                vm.listOfUnits = [];
+                                vm.listOfSessions = [];
+                            }
+                        });
+                })
+                .catch(function (error) {
+                    console.error("Грешка при смяна на специалност:", error);
+                    alert("Възникна грешка при смяна на специалността!");
+                });
+        },
+        onGradeChange() {
+            const availableSubjects = this.filteredSubjects;
+            if (availableSubjects && availableSubjects.length > 0) {
+                const hasCurrent = availableSubjects.some(s => s.id === this.user.subject);
+                if (!hasCurrent) {
+                    this.setSubject(availableSubjects[0].id);
+                }
+            } else {
+                this.user.subject = 0;
+                this.listOfGoals = [];
+                this.listOfUnits = [];
+                this.listOfSessions = [];
+            }
+        },
+        setSubject(sb_id) {
+            const vm = this;
+            if (!sb_id) return;
+            axios.get('/api/subject_select/' + sb_id + '/')
+                .then(function (response) {
+                    vm.user.subject = sb_id;
+                    vm.loadGoals(vm.user);
+                    vm.loadUnits(vm.user);
+                    vm.loadSessions(vm.user);
+                })
+                .catch(function (error) {
+                    console.error("Грешка при смяна на предмет:", error);
+                    alert("Възникна грешка при смяна на предмета!");
+                });
+        },
         loadSubjects(logged_user) {
             // чета списъка на всички предмети, които са от текущо избраната специалност за влезлия потребител
             const vm = this;
             axios.get('/api/specialty/' + logged_user.specialty + '/subjects/')
                 .then(function (response) {
                     vm.listOfSubjects = response.data
-                    console.log(vm.listOfSubjects)
                 })
         },
         newSubject() {
@@ -202,26 +277,34 @@ const App = {
             this.subject.wpy = 0
             this.subject.hpw1 = 0
             this.subject.hpw2 = 0
-            this.clearEditMode()
+            this.setEditMode(0, -1)
         },
-        editSubject(idx) {
-            this.subject.id = this.listOfSubjects[idx].id
-            this.subject.name = this.listOfSubjects[idx].name
-            this.subject.grade = this.listOfSubjects[idx].grade
-            this.subject.subject_type = this.listOfSubjects[idx].subject_type
-            this.subject.hpy = this.listOfSubjects[idx].hpy
-            this.subject.wpy = this.listOfSubjects[idx].wpy
-            this.subject.hpw1 = this.listOfSubjects[idx].hpw1
-            this.subject.hpw2 = this.listOfSubjects[idx].hpw2
+        editSubject(itemOrIdx) {
+            let sbj = null;
+            let idx = -1;
+            if (typeof itemOrIdx === 'object' && itemOrIdx !== null) {
+                sbj = itemOrIdx;
+                idx = this.listOfSubjects.findIndex(s => s.id === sbj.id);
+            } else {
+                idx = itemOrIdx;
+                sbj = this.listOfSubjects[idx];
+            }
+            if (!sbj) return;
+            this.subject.id = sbj.id
+            this.subject.name = sbj.name
+            this.subject.grade = sbj.grade
+            this.subject.subject_type = sbj.subject_type
+            this.subject.hpy = sbj.hpy
+            this.subject.wpy = sbj.wpy
+            this.subject.hpw1 = sbj.hpw1
+            this.subject.hpw2 = sbj.hpw2
             this.setEditMode(0, idx)
-            console.log('1:',this.subject)
         },
         saveSubject() {
-            vm = this
+            const vm = this
             vm.clearEditMode()
-            console.log('2:',vm.subject)
             // Изпращане на PUT заявка към API
-            axios.put('api/specialty/' + vm.user.specialty + '/subjects/' + vm.subject.id + '/', vm.subject, {
+            axios.put('/api/specialty/' + vm.user.specialty + '/subjects/' + vm.subject.id + '/', vm.subject, {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': CSRF_TOKEN
@@ -270,6 +353,11 @@ const App = {
         loadGoals(logged_user) {
             // чета списъка на целите на обучението по предмета по подразбиране на текущия потребител
             const vm = this;
+            if (!logged_user || !logged_user.subject) {
+                vm.listOfGoals = [];
+                vm.clearEditMode();
+                return;
+            }
             axios.get('/api/course/' + logged_user.subject + '/goals/')
                 .then(function (response) {
                     vm.listOfGoals = response.data
@@ -291,10 +379,13 @@ const App = {
             this.setEditMode(0, -1)
         },
         saveGoal() {
-            vm = this
-            vm.clearEditMode()
+            const vm = this;
+            vm.clearEditMode();
+            if (!vm.goal.course) {
+                vm.goal.course = vm.user.subject;
+            }
             // Изпращане на POST заявка към API
-            axios.post('api/goals/upsert/', vm.goal, {
+            axios.post('/api/goals/upsert/', vm.goal, {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': CSRF_TOKEN
@@ -313,15 +404,18 @@ const App = {
         loadUnits(logged_user) {
             // чета списъка на целите на обучението по предмета по подразбиране на текущия потребител
             const vm = this;
-            vm.clearEditMode()
-            axios.get(`/api/subjects/${vm.user.subject}/units-with-topics/`)
+            vm.clearEditMode();
+            const subjectId = (logged_user && logged_user.subject) || vm.user.subject;
+            if (!subjectId) {
+                vm.listOfUnits = [];
+                return;
+            }
+            axios.get(`/api/subjects/${subjectId}/units-with-topics/`)
                 .then(function (response) {
                     vm.listOfUnits = response.data;
-                    console.log('listOfUnits:', vm.listOfUnits)
                 })
         },
         saveUnit() {
-            console.log('saveUnit()')
             const vm = this;
             vm.clearEditMode()
             axios.post('/api/units/upsert/', vm.unit, {
@@ -394,7 +488,6 @@ const App = {
         },
         newTopic(unit_idx) {
             this.topic.id = 0
-            console.log('unit_idx=',unit_idx);
             this.topic.num = this.listOfUnits[unit_idx].topics.length + 1
             this.topic.name = ''
             this.topic.MoSCoW_cat = 'M'
@@ -436,14 +529,16 @@ const App = {
             return subj?.hpy ?? null; // връща hpy или null, ако не е намерен
         },
 
-        loadSessions() {
+        loadSessions(logged_user) {
             const vm = this;
-            const subjectId = vm.user.subject; // или друго поле при теб
-            console.log(`/api/subjects/${subjectId}/sessions-with-topics/`)
+            const subjectId = (logged_user && logged_user.subject) || vm.user.subject;
+            if (!subjectId) {
+                vm.listOfSessions = [];
+                return;
+            }
             axios.get(`/api/subjects/${subjectId}/sessions-with-topics/`)
                 .then(res => {
                     vm.listOfSessions = res.data;
-                    console.log(vm.listOfSessions);
                 })
                 .catch(err => {
                     console.error('loadSessions error', err?.response?.data || err);
@@ -471,20 +566,16 @@ const App = {
         },
         editSessionOpen(session) {
             // правим дълбоко копие, за да не променяме списъка директно
-            console.log('editSessionOpen', session);
             this.setEditMode(0, -1)
             this.editSession = JSON.parse(JSON.stringify(session));
-            console.log(this.editSession);
             this.editSessionTopics = JSON.parse(JSON.stringify(session.session_topics || []));
         },
         addSessionTopic() {
-            console.log('before new topic add');
             this.editSessionTopics.push({
                 id: null,
                 description: '',
                 topic: this.topicsByUnitId(this.listOfUnits[this.unitsList_idx].id)[0]//null, // за UI — ще избереш през селект; при запис ще подадем topic.id
             });
-            console.log('new topic added');
         },
 
         removeSessionTopic(index) {
@@ -494,10 +585,6 @@ const App = {
         async saveSession() {
             const vm = this;
             try {
-                console.log('saveSession: start');
-                console.log('editSession (before save):', JSON.parse(JSON.stringify(vm.editSession)));
-                console.log('editSessionTopics (before save):', JSON.parse(JSON.stringify(vm.editSessionTopics)));
-
                 // 1) Save Session
                 let sessionPayload = {
                     course: vm.editSession.course,
@@ -513,15 +600,12 @@ const App = {
 
                 if (!vm.editSession.id) {
                     // create
-                    console.log('saveSession: creating Session', sessionPayload);
                     const res = await axios.post(`/api/sessions/`, sessionPayload, {
                         headers: {'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN}
                     });
                     vm.editSession.id = res.data.id || res.data.pk || res.data; // според това какъв response връща DRF
-                    console.log('saveSession: created Session id=', vm.editSession.id);
                 } else {
                     // update
-                    console.log('saveSession: updating Session id=', vm.editSession.id);
                     await axios.put(`/api/sessions/${vm.editSession.id}/`, sessionPayload, {
                         headers: {'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN}
                     });
@@ -530,14 +614,11 @@ const App = {
                 // 2) Sync SessionTopics
                 // Натрупваме текущите id от БД (за да знаем какво да изтрием)
                 const existingIds = new Set((vm.editSession.session_topics || []).map(t => t.id).filter(Boolean));
-                console.log('existingIds (from DB snapshot):', Array.from(existingIds));
-                console.log('new/edited topics:', vm.editSessionTopics);
 
                 // 2.1 POST новите
                 for (const t of vm.editSessionTopics) {
                     const isNew = !t.id || t.id === null || t.id === undefined || t.id === 0 || t.id === '0';
                     const topicId = t.topic?.id ?? t.topic; // ако държиш обект или число
-                    console.log('consider topic:', { isNew, id: t.id, topicId, t });
 
                     if (isNew) {
                         if (!topicId) {
@@ -545,11 +626,9 @@ const App = {
                             continue;
                         }
                         const payload = { session: vm.editSession.id, topic: topicId, description: t.description || '' };
-                        console.log('POST /api/session-topics payload:', payload);
                         const resT = await axios.post(`/api/session-topics/`, payload,{
                             headers: {'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN}
                         });
-                        console.log('POST response:', resT.data);
                         t.id = resT.data?.id;
                     }
                 }
@@ -559,7 +638,6 @@ const App = {
                     if (t.id) {
                         const topicId = t.topic?.id ?? t.topic;
                         const payload = { session: vm.editSession.id, topic: topicId, description: t.description || '' };
-                        console.log('PUT /api/session-topics/' + t.id, payload,);
                         await axios.put(`/api/session-topics/${t.id}/`, payload,{
                             headers: {'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN}
                         });
@@ -570,7 +648,6 @@ const App = {
                 const keptIds = new Set(vm.editSessionTopics.map(x => x.id).filter(Boolean));
                 for (const oldId of existingIds) {
                     if (!keptIds.has(oldId)) {
-                        console.log('DELETE /api/session-topics/' + oldId);
                         await axios.delete(`/api/session-topics/${oldId}/`, {
                             headers: {'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN}
                         });
@@ -580,7 +657,6 @@ const App = {
                 // 3) Refresh
                 await vm.loadSessions();
 
-                console.log('saveSession: done');
                 alert('Занятието е записано успешно.');
                 this.clearEditMode()
             } catch (err) {

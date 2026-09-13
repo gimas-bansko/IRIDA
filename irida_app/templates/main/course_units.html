@@ -11,19 +11,40 @@
                  <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
                      <div>
                          <p class="mb-1 mt-2 text-muted">
-                             <img class="avatar" src="{{ user_profile.school.logo.url }}">
+                             <img class="avatar" src="{{ user_profile.school.logo.url }}" alt="{{ user_profile.school.short_name}}">
                              {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
-                         <p class="text-muted" style="margin-left: 3rem;">специалност {{ specialty.specialty_name}}</p>
-                         <h1 class="page-title fw-normal fs-20 mb-12">{{ subject.name}}</h1>
-                         <nav>
-                             <ol class="breadcrumb mb-2">
-                                 <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
-                                 <li class="breadcrumb-item"><a href="{% url 'specialty_list' %}">{{ specialty.specialty_name}}</a></li>
-                                 <li class="breadcrumb-item"><a href="{% url 'subjects_list' %}">{{ subject.name}}
-                                    ({{ subject.subject_type }})</a></li>
-                                 <li class="breadcrumb-item active" aria-current="page">Теми</li>
-                             </ol>
-                         </nav>
+                         <h1 class="page-title fw-normal fs-20 mb-12">Учебна програма</h1>
+                         <div class="d-flex align-items-center flex-wrap gap-3 mb-2">
+                             <div class="d-flex align-items-center gap-2">
+                                 <label for="selectSpecialty" class="form-label mb-0 fw-semibold fs-14">Специалност/професия:</label>
+                                 <select id="selectSpecialty" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
+                                         v-model="user.specialty" @change="setSpecialty(user.specialty)">
+                                     <option v-for="sp in listOfSpecialties" :key="sp.id" :value="sp.id">
+                                         [[sp.specialty_type]] [[ sp.specialty_num ]] - [[ sp.specialty_name ]]
+                                     </option>
+                                 </select>
+                             </div>
+                             <div class="d-flex align-items-center gap-2">
+                                 <label for="selectGrade" class="form-label mb-0 fw-semibold fs-14">Клас:</label>
+                                 <select id="selectGrade" class="form-select form-select-sm border-green fs-14" style="min-width: 140px; width: auto;"
+                                         v-model="selectedGrade" @change="onGradeChange()">
+                                     <option :value="0">Всички предмети</option>
+                                     <option :value="9">9 клас</option>
+                                     <option :value="10">10 клас</option>
+                                     <option :value="11">11 клас</option>
+                                     <option :value="12">12 клас</option>
+                                 </select>
+                             </div>
+                             <div class="d-flex align-items-center gap-2">
+                                 <label for="selectSubject" class="form-label mb-0 fw-semibold fs-14">Предмет:</label>
+                                 <select id="selectSubject" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
+                                         v-model="user.subject" @change="setSubject(user.subject)">
+                                     <option v-for="sb in filteredSubjects" :key="sb.id" :value="sb.id">
+                                         [[ sb.name ]] ([[ sb.subject_type ]])
+                                     </option>
+                                 </select>
+                             </div>
+                         </div>
                      </div>
                  </div>
                 <!-- Page Header Close -->
@@ -36,10 +57,9 @@
                                 <div>Учебна програма</div>
                             </div>
                             <div class="d-flex gap-12 align-items-center" v-if="!edit.editor">
-                                <button type="button" class="btn-1 btn btn-success" @click="handleNewUnitClick()">
+                                <button type="button" class="btn-1 btn btn-outline-success btn-sm" @click="handleNewUnitClick()">
                                     <span class="d-flex align-items-center gap-6">
-                                        <i class="bi bi-plus-circle"></i>
-                                        <span class="white">Добави раздел</span>
+                                        <i class="bi bi-plus-circle"></i>Добави раздел
                                     </span>
                                 </button>
                             </div>
@@ -61,37 +81,32 @@
                                         <div class="flex-fill">
                                             <div class="row g-3 mt-0">
                                                 <!-- номер -->
-                                                <div class="col-md-1">
-                                                    <div class="form-floating mb-4 floating-success">
-                                                        <input id="ub_0" type="number" class="form-control" v-model="unit.num">
-                                                        <label for="ub_0">№</label>
-                                                    </div>
+                                                <div class="col-md-1 mb-4">
+                                                    <label class="form-label" for="ub_0">№</label>
+                                                    <input id="ub_0" type="number" class="form-control border-green" v-model="unit.num">
                                                 </div>
 
                                                 <!-- текст -->
-                                                <div class="col-md-10">
-                                                    <div class="form-floating mb-4 floating-success">
-                                                        <input id="un_0" type="text" class="form-control" v-model="unit.name">
-                                                        <label for="un_0">Текст</label>
-                                                    </div>
+                                                <div class="col-md-10 mb-4">
+                                                    <label class="form-label" for="un_0">Текст:</label>
+                                                    <input id="un_0" type="text" class="form-control border-green" v-model="unit.name">
                                                 </div>
 
                                                 <!-- часове -->
-                                                <div class="col-md-1">
-                                                    <div class="form-floating mb-4 floating-success">
-                                                        <input id="uh_0" type="number" class="form-control" v-model="unit.hours">
-                                                        <label for="uh_0">Часове</label>
-                                                    </div>
+                                                <div class="col-md-1 mb-4">
+                                                    <label class="form-label" for="uh_0">Часове:</label>
+                                                    <input id="uh_0" type="number" class="form-control border-green text-center" v-model="unit.hours">
                                                 </div>
 
                                                 <!-- Бутони запис/отказ -->
                                                 <div class="col-12 text-center mb-3 mt-1">
-                                                    <button class="btn btn-outline-secondary btn-lg shadow-lg fs-16" @click="clearEditMode()">
+                                                    <button class="btn btn-outline-secondary btn-sm fs-16" @click="clearEditMode()">
                                                         Откажи</button>
                                                     &nbsp; &nbsp; &nbsp;
-                                                    <button class="btn btn-outline-success btn-wave fs-16" @click="saveUnit()">
+                                                    <button class="btn btn-outline-success btn-sm fs-16" @click="saveUnit()">
                                                         Запиши</button>
                                                 </div>
+                                                <hr>
                                             </div>
                                         </div>
                                     </div>
@@ -106,49 +121,41 @@
                                                 <span class="text-muted">(Минимален брой часове: [[c_unit.hours]])</span>
                                             </span>
                                         </div>
-                                        <button type="button" class="btn-1 btn btn-success fw-medium" @click="edit_Unit(unit_idx)"
+                                        <button type="button" class="btn-1 btn btn-outline-success btn-sm fw-medium" @click="edit_Unit(unit_idx)"
                                                 v-if="!edit.editor">
-                                            <span class="d-flex align-items-center gap-6">
-                                                <i class="bi bi-pen"></i>
-                                                <span class="white">Промени</span>
-                                            </span>
+                                            <span class="d-flex align-items-center gap-6"><i class="bi bi-pen"></i>Промени</span>
                                         </button>
                                     </div>
                                     <div class="d-flex align-items-center gap-3" v-if="showEditor(0,unit_idx)">
                                         <div class="flex-fill">
                                             <div class="row g-3 mt-0">
                                                 <!-- номер -->
-                                                <div class="col-md-1">
-                                                    <div class="form-floating mb-4 floating-success">
-                                                        <input id="ub_1" type="number" class="form-control" v-model="unit.num">
-                                                        <label for="ub_1">№</label>
-                                                    </div>
+                                                <div class="col-md-1 mb-4">
+                                                    <label class="form-label" for="ub_1">№</label>
+                                                    <input id="ub_1" type="number" class="form-control border-green" v-model="unit.num">
                                                 </div>
 
                                                 <!-- текст -->
-                                                <div class="col-md-10">
-                                                    <div class="form-floating mb-4 floating-success">
-                                                        <input id="un_1" type="text" class="form-control" v-model="unit.name">
-                                                        <label for="un_1">Текст</label>
-                                                    </div>
+                                                <div class="col-md-10 mb-4">
+                                                    <label class="form-label" for="un_1">Текст:</label>
+                                                    <input id="un_1" type="text" class="form-control border-green" v-model="unit.name">
                                                 </div>
 
                                                 <!-- часове -->
-                                                <div class="col-md-1">
-                                                    <div class="form-floating mb-4 floating-success">
-                                                        <input id="uh_1" type="number" class="form-control" v-model="unit.hours">
-                                                        <label for="uh_1">Часове</label>
-                                                    </div>
+                                                <div class="col-md-1 mb-4">
+                                                    <label class="form-label" for="uh_1">Часове:</label>
+                                                    <input id="uh_1" type="number" class="form-control border-green text-center" v-model="unit.hours">
                                                 </div>
 
                                                 <!-- Бутони запис/отказ -->
                                                 <div class="col-12 text-center mb-3 mt-1">
-                                                    <button class="btn btn-outline-secondary btn-lg shadow-lg fs-16" @click="clearEditMode()">
+                                                    <button class="btn btn-outline-secondary btn-sm fs-16" @click="clearEditMode()">
                                                         Откажи</button>
                                                     &nbsp; &nbsp; &nbsp;
-                                                    <button class="btn btn-outline-success btn-wave fs-16" @click="saveUnit()">
+                                                    <button class="btn btn-outline-success btn-sm fs-16" @click="saveUnit()">
                                                         Запиши</button>
                                                 </div>
+                                                <hr>
                                             </div>
                                         </div>
                                     </div>
@@ -171,49 +178,42 @@
                                                         <div class="flex-fill">
                                                             <div class="row g-3 mt-0">
                                                                 <!-- номер -->
-                                                                <div class="col-md-1">
-                                                                    <div class="form-floating mb-4 floating-success">
-                                                                        <input id="tb_0" type="number" class="form-control" v-model="topic.num">
-                                                                        <label for="tb_0">№</label>
-                                                                    </div>
+                                                                <div class="col-md-1 mb-4">
+                                                                    <label class="form-label" for="tb_0">№</label>
+                                                                    <input id="tb_0" type="number" class="form-control border-green" v-model="topic.num">
                                                                 </div>
 
                                                                 <!-- текст -->
-                                                                <div class="col-md-11">
-                                                                    <div class="form-floating mb-4 floating-success">
-                                                                        <input id="tn_0" type="text" class="form-control" v-model="topic.name">
-                                                                        <label for="tn_0">Тема</label>
-                                                                    </div>
+                                                                <div class="col-md-11 mb-4">
+                                                                    <label class="form-label" for="tn_0">Тема:</label>
+                                                                    <input id="tn_0" type="text" class="form-control border-green" v-model="topic.name">
                                                                 </div>
                                                                 <!--  MoSCoW -->
-                                                                <div class="col-md-3">
-                                                                    <div class="form-floating">
-                                                                        <select class="form-select" id="t_mt0" v-model="topic.MoSCoW_cat"
-                                                                            aria-label="Floating label select example">
-                                                                            <option value="M">[[moscowMap.M]]</option>
-                                                                            <option value="S">[[moscowMap.S]]</option>
-                                                                            <option value="C">[[moscowMap.C]]</option>
-                                                                            <option value="W">[[moscowMap.W]]</option>
-                                                                        </select>
-                                                                        <label for="t_mt0">Категория (MSCW)</label>
-                                                                    </div>
+                                                                <div class="col-md-3 mb-4">
+                                                                    <label class="form-label" for="t_mt0">Категория (MSCW):</label>
+                                                                    <select class="form-select border-green" id="t_mt0" v-model="topic.MoSCoW_cat"
+                                                                        aria-label="Floating label select example">
+                                                                        <option value="M">[[moscowMap.M]]</option>
+                                                                        <option value="S">[[moscowMap.S]]</option>
+                                                                        <option value="C">[[moscowMap.C]]</option>
+                                                                        <option value="W">[[moscowMap.W]]</option>
+                                                                    </select>
                                                                 </div>
-                                                                <div class="col-md-9">
-                                                                    <div class="form-floating mb-4 floating-success">
-                                                                        <input id="t_mr0" type="text" class="form-control" v-model="topic.MoSCoW_rem">
-                                                                        <label for="t_mr0">Обосновка (MSCW)</label>
-                                                                    </div>
+                                                                <div class="col-md-9 mb-4">
+                                                                    <label class="form-label" for="t_mr0">Обосновка (MSCW):</label>
+                                                                    <textarea id="t_mr0" class="form-control border-green" v-model="topic.MoSCoW_rem"></textarea>
                                                                 </div>
                                                                 <!--  MoSCoW край-->
 
                                                                 <!-- Бутони запис/отказ -->
                                                                 <div class="col-12 text-center mt-1 mb-3">
-                                                                    <button class="btn btn-outline-secondary btn-wave fs-16" @click="clearEditMode()">
+                                                                    <button class="btn btn-outline-secondary btn-sm fs-16" @click="clearEditMode()">
                                                                         Откажи</button>
                                                                     &nbsp; &nbsp; &nbsp;
-                                                                    <button class="btn btn-outline-success btn-wave fs-16" @click="saveTopic()">
+                                                                    <button class="btn btn-outline-success btn-sm fs-16" @click="saveTopic()">
                                                                         Запиши</button>
                                                                 </div>
+                                                                <hr>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -231,61 +231,51 @@
                                                                 </span>
                                                             </span>
                                                         </div>
-                                                        <button type="button" class="btn-1 btn btn-primary fw-medium"
+                                                        <button type="button" class="btn-1 btn btn-outline-primary btn-sm fw-medium"
                                                                 @click="edit_Topic(unit_idx,topic_idx)"
                                                                 v-if="!edit.editor">
-                                                            <span class="d-flex align-items-center gap-6">
-                                                                <i class="bi bi-pen"></i>
-                                                                <span class="white">Промени</span>
-                                                            </span>
+                                                            <span class="d-flex align-items-center gap-6"><i class="bi bi-pen"></i>Промени</span>
                                                         </button>
                                                     </div>
                                                     <div class="d-flex align-items-center gap-3" v-if="showEditor(1,unit_idx,topic_idx)">
                                                         <div class="flex-fill">
                                                             <div class="row g-3 mt-0">
                                                                 <!-- номер -->
-                                                                <div class="col-md-1">
-                                                                    <div class="form-floating mb-4 floating-success">
-                                                                        <input id="tb_2" type="number" class="form-control" v-model="topic.num">
-                                                                        <label for="tb_2">№</label>
-                                                                    </div>
+                                                                <div class="col-md-1 mb-4">
+                                                                    <label class="form-label" for="tb_2">№</label>
+                                                                    <input id="tb_2" type="number" class="form-control border-green" v-model="topic.num">
                                                                 </div>
                                                                 <!-- текст -->
-                                                                <div class="col-md-11">
-                                                                    <div class="form-floating mb-4 floating-success">
-                                                                        <input id="tn_2" type="text" class="form-control" v-model="topic.name">
-                                                                        <label for="tn_2">Тема</label>
-                                                                    </div>
+                                                                <div class="col-md-11 mb-4">
+                                                                    <label class="form-label" for="tn_2">Тема:</label>
+                                                                    <input id="tn_2" type="text" class="form-control border-green" v-model="topic.name">
                                                                 </div>
                                                                 <!--  MoSCoW -->
                                                                 <div class="col-md-3">
-                                                                    <div class="form-floating">
-                                                                        <select class="form-select" id="t_mt2" v-model="topic.MoSCoW_cat"
-                                                                            aria-label="Floating label select example">
-                                                                            <option value="M">[[moscowMap.M]]</option>
-                                                                            <option value="S">[[moscowMap.S]]</option>
-                                                                            <option value="C">[[moscowMap.C]]</option>
-                                                                            <option value="W">[[moscowMap.W]]</option>
-                                                                        </select>
-                                                                        <label for="t_mt2">Категория (MSCW)</label>
-                                                                    </div>
+                                                                    <label class="form-label" for="t_mt2">Категория (MSCW):</label>
+                                                                    <select class="form-select" id="t_mt2" v-model="topic.MoSCoW_cat"
+                                                                        aria-label="Floating label select example">
+                                                                        <option value="M">[[moscowMap.M]]</option>
+                                                                        <option value="S">[[moscowMap.S]]</option>
+                                                                        <option value="C">[[moscowMap.C]]</option>
+                                                                        <option value="W">[[moscowMap.W]]</option>
+                                                                    </select>
                                                                 </div>
-                                                                <div class="col-md-9">
-                                                                    <div class="form-floating mb-4 floating-success">
-                                                                        <input id="t_mr2" type="text" class="form-control" v-model="topic.MoSCoW_rem">
-                                                                        <label for="t_mr2">Обосновка (MSCW)</label>
-                                                                    </div>
+                                                                <div class="col-md-9 mb-4">
+                                                                    <label class="form-label" for="t_mr2">Обосновка (MSCW):</label>
+                                                                    <textarea id="t_mr2" class="form-control border-green" v-model="topic.MoSCoW_rem"></textarea>
                                                                 </div>
                                                                 <!--  MoSCoW край-->
 
                                                                 <!-- Бутони запис/отказ -->
                                                                 <div class="col-12 text-center mt-1 mb-3">
-                                                                    <button class="btn btn-outline-secondary btn-wave fs-16" @click="clearEditMode()">
+                                                                    <button class="btn btn-outline-secondary btn-sm fs-16" @click="clearEditMode()">
                                                                         Откажи</button>
                                                                     &nbsp; &nbsp; &nbsp;
-                                                                    <button class="btn btn-outline-success btn-wave fs-16" @click="saveTopic()">
+                                                                    <button class="btn btn-outline-success btn-sm fs-16" @click="saveTopic()">
                                                                         Запиши</button>
                                                                 </div>
+                                                                <hr>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -294,49 +284,42 @@
                                                 <li v-if="showEditor(1,unit_idx,-1)">
                                                     <div class="row g-3 mt-0">
                                                         <!-- номер -->
-                                                        <div class="col-md-1">
-                                                            <div class="form-floating mb-4 floating-success">
-                                                                <input id="tb_3" type="number" class="form-control" v-model="topic.num">
-                                                                <label for="tb_3">№</label>
-                                                            </div>
+                                                        <div class="col-md-1 mb-4">
+                                                            <label class="form-label" for="tb_3">№</label>
+                                                            <input id="tb_3" type="number" class="form-control border-green" v-model="topic.num">
                                                         </div>
 
                                                         <!-- текст -->
-                                                        <div class="col-md-11">
-                                                            <div class="form-floating mb-4 floating-success">
-                                                                <input id="tn_3" type="text" class="form-control" v-model="topic.name">
-                                                                <label for="tn_3">Тема</label>
-                                                            </div>
+                                                        <div class="col-md-11 mb-4">
+                                                            <label class="form-label" for="tn_3">Тема:</label>
+                                                            <input id="tn_3" type="text" class="form-control border-green" v-model="topic.name">
                                                         </div>
                                                         <!--  MoSCoW -->
                                                         <div class="col-md-3">
-                                                            <div class="form-floating">
-                                                                <select class="form-select" id="t_mt3" v-model="topic.MoSCoW_cat"
-                                                                    aria-label="Floating label select example">
-                                                                    <option value="M">[[moscowMap.M]]</option>
-                                                                    <option value="S">[[moscowMap.S]]</option>
-                                                                    <option value="C">[[moscowMap.C]]</option>
-                                                                    <option value="W">[[moscowMap.W]]</option>
-                                                                </select>
-                                                                <label for="t_mt3">Категория (MSCW)</label>
-                                                            </div>
+                                                            <label class="form-label" for="t_mt3">Категория (MSCW):</label>
+                                                            <select class="form-select border-green" id="t_mt3" v-model="topic.MoSCoW_cat"
+                                                                aria-label="Floating label select example">
+                                                                <option value="M">[[moscowMap.M]]</option>
+                                                                <option value="S">[[moscowMap.S]]</option>
+                                                                <option value="C">[[moscowMap.C]]</option>
+                                                                <option value="W">[[moscowMap.W]]</option>
+                                                            </select>
                                                         </div>
-                                                        <div class="col-md-9">
-                                                            <div class="form-floating mb-4 floating-success">
-                                                                <input id="t_mr3" type="text" class="form-control" v-model="topic.MoSCoW_rem">
-                                                                <label for="t_mr3">Обосновка (MSCW)</label>
-                                                            </div>
+                                                        <div class="col-md-9 mb-4">
+                                                            <label class="form-label" for="t_mr3">Обосновка (MSCW):</label>
+                                                            <textarea id="t_mr3" class="form-control border-green" v-model="topic.MoSCoW_rem"></textarea>
                                                         </div>
                                                         <!--  MoSCoW край-->
 
                                                         <!-- Бутони запис/отказ -->
                                                         <div class="col-12 text-center mt-1 mb-3">
-                                                            <button class="btn btn-outline-secondary btn-wave fs-16" @click="clearEditMode()">
+                                                            <button class="btn btn-outline-secondary btn-sm fs-16" @click="clearEditMode()">
                                                                 Откажи</button>
                                                             &nbsp; &nbsp; &nbsp;
-                                                            <button class="btn btn-outline-success btn-wave fs-16" @click="saveTopic()">
+                                                            <button class="btn btn-outline-success btn-sm fs-16" @click="saveTopic()">
                                                                 Запиши</button>
                                                         </div>
+                                                        <hr>
                                                     </div>
                                                 </li>
                                             </ul>
@@ -344,11 +327,8 @@
                                         <div class="card-footer" style="padding-right: 15px;">
                                             <div class="d-flex gap-12 justify-content-between" v-if="!edit.editor">
                                                 <div> </div>
-                                                <button type="button" class="btn-1 btn btn-primary" @click="newTopic(unit_idx)">
-                                                    <span class="d-flex align-items-center gap-6">
-                                                        <i class="bi bi-plus-circle"></i>
-                                                        <span class="white">Добави тема</span>
-                                                    </span>
+                                                <button type="button" class="btn-1 btn btn-outline-primary btn-sm" @click="newTopic(unit_idx)">
+                                                    <span class="d-flex align-items-center gap-6"><i class="bi bi-plus-circle"></i>Добави тема</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -361,37 +341,32 @@
                                         <div class="flex-fill">
                                             <div class="row g-3 mt-0">
                                                 <!-- номер -->
-                                                <div class="col-md-1">
-                                                    <div class="form-floating mb-4 floating-success">
-                                                        <input id="ub_2" type="number" class="form-control" v-model="unit.num">
-                                                        <label for="ub_2">№</label>
-                                                    </div>
+                                                <div class="col-md-1 mb-4">
+                                                    <label class="form-label" for="ub_2">№</label>
+                                                    <input id="ub_2" type="number" class="form-control border-green" v-model="unit.num">
                                                 </div>
 
                                                 <!-- текст -->
-                                                <div class="col-md-10">
-                                                    <div class="form-floating mb-4 floating-success">
-                                                        <input id="un_2" type="text" class="form-control" v-model="unit.name">
-                                                        <label for="un_2">Текст</label>
-                                                    </div>
+                                                <div class="col-md-10 mb-4">
+                                                    <label class="form-label" for="un_2">Текст:</label>
+                                                    <input id="un_2" type="text" class="form-control border-green" v-model="unit.name">
                                                 </div>
 
                                                 <!-- часове -->
-                                                <div class="col-md-1">
-                                                    <div class="form-floating mb-4 floating-success">
-                                                        <input id="uh_2" type="number" class="form-control" v-model="unit.hours">
-                                                        <label for="uh_2">Часове</label>
-                                                    </div>
+                                                <div class="col-md-1 mb-4">
+                                                    <label class="form-label" for="uh_2">Часове:</label>
+                                                    <input id="uh_2" type="number" class="form-control border-green text-center" v-model="unit.hours">
                                                 </div>
 
                                                 <!-- Бутони запис/отказ -->
                                                 <div class="col-12 text-center mb-3 mt-1">
-                                                    <button class="btn btn-outline-secondary btn-lg shadow-lg fs-16" @click="clearEditMode()">
+                                                    <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="clearEditMode()">
                                                         Откажи</button>
                                                     &nbsp; &nbsp; &nbsp;
-                                                    <button class="btn btn-outline-success btn-wave fs-16" @click="saveUnit()">
+                                                    <button class="btn btn-outline-success btn-sm fs-16" @click="saveUnit()">
                                                         Запиши</button>
                                                 </div>
+                                                <hr>
                                             </div>
                                         </div>
                                     </div>

@@ -12,6 +12,7 @@ class SpecialtySerializer(serializers.ModelSerializer):
         model = Specialty
         fields = [
             'id',
+            'specialty_type',
             'specialty_num',
             'specialty_name',
             'level',
@@ -21,7 +22,7 @@ class SpecialtySerializer(serializers.ModelSerializer):
 class SpecialtyMiniSerializer(serializers.ModelSerializer):
     class Meta:
         model = Specialty
-        fields = ('id', 'specialty_num', 'specialty_name', 'level')
+        fields = ('id', 'specialty_type', 'specialty_num', 'specialty_name', 'level')
 
 
 # данни за училище

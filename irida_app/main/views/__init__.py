@@ -32,6 +32,7 @@ from .api_curriculum import (
     subject_detail,
 )
 from .api_lessons import (
+    SessionAttachmentsForSessionView,
     SessionListCreateView,
     SessionNotesForSessionView,
     SessionPointsForSessionView,
@@ -41,6 +42,8 @@ from .api_lessons import (
     SessionTopicRetrieveUpdateDestroyView,
     SessionTopicsForSessionView,
     SubjectSessionsWithTopicsView,
+    session_attachment_delete,
+    session_attachment_upsert,
     session_note_delete,
     session_note_upsert,
     session_point_delete,
@@ -133,6 +136,9 @@ __all__ = [
     'SessionTasksForSessionView',
     'session_task_upsert',
     'session_task_delete',
+    'SessionAttachmentsForSessionView',
+    'session_attachment_upsert',
+    'session_attachment_delete',
     # api_uploads
     'ckeditor_image_upload',
     'tinymce_image_upload',

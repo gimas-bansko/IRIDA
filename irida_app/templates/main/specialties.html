@@ -9,23 +9,23 @@
                  <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
                      <div>
                          <p class="mb-5 mt-2 text-muted">
-                             <img class="avatar" src="{{ user_profile.school.logo.url }}">
+                             <img class="avatar" src="{{ user_profile.school.logo.url }}" alt="{{ user_profile.school.short_name }}">
                              {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
-                         <h1 class="page-title fw-normal fs-20 mb-12">Специалности</h1>
+                         <h1 class="page-title fw-normal fs-20 mb-12">Специалности / Професии</h1>
+                         <!--
                          <nav>
                             <ol class="breadcrumb mb-2">
                                 <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Специалности</li>
+                                <li class="breadcrumb-item active" aria-current="page">Специалности/професии</li>
                             </ol>
                         </nav>
+                        -->
                      </div>
 
                      <div class="d-flex gap-12 align-items-center mt-5" v-if="!edit_mode">
-                         <button type="button" class="btn-1 btn btn-success" @click="newSpecialty()">
+                         <button type="button" class="btn-1 btn btn-outline-success btn-sm" @click="newSpecialty()">
                              <span class="d-flex align-items-center gap-6">
-                                 <i class="bi bi-plus-circle"></i>
-                                 <span class="white">Добави специалност</span>
-                             </span>
+                                 <i class="bi bi-plus-circle"></i>Добави специалност</span>
                          </button>
                      </div>
                 </div>
@@ -43,15 +43,18 @@
                                                  <div class="flex-fill">
                                                      <div class="d-flex align-items-center">
                                                          <div class="mt-sm-0 mt-2">
-                                                             <p class="mb-0 fs-14 fw-semibold">[[sp.specialty_num]]</p>
+                                                             <p class="mb-0 fs-14 fw-semibold">
+                                                                 <span class="badge bg-primary-transparent me-2">[[sp.specialty_type]]</span>
+                                                                 [[sp.specialty_num]]
+                                                             </p>
                                                              <p class="mb-0 text-muted">[[sp.specialty_name]]</p>
                                                          </div>
                                                          <div class="ms-auto">
                                                              <div class="btn-list">
-                                                                 <button type="button" class="btn btn-outline-success btn-wave"
+                                                                 <button type="button" class="btn btn-outline-success btn-sm"
                                                                          @click="setSpecialty(sp.id)">
                                                                      <i class="bi bi-book"></i>&nbsp;Предмети </button>
-                                                                 <button type="button" class="btn btn-outline-secondary btn-wave"
+                                                                 <button type="button" class="btn btn-outline-secondary btn-sm"
                                                                          @click="editSpecialty(sp_idx)">
                                                                      <i class="bi bi-pen"></i>&nbsp;Промени</button>
                                                              </div>
@@ -75,27 +78,36 @@
                 <div class="card-1 custom-card">
                     <div class="card-header justify-content-between">
                         <div class="card-title">
-                            Редактиране на данни за специалност:
+                            <span v-if="specialty.id === 0">Добавяне на специалност / професия:</span>
+                            <span v-else>Редактиране на данни за специалност / професия:</span>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="row g-3 mt-0">
+                            <!-- тип -->
+                            <div class="col-md-2">
+                                <label class="form-label" for="SpecialtyType">Тип</label>
+                                <select id="SpecialtyType" class="form-select border-green" v-model="specialty.specialty_type">
+                                    <option value="специалност">Специалност</option>
+                                    <option value="професия">Професия</option>
+                                </select>
+                            </div>
                             <!-- код -->
                             <div class="col-md-2">
                                 <label class="form-label" for="ShortName">Код</label>
-                                <input type="text" class="form-control" placeholder="код на специалността" id="ShortName"
+                                <input type="text" class="form-control border-green" placeholder="код" id="ShortName"
                                        v-model="specialty.specialty_num">
                             </div>
                             <!-- име -->
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <label class="form-label">Пълно име</label>
-                                <input type="text" class="form-control" placeholder="име на специалността"
+                                <input type="text" class="form-control border-green" placeholder="име"
                                        v-model="specialty.specialty_name">
                             </div>
                             <!-- степен на професионлна квалификация -->
                             <div class="col-md-2">
                                 <label for="inputState" class="form-label">Степен на ПК</label>
-                                <select id="inputState" class="form-select" v-model="specialty.level" @change="console.log(specialty.level)">
+                                <select id="inputState" class="form-select border-green" v-model="specialty.level" @change="console.log(specialty.level)">
                                     <option :value="2">Втора</option>
                                     <option :value="3">Трета</option>
                                 </select>
@@ -103,10 +115,10 @@
 
                             <!-- Бутони запис/отказ -->
                             <div class="col-12 text-center">
-                                <button class="btn btn-outline-secondary btn-wave fs-16" @click="edit_mode=false">
+                                <button class="btn btn-outline-secondary btn-sm fs-16" @click="edit_mode=false">
                                     Откажи</button>
                                 &nbsp; &nbsp; &nbsp;
-                                <button class="btn btn-outline-success btn-wave fs-16" @click="saveSpecialty()">
+                                <button class="btn btn-outline-success btn-sm fs-16" @click="saveSpecialty()">
                                     Запиши</button>
                             </div>
                         </div>

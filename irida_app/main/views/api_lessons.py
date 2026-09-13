@@ -12,6 +12,7 @@ from rest_framework.response import Response
 
 from ..models import (
     Session,
+    SessionAttachment,
     SessionNote,
     SessionPoint,
     SessionTask,
@@ -19,6 +20,7 @@ from ..models import (
     Subject,
 )
 from ..serializers import (
+    SessionAttachmentSerializer,
     SessionNoteSerializer,
     SessionPointSerializer,
     SessionReadSerializer,
@@ -241,5 +243,60 @@ def session_task_upsert(request):
 @api_view(['DELETE'])
 def session_task_delete(request, pk):
     instance = get_object_or_404(SessionTask, id=pk)
+    instance.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# ***************************
+#         Приложения
+# ***************************
+class SessionAttachmentsForSessionView(generics.ListAPIView):
+    serializer_class = SessionAttachmentSerializer
+
+    def get_queryset(self):
+        session_id = self.kwargs['session_id']
+        get_object_or_404(Session, id=session_id)
+        qs = SessionAttachment.objects.filter(session_id=session_id)
+        attachment_type = self.request.query_params.get('type')
+        if attachment_type:
+            qs = qs.filter(attachment_type=attachment_type)
+        return qs.order_by('num', 'id')
+
+
+@api_view(['POST'])
+@csrf_exempt
+def session_attachment_upsert(request):
+    """
+    POST body: { id, session, point, num, name, attachment_type, file, description }
+    id == 0/missing -> create; id > 0 -> update
+    """
+    attachment_id = request.data.get('id', 0) or 0
+    try:
+        attachment_id = int(attachment_id)
+    except (TypeError, ValueError):
+        return Response({'detail': 'Invalid id'}, status=status.HTTP_400_BAD_REQUEST)
+
+    data = request.data.copy() if hasattr(request.data, 'copy') else dict(request.data)
+    if data.get('point') in ['', 'null', 'None', None]:
+        data['point'] = None
+
+    if attachment_id > 0:
+        instance = get_object_or_404(SessionAttachment, id=attachment_id)
+        if 'file' not in request.FILES and ('file' not in data or not data['file']):
+            data.pop('file', None)
+        serializer = SessionAttachmentSerializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        serializer = SessionAttachmentSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['DELETE'])
+def session_attachment_delete(request, pk):
+    instance = get_object_or_404(SessionAttachment, id=pk)
     instance.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)

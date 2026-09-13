@@ -56,11 +56,9 @@
                                             <span class="d-block fw-normal  fs-16 custom-black">
                                                 [[usr.first_name]]&nbsp;[[usr.last_name]] <span class="text-muted">([[usr.username]])</span></span>
                                         </div>
-                                        <button type="button" class="btn-1 btn btn-success fw-medium" @click="startEdit(usr,3)">
+                                        <button type="button" class="btn-1 btn btn-outline-success btn-sm fw-medium" @click="startEdit(usr,3)">
                                             <span class="d-flex align-items-center gap-6">
-                                                <i class="bi bi-pen"></i>
-                                                <span class="white">Промени</span>
-                                            </span>
+                                                <i class="bi bi-pen"></i>Промени</span>
                                         </button>
                                     </div>
                                 </li>
@@ -84,47 +82,41 @@
                                         </div>
                                         <!-- потребителско име -->
                                         <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success">
-                                                <input id="ua_0" type="text" class="form-control" v-model="form.username">
-                                                <label for="ua_0">Потребителско име</label>
+                                            <div class="mb-4">
+                                                <label for="ua_0">Потребителско име:</label>
+                                                <input id="ua_0" type="text" class="form-control border-green" v-model="form.username">
                                             </div>
                                         </div>
                                         <!-- Парола 1 -->
                                         <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success"
+                                            <div class="mb-4"
                                                  v-if="(formMode === 'create')||formChangePassword">
-                                                <input id="ua_1" type="password" class="form-control" v-model="form.password">
-                                                <label for="ua_1">Парола</label>
+                                                <label for="ua_1">Парола:</label>
+                                                <input id="ua_1" type="password" class="form-control border-green" v-model="form.password">
                                             </div>
                                         </div>
                                         <!-- Парола 2 -->
                                         <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success"
+                                            <div class="mb-4"
                                                  v-if="(formMode === 'create')||formChangePassword">
-                                                <input id="ua_2" type="password" class="form-control" v-model="form.password2">
-                                                <label for="ua_2">Парола (повторно)</label>
+                                                <label for="ua_2">Парола (повторно):</label>
+                                                <input id="ua_2" type="password" class="form-control border-green" v-model="form.password2">
                                             </div>
                                         </div>
                                         <!-- собствено име -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success">
-                                                <input id="ua_3" type="text" class="form-control" v-model="form.first_name">
-                                                <label for="ua_3">Собствено име</label>
-                                            </div>
+                                        <div class="col-md-4 mb-4">
+                                            <label for="ua_3">Собствено име:</label>
+                                            <input id="ua_3" type="text" class="form-control border-green" v-model="form.first_name">
                                         </div>
                                         <!-- фамилно име -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success">
-                                                <input id="ua_4" type="text" class="form-control" v-model="form.last_name">
-                                                <label for="ua_4">Фамилно име</label>
-                                            </div>
+                                        <div class="col-md-4 mb-4">
+                                            <label for="ua_4">Фамилно име:</label>
+                                            <input id="ua_4" type="text" class="form-control border-green" v-model="form.last_name">
                                         </div>
                                         <!-- email -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success">
-                                                <input id="ua_5" type="email" class="form-control" v-model="form.email">
-                                                <label for="ua_5">e-mail</label>
-                                            </div>
+                                        <div class="col-md-4 mb-4">
+                                            <label for="ua_5">e-mail:</label>
+                                            <input id="ua_5" type="email" class="form-control border-green" v-model="form.email">
                                         </div>
                                     </div>
                                 </div>
@@ -136,10 +128,10 @@
                                         </label>
                                     </div>
                                     <!-- Бутони запис/отказ -->
-                                    <button class="btn btn-outline-secondary btn-wave fs-16" @click="clearEditMode()">
+                                    <button class="btn btn-outline-secondary btn-sm fs-16" @click="clearEditMode()">
                                         Откажи</button>
                                     &nbsp; &nbsp; &nbsp;
-                                    <button class="btn btn-outline-success btn-wave fs-16" :disabled="!userOK"
+                                    <button class="btn btn-outline-success btn-sm fs-16" :disabled="!userOK"
                                             @click="saveUser">
                                         Запиши</button>
                                 </div>
@@ -150,11 +142,9 @@
                             <div>
                             </div>
                             <div class="d-flex gap-12 align-items-center" v-if="!edit.editor">
-                                <button type="button" class="btn-1 btn btn-success" @click="startCreate(3)">
+                                <button type="button" class="btn-1 btn btn-outline-success btn-sm" @click="startCreate(3)">
                                     <span class="d-flex align-items-center gap-6">
-                                        <i class="bi bi-plus-circle"></i>
-                                        <span class="white">Добави администратор</span>
-                                    </span>
+                                        <i class="bi bi-plus-circle"></i>Добави администратор</span>
                                 </button>
                             </div>
                         </div>
@@ -194,11 +184,9 @@
                                             <span class="d-block fw-normal  fs-16 custom-black">
                                                 [[usr.first_name]]&nbsp;[[usr.last_name]] <span class="text-muted">([[usr.username]])</span></span>
                                         </div>
-                                        <button type="button" class="btn-1 btn btn-success fw-medium" @click="startEdit(usr,4)">
+                                        <button type="button" class="btn-1 btn btn-outline-success btn-sm fw-medium" @click="startEdit(usr,4)">
                                             <span class="d-flex align-items-center gap-6">
-                                                <i class="bi bi-pen"></i>
-                                                <span class="white">Промени</span>
-                                            </span>
+                                                <i class="bi bi-pen"></i>Промени</span>
                                         </button>
                                     </div>
                                 </li>
@@ -222,48 +210,36 @@
                                             </div>
                                         </div>
                                         <!-- потребителско име -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success">
-                                                <input id="ua_6" type="text" class="form-control" v-model="form.username">
-                                                <label for="ua_6">Потребителско име</label>
-                                            </div>
+                                        <div class="col-md-4 mb-4">
+                                            <label for="ua_6">Потребителско име:</label>
+                                            <input id="ua_6" type="text" class="form-control border-green" v-model="form.username">
                                         </div>
                                         <!-- Парола 1 -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success"
+                                        <div class="col-md-4 mb-4"
                                                  v-if="(formMode === 'create')||formChangePassword">
-                                                <input id="ua_7" type="password" class="form-control" v-model="form.password">
-                                                <label for="ua_7">Парола</label>
-                                            </div>
+                                            <label for="ua_7">Парола:</label>
+                                            <input id="ua_7" type="password" class="form-control border-green" v-model="form.password">
                                         </div>
                                         <!-- Парола 2 -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success"
+                                        <div class="col-md-4 mb-4"
                                                  v-if="(formMode === 'create')||formChangePassword">
-                                                <input id="ua_8" type="password" class="form-control" v-model="form.password2">
-                                                <label for="ua_8">Парола (повторно)</label>
-                                            </div>
+                                            <label for="ua_8">Парола (повторно):</label>
+                                            <input id="ua_8" type="password" class="form-control border-green" v-model="form.password2">
                                         </div>
                                         <!-- собствено име -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success">
-                                                <input id="ua_9" type="text" class="form-control" v-model="form.first_name">
-                                                <label for="ua_9">Собствено име</label>
-                                            </div>
+                                        <div class="col-md-4 mb-4">
+                                            <label for="ua_9">Собствено име:</label>
+                                            <input id="ua_9" type="text" class="form-control border-green" v-model="form.first_name">
                                         </div>
                                         <!-- фамилно име -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success">
-                                                <input id="ua_10" type="text" class="form-control" v-model="form.last_name">
-                                                <label for="ua_10">Фамилно име</label>
-                                            </div>
+                                        <div class="col-md-4 mb-4">
+                                            <label for="ua_10">Фамилно име:</label>
+                                            <input id="ua_10" type="text" class="form-control border-green" v-model="form.last_name">
                                         </div>
                                         <!-- email -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success">
-                                                <input id="ua_11" type="email" class="form-control" v-model="form.email">
-                                                <label for="ua_11">e-mail</label>
-                                            </div>
+                                        <div class="col-md-4 mb-4">
+                                            <label for="ua_11">e-mail</label>
+                                            <input id="ua_11" type="email" class="form-control border-green" v-model="form.email">
                                         </div>
                                     </div>
                                 </div>
@@ -275,10 +251,10 @@
                                         </label>
                                     </div>
                                     <!-- Бутони запис/отказ -->
-                                    <button class="btn btn-outline-secondary btn-wave fs-16" @click="clearEditMode()">
+                                    <button class="btn btn-outline-secondary btn-sm fs-16" @click="clearEditMode()">
                                         Откажи</button>
                                     &nbsp; &nbsp; &nbsp;
-                                    <button class="btn btn-outline-success btn-wave fs-16" :disabled="!userOK"
+                                    <button class="btn btn-outline-success btn-sm fs-16" :disabled="!userOK"
                                             @click="saveUser">
                                         Запиши</button>
                                 </div>
@@ -289,11 +265,9 @@
                             <div>
                             </div>
                             <div class="d-flex gap-12 align-items-center" v-if="!edit.editor">
-                                <button type="button" class="btn-1 btn btn-success" @click="startCreate(4)">
+                                <button type="button" class="btn-1 btn btn-outline-success btn-sm" @click="startCreate(4)">
                                     <span class="d-flex align-items-center gap-6">
-                                        <i class="bi bi-plus-circle"></i>
-                                        <span class="white">Добави учител</span>
-                                    </span>
+                                        <i class="bi bi-plus-circle"></i>Добави учител</span>
                                 </button>
                             </div>
                         </div>
@@ -328,16 +302,16 @@
                             <div class="mt-4">
                                 <div v-for="(sections, grade) in groupedStudents" :key="grade" class="mb-3">
                                     <div v-for="(students, section) in sections" :key="grade + '-' + section" class="mb-3">
-                                        <h5 class="mb-2">[[ grade ]]<sup>[[ section ]]</sup> клас</h5>
-                                        <ul class="list-unstyled projects-items-success-list">
+                                        <h5 class="mb-2" v-if="(numStudents>0)&&(!edit.editor)">[[ grade ]]<sup>[[ section ]]</sup> клас</h5>
+                                        <ul class="list-unstyled projects-items-success-list" v-if="(numStudents>0)&&(!edit.editor)">
                                             <li v-for="u in students" :key="u.id" class="list-group-item d-flex justify-content-between align-items-center">
                                                 <span>
                                                     [[ u.first_name ]] [[ u.last_name ]]
                                                     <small class="text-muted">([[ u.username ]]) Специалност "[[u.userprofile.speciality.specialty_name]]"</small>
                                                 </span>
                                                 <span>
-                                                    <button class="btn btn-sm btn-outline-primary me-2" @click="startEdit(u, 5)">Редакция</button>
-                                                    <button class="btn btn-sm btn-outline-danger" @click="deleteUser(u)">Изтриване</button>
+                                                    <button class="btn-1 btn-sm btn-outline-success me-2" @click="startEdit(u, 5)">Редакция</button>
+                                                    <button class="btn-1 btn-outline-secondary btn-sm" @click="deleteUser(u)">Изтриване</button>
                                                 </span>
                                             </li>
                                         </ul>
@@ -363,87 +337,67 @@
                                             </div>
                                         </div>
                                         <!-- потребителско име -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success">
-                                                <input id="ua_12" type="text" class="form-control" v-model="form.username">
-                                                <label for="ua_12">Потребителско име</label>
-                                            </div>
+                                        <div class="col-md-4 mb-4">
+                                            <label for="ua_12">Потребителско име:</label>
+                                            <input id="ua_12" type="text" class="form-control border-green" v-model="form.username">
                                         </div>
                                         <!-- Парола 1 -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success"
-                                                 v-if="(formMode === 'create')||formChangePassword">
-                                                <input id="ua_13" type="password" class="form-control" v-model="form.password">
-                                                <label for="ua_13">Парола</label>
-                                            </div>
+                                        <div class="col-md-4 mb-4" v-if="(formMode === 'create')||formChangePassword">
+                                            <input id="ua_13" type="password" class="form-control border-green" v-model="form.password">
+                                            <label for="ua_13">Парола:</label>
                                         </div>
                                         <!-- Парола 2 -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success"
-                                                 v-if="(formMode === 'create')||formChangePassword">
-                                                <input id="ua_14" type="password" class="form-control" v-model="form.password2">
-                                                <label for="ua_14">Парола (повторно)</label>
-                                            </div>
+                                        <div class="col-md-4 mb-4" v-if="(formMode === 'create')||formChangePassword">
+                                            <label for="ua_14">Парола (повторно):</label>
+                                            <input id="ua_14" type="password" class="form-control border-green" v-model="form.password2">
                                         </div>
                                         <!-- собствено име -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success">
-                                                <input id="ua_15" type="text" class="form-control" v-model="form.first_name">
-                                                <label for="ua_15">Собствено име</label>
-                                            </div>
+                                        <div class="col-md-4 mb-4">
+                                            <label for="ua_15">Собствено име:</label>
+                                            <input id="ua_15" type="text" class="form-control border-green" v-model="form.first_name">
                                         </div>
                                         <!-- фамилно име -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success">
-                                                <input id="ua_16" type="text" class="form-control" v-model="form.last_name">
-                                                <label for="ua_16">Фамилно име</label>
-                                            </div>
+                                        <div class="col-md-4 mb-4">
+                                            <label for="ua_16">Фамилно име:</label>
+                                            <input id="ua_16" type="text" class="form-control border-green" v-model="form.last_name">
                                         </div>
                                         <!-- email -->
-                                        <div class="col-md-4">
-                                            <div class="form-floating mb-4 floating-success">
-                                                <input id="ua_17" type="email" class="form-control" v-model="form.email">
-                                                <label for="ua_17">e-mail</label>
-                                            </div>
+                                        <div class="col-md-4 mb-4">
+                                            <label for="ua_17">e-mail:</label>
+                                            <input id="ua_17" type="email" class="form-control border-green" v-model="form.email">
                                         </div>
                                         <!-- клас -->
-                                        <div class="col-md-3">
-                                            <div class="form-floating mb-4">
-                                                <select class="form-select border-green" id="ua_18" v-model="form.userprofile.grade">
-                                                    <option value="8" class="bg-info">8</option>
-                                                    <option value="9" class="bg-primary">9</option>
-                                                    <option value="10" class="bg-secondary">10</option>
-                                                    <option value="11" class="bg-warning">11</option>
-                                                    <option value="12" class="bg-success">12</option>
-                                                </select>
-                                                <label for="ua_18">Клас</label>
-                                            </div>
+                                        <div class="col-md-3 mb-4">
+                                            <label for="ua_18">Клас:</label>
+                                            <select class="form-select border-green" id="ua_18" v-model="form.userprofile.grade">
+                                                <option value="8" class="bg-info">8</option>
+                                                <option value="9" class="bg-primary">9</option>
+                                                <option value="10" class="bg-secondary">10</option>
+                                                <option value="11" class="bg-warning">11</option>
+                                                <option value="12" class="bg-success">12</option>
+                                            </select>
                                         </div>
                                         <!-- паралелка -->
-                                        <div class="col-md-3">
-                                            <div class="form-floating mb-4">
-                                                <select class="form-select border-green" id="ua_19" v-model="form.userprofile.section">
-                                                    <option value="а" class="bg-info">"а"</option>
-                                                    <option value="б" class="bg-primary">"б"</option>
-                                                    <option value="в" class="bg-secondary">"в"</option>
-                                                    <option value="г" class="bg-warning">"г"</option>
-                                                    <option value="д" class="bg-success">"д"</option>
-                                                </select>
-                                                <label for="ua_19">Паралелка</label>
-                                            </div>
+                                        <div class="col-md-3 mb-4">
+                                            <label for="ua_19">Паралелка:</label>
+                                            <select class="form-select border-green" id="ua_19" v-model="form.userprofile.section">
+                                                <option value="а" class="bg-info">"а"</option>
+                                                <option value="б" class="bg-primary">"б"</option>
+                                                <option value="в" class="bg-secondary">"в"</option>
+                                                <option value="г" class="bg-warning">"г"</option>
+                                                <option value="д" class="bg-success">"д"</option>
+                                            </select>
                                         </div>
                                         <!-- специалност -->
-                                        <div class="col-md-6">
-                                            <div class="form-floating mb-4">
-                                                <select class="form-select border-green" id="ua_20"
-                                                        v-model="form.userprofile.speciality">
-                                                    <option :value="null" disabled>Изберете специалност</option>
-                                                    <option v-for="sp in listOfSpecialties" :key="sp.id" :value="sp.id">
-                                                        [[ sp.specialty_name ]]
-                                                    </option>
-                                                </select>
-                                                <label for="ua_20">Специалност</label>
-                                            </div>
+                                        <div class="col-md-6 mb-4">
+                                            <label for="ua_20">Специалност</label>
+                                            <select class="form-select border-green" id="ua_20"
+                                                    v-model="form.userprofile.speciality">
+                                                <option :value="null" disabled>Изберете специалност</option>
+                                                <option v-for="sp in listOfSpecialties" :key="sp.id" :value="sp.id">
+                                                    [[ sp.specialty_name ]]
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -455,10 +409,10 @@
                                         </label>
                                     </div>
                                     <!-- Бутони запис/отказ -->
-                                    <button class="btn btn-outline-secondary btn-wave fs-16" @click="clearEditMode()">
+                                    <button class="btn btn-outline-secondary btn-sm fs-16" @click="clearEditMode()">
                                         Откажи</button>
                                     &nbsp; &nbsp; &nbsp;
-                                    <button class="btn btn-outline-success btn-wave fs-16" :disabled="!userOK"
+                                    <button class="btn btn-outline-success btn-sm fs-16" :disabled="!userOK"
                                             @click="saveUser">
                                         Запиши</button>
                                 </div>
@@ -469,11 +423,9 @@
                             <div>
                             </div>
                             <div class="d-flex gap-12 align-items-center" v-if="!edit.editor">
-                                <button type="button" class="btn-1 btn btn-success" @click="startCreate(5)">
+                                <button type="button" class="btn-1 btn btn-outline-success btn-sm" @click="startCreate(5)">
                                     <span class="d-flex align-items-center gap-6">
-                                        <i class="bi bi-plus-circle"></i>
-                                        <span class="white">Добави ученик</span>
-                                    </span>
+                                        <i class="bi bi-plus-circle"></i>Добави ученик</span>
                                 </button>
                             </div>
                         </div>

@@ -31,6 +31,7 @@ const App = {
             },
             notes: [],
             tasks: [],
+            attachments: [],
 
             // note edit
             noteEditMode: false,
@@ -42,9 +43,31 @@ const App = {
             taskForm: { id: 0, session: null, point: null, num: 1, name: '', condition: '', answer: '' },
             isTaskEditorsMounting: false,
 
+            // attachment edit
+            attachmentEditMode: false,
+            attachmentForm: {
+                id: 0,
+                session: null,
+                point: null,
+                num: 1,
+                name: '',
+                attachment_type: 'other',
+                file: null,
+                file_url: '',
+                file_name: '',
+                description: ''
+            },
+            selectedAttachmentFile: null,
+
         }
     },
     computed: {
+        theoryAttachments() {
+            return (this.attachments || []).filter(a => a.attachment_type === 'theory');
+        },
+        otherAttachments() {
+            return (this.attachments || []).filter(a => a.attachment_type === 'other' || !a.attachment_type);
+        }
     },
     methods: {
         loadUserDetails() {
@@ -56,7 +79,9 @@ const App = {
                     vm.loadSessionTopics()
                     vm.loadSessionPoints()
                     vm.loadSessionNotes();
-                    vm.loadSessionTasks();                })
+                    vm.loadSessionTasks();
+                    vm.loadSessionAttachments();
+                })
         },
         loadSessionTopics() {
             // чета списъка на всички теми, включени в дадено занятие
@@ -104,6 +129,8 @@ const App = {
             this.pointEditMode = false;
             this.noteEditMode = false;
             this.taskEditMode = false;
+            this.attachmentEditMode = false;
+            this.selectedAttachmentFile = null;
             this.pointForm = {
                 id: 0, session: null, num: 1, name: '', description: '', duration: 10, content: ''
             };
@@ -214,6 +241,14 @@ const App = {
                 .then(res => {
                     vm.tasks = res.data;
                     vm.addCollapsedToTasks();
+                });
+        },
+        loadSessionAttachments() {
+            const vm = this;
+            axios.get('/api/sessions/' + vm.session.id + '/attachments/')
+                .then(res => {
+                    vm.attachments = res.data;
+                    vm.addCollapsedToAttachments();
                 });
         },
 
@@ -402,6 +437,111 @@ const App = {
                 });
         },
 
+        // Attachments
+        addCollapsedToAttachments() {
+            if (!Array.isArray(this.attachments)) return;
+            for (const a of this.attachments) {
+                if (a && typeof a === 'object' && !Object.prototype.hasOwnProperty.call(a, 'collapsed')) {
+                    a.collapsed = true;
+                }
+            }
+        },
+        startCreateAttachment(type = 'other', pointId = null) {
+            this.attachmentEditMode = true;
+            this.selectedAttachmentFile = null;
+            const itemsInGroup = type === 'theory' ? this.theoryAttachments : this.otherAttachments;
+            this.attachmentForm = {
+                id: 0,
+                session: this.session.id,
+                point: pointId,
+                num: (itemsInGroup?.length || 0) + 1,
+                name: '',
+                attachment_type: type,
+                file: null,
+                file_url: '',
+                file_name: '',
+                description: ''
+            };
+        },
+        startEditAttachment(a) {
+            this.attachmentEditMode = true;
+            this.selectedAttachmentFile = null;
+            this.attachmentForm = {
+                id: a.id,
+                session: a.session ?? this.session.id,
+                point: a.point ?? null,
+                num: a.num,
+                name: a.name || '',
+                attachment_type: a.attachment_type || 'other',
+                file: null,
+                file_url: a.file_url || '',
+                file_name: a.file_name || '',
+                description: a.description || ''
+            };
+        },
+        onAttachmentFileChange(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.selectedAttachmentFile = file;
+                if (!this.attachmentForm.name) {
+                    this.attachmentForm.name = file.name;
+                }
+            } else {
+                this.selectedAttachmentFile = null;
+            }
+        },
+        async saveAttachment() {
+            if (!this.attachmentForm.session) this.attachmentForm.session = this.session.id;
+            try {
+                const formData = new FormData();
+                formData.append('id', this.attachmentForm.id || 0);
+                formData.append('session', this.attachmentForm.session);
+                if (this.attachmentForm.point !== null && this.attachmentForm.point !== undefined && this.attachmentForm.point !== '') {
+                    formData.append('point', this.attachmentForm.point);
+                } else {
+                    formData.append('point', '');
+                }
+                formData.append('num', this.attachmentForm.num || 1);
+                formData.append('name', this.attachmentForm.name || '');
+                formData.append('attachment_type', this.attachmentForm.attachment_type || 'other');
+                formData.append('description', this.attachmentForm.description || '');
+                if (this.selectedAttachmentFile) {
+                    formData.append('file', this.selectedAttachmentFile);
+                }
+
+                await axios.post('/api/session-attachments/upsert/', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'X-CSRFToken': CSRF_TOKEN
+                    }
+                });
+                this.attachmentEditMode = false;
+                this.selectedAttachmentFile = null;
+                await this.loadSessionAttachments();
+            } catch(e) {
+                console.error(e);
+                alert('Грешка при запис на файл/приложение');
+            }
+        },
+        cancelAttachmentEdit() {
+            this.attachmentEditMode = false;
+            this.selectedAttachmentFile = null;
+        },
+        deleteAttachment(a) {
+            if (!confirm('Да се изтрие ли този прикачен файл?')) return;
+            axios.delete('/api/session-attachments/' + a.id + '/', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': CSRF_TOKEN
+                }
+            })
+                .then(() => { this.loadSessionAttachments(); })
+                .catch(err => {
+                    console.error(err);
+                    alert('Грешка при изтриване');
+                });
+        },
+
 
         initTiny(targetOrSelector, initialHtml = '', onChange) {
             console.log('initTiny', targetOrSelector);
@@ -420,6 +560,10 @@ const App = {
                     height: 300,
                     branding: false,
                     id: targetEl?.id || undefined,
+                    relative_urls: false,
+                    remove_script_host: false,
+                    convert_urls: false,
+                    document_base_url: window.location.origin + '/',
                     images_upload_handler: async (blobInfo, progress) => {
                         const form = new FormData();
                         form.append('file', blobInfo.blob(), blobInfo.filename());

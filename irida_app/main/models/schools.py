@@ -12,6 +12,9 @@ from .curriculum import Subject
 # ***************************************
 class Specialty(models.Model):
 
+    specialty_type = models.CharField('Тип', max_length=15,
+                                      choices=[('професия', 'професия'), ('специалност', 'специалност')],
+                                      default='специалност')
     specialty_num = models.CharField('Специалност - номер', max_length=8, default='', blank=True)
     specialty_name = models.CharField('Специалност - име', max_length=100, default='', blank=True)
     level = models.PositiveSmallIntegerField(choices=[(2, 'втора'), (3, 'трета')], default=3,

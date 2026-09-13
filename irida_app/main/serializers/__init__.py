@@ -28,6 +28,7 @@ from .lessons import (
     SessionReadSerializer,
     SessionSerializer,
     SessionTaskSerializer,
+    SessionAttachmentSerializer,
     SessionTopicReadSerializer,
     SessionTopicReadSerializerDetailed,
     SessionTopicWriteSerializer,
@@ -69,6 +70,7 @@ __all__ = [
     'SessionPointSerializer',
     'SessionNoteSerializer',
     'SessionTaskSerializer',
+    'SessionAttachmentSerializer',
     # accounts
     'UserSerializer',
     'UserReadSerializer',

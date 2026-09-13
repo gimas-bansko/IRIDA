@@ -13,6 +13,7 @@ from .views import (
     SessionPointsForSessionView,
     SessionRetrieveUpdateDestroyView,
     SessionTasksForSessionView,
+    SessionAttachmentsForSessionView,
     SessionTopicListCreateView,
     SessionTopicRetrieveUpdateDestroyView,
     SessionTopicsForSessionView,
@@ -28,6 +29,8 @@ from .views import (
     UserListView,
     UserRetrieveUpdateDestroyView,
     ckeditor_image_upload,
+    session_attachment_delete,
+    session_attachment_upsert,
     session_note_delete,
     session_note_upsert,
     session_point_delete,
@@ -103,6 +106,12 @@ urlpatterns = [
          name='session-tasks-for-session'),
     path('session-tasks/upsert/', session_task_upsert, name='session-task-upsert'),
     path('session-tasks/<int:pk>/', session_task_delete, name='session-task-delete'),
+
+    # Приложения
+    path('sessions/<int:session_id>/attachments/', SessionAttachmentsForSessionView.as_view(),
+         name='session-attachments-for-session'),
+    path('session-attachments/upsert/', session_attachment_upsert, name='session-attachment-upsert'),
+    path('session-attachments/<int:pk>/', session_attachment_delete, name='session-attachment-delete'),
 
     # Качване на картинки
     path('uploads/ckeditor-image/', ckeditor_image_upload, name='ckeditor-image-upload'),
