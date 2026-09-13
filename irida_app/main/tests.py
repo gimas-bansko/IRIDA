@@ -1,8 +1,9 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIClient
 from rest_framework import status
+from main.constants import STUDENT, TEACHER
 from main.models import (
     Goal,
     School,
@@ -10,10 +11,12 @@ from main.models import (
     Session,
     SessionAttachment,
     SessionPoint,
+    SessionTask,
     Specialty,
     Subject,
     Topic,
     Unit,
+    UserProfile,
 )
 
 
@@ -157,3 +160,73 @@ class SchoolDayConfigAPITest(TestCase):
         config = SchoolDayConfig.get_config()
         self.assertEqual(config.school_day_start, '08:30')
         self.assertEqual(config.school_lessons_count, 6)
+
+
+class StudentPortalTest(TestCase):
+    def setUp(self):
+        self.school = School.objects.create(full_name='Училище 1', short_name='У1', city='София')
+        self.specialty = Specialty.objects.create(school=self.school, specialty_name='Софтуерно инженерство')
+        self.subject = Subject.objects.create(specialty=self.specialty, name='Обектно-ориентирано програмиране', grade=10)
+        self.session = Session.objects.create(course=self.subject, num=1, name='Класове и обекти')
+        self.task = SessionTask.objects.create(session=self.session, num=1, name='Задача 1', condition='Условие', answer='Отговор')
+        self.attachment = SessionAttachment.objects.create(session=self.session, num=1, name='Теория 1', attachment_type='theory')
+
+        # Create student user
+        self.student_user = User.objects.create_user(username='student1', password='password123', first_name='Иван', last_name='Иванов')
+        self.student_profile = self.student_user.userprofile
+        self.student_profile.access_level = STUDENT
+        self.student_profile.school = self.school
+        self.student_profile.speciality = self.specialty
+        self.student_profile.subject = self.subject
+        self.student_profile.grade = 10
+        self.student_profile.section = 'а'
+        self.student_profile.save()
+
+        # Create teacher user
+        self.teacher_user = User.objects.create_user(username='teacher1', password='password123', first_name='Петър', last_name='Петров')
+        self.teacher_profile = self.teacher_user.userprofile
+        self.teacher_profile.access_level = TEACHER
+        self.teacher_profile.school = self.school
+        self.teacher_profile.speciality = self.specialty
+        self.teacher_profile.subject = self.subject
+        self.teacher_profile.grade = 10
+        self.teacher_profile.section = 'а'
+        self.teacher_profile.save()
+
+    def test_student_login_redirect(self):
+        client = Client()
+        resp = client.post('/login', {'username': 'student1', 'password': 'password123'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, '/student_lessons')
+
+    def test_teacher_login_redirect(self):
+        client = Client()
+        resp = client.post('/login', {'username': 'teacher1', 'password': 'password123'})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, '/home')
+
+    def test_student_lessons_page_access(self):
+        client = Client()
+        client.login(username='student1', password='password123')
+        resp = client.get('/student_lessons')
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'ИРИДА - Уроци за ученика')
+
+    def test_student_welcome_redirect(self):
+        client = Client()
+        client.login(username='student1', password='password123')
+        resp = client.get('/home')
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.url, '/student_lessons')
+
+    def test_subject_sessions_with_topics_api(self):
+        client = APIClient()
+        client.force_authenticate(user=self.student_user)
+        resp = client.get(f'/api/subjects/{self.subject.id}/sessions-with-topics/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(resp.data), 1)
+        session_data = resp.data[0]
+        self.assertEqual(len(session_data['session_tasks']), 1)
+        self.assertEqual(session_data['session_tasks'][0]['name'], 'Задача 1')
+        self.assertEqual(len(session_data['session_attachments']), 1)
+        self.assertEqual(session_data['session_attachments'][0]['attachment_type'], 'theory')

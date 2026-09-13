@@ -50,7 +50,7 @@ class SessionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SessionWriteSerializer
 
 
-# Списък на Session за даден Subject (с вложени SessionTopic и разгънат Topic)
+# Списък на Session за даден Subject (с вложени SessionTopic, SessionTask, SessionAttachment, SessionPoint)
 class SubjectSessionsWithTopicsView(generics.ListAPIView):
     serializer_class = SessionReadSerializer
 
@@ -61,11 +61,23 @@ class SubjectSessionsWithTopicsView(generics.ListAPIView):
             'session_topics',
             queryset=SessionTopic.objects.select_related('topic').order_by('id')
         )
+        tasks_prefetch = Prefetch(
+            'session_tasks',
+            queryset=SessionTask.objects.order_by('num', 'id')
+        )
+        attachments_prefetch = Prefetch(
+            'session_attachments',
+            queryset=SessionAttachment.objects.order_by('num', 'id')
+        )
+        points_prefetch = Prefetch(
+            'session_points',
+            queryset=SessionPoint.objects.order_by('num', 'id')
+        )
         return (
             Session.objects
             .filter(course_id=subject_id)
             .order_by('num', 'id')
-            .prefetch_related(topics_prefetch)
+            .prefetch_related(topics_prefetch, tasks_prefetch, attachments_prefetch, points_prefetch)
         )
 
 

@@ -7,9 +7,9 @@ HTML страници (server-rendered). Данните за таблиците 
 """
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
-from ..constants import USER_LEVEL
+from ..constants import STUDENT, USER_LEVEL
 from ..models import School, Session
 
 
@@ -40,8 +40,17 @@ def make_user_context(r):
 
 @login_required
 def welcome_view(request):
+    user_profile = getattr(request.user, 'userprofile', None)
+    if user_profile and user_profile.access_level == STUDENT:
+        return redirect('student_lessons')
     context = make_user_context(request)
     return render(request, 'main/welcome.html', context)
+
+
+@login_required
+def student_lessons_view(request):
+    context = make_user_context(request)
+    return render(request, 'main/student_lessons.html', context)
 
 
 @login_required

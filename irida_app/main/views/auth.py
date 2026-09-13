@@ -7,6 +7,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_protect
 
+from ..constants import STUDENT
+
 
 @csrf_protect
 def login_view(request):
@@ -16,6 +18,11 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            user_profile = getattr(user, 'userprofile', None)
+            if user_profile and user_profile.access_level == STUDENT:
+                return redirect('student_lessons')
+            if next_url and next_url != 'home':
+                return redirect(next_url)
             return redirect('home')
     else:
         form = AuthenticationForm(request)

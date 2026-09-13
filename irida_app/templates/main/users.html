@@ -10,6 +10,8 @@
                 <!-- Page Header -->
                  <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
                      <div>
+                         <h1 class="page-title fw-normal fs-20 mb-12">Потребители</h1>
+                         <!--
                          <p class="mb-1 mt-2 text-muted">
                              <img class="avatar" src="{{ user_profile.school.logo.url }}">
                              {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
@@ -19,6 +21,7 @@
                                 <li class="breadcrumb-item active" aria-current="page">Потребители</li>
                             </ol>
                         </nav>
+                        -->
                      </div>
                 </div>
                 <!-- Page Header Close -->
@@ -153,7 +156,7 @@
 
                 <!-- Учители -->
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
-                     v-if="!edit.editor||edit.teacher">
+                     v-if="(user.user_level_num<4)&&(!edit.editor||edit.teacher)">
                     <div class="card-1 custom-card" >
                         <!-- Заглавие на секцията -->
                         <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4">

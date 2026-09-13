@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="bg" dir="ltr" data-nav-layout="horizontal" data-theme-mode="light" data-header-styles="light"
+      data-menu-styles="light">
+<head>
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> ИРИДА - Уроци за ученика </title>
+    <meta name="Description" content="Project Irida - Ученически портал">
+    <meta name="Author" content="Gimas 2000">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'images/brand-logos/favicon.ico.png' %}" type="image/x-icon">
+
+    <!-- Main Theme Js -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="{% static 'libs/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Style CSS -->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+
+    <!-- Icons Css -->
+    <link href="{% static 'css/icons.min.css' %}" rel="stylesheet">
+
+    <!-- Node Waves Css -->
+    <link href="{% static 'libs/node-waves/waves.min.css' %}" rel="stylesheet">
+
+    <!-- Simplebar Css -->
+    <link href="{% static 'libs/simplebar/simplebar.min.css' %}" rel="stylesheet">
+
+    <!-- Vue 3 & Axios & DOMPurify -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script type="text/javascript">
+        window.CSRF_TOKEN = "{{ csrf_token }}";
+    </script>
+    <style>
+        .app-content {
+            margin-inline-start: 0 !important;
+            padding-top: 5rem;
+            min-height: calc(100vh - 60px);
+        }
+        .main-header-container {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page" id="main_app">
+        <!-- app-header -->
+        <header class="app-header">
+            <!-- Start::main-header-container -->
+            <div class="main-header-container container-fluid">
+                <!-- Start::header-content-left -->
+                <div class="header-content-left">
+                    <div class="header-element">
+                        <div class="horizontal-logo">
+                            <a href="{% url 'student_lessons' %}" class="header-logo">
+                                <img src="{% static 'images/brand-logos/desktop-logo.png' %}" alt="logo" class="desktop-logo">
+                                <img src="{% static 'images/brand-logos/desktop-dark.png' %}" alt="logo" class="desktop-dark">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- End::header-content-left -->
+
+                <!-- Start::header-content-right -->
+                <div class="header-content-right">
+                    <!-- Потребител -->
+                    <div class="header-element">
+                        <a href="javascript:void(0);" class="header-link dropdown-toggle" id="mainHeaderProfile" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <div class="d-sm-block d-none text-end me-2">
+                                    <p class="fw-semibold mb-0 lh-1">{{ user_name }}</p>
+                                    <p class="mb-0 lh-1 fs-12 text-muted">Ученик ({{ user_nick }})</p>
+                                </div>
+                                <span class="avatar avatar-sm avatar-rounded bg-primary-transparent text-primary">
+                                    <i class="bi bi-person fs-16"></i>
+                                </span>
+                            </div>
+                        </a>
+                        <ul class="main-header-dropdown dropdown-menu pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end"
+                            aria-labelledby="mainHeaderProfile">
+                            <li><a class="dropdown-item d-flex" href="{% url 'logout' %}"><i
+                                        class="ti ti-logout fs-18 me-2 op-7"></i>Изход</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Тема -->
+                    <div class="header-element header-theme-mode">
+                        <a href="javascript:void(0);" class="header-link layout-setting">
+                            <span class="light-layout">
+                                <i class="bx bx-moon header-link-icon"></i>
+                            </span>
+                            <span class="dark-layout">
+                                <i class="bx bx-sun header-link-icon"></i>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+                <!-- End::header-content-right -->
+            </div>
+            <!-- End::main-header-container -->
+        </header>
+        <!-- /app-header -->
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content" style="margin-top: 0;">
+            <div class="container-fluid">
+                <!-- Page Header -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                    <div>
+                        <p class="mb-1 mt-2 text-muted" v-if="user.school">
+                            <img class="avatar avatar-xs me-1" :src="user.school.logo || '{% static "images/brand-logos/toggle-logo.png" %}'" :alt="user.school.short_name">
+                            [[ user.school.short_name ]] - [[ user.school.city ]]
+                        </p>
+                        <h1 class="page-title fw-normal fs-20 mb-12">Учебни материали и уроци</h1>
+                        <div class="d-flex align-items-center flex-wrap gap-4 mb-2">
+                            <!-- Специалност -->
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="text-muted fs-14 fw-semibold">Специалност:</span>
+                                <span class="badge bg-primary-transparent text-primary fs-14">[[ userSpecialtyText ]]</span>
+                            </div>
+
+                            <!-- Клас -->
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="text-muted fs-14 fw-semibold">Клас:</span>
+                                <span class="badge bg-info-transparent text-info fs-14">[[ userGradeText ]]</span>
+                            </div>
+
+                            <!-- Филтър за предмет -->
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="selectSubject" class="form-label mb-0 fw-semibold fs-14">Предмет:</label>
+                                <select id="selectSubject" class="form-select form-select-sm border-green fs-14" style="min-width: 260px; width: auto;"
+                                        v-model="user.subject" @change="setSubject(user.subject)">
+                                    <option v-for="sb in studentSubjects" :key="sb.id" :value="sb.id">
+                                        [[ sb.name ]] ([[ sb.subject_type ]])
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Page Header Close -->
+
+                <!-- Ако няма избрани или разработени уроци -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
+                     v-if="!loading && listOfSessions.length === 0">
+                    <div class="card-1 custom-card w-100">
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-2">
+                            <div class="card-title">
+                                <div>Уроци</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled projects-items-danger-list mb-0">
+                                <li>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal fs-16 custom-black">
+                                                Не са намерени разработени уроци по избрания предмет.
+                                            </span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Списък с уроци -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
+                     v-if="listOfSessions.length > 0">
+                    <div class="card-1 custom-card w-100">
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-2">
+                            <div class="card-title">
+                                <div>Уроци по предмета ([[ listOfSessions.length ]])</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled projects-items-success-list">
+                                <li class="mt-4" v-for="(session, session_idx) in listOfSessions" :key="session.id">
+                                    <!-- Общи параметри на урока -->
+                                    <div class="d-flex align-items-center justify-content-between gap-3" style="padding-right: 16px;">
+                                        <div class="flex-fill">
+                                            <span class="d-block fw-normal fs-16 custom-black">
+                                                Урок [[ session.num ]]. [[ session.name ]]
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Разгънато съдържание на урока -->
+                                    <div v-if="!session.collapsed" class="mt-3">
+
+                                        <!-- Трите панела: Теория, Задачи, Приложения -->
+
+                                        <!-- 1. Панел Теория -->
+                                        <div class="card-1 custom-card mt-3">
+                                            <div class="card-header py-2 bg-light d-flex align-items-center justify-content-between">
+                                                <div class="card-title fs-15 text-primary mb-0">
+                                                    <i class="bi bi-book me-2"></i>Теория
+                                                </div>
+                                                <span class="badge bg-primary-transparent text-primary fs-12"
+                                                      v-if="getTheoryAttachments(session).length === 1">
+                                                    [[ getTheoryAttachments(session).length ]] материал
+                                                </span>
+                                                <span class="badge bg-primary-transparent text-primary fs-12" v-else>
+                                                    [[ getTheoryAttachments(session).length ]] материалa
+                                                </span>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="list-unstyled projects-items-danger-list mb-0" v-if="getTheoryAttachments(session).length === 0">
+                                                    <li>
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <div class="flex-fill">
+                                                                <span class="d-block fw-normal fs-14 text-muted">
+                                                                    Няма теоретични материали към този урок
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <ul class="list-unstyled projects-items-primary-list mb-0" v-else>
+                                                    <li v-for="(att, attIndex) in getTheoryAttachments(session)" :key="att.id" class="mb-3 pb-2 border-bottom">
+                                                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                                            <div>
+                                                                <span class="badge bg-primary me-2">[[ attIndex + 1 ]]</span>
+                                                                <strong class="fs-14">[[ att.name ]]</strong>
+                                                                <small class="text-muted ms-2" v-if="att.point">
+                                                                    ([[ getPointNumNameById(session, att.point) ]])
+                                                                </small>
+                                                                <a :href="att.file_url" target="_blank" v-if="att.file_url" class="badge bg-primary-transparent text-primary fs-12 text-decoration-none ms-2">
+                                                                    <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ att.file_name || 'Свали файл' ]]
+                                                                </a>
+                                                            </div>
+                                                            <div v-if="att.description">
+                                                                <button class="btn btn-outline-primary btn-sm label-btn" v-show="!att.collapsed" @click="att.collapsed = true">
+                                                                    <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>покажи по-малко
+                                                                </button>
+                                                                <button class="btn btn-outline-primary btn-sm label-btn" v-show="att.collapsed" @click="att.collapsed = false">
+                                                                    <i class="bi bi-arrows-expand label-btn-icon me-2"></i>покажи повече
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2 fs-13 note-content" v-if="!att.collapsed && att.description">
+                                                            <div v-html="sanitize(att.description)"></div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <!-- 2. Панел Задачи -->
+                                        <div class="card-1 custom-card mt-3">
+                                            <div class="card-header py-2 bg-light d-flex align-items-center justify-content-between">
+                                                <div class="card-title fs-15 text-success mb-0">
+                                                    <i class="bi bi-pencil-square me-2"></i>Задачи
+                                                </div>
+                                                <span class="badge bg-success-transparent text-success fs-12" v-if="(session.session_tasks || []).length === 1">
+                                                    [[ (session.session_tasks || []).length ]] задача
+                                                </span>
+                                                <span class="badge bg-success-transparent text-success fs-12" v-else>
+                                                    [[ (session.session_tasks || []).length ]] задачи
+                                                </span>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="list-unstyled projects-items-danger-list mb-0" v-if="!session.session_tasks || session.session_tasks.length === 0">
+                                                    <li>
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <div class="flex-fill">
+                                                                <span class="d-block fw-normal fs-14 text-muted">
+                                                                    Няма задачи към този урок
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <ul class="list-unstyled projects-items-primary-list mb-0" v-else>
+                                                    <li v-for="(t, tIndex) in session.session_tasks" :key="t.id" class="mb-3 pb-2 border-bottom">
+                                                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                                            <div>
+                                                                <span class="badge bg-success me-2">[[ tIndex + 1 ]]</span>
+                                                                <strong class="fs-14">[[ t.name ]]</strong>
+                                                                <!--
+                                                                <small class="text-muted ms-2" v-if="t.point">
+                                                                    ([[ getPointNumNameById(session, t.point) ]])
+                                                                </small>
+                                                                -->
+                                                            </div>
+                                                            <div>
+                                                                <button class="btn btn-outline-success btn-sm label-btn" v-show="!t.collapsed" @click="t.collapsed = true">
+                                                                    <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>покажи по-малко
+                                                                </button>
+                                                                <button class="btn btn-outline-success btn-sm label-btn" v-show="t.collapsed" @click="t.collapsed = false">
+                                                                    <i class="bi bi-arrows-expand label-btn-icon me-2"></i>покажи повече
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2 fs-13 note-content" v-if="!t.collapsed">
+                                                            <div v-if="t.condition">
+                                                                <div class="fw-bold text-muted fs-12">Условие:</div>
+                                                                <div v-html="sanitize(t.condition)"></div>
+                                                            </div>
+                                                            <!--
+                                                            <div v-if="t.answer" class="mt-2">
+                                                                <div class="fw-bold text-muted fs-12">Отговор:</div>
+                                                                <div v-html="sanitize(t.answer)"></div>
+                                                            </div>
+                                                            -->
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <!-- 3. Панел Приложения -->
+                                        <div class="card-1 custom-card mt-3">
+                                            <div class="card-header py-2 bg-light d-flex align-items-center justify-content-between">
+                                                <div class="card-title fs-15 text-secondary mb-0">
+                                                    <i class="bi bi-paperclip me-2"></i>Приложения
+                                                </div>
+                                                <span class="badge bg-secondary-transparent text-secondary fs-12">
+                                                    [[ getOtherAttachments(session).length ]] приложения
+                                                </span>
+                                            </div>
+                                            <div class="card-body">
+                                                <ul class="list-unstyled projects-items-danger-list mb-0" v-if="getOtherAttachments(session).length === 0">
+                                                    <li>
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <div class="flex-fill">
+                                                                <span class="d-block fw-normal fs-14 text-muted">
+                                                                    Няма приложения към този урок
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                                <ul class="list-unstyled projects-items-primary-list mb-0" v-else>
+                                                    <li v-for="(att, attIndex) in getOtherAttachments(session)" :key="att.id" class="mb-3 pb-2 border-bottom">
+                                                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                                            <div>
+                                                                <span class="badge bg-secondary me-2">[[ attIndex + 1 ]]</span>
+                                                                <strong class="fs-14">[[ att.name ]]</strong>
+                                                                <small class="text-muted ms-2" v-if="att.point">
+                                                                    ([[ getPointNumNameById(session, att.point) ]])
+                                                                </small>
+                                                                <a :href="att.file_url" target="_blank" v-if="att.file_url" class="badge bg-secondary-transparent text-secondary fs-12 text-decoration-none ms-2">
+                                                                    <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ att.file_name || 'Свали файл' ]]
+                                                                </a>
+                                                            </div>
+                                                            <div v-if="att.description">
+                                                                <button class="btn btn-outline-secondary btn-sm label-btn" v-show="!att.collapsed" @click="att.collapsed = true">
+                                                                    <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>покажи по-малко
+                                                                </button>
+                                                                <button class="btn btn-outline-secondary btn-sm label-btn" v-show="att.collapsed" @click="att.collapsed = false">
+                                                                    <i class="bi bi-arrows-expand label-btn-icon me-2"></i>покажи повече
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2 fs-13 note-content" v-if="!att.collapsed && att.description">
+                                                            <div v-html="sanitize(att.description)"></div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Бутони за урок -->
+                                    <div class="btn-list text-center mt-3">
+                                        <button v-if="!session.collapsed" type="button" class="btn btn-outline-primary btn-sm label-btn" @click="session.collapsed=true">
+                                            <i class="ri-arrow-up-s-line label-btn-icon me-2"></i>
+                                            По-малко
+                                        </button>
+                                        <button v-if="session.collapsed" type="button" class="btn btn-outline-primary btn-sm label-btn" @click="session.collapsed=false">
+                                            <i class="ri-arrow-down-s-line label-btn-icon me-2"></i>
+                                            Виж повече
+                                        </button>
+                                    </div>
+                                    <hr>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+    </div>
+
+    <!-- Scroll To Top -->
+    <div class="scrollToTop">
+        <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
+    </div>
+    <div id="responsive-overlay"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- App JS -->
+    <script src="{% static 'irida/js/student_lessons.js' %}"></script>
+</body>
+</html>

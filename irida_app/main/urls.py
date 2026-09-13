@@ -20,6 +20,7 @@ from .views import (
     session_list_view,
     session_main_view,
     specialties_list_view,
+    student_lessons_view,
     subjects_list_view,
     users_list_view,
     welcome_view,
@@ -31,6 +32,8 @@ urlpatterns = [
     path('login', login_view, name='login'),
     path('logout', logout_view, name='logout'),
 
+    path('student_lessons', student_lessons_view, name='student_lessons'),
+    path('student', student_lessons_view, name='student'),
     path('specialties', specialties_list_view, name='specialty_list'),
     path('subjects', subjects_list_view, name='subjects_list'),
     path('schools', schools_list_view, name='schools_list'),

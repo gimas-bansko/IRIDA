@@ -59,14 +59,6 @@ class SessionTopicReadSerializerDetailed(serializers.ModelSerializer):
         fields = ['id', 'description', 'topic', 'session']
 
 
-class SessionReadSerializer(serializers.ModelSerializer):
-    session_topics = SessionTopicReadSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Session
-        fields = ['id', 'course', 'num', 'name', 'focus', 'goals', 'duration', 'session_type', 'basic_level', 'collapsed', 'session_topics']
-
-
 # Занятие - точки от плана
 class SessionPointSerializer(serializers.ModelSerializer):
     class Meta:
@@ -112,3 +104,18 @@ class SessionAttachmentSerializer(serializers.ModelSerializer):
         if obj.file:
             return os.path.basename(obj.file.name)
         return ''
+
+
+class SessionReadSerializer(serializers.ModelSerializer):
+    session_topics = SessionTopicReadSerializer(many=True, read_only=True)
+    session_tasks = SessionTaskSerializer(many=True, read_only=True)
+    session_attachments = SessionAttachmentSerializer(many=True, read_only=True)
+    session_points = SessionPointSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Session
+        fields = [
+            'id', 'course', 'num', 'name', 'focus', 'goals', 'duration',
+            'session_type', 'basic_level', 'collapsed',
+            'session_topics', 'session_tasks', 'session_attachments', 'session_points'
+        ]
