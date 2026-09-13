@@ -27,7 +27,7 @@ from .lessons import (
     SessionTask,
     SessionTopic,
 )
-from .schools import Documents, School, Specialty, school_pic_path
+from .schools import Documents, School, SchoolDayConfig, Specialty, school_pic_path
 
 __all__ = [
     # curriculum
@@ -45,6 +45,7 @@ __all__ = [
     # schools
     'Specialty',
     'School',
+    'SchoolDayConfig',
     'Documents',
     'school_pic_path',
     # accounts

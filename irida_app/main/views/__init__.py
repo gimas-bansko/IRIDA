@@ -52,6 +52,7 @@ from .api_lessons import (
     session_task_upsert,
 )
 from .api_schools import (
+    SchoolDayConfigAPIView,
     SchoolDetailAPIView,
     SchoolSpecialtiesView,
     specialty_detail,
@@ -69,6 +70,7 @@ from .pages import (
     course_units_view,
     lesson_view,
     make_user_context,
+    school_day_view,
     schools_list_view,
     session_home_view,
     session_list_view,
@@ -92,6 +94,7 @@ __all__ = [
     'users_list_view',
     'specialties_list_view',
     'schools_list_view',
+    'school_day_view',
     'course_goals_view',
     'course_units_view',
     'course_lessons_view',
@@ -111,6 +114,7 @@ __all__ = [
     # api_schools
     'SchoolDetailAPIView',
     'SchoolSpecialtiesView',
+    'SchoolDayConfigAPIView',
     'specialty_detail',
     # api_curriculum
     'SpecialtySubjectsView',

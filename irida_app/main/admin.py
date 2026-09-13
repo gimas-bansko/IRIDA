@@ -5,6 +5,7 @@ from .models import (
     Goal,
     Log,
     School,
+    SchoolDayConfig,
     Session,
     SessionAttachment,
     SessionNote,
@@ -42,6 +43,7 @@ class SpecialtyFilter(admin.SimpleListFilter):
 
 
 admin.site.register(School)
+admin.site.register(SchoolDayConfig)
 admin.site.register(Specialty)
 admin.site.register(Documents)
 admin.site.register(Subject)

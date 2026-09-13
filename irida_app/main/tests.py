@@ -3,7 +3,18 @@ from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIClient
 from rest_framework import status
-from main.models import Subject, Specialty, School, Session, SessionPoint, SessionAttachment, Unit, Topic
+from main.models import (
+    Goal,
+    School,
+    SchoolDayConfig,
+    Session,
+    SessionAttachment,
+    SessionPoint,
+    Specialty,
+    Subject,
+    Topic,
+    Unit,
+)
 
 
 class TopicModelTest(TestCase):
@@ -110,3 +121,39 @@ class SessionAttachmentAPITest(TestCase):
         del_resp = self.client.delete(f'/api/session-attachments/{theory_id}/')
         self.assertEqual(del_resp.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(SessionAttachment.objects.count(), 1)
+
+
+class SchoolDayConfigAPITest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testadmin', password='password123')
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+    def test_get_default_config(self):
+        response = self.client.get('/api/school-day-config/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['school_day_start'], '08:00')
+        self.assertEqual(response.data['school_lessons_count'], 7)
+        self.assertEqual(response.data['lesson_duration_minutes'], 45)
+        self.assertEqual(response.data['first_break_duration_minutes'], 20)
+        self.assertEqual(response.data['regular_break_duration_minutes'], 10)
+
+    def test_update_config(self):
+        update_data = {
+            'school_day_start': '08:30',
+            'school_lessons_count': 6,
+            'lesson_duration_minutes': 40,
+            'first_break_duration_minutes': 25,
+            'regular_break_duration_minutes': 15,
+        }
+        response = self.client.put('/api/school-day-config/', update_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['school_day_start'], '08:30')
+        self.assertEqual(response.data['school_lessons_count'], 6)
+        self.assertEqual(response.data['lesson_duration_minutes'], 40)
+        self.assertEqual(response.data['first_break_duration_minutes'], 25)
+        self.assertEqual(response.data['regular_break_duration_minutes'], 15)
+
+        config = SchoolDayConfig.get_config()
+        self.assertEqual(config.school_day_start, '08:30')
+        self.assertEqual(config.school_lessons_count, 6)

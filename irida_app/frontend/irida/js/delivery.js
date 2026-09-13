@@ -31,6 +31,9 @@ const App = {
                 attachments: false,
             },
             showGeneralNotes: false,
+            showGeneralTasks: false,
+            showGeneralTheory: false,
+            showGeneralAttachments: false,
 
             moscowMap: {
                 M: 'Задължителна тема',
@@ -45,7 +48,7 @@ const App = {
             currentTime: '',
 
             // конфигурация на учебния ден
-            schoolDayStart: '22:50',
+            schoolDayStart: '08:00',
             schoolLessonsCount: 7,
             lessonDurationSeconds: 45 * 60,
             firstBreakDurationSeconds: 20 * 60,
@@ -148,7 +151,19 @@ const App = {
         },
 
         generalNotes() {
-            return this.notes.filter(note => note.point === null);
+            return this.notes.filter(note => note.point === null || note.point == null);
+        },
+
+        generalTasks() {
+            return this.tasks.filter(task => task.point === null || task.point == null);
+        },
+
+        generalTheoryAttachments() {
+            return this.attachments.filter(a => (a.point === null || a.point == null) && a.attachment_type === 'theory');
+        },
+
+        generalOtherAttachments() {
+            return this.attachments.filter(a => (a.point === null || a.point == null) && (a.attachment_type === 'other' || !a.attachment_type));
         },
 
         sortedPoints() {
@@ -444,7 +459,27 @@ const App = {
                     vm.loadSessionNotes();
                     vm.loadSessionTasks();
                     vm.loadSessionAttachments();
+                    vm.loadSchoolDayConfig();
                 })
+        },
+
+        loadSchoolDayConfig() {
+            const vm = this;
+            axios.get('/api/school-day-config/')
+                .then(function (response) {
+                    if (response.data) {
+                        const data = response.data;
+                        if (data.school_day_start) vm.schoolDayStart = data.school_day_start;
+                        if (data.school_lessons_count) vm.schoolLessonsCount = Number(data.school_lessons_count);
+                        if (data.lesson_duration_minutes) vm.lessonDurationSeconds = Number(data.lesson_duration_minutes) * 60;
+                        if (data.first_break_duration_minutes) vm.firstBreakDurationSeconds = Number(data.first_break_duration_minutes) * 60;
+                        if (data.regular_break_duration_minutes) vm.regularBreakDurationSeconds = Number(data.regular_break_duration_minutes) * 60;
+                        vm.updateScheduleInfo();
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error loading school day config:', error);
+                });
         },
 
         loadSessionTopics() {
@@ -664,14 +699,15 @@ const App = {
             return;
         }
 
-        const lessonDuration = 45 * 60;
-        const firstBreakDuration = 20 * 60;
-        const regularBreakDuration = 10 * 60;
+        const lessonDuration = this.lessonDurationSeconds || 45 * 60;
+        const firstBreakDuration = this.firstBreakDurationSeconds || 20 * 60;
+        const regularBreakDuration = this.regularBreakDurationSeconds || 10 * 60;
+        const lessonsCount = this.schoolLessonsCount || 7;
 
         let cursor = 0;
         let lessonNumber = 1;
 
-        while (lessonNumber <= 7) {
+        while (lessonNumber <= lessonsCount) {
             const lessonStart = cursor;
             const lessonEnd = lessonStart + lessonDuration;
 

@@ -6,6 +6,7 @@ from django.urls import path
 
 from .views import (
     GoalUpsertView,
+    SchoolDayConfigAPIView,
     SchoolDetailAPIView,
     SchoolSpecialtiesView,
     SessionListCreateView,
@@ -56,6 +57,7 @@ urlpatterns = [
     path('schools/<int:pk>/', SchoolDetailAPIView.as_view(), name='school-detail'),
     path('schools/<int:school_id>/specialties/', SchoolSpecialtiesView.as_view(), name='school-specialties'),
     path('schools/<int:school_id>/specialty/<int:specialty_id>/', specialty_detail, name='school-specialty-detail'),
+    path('school-day-config/', SchoolDayConfigAPIView.as_view(), name='school-day-config'),
 
     # Специалности
     path('specialty/<int:specialty_id>/', specialty_detail, name='specialty_detail'),

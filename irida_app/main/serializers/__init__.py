@@ -35,6 +35,7 @@ from .lessons import (
     SessionWriteSerializer,
 )
 from .schools import (
+    SchoolDayConfigSerializer,
     SchoolLogoSerializer,
     SchoolMiniSerializer,
     SchoolSerializer,
@@ -59,6 +60,7 @@ __all__ = [
     'SchoolSerializer2',
     'SchoolMiniSerializer',
     'SchoolLogoSerializer',
+    'SchoolDayConfigSerializer',
     # lessons
     'SessionWriteSerializer',
     'SessionReadSerializer',

@@ -8,8 +8,12 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..models import School, Specialty
-from ..serializers import SchoolSerializer, SpecialtySerializer
+from ..models import School, SchoolDayConfig, Specialty
+from ..serializers import (
+    SchoolDayConfigSerializer,
+    SchoolSerializer,
+    SpecialtySerializer,
+)
 
 
 # данни за определено по id училище
@@ -89,3 +93,22 @@ def specialty_detail(request, specialty_id, school_id=None):
             import traceback
             traceback.print_exc()
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# параметри на учебния ден
+class SchoolDayConfigAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        config = SchoolDayConfig.get_config()
+        serializer = SchoolDayConfigSerializer(config)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        config = SchoolDayConfig.get_config()
+        serializer = SchoolDayConfigSerializer(config, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, *args, **kwargs):
+        return self.put(request, *args, **kwargs)

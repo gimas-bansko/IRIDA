@@ -69,6 +69,12 @@ def schools_list_view(request):
 
 
 @login_required
+def school_day_view(request):
+    context = make_user_context(request)
+    return render(request, 'main/school_day.html', context)
+
+
+@login_required
 def course_goals_view(request):
     context = make_user_context(request)
     return render(request, 'main/course_goals.html', context)

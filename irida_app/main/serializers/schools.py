@@ -4,7 +4,7 @@
 
 from rest_framework import serializers
 
-from ..models import School, Specialty
+from ..models import School, SchoolDayConfig, Specialty
 
 
 class SpecialtySerializer(serializers.ModelSerializer):
@@ -62,3 +62,17 @@ class SchoolLogoSerializer(serializers.ModelSerializer):
         image = validated_data.get('logo')
         item = School.objects.update_or_create(id=validated_data.get("id"), defaults={'logo': image})
         return item
+
+
+# Параметри на учебния ден
+class SchoolDayConfigSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SchoolDayConfig
+        fields = (
+            'id',
+            'school_day_start',
+            'school_lessons_count',
+            'lesson_duration_minutes',
+            'first_break_duration_minutes',
+            'regular_break_duration_minutes',
+        )

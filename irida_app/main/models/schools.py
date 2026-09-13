@@ -74,3 +74,55 @@ class Documents(models.Model):
     class Meta:
         verbose_name = 'Документ'
         verbose_name_plural = 'Документи'
+
+
+# ***************************************
+#       Параметри на учебния ден
+# ***************************************
+class SchoolDayConfig(models.Model):
+    school_day_start = models.CharField(
+        'Начален час на първия учебен час',
+        max_length=5,
+        default='08:00',
+        help_text='Начален час във формат HH:MM (напр. 08:00)',
+    )
+    school_lessons_count = models.PositiveSmallIntegerField(
+        'Брой учебни часове дневно',
+        default=7,
+        help_text='Брой учебни часове в рамките на един учебен ден',
+    )
+    lesson_duration_minutes = models.PositiveSmallIntegerField(
+        'Продължителност на учебния час (минути)',
+        default=45,
+        help_text='Продължителност на един учебен час в минути',
+    )
+    first_break_duration_minutes = models.PositiveSmallIntegerField(
+        'Продължителност на първото междучасие (минути)',
+        default=20,
+        help_text='Продължителност на първото (голямо) междучасие в минути',
+    )
+    regular_break_duration_minutes = models.PositiveSmallIntegerField(
+        'Продължителност на останалите междучасия (минути)',
+        default=10,
+        help_text='Продължителност на останалите (малки) междучасия в минути',
+    )
+
+    def __str__(self):
+        return f'Параметри на учебния ден (начало: {self.school_day_start}, часове: {self.school_lessons_count})'
+
+    class Meta:
+        verbose_name = 'Параметри на учебния ден'
+        verbose_name_plural = 'Параметри на учебния ден'
+
+    @classmethod
+    def get_config(cls):
+        config = cls.objects.first()
+        if not config:
+            config = cls.objects.create(
+                school_day_start='08:00',
+                school_lessons_count=7,
+                lesson_duration_minutes=45,
+                first_break_duration_minutes=20,
+                regular_break_duration_minutes=10,
+            )
+        return config
