@@ -698,14 +698,52 @@ const App = {
         openAIAssistant(pageKey) {
             const currentSubject = (this.listOfSubjects || []).find(s => s.id === this.user?.subject) || this.subject || {};
             const currentSpec = (this.listOfSpecialties || []).find(sp => sp.id === this.user?.specialty) || {};
-            const goalsText = (this.listOfGoals || []).map(g => `${g.num}. ${g.name}`).join('; ');
+            const goalsText = (this.listOfGoals || []).map(g => `${g.num}. ${g.name}`).join(';\n');
+
+            const grade = parseInt(currentSubject.grade || this.user?.grade || this.selectedGrade || 10, 10);
+            const term1Weeks = 18;
+            const term2Weeks = (grade === 12) ? 12 : 18;
+            const hpw1 = parseInt(currentSubject.hpw1 || 0, 10);
+            const hpw2 = parseInt(currentSubject.hpw2 || 0, 10);
+            const hpy = parseInt(currentSubject.hpy || ((hpw1 * term1Weeks) + (hpw2 * term2Weeks)), 10);
+
+            // Препоръчителна продължителност на занятие
+            let lessonDuration = 2;
+            if (hpw1 === 1 || hpw2 === 1) lessonDuration = 1;
+            else if (hpw1 === 3 || hpw2 === 3) lessonDuration = 3;
+            else if (hpw1 === 4 || hpw2 === 4) lessonDuration = 2;
+
+            const hoursStructure = `Годишен хорариум: ${hpy} уч. часа (${currentSubject.subject_type || 'теория'}).\n- I учебен срок: 18 седмици по ${hpw1} ч./седмично (общо ${hpw1 * term1Weeks} часа);\n- II учебен срок: ${term2Weeks} седмици по ${hpw2} ч./седмично (общо ${hpw2 * term2Weeks} часа).\n- Препоръчителна продължителност на едно занятие (урок): ${lessonDuration} учебни часа.`;
+
+            // Форматиране на раздели и теми с MoSCoW
+            let unitsAndTopicsText = '';
+            if (this.listOfUnits && this.listOfUnits.length > 0) {
+                unitsAndTopicsText = this.listOfUnits.map(u => {
+                    let uText = `Раздел ${u.num}. ${u.name} (хорариум: ${u.hours} уч. часа)`;
+                    if (u.topics && u.topics.length > 0) {
+                        const topicsLines = u.topics.map(t => {
+                            const mText = this.moscowTextFor(t) || t.MoSCoW_cat || 'Must';
+                            const rem = t.MoSCoW_rem ? ` - ${t.MoSCoW_rem}` : '';
+                            return `    * Тема ${t.num}. ${t.name} [${mText}${rem}]`;
+                        }).join('\n');
+                        uText += '\n' + topicsLines;
+                    }
+                    return uText;
+                }).join('\n\n');
+            } else {
+                unitsAndTopicsText = 'Не са въведени раздели и теми по предмета.';
+            }
 
             const context = {
                 subject: currentSubject.name || '',
                 subject_name: currentSubject.name || '',
-                grade: currentSubject.grade || this.user?.grade || this.selectedGrade || '',
+                grade: grade,
                 specialty: currentSpec.specialty_name || '',
-                goals: goalsText
+                goals: goalsText || 'Не са въведени цели.',
+                hours_structure: hoursStructure,
+                hours_info: hoursStructure,
+                units_and_topics: unitsAndTopicsText,
+                curriculum_text: unitsAndTopicsText
             };
             if (window.AIPromptManager) {
                 window.AIPromptManager.open(pageKey || 'general', context);
@@ -722,7 +760,10 @@ const App = {
             this.importData.rawJson = '';
 
             let modalId = 'curriculumImportModal';
-            if (modalType === 'goals' || (modalType === 'auto' && document.getElementById('goalsImportModal'))) {
+            if (modalType === 'sessions' || (modalType === 'auto' && document.getElementById('sessionsImportModal'))) {
+                modalId = 'sessionsImportModal';
+                this.importData.modalType = 'sessions';
+            } else if (modalType === 'goals' || (modalType === 'auto' && document.getElementById('goalsImportModal'))) {
                 modalId = 'goalsImportModal';
                 this.importData.modalType = 'goals';
             } else {
@@ -739,6 +780,47 @@ const App = {
         closeImportModal() {
             if (this.importModalInstance) {
                 this.importModalInstance.hide();
+            }
+        },
+        copySampleSessionsJson() {
+            const sample = [
+                {
+                    "num": 1,
+                    "name": "Въведение в синтаксиса и базовата структура на езика",
+                    "session_type": "НЗ",
+                    "duration": 2,
+                    "basic_level": true,
+                    "goals": "1. Разпознава основните типове данни и променливи;\n2. Създава първата си работеща програма.",
+                    "focus": "Среда за разработка, базови типове данни, оператори и компилация.",
+                    "topics": [
+                        {
+                            "unit_num": 1,
+                            "topic_num": 1,
+                            "description": "Теоретично въведение и демонстрационен код"
+                        }
+                    ]
+                },
+                {
+                    "num": 2,
+                    "name": "Практическо упражнение: Работа с променливи и оператори",
+                    "session_type": "УПР",
+                    "duration": 2,
+                    "basic_level": true,
+                    "goals": "1. Прилага оператори в практически изчисления;\n2. Открива и коригира синтактични грешки.",
+                    "focus": "Водена и самостоятелна практика с програмни фрагменти.",
+                    "topics": [
+                        {
+                            "unit_num": 1,
+                            "topic_num": 2,
+                            "description": "Практически задачи и дебъгване"
+                        }
+                    ]
+                }
+            ];
+            const text = JSON.stringify(sample, null, 2);
+            this.importData.rawJson = text;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).catch(() => {});
             }
         },
         copySampleGoalsJson() {
@@ -767,6 +849,10 @@ const App = {
             }
         },
         copySampleJson() {
+            if (this.importData.modalType === 'sessions' || document.getElementById('sessionsImportModal')) {
+                this.copySampleSessionsJson();
+                return;
+            }
             if (this.importData.modalType === 'goals' || document.getElementById('goalsImportModal')) {
                 this.copySampleGoalsJson();
                 return;
@@ -858,9 +944,52 @@ const App = {
                 return;
             }
 
+            const isSessions = vm.importData.modalType === 'sessions' || !!document.getElementById('sessionsImportModal');
             const isGoals = vm.importData.modalType === 'goals' || !!document.getElementById('goalsImportModal');
 
-            if (isGoals) {
+            if (isSessions) {
+                let parsedSessions = parsedData;
+                if (!Array.isArray(parsedSessions)) {
+                    if (parsedSessions && Array.isArray(parsedSessions.sessions)) {
+                        parsedSessions = parsedSessions.sessions;
+                    } else {
+                        vm.importData.errorMessage = 'Очаква се JSON масив от уроци ([ {"num": 1, "name": "..."}, ... ]).';
+                        return;
+                    }
+                }
+
+                if (parsedSessions.length === 0) {
+                    vm.importData.errorMessage = 'JSON масивът не съдържа уроци.';
+                    return;
+                }
+
+                vm.importData.isSubmitting = true;
+                vm.importData.errorMessage = '';
+
+                try {
+                    const response = await axios.post(`/api/subjects/${subjectId}/import-sessions/`, {
+                        sessions: parsedSessions,
+                        replace_existing: vm.importData.replaceExisting
+                    }, {
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN }
+                    });
+
+                    if (response.data && response.data.sessions) {
+                        vm.listOfSessions = response.data.sessions;
+                    } else {
+                        await vm.loadSessions(vm.user);
+                    }
+
+                    vm.closeImportModal();
+                    alert(response.data?.message || 'Уроците бяха импортирани успешно!');
+                } catch (err) {
+                    console.error('Import sessions error:', err);
+                    const errorMsg = err.response?.data?.error || err.response?.data?.detail || 'Възникна грешка при импорта на уроци.';
+                    vm.importData.errorMessage = errorMsg;
+                } finally {
+                    vm.importData.isSubmitting = false;
+                }
+            } else if (isGoals) {
                 let parsedGoals = parsedData;
                 if (!Array.isArray(parsedGoals)) {
                     if (parsedGoals && Array.isArray(parsedGoals.goals)) {

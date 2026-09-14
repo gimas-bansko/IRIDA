@@ -104,6 +104,14 @@
                 <!-- Start::header-content-right -->
                 <div class="header-content-right">
 
+                    <!-- Start::header-element AI Помощник -->
+                    <div class="header-element d-flex align-items-center me-2">
+                        <button type="button" class="btn btn-sm btn-primary-light btn-wave waves-effect waves-light" onclick="window.AIPromptManager && window.AIPromptManager.open('general')" title="AI Помощник & Промптове">
+                            <i class="bi bi-robot me-1"></i><span class="d-none d-sm-inline">AI Помощник</span>
+                        </button>
+                    </div>
+                    <!-- End::header-element -->
+
                     <!-- Start::header-element потребител -->
                     <div class="header-element">
                         <!-- Start::header-link|dropdown-toggle -->
@@ -260,8 +268,13 @@
                         </nav>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <button type="button" class="btn btn-primary-light btn-wave waves-effect waves-light label-btn" @click="openAIAssistant" data-ai-page-key="lesson_main">
-                            <i class="bi bi-robot label-btn-icon me-2"></i>AI Помощник
+                        <button type="button" class="btn btn-outline-info btn-wave waves-effect waves-light label-btn"
+                                @click="openPlanImportModal">
+                            <i class="bi bi-file-earmark-arrow-up label-btn-icon me-2"></i>Импорт на план
+                        </button>
+                        <button type="button" class="btn btn-primary-light btn-wave waves-effect waves-light label-btn"
+                                @click="openAIAssistant" data-ai-page-key="lesson_main">
+                            <i class="bi bi-robot label-btn-icon me-2"></i>AI Промптове за урок
                         </button>
                     </div>
                 </div>
@@ -313,41 +326,41 @@
                                 <ul class="list-unstyled projects-items-primary-list">
                                     <li v-for="p in points" :key="p.id">
                                         <div class="mb-3">
-                                            <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
                                                 <div>
                                                     <span class="badge bg-secondary me-2">[[ p.num ]]</span>
                                                     <strong>[[ p.name ]]</strong>
                                                     <small class="text-muted ms-2"> <span v-if="p.description">([[ p.description ]])</span> - [[ p.duration ]] мин.</small>
-                                                </div>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" id="dropdownMenu2"
-                                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="ri-close-line label-btn-icon me-2"></i>
-                                                        Премахни
-                                                    </button>&nbsp;&nbsp;
-                                                    <div class="dropdown-menu">
-                                                        <div class="alert alert-solid-info alert-dismissible fade show">
-                                                            <div class="text-center mb-3 mt-1">
-                                                                Моля, потвърдете изтриване на тази точка от плана на занятието
-                                                            </div>
-                                                            <div class="text-center mb-3 mt-1">
-                                                                <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
-                                                                    Не</button>&nbsp; &nbsp; &nbsp;
-                                                                <button class="btn btn-outline-success btn-sm fs-16" @click="deletePoint(p)">
-                                                                    Да</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <button type="button" class="btn btn-outline-success btn-sm fs-12 label-btn" @click="startEditPoint(p)">
-                                                        <i class="bi bi-pen label-btn-icon me-2"></i>
-                                                        Промени
-                                                    </button>
                                                 </div>
                                             </div>
                                             <!-- Показване на съдържанието като форматиран HTML -->
                                             <div class="mt-2 fs-12 note-content" v-if="!isPointEditing(p.id)">
                                             <!-- Почистваме HTML с DOMPurify преди да го инжектираме -->
                                                 <div v-html="sanitize(p.content)"></div>
+                                            </div>
+                                            <div class="d-flex justify-content-center gap-2 mt-3">
+                                                <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" :id="'dropdownMenuPoint' + p.id"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="ri-close-line label-btn-icon me-2"></i>
+                                                    Премахни
+                                                </button>&nbsp;&nbsp;
+                                                <div class="dropdown-menu">
+                                                    <div class="alert alert-solid-info alert-dismissible fade show">
+                                                        <div class="text-center mb-3 mt-1">
+                                                            Моля, потвърдете изтриване на тази точка от плана на занятието
+                                                        </div>
+                                                        <div class="text-center mb-3 mt-1">
+                                                            <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
+                                                                Не</button>&nbsp; &nbsp; &nbsp;
+                                                            <button class="btn btn-outline-success btn-sm fs-16" @click="deletePoint(p)">
+                                                                Да</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn btn-outline-success btn-sm fs-12 label-btn" @click="startEditPoint(p)">
+                                                    <i class="bi bi-pen label-btn-icon me-2"></i>
+                                                    Промени
+                                                </button>
                                             </div>
                                         </div><hr>
                                     </li>
@@ -357,9 +370,14 @@
                         <div class="card-footer" style="padding-right: 15px;"  v-show="!pointEditMode">
                             <div class="d-flex gap-12 justify-content-between">
                                 <div></div>
-                                <button type="button" class="btn-1 btn btn-outline-success btn-sm" @click="startCreatePoint">
-                                    <span class="d-flex align-items-center gap-6"><i class="bi bi-plus-circle"></i>Добави точка в плана</span>
-                                </button>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-outline-info btn-sm" @click="openPlanImportModal">
+                                        <i class="bi bi-file-earmark-arrow-up me-1"></i>Импорт на план
+                                    </button>
+                                    <button type="button" class="btn-1 btn btn-outline-success btn-sm" @click="startCreatePoint">
+                                        <span class="d-flex align-items-center gap-6"><i class="bi bi-plus-circle"></i>Добави точка в плана</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -480,50 +498,50 @@
                                 <ul class="list-unstyled projects-items-primary-list">
                                     <li v-for="n in notes" :key="n.id">
                                         <div class="mb-3">
-                                            <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
                                                 <div>
                                                     <span class="badge bg-secondary me-2">[[ n.num ]]</span>
                                                     <strong>[[ n.name ]]</strong>
                                                     <small class="text-muted ms-2"> <span v-if="n.point">([[ getPointNumNameById(n.point)]])</span></small>
                                                 </div>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" id="dropdownMenu1"
-                                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="ri-close-line label-btn-icon me-2"></i>
-                                                        Премахни
-                                                    </button>&nbsp;&nbsp;
-                                                    <div class="dropdown-menu">
-                                                        <div class="alert alert-solid-info alert-dismissible fade show">
-                                                            <div class="text-center mb-3 mt-1">
-                                                                Моля, потвърдете изтриване на тази бележка/пример
-                                                            </div>
-                                                            <div class="text-center mb-3 mt-1">
-                                                                <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
-                                                                    Не</button>
-                                                                &nbsp; &nbsp; &nbsp;
-                                                                <button class="btn btn-outline-success btn-sm fs-16" @click="deleteNote(n)">
-                                                                    Да</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <button type="button" class="btn btn-outline-success btn-sm fs-12 label-btn" @click="startEditNote(n)">
-                                                        <i class="bi bi-pen label-btn-icon me-2"></i>
-                                                        Промени
-                                                    </button>
-                                                    <button class="btn btn-outline-primary btn-sm label-btn" v-show="!n.collapsed" @click="n.collapsed=!n.collapsed">
-                                                        <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
-                                                        покажи по-малко
-                                                    </button>
-                                                    <button class="btn btn-outline-primary btn-sm label-btn" v-show="n.collapsed" @click="n.collapsed=!n.collapsed">
-                                                        <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
-                                                        покажи повече
-                                                    </button>
-                                                </div>
                                             </div>
                                             <div class="mt-2 fs-12 note-content" v-if="!n.collapsed">
                                               <div v-html="sanitize(n.content)"></div>
                                             </div>
-                                        </div>
+                                            <div class="d-flex justify-content-center gap-2 mt-3">
+                                                <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" :id="'dropdownMenuNote' + n.id"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="ri-close-line label-btn-icon me-2"></i>
+                                                    Премахни
+                                                </button>&nbsp;&nbsp;
+                                                <div class="dropdown-menu">
+                                                    <div class="alert alert-solid-info alert-dismissible fade show">
+                                                        <div class="text-center mb-3 mt-1">
+                                                            Моля, потвърдете изтриване на тази бележка/пример
+                                                        </div>
+                                                        <div class="text-center mb-3 mt-1">
+                                                            <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
+                                                                Не</button>
+                                                            &nbsp; &nbsp; &nbsp;
+                                                            <button class="btn btn-outline-success btn-sm fs-16" @click="deleteNote(n)">
+                                                                Да</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn btn-outline-success btn-sm fs-12 label-btn" @click="startEditNote(n)">
+                                                    <i class="bi bi-pen label-btn-icon me-2"></i>
+                                                    Промени
+                                                </button>
+                                                <button class="btn btn-outline-primary btn-sm label-btn" v-show="!n.collapsed" @click="n.collapsed=!n.collapsed">
+                                                    <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
+                                                    покажи по-малко
+                                                </button>
+                                                <button class="btn btn-outline-primary btn-sm label-btn" v-show="n.collapsed" @click="n.collapsed=!n.collapsed">
+                                                    <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
+                                                    покажи повече
+                                                </button>
+                                            </div>
+                                        </div><hr>
                                     </li>
                                 </ul>
                             </div>
@@ -603,44 +621,11 @@
                                 <ul class="list-unstyled projects-items-primary-list">
                                     <li v-for="t in tasks" :key="t.id">
                                         <div class="mb-3">
-                                            <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
                                                 <div>
                                                     <span class="badge bg-secondary me-2">[[ t.num ]]</span>
                                                     <strong>[[ t.name ]]</strong>
                                                     <small class="text-muted ms-2"> <span v-if="t.point">([[ getPointNumNameById(t.point)]])</span></small>
-                                                </div>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" id="dropdownMenu3"
-                                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="ri-close-line label-btn-icon me-2"></i>
-                                                        Премахни
-                                                    </button>&nbsp;&nbsp;
-                                                    <div class="dropdown-menu">
-                                                        <div class="alert alert-solid-info alert-dismissible fade show">
-                                                            <div class="text-center mb-3 mt-1">
-                                                                Моля, потвърдете изтриване на тази задача
-                                                            </div>
-                                                            <div class="text-center mb-3 mt-1">
-                                                                <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
-                                                                    Не</button>
-                                                                &nbsp; &nbsp; &nbsp;
-                                                                <button class="btn btn-outline-success btn-sm fs-16" @click="deleteTask(t)">
-                                                                    Да</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <button type="button" class="btn btn-outline-success btn-sm fs-12 label-btn" @click="startEditTask(t)">
-                                                        <i class="bi bi-pen label-btn-icon me-2"></i>
-                                                        Промени
-                                                    </button>
-                                                    <button class="btn btn-outline-primary btn-sm label-btn" v-show="!t.collapsed" @click="t.collapsed=!t.collapsed">
-                                                        <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
-                                                        покажи по-малко
-                                                    </button>
-                                                    <button class="btn btn-outline-primary btn-sm label-btn" v-show="t.collapsed" @click="t.collapsed=!t.collapsed">
-                                                        <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
-                                                        покажи повече
-                                                    </button>
                                                 </div>
                                             </div>
                                             <div class="mt-2 fs-12 note-content" v-if="!t.collapsed">
@@ -649,7 +634,40 @@
                                                 <div class="fw-bold mt-2">Отговор:</div>
                                                 <div v-html="sanitize(t.answer)"></div>
                                             </div>
-                                        </div>
+                                            <div class="d-flex justify-content-center gap-2 mt-3">
+                                                <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" :id="'dropdownMenuTask' + t.id"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="ri-close-line label-btn-icon me-2"></i>
+                                                    Премахни
+                                                </button>&nbsp;&nbsp;
+                                                <div class="dropdown-menu">
+                                                    <div class="alert alert-solid-info alert-dismissible fade show">
+                                                        <div class="text-center mb-3 mt-1">
+                                                            Моля, потвърдете изтриване на тази задача
+                                                        </div>
+                                                        <div class="text-center mb-3 mt-1">
+                                                            <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
+                                                                Не</button>
+                                                            &nbsp; &nbsp; &nbsp;
+                                                            <button class="btn btn-outline-success btn-sm fs-16" @click="deleteTask(t)">
+                                                                Да</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn btn-outline-success btn-sm fs-12 label-btn" @click="startEditTask(t)">
+                                                    <i class="bi bi-pen label-btn-icon me-2"></i>
+                                                    Промени
+                                                </button>
+                                                <button class="btn btn-outline-primary btn-sm label-btn" v-show="!t.collapsed" @click="t.collapsed=!t.collapsed">
+                                                    <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
+                                                    покажи по-малко
+                                                </button>
+                                                <button class="btn btn-outline-primary btn-sm label-btn" v-show="t.collapsed" @click="t.collapsed=!t.collapsed">
+                                                    <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
+                                                    покажи повече
+                                                </button>
+                                            </div>
+                                        </div><hr>
                                     </li>
                                 </ul>
                             </div>
@@ -730,7 +748,7 @@
                                 <ul class="list-unstyled projects-items-primary-list">
                                     <li v-for="a in theoryAttachments" :key="a.id">
                                         <div class="mb-3">
-                                            <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
                                                 <div>
                                                     <span class="badge bg-secondary me-2">[[ a.num ]]</span>
                                                     <strong>[[ a.name ]]</strong>
@@ -741,44 +759,44 @@
                                                         </a>
                                                     </span>
                                                 </div>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" :id="'dropdownMenuTh' + a.id"
-                                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="ri-close-line label-btn-icon me-2"></i>
-                                                        Премахни
-                                                    </button>&nbsp;&nbsp;
-                                                    <div class="dropdown-menu">
-                                                        <div class="alert alert-solid-info alert-dismissible fade show">
-                                                            <div class="text-center mb-3 mt-1">
-                                                                Моля, потвърдете изтриване на този файл
-                                                            </div>
-                                                            <div class="text-center mb-3 mt-1">
-                                                                <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
-                                                                    Не</button>
-                                                                &nbsp; &nbsp; &nbsp;
-                                                                <button class="btn btn-outline-success btn-sm fs-16" @click="deleteAttachment(a)">
-                                                                    Да</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <button type="button" class="btn btn-outline-success btn-sm fs-12 label-btn" @click="startEditAttachment(a)">
-                                                        <i class="bi bi-pen label-btn-icon me-2"></i>
-                                                        Промени
-                                                    </button>
-                                                    <button class="btn btn-outline-primary btn-sm label-btn" v-if="a.description" v-show="!a.collapsed" @click="a.collapsed=!a.collapsed">
-                                                        <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
-                                                        покажи по-малко
-                                                    </button>
-                                                    <button class="btn btn-outline-primary btn-sm label-btn" v-if="a.description" v-show="a.collapsed" @click="a.collapsed=!a.collapsed">
-                                                        <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
-                                                        покажи повече
-                                                    </button>
-                                                </div>
                                             </div>
                                             <div class="mt-2 fs-12 text-muted" v-if="a.description && !a.collapsed">
                                                 <strong>Коментар / Описание:</strong> [[ a.description ]]
                                             </div>
-                                        </div>
+                                            <div class="d-flex justify-content-center gap-2 mt-3">
+                                                <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" :id="'dropdownMenuTh' + a.id"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="ri-close-line label-btn-icon me-2"></i>
+                                                    Премахни
+                                                </button>&nbsp;&nbsp;
+                                                <div class="dropdown-menu">
+                                                    <div class="alert alert-solid-info alert-dismissible fade show">
+                                                        <div class="text-center mb-3 mt-1">
+                                                            Моля, потвърдете изтриване на този файл
+                                                        </div>
+                                                        <div class="text-center mb-3 mt-1">
+                                                            <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
+                                                                Не</button>
+                                                            &nbsp; &nbsp; &nbsp;
+                                                            <button class="btn btn-outline-success btn-sm fs-16" @click="deleteAttachment(a)">
+                                                                Да</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn btn-outline-success btn-sm fs-12 label-btn" @click="startEditAttachment(a)">
+                                                    <i class="bi bi-pen label-btn-icon me-2"></i>
+                                                    Промени
+                                                </button>
+                                                <button class="btn btn-outline-primary btn-sm label-btn" v-if="a.description" v-show="!a.collapsed" @click="a.collapsed=!a.collapsed">
+                                                    <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
+                                                    покажи по-малко
+                                                </button>
+                                                <button class="btn btn-outline-primary btn-sm label-btn" v-if="a.description" v-show="a.collapsed" @click="a.collapsed=!a.collapsed">
+                                                    <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
+                                                    покажи повече
+                                                </button>
+                                            </div>
+                                        </div><hr>
                                     </li>
                                 </ul>
                             </div>
@@ -869,7 +887,7 @@
                                 <ul class="list-unstyled projects-items-primary-list">
                                     <li v-for="a in otherAttachments" :key="a.id">
                                         <div class="mb-3">
-                                            <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
                                                 <div>
                                                     <span class="badge bg-secondary me-2">[[ a.num ]]</span>
                                                     <strong>[[ a.name ]]</strong>
@@ -880,44 +898,44 @@
                                                         </a>
                                                     </span>
                                                 </div>
-                                                <div class="d-flex gap-2">
-                                                    <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" :id="'dropdownMenuAtt' + a.id"
-                                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="ri-close-line label-btn-icon me-2"></i>
-                                                        Премахни
-                                                    </button>&nbsp;&nbsp;
-                                                    <div class="dropdown-menu">
-                                                        <div class="alert alert-solid-info alert-dismissible fade show">
-                                                            <div class="text-center mb-3 mt-1">
-                                                                Моля, потвърдете изтриване на това приложение
-                                                            </div>
-                                                            <div class="text-center mb-3 mt-1">
-                                                                <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
-                                                                    Не</button>
-                                                                &nbsp; &nbsp; &nbsp;
-                                                                <button class="btn btn-outline-success btn-sm fs-16" @click="deleteAttachment(a)">
-                                                                    Да</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <button type="button" class="btn btn-outline-success btn-sm fs-12 label-btn" @click="startEditAttachment(a)">
-                                                        <i class="bi bi-pen label-btn-icon me-2"></i>
-                                                        Промени
-                                                    </button>
-                                                    <button class="btn btn-outline-primary btn-sm label-btn" v-if="a.description" v-show="!a.collapsed" @click="a.collapsed=!a.collapsed">
-                                                        <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
-                                                        покажи по-малко
-                                                    </button>
-                                                    <button class="btn btn-outline-primary btn-sm label-btn" v-if="a.description" v-show="a.collapsed" @click="a.collapsed=!a.collapsed">
-                                                        <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
-                                                        покажи повече
-                                                    </button>
-                                                </div>
                                             </div>
                                             <div class="mt-2 fs-12 text-muted" v-if="a.description && !a.collapsed">
                                                 <strong>Коментар / Описание:</strong> [[ a.description ]]
                                             </div>
-                                        </div>
+                                            <div class="d-flex justify-content-center gap-2 mt-3">
+                                                <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" :id="'dropdownMenuAtt' + a.id"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="ri-close-line label-btn-icon me-2"></i>
+                                                    Премахни
+                                                </button>&nbsp;&nbsp;
+                                                <div class="dropdown-menu">
+                                                    <div class="alert alert-solid-info alert-dismissible fade show">
+                                                        <div class="text-center mb-3 mt-1">
+                                                            Моля, потвърдете изтриване на това приложение
+                                                        </div>
+                                                        <div class="text-center mb-3 mt-1">
+                                                            <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
+                                                                Не</button>
+                                                            &nbsp; &nbsp; &nbsp;
+                                                            <button class="btn btn-outline-success btn-sm fs-16" @click="deleteAttachment(a)">
+                                                                Да</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn btn-outline-success btn-sm fs-12 label-btn" @click="startEditAttachment(a)">
+                                                    <i class="bi bi-pen label-btn-icon me-2"></i>
+                                                    Промени
+                                                </button>
+                                                <button class="btn btn-outline-primary btn-sm label-btn" v-if="a.description" v-show="!a.collapsed" @click="a.collapsed=!a.collapsed">
+                                                    <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
+                                                    покажи по-малко
+                                                </button>
+                                                <button class="btn btn-outline-primary btn-sm label-btn" v-if="a.description" v-show="a.collapsed" @click="a.collapsed=!a.collapsed">
+                                                    <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
+                                                    покажи повече
+                                                </button>
+                                            </div>
+                                        </div><hr>
                                     </li>
                                 </ul>
                             </div>
@@ -981,6 +999,96 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal за импорт на детайлен план на урок -->
+                <div class="modal fade show" id="planImportModal" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5);" v-if="importData.showModal">
+                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content shadow-lg border-0">
+                            <div class="modal-header bg-primary-transparent border-bottom">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar avatar-sm bg-primary text-fixed-white rounded-circle">
+                                        <i class="bi bi-file-earmark-arrow-up fs-16"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="modal-title fw-semibold mb-0">Импорт на детайлен план на занятие</h6>
+                                        <small class="text-muted">Зареждане на BOPPPS план, времетраене, бележки и практически задачи от JSON</small>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" @click="closePlanImportModal" :disabled="importData.isSubmitting"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <!-- Инструкция и бутон за примерен JSON -->
+                                <div class="d-flex align-items-center justify-content-between mb-3 bg-light p-3 rounded-2">
+                                    <div class="fs-13 text-muted">
+                                        <i class="bi bi-info-circle text-primary me-1"></i>
+                                        Можете да поставите структурирания JSON, върнат от AI асистента, или да го заредите от файл.
+                                    </div>
+                                    <button type="button" class="btn btn-outline-primary btn-sm flex-shrink-0 ms-2" @click="loadSamplePlanJson">
+                                        <i class="bi bi-code-slash me-1"></i>Примерен BOPPPS JSON
+                                    </button>
+                                </div>
+
+                                <!-- Качване от файл или Paste -->
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <label class="form-label fw-semibold fs-14 mb-0">JSON съдържание на плана:</label>
+                                    </div>
+
+                                    <div class="input-group mb-2">
+                                        <input type="file" class="form-control fs-12" id="importPlanJsonFileInput" accept=".json,application/json" @change="handleImportFileUpload">
+                                        <label class="input-group-text fs-12" for="importPlanJsonFileInput"><i class="bi bi-upload me-1"></i>Зареди от файл</label>
+                                    </div>
+
+                                    <textarea class="form-control border-green font-monospace fs-13" rows="9"
+                                              v-model="importData.rawJson"
+                                              placeholder='Поставете JSON тук, например:&#10;{&#10;  "goals": "1. Формулира...; 2. Създава...",&#10;  "focus": "Акценти...",&#10;  "points": [&#10;    { "num": 1, "name": "Bridge-In: ...", "duration": 5, "content": "..." }&#10;  ],&#10;  "notes": [...],&#10;  "tasks": [...]&#10;}'></textarea>
+                                </div>
+
+                                <!-- Опция за замяна или добавяне -->
+                                <div class="p-3 border rounded-2 mb-3" :class="points.length > 0 ? 'bg-warning-transparent border-warning' : 'bg-light'">
+                                    <div class="d-flex align-items-center gap-2 mb-2" v-if="points.length > 0">
+                                        <i class="bi bi-exclamation-triangle-fill text-warning fs-18"></i>
+                                        <span class="fw-semibold text-warning-emphasis fs-14">
+                                            Внимание: За това занятие вече има въведени [[ points.length ]] точки от плана.
+                                        </span>
+                                    </div>
+                                    <label class="form-label fw-semibold fs-14 mb-2">Опция при импорт:</label>
+                                    <div class="form-check mb-1">
+                                        <input class="form-check-input" type="radio" name="importPlanMode" id="importPlanModeReplace" :value="true" v-model="importData.replaceExisting">
+                                        <label class="form-check-label fs-13" for="importPlanModeReplace">
+                                            <strong>Замени съществуващия план</strong> – презаписва точките, бележките и задачите (препоръчително при първоначално цялостно планиране).
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="importPlanMode" id="importPlanModeAppend" :value="false" v-model="importData.replaceExisting">
+                                        <label class="form-check-label fs-13" for="importPlanModeAppend">
+                                            <strong>Добави към съществуващия план</strong> – запазва наличните и добавя новите точки отдолу.
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Съобщение за грешка -->
+                                <div class="alert alert-danger d-flex align-items-center gap-2 mb-0 fs-13 py-2 px-3" v-if="importData.errorMessage">
+                                    <i class="bi bi-exclamation-circle-fill fs-16 flex-shrink-0"></i>
+                                    <div>[[ importData.errorMessage ]]</div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer border-top bg-light">
+                                <button type="button" class="btn btn-outline-secondary btn-sm px-3" @click="closePlanImportModal" :disabled="importData.isSubmitting">
+                                    Отказ
+                                </button>
+                                <button type="button" class="btn btn-primary btn-sm px-4" @click="executePlanImport" :disabled="importData.isSubmitting || !importData.rawJson.trim()">
+                                    <span class="spinner-border spinner-border-sm me-1" v-if="importData.isSubmitting" role="status" aria-hidden="true"></span>
+                                    <i class="bi bi-check2-circle me-1" v-else></i>
+                                    Импортирай план
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal за импорт край -->
+
             </div>
         </div>
         </div>

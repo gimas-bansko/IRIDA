@@ -40,8 +40,10 @@ from .api_prompts import (
 )
 from .api_lessons import (
     SessionAttachmentsForSessionView,
+    SessionImportView,
     SessionListCreateView,
     SessionNotesForSessionView,
+    SessionPlanImportView,
     SessionPointsForSessionView,
     SessionRetrieveUpdateDestroyView,
     SessionTasksForSessionView,
@@ -140,6 +142,8 @@ __all__ = [
     'AIPromptUpsertView',
     'ai_prompt_delete',
     # api_lessons
+    'SessionImportView',
+    'SessionPlanImportView',
     'SessionListCreateView',
     'SessionRetrieveUpdateDestroyView',
     'SubjectSessionsWithTopicsView',

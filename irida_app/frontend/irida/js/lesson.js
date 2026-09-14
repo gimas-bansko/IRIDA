@@ -59,6 +59,15 @@ const App = {
             },
             selectedAttachmentFile: null,
 
+            // импорт на план
+            importData: {
+                showModal: false,
+                isSubmitting: false,
+                rawJson: '',
+                replaceExisting: true,
+                errorMessage: ''
+            },
+
         }
     },
     computed: {
@@ -649,23 +658,244 @@ const App = {
         },
 
         openAIAssistant() {
-            const pointsText = (this.points || []).map(p => `${p.num}. ${p.name}`).join('; ');
+            const pointsText = (this.points || []).map(p => `${p.num}. ${p.name} (${p.duration} мин.)`).join('; ');
             const subjectName = this.user?.subject_name || (document.querySelector('h1.page-title') ? document.querySelector('h1.page-title').textContent.replace('предмет:', '').trim() : '');
             const specName = this.user?.specialty_name || (document.querySelector('h2.page-title') ? document.querySelector('h2.page-title').textContent.replace('специалност/професия:', '').trim() : '');
+            const durationHours = this.session?.duration || 1;
+            const durationMins = durationHours * 45;
+            const sessionTypeText = this.sessionType(this.session?.session_type) || this.session?.session_type || 'Нови знания';
+            const topicsText = (this.topics || []).map(t => `- ${t.topic?.name || ''} [${t.topic?.MoSCoW_cat || 'M'} - ${this.moscowTextFor(t.topic)}]${t.description ? ' (' + t.description + ')' : ''}`).join('\n');
 
             const context = {
                 subject: subjectName,
+                specialty: specName,
+                grade: this.user?.grade || '',
                 topic: this.session?.name || '',
+                session_num: this.session?.num || '',
                 session_name: this.session?.name || '',
+                session_type: sessionTypeText,
+                duration_hours: `${durationHours} ${durationHours === 1 ? 'учебен час' : 'учебни часа'}`,
+                duration_mins: `${durationMins} минути`,
                 goals: this.session?.goals || '',
                 focus: this.session?.focus || '',
-                points: pointsText,
-                grade: this.user?.grade || '',
-                specialty: specName
+                topics_list: topicsText || '[няма въведени теми]',
+                points: pointsText || '[няма въведени точки]'
             };
             if (window.AIPromptManager) {
                 window.AIPromptManager.open('lesson_main', context);
             }
+        },
+
+        // Методи за импорт на детайлен план на урок
+        openPlanImportModal() {
+            this.importData.showModal = true;
+            this.importData.errorMessage = '';
+            this.importData.rawJson = '';
+            this.importData.replaceExisting = true;
+            this.importData.isSubmitting = false;
+        },
+
+        closePlanImportModal() {
+            this.importData.showModal = false;
+            this.importData.errorMessage = '';
+            this.importData.isSubmitting = false;
+        },
+
+        handleImportFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this.importData.rawJson = e.target.result;
+            };
+            reader.onerror = () => {
+                this.importData.errorMessage = 'Грешка при четене на файла.';
+            };
+            reader.readAsText(file);
+        },
+
+        loadSamplePlanJson() {
+            const sampleObj = {
+                "goals": "1. Разпознава и обяснява основните концепции и синтаксис;\n2. Създава и тества работещ код по зададени изисквания;\n3. Анализира и отстранява грешки при изпълнение.",
+                "focus": "Среда за разработка (PyCharm/Git), базов синтаксис, дебъгване и конзолен вход/изход.",
+                "points": [
+                    {
+                        "num": 1,
+                        "name": "Bridge-In: Въведение и софтуерен казус",
+                        "description": "Въведение и мотивация",
+                        "duration": 5,
+                        "content": "<p>Поставяне на проблема чрез реален софтуерен казус от практиката и преговор на входните знания.</p>"
+                    },
+                    {
+                        "num": 2,
+                        "name": "Outcomes: Обявяване на очакваните резултати",
+                        "description": "Цели и очаквани резултати",
+                        "duration": 5,
+                        "content": "<p>Обявяване на конкретните практически умения и компетентности, които ще бъдат усвоени в занятието.</p>"
+                    },
+                    {
+                        "num": 3,
+                        "name": "Презентация и демонстрация на демо код",
+                        "description": "GRR: Директно обучение (Аз правя)",
+                        "duration": 15,
+                        "content": "<p>Преподаване на новите синтактични концепции и показване на демо код на живо в средата за разработка.</p>"
+                    },
+                    {
+                        "num": 4,
+                        "name": "Дискусия и рефлексия",
+                        "description": "Въпроси за разбиране",
+                        "duration": 7,
+                        "content": "<p>Кратка дискусия с учениците, проверка на разбирането и отговори на възникнали въпроси.</p>"
+                    },
+                    {
+                        "num": 5,
+                        "name": "Съвместно упражнение",
+                        "description": "GRR: Ръководена практика (Ние правим заедно)",
+                        "duration": 8,
+                        "content": "<p>Съвместно разработване на примерен софтуерен модул на дъската и екрана заедно с учениците.</p>"
+                    },
+                    {
+                        "num": 6,
+                        "name": "Самостоятелна практика",
+                        "description": "GRR: Самостоятелна работа (Ти правиш сам)",
+                        "duration": 25,
+                        "content": "<p>Учениците работят индивидуално по поставената задача; диференцирана подкрепа от учителя.</p>"
+                    },
+                    {
+                        "num": 7,
+                        "name": "Проверка и споделяне на решения",
+                        "description": "Демонстрация и анализ",
+                        "duration": 10,
+                        "content": "<p>Демонстрация на решения на екран от ученици, анализ на добри практики и оптимизации.</p>"
+                    },
+                    {
+                        "num": 8,
+                        "name": "Мини-викторина (Post-Assessment)",
+                        "description": "Проверка на усвояването",
+                        "duration": 7,
+                        "content": "<p>3-4 кратки въпроса за моментална проверка на постигнатите резу��тати от занятието.</p>"
+                    },
+                    {
+                        "num": 9,
+                        "name": "Обобщение и поставяне на домашно",
+                        "description": "Summary & Домашна работа",
+                        "duration": 8,
+                        "content": "<p>Синтезирано обобщение на ключовите изводи и възлагане на задача за самостоятелно упражнение вкъщи.</p>"
+                    }
+                ],
+                "notes": [
+                    {
+                        "num": 1,
+                        "name": "Теоретичен конспект и демо код",
+                        "point_num": 3,
+                        "content": "<p><strong>Основни концепции и синтаксис:</strong></p><pre><code># Пример за чист демо код\ndef main():\n    print('Hello, IRIDA!')\n\nif __name__ == '__main__':\n    main()</code></pre>"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "num": 1,
+                        "name": "Съвместна задача (Ръководена практика)",
+                        "point_num": 5,
+                        "condition": "<p>Напишете програма съвместно с учителя, която изчислява периметър и лице на правоъгълник.</p>",
+                        "answer": "<pre><code>a = float(input('a = '))\nb = float(input('b = '))\nprint('P =', 2 * (a + b))\nprint('S =', a * b)</code></pre>"
+                    },
+                    {
+                        "num": 2,
+                        "name": "Самостоятелна практическа задача",
+                        "point_num": 6,
+                        "condition": "<p>Разширете програмата, така че да проверява за положителни стойности на страните и да извежда форматиран резултат.</p>",
+                        "answer": "<pre><code>if a > 0 and b > 0:\n    print(f'Лице: {a * b:.2f}')\nelse:\n    print('Невалидни страни!')</code></pre>"
+                    },
+                    {
+                        "num": 3,
+                        "name": "Мини-викторина за самопроверка",
+                        "point_num": 8,
+                        "condition": "<p>1. Кой тип данни се използва за цели числа?<br>2. Как се отпечатва текст в конзолата?</p>",
+                        "answer": "<p>1. int<br>2. Чрез функцията print()</p>"
+                    },
+                    {
+                        "num": 4,
+                        "name": "Домашна работа / Предизвикателство",
+                        "point_num": 9,
+                        "condition": "<p>Създайте конзолен калкулатор за изчисляване на площ на триъгълник по формула на Херон.</p>",
+                        "answer": "<p>Приложете формулата с math.sqrt() и валидирайте неравенството на триъгълника.</p>"
+                    }
+                ]
+            };
+            this.importData.rawJson = JSON.stringify(sampleObj, null, 2);
+            this.importData.errorMessage = '';
+        },
+
+        executePlanImport() {
+            const vm = this;
+            if (!vm.importData.rawJson.trim()) {
+                vm.importData.errorMessage = 'Моля, въведете JSON съдържание или заредете от файл.';
+                return;
+            }
+
+            let parsed;
+            try {
+                let cleanText = vm.importData.rawJson.trim();
+                if (cleanText.startsWith('```')) {
+                    cleanText = cleanText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+                }
+                parsed = JSON.parse(cleanText);
+            } catch (e) {
+                vm.importData.errorMessage = 'Невалиден JSON синтаксис: ' + e.message;
+                return;
+            }
+
+            vm.importData.isSubmitting = true;
+            vm.importData.errorMessage = '';
+
+            const payload = {
+                replace_existing: vm.importData.replaceExisting,
+                plan: parsed
+            };
+
+            const csrf = window.CSRF_TOKEN || (function (name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            })('csrftoken') || '';
+
+            axios.post('/api/sessions/' + vm.session.id + '/import-plan/', payload, {
+                headers: {
+                    'X-CSRFToken': csrf,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(function (res) {
+                vm.importData.isSubmitting = false;
+                vm.importData.showModal = false;
+                vm.importData.rawJson = '';
+
+                if (res.data.points) vm.points = res.data.points;
+                if (res.data.notes) vm.notes = res.data.notes;
+                if (res.data.tasks) vm.tasks = res.data.tasks;
+                if (res.data.session) {
+                    vm.session.goals = res.data.session.goals;
+                    vm.session.focus = res.data.session.focus;
+                }
+
+                alert(res.data.message || 'Планът на занятието беше импортиран успешно!');
+            })
+            .catch(function (err) {
+                vm.importData.isSubmitting = false;
+                console.error('Plan import error:', err);
+                const msg = err.response?.data?.detail || err.response?.data?.message || 'Възникна грешка при импортирането на плана.';
+                vm.importData.errorMessage = msg;
+            });
         },
     },
     created: function(){

@@ -13,8 +13,11 @@ from .views import (
     SchoolDayConfigAPIView,
     SchoolDetailAPIView,
     SchoolSpecialtiesView,
+    SessionAttachmentsForSessionView,
+    SessionImportView,
     SessionListCreateView,
     SessionNotesForSessionView,
+    SessionPlanImportView,
     SessionPointsForSessionView,
     SessionRetrieveUpdateDestroyView,
     SessionTasksForSessionView,
@@ -87,6 +90,7 @@ urlpatterns = [
     path('topics/upsert/', TopicUpsertView.as_view(), name='topic-upsert'),
 
     # Уроци
+    path('subjects/<int:subject_id>/import-sessions/', SessionImportView.as_view(), name='session-import'),
     path('sessions/', SessionListCreateView.as_view(), name='session-list-create'),
     path('sessions/<int:pk>/', SessionRetrieveUpdateDestroyView.as_view(), name='session-detail'),
 
@@ -101,6 +105,7 @@ urlpatterns = [
 
     # Точки от плана
     path('sessions/<int:session_id>/points/', SessionPointsForSessionView.as_view(), name='session-points-for-session'),
+    path('sessions/<int:session_id>/import-plan/', SessionPlanImportView.as_view(), name='session-plan-import'),
     path('session-points/upsert/', session_point_upsert, name='session-point-upsert'),
     path('session-points/<int:pk>/', session_point_delete, name='session-point-delete'),
 

@@ -8,47 +8,48 @@
             <div class="container-fluid">
 
                 <!-- Page Header -->
-                 <div class=" my-4 page-header-breadcrumb">
-                     <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                         <h1 class="page-title fw-normal fs-20 mb-12">Занятия (Уроци) за: </h1>
-                         <div>
-                             <button type="button" class="btn btn-primary-light btn-wave waves-effect waves-light label-btn" @click="openAIAssistant('course_lessons')" data-ai-page-key="course_lessons">
-                                 <i class="bi bi-robot label-btn-icon me-2"></i>AI Промптове за уроци
-                             </button>
-                         </div>
-                     </div>
-                     <div class="d-flex align-items-center flex-wrap gap-3 mb-2">
-                         <div class="d-flex align-items-center gap-2">
-                             <label for="selectSpecialty" class="form-label mb-0 fw-semibold fs-14">Специалност/професия:</label>
-                             <select id="selectSpecialty" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
-                                     v-model="user.specialty" @change="setSpecialty(user.specialty)">
-                                 <option v-for="sp in listOfSpecialties" :key="sp.id" :value="sp.id">
-                                     [[sp.specialty_type]] [[ sp.specialty_num ]] - [[ sp.specialty_name ]]
-                                 </option>
-                             </select>
-                         </div>
-                         <div class="d-flex align-items-center gap-2">
-                             <label for="selectGrade" class="form-label mb-0 fw-semibold fs-14">Клас:</label>
-                             <select id="selectGrade" class="form-select form-select-sm border-green fs-14" style="min-width: 140px; width: auto;"
-                                     v-model="selectedGrade" @change="onGradeChange()">
-                                 <option :value="0">Всички</option>
-                                 <option :value="9">9 клас</option>
-                                 <option :value="10">10 клас</option>
-                                 <option :value="11">11 клас</option>
-                                 <option :value="12">12 клас</option>
-                             </select>
-                         </div>
-                         <div class="d-flex align-items-center gap-2">
-                             <label for="selectSubject" class="form-label mb-0 fw-semibold fs-14">Предмет:</label>
-                             <select id="selectSubject" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
-                                     v-model="user.subject" @change="setSubject(user.subject)">
-                                 <option v-for="sb in filteredSubjects" :key="sb.id" :value="sb.id">
-                                     [[ sb.name ]] ([[ sb.subject_type ]])
-                                 </option>
-                             </select>
-                         </div>
-                     </div>
-                 </div>
+                <div class="my-4 page-header-breadcrumb">
+                    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+                        <h1 class="page-title fw-normal fs-20 mb-0">Занятия (Уроци) за:</h1>
+                        <div>
+                            <button type="button" class="btn btn-primary-light btn-wave waves-effect waves-light label-btn btn-sm"
+                                    @click="openAIAssistant('course_lessons')" data-ai-page-key="course_lessons">
+                                <i class="bi bi-robot label-btn-icon me-2"></i>AI Промптове за уроци
+                            </button>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center flex-wrap gap-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="selectSpecialty" class="form-label mb-0 fw-semibold fs-14 text-nowrap">Специалност/професия:</label>
+                            <select id="selectSpecialty" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
+                                    v-model="user.specialty" @change="setSpecialty(user.specialty)">
+                                <option v-for="sp in listOfSpecialties" :key="sp.id" :value="sp.id">
+                                    [[sp.specialty_type]] [[ sp.specialty_num ]] - [[ sp.specialty_name ]]
+                                </option>
+                            </select>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="selectGrade" class="form-label mb-0 fw-semibold fs-14 text-nowrap">Клас:</label>
+                            <select id="selectGrade" class="form-select form-select-sm border-green fs-14" style="min-width: 140px; width: auto;"
+                                    v-model="selectedGrade" @change="onGradeChange()">
+                                <option :value="0">Всички</option>
+                                <option :value="9">9 клас</option>
+                                <option :value="10">10 клас</option>
+                                <option :value="11">11 клас</option>
+                                <option :value="12">12 клас</option>
+                            </select>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="selectSubject" class="form-label mb-0 fw-semibold fs-14 text-nowrap">Предмет:</label>
+                            <select id="selectSubject" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
+                                    v-model="user.subject" @change="setSubject(user.subject)">
+                                <option v-for="sb in filteredSubjects" :key="sb.id" :value="sb.id">
+                                    [[ sb.name ]] ([[ sb.subject_type ]])
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <!-- Page Header Close -->
 
                 <!-- ако няма въведени уроци -->
@@ -59,7 +60,12 @@
                             <div class="card-title ">
                                 <div>Уроци</div>
                             </div>
-                            <div class="d-flex gap-12 align-items-center">
+                            <div class="d-flex gap-2 align-items-center">
+                                <button type="button" class="btn btn-outline-primary btn-sm" @click="openImportModal('sessions')">
+                                    <span class="d-flex align-items-center gap-1">
+                                        <i class="bi bi-file-earmark-arrow-up"></i>Импорт на уроци
+                                    </span>
+                                </button>
                                 <button type="button" class="btn-1 btn btn-outline-success btn-sm" @click="newSession()">
                                     <span class="d-flex align-items-center gap-6"><i class="bi bi-plus-circle"></i>Добави урок</span>
                                 </button>
@@ -86,6 +92,16 @@
                         <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
                             <div class="card-title ">
                                 <div>Уроци</div>
+                            </div>
+                            <div class="d-flex gap-2 align-items-center">
+                                <button type="button" class="btn btn-outline-primary btn-sm" @click="openImportModal('sessions')">
+                                    <span class="d-flex align-items-center gap-1">
+                                        <i class="bi bi-file-earmark-arrow-up"></i>Импорт на уроци
+                                    </span>
+                                </button>
+                                <button type="button" class="btn-1 btn btn-outline-success btn-sm" @click="newSession()">
+                                    <span class="d-flex align-items-center gap-6"><i class="bi bi-plus-circle"></i>Добави урок</span>
+                                </button>
                             </div>
                         </div>
                         <div class="card-body">
@@ -409,6 +425,112 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal за импорт на уроци -->
+                <div class="modal fade" id="sessionsImportModal" tabindex="-1" aria-labelledby="sessionsImportModalLabel" aria-hidden="true" ref="sessionsImportModal">
+                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content shadow-lg border-0">
+                            <div class="modal-header bg-primary-transparent border-bottom">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-file-earmark-arrow-up text-primary fs-20"></i>
+                                    <h5 class="modal-title fw-semibold text-primary mb-0" id="sessionsImportModalLabel">
+                                        Импорт на тематично разпределение и уроци
+                                    </h5>
+                                </div>
+                                <button type="button" class="btn-close" @click="closeImportModal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <!-- Контекстни данни за текущия предмет -->
+                                <div class="p-3 bg-light rounded-2 border mb-3">
+                                    <div class="row g-2 fs-14">
+                                        <div class="col-md-6">
+                                            <span class="text-muted">Предмет:</span>
+                                            <span class="fw-semibold text-dark ms-1">[[ currentSubject.name || 'Не е избран' ]]</span>
+                                            <span class="badge bg-primary-transparent text-primary ms-1" v-if="currentSubject.subject_type">[[ currentSubject.subject_type ]]</span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="text-muted">Специалност:</span>
+                                            <span class="fw-semibold text-dark ms-1">[[ currentSpecialty.specialty_name || 'Не е избрана' ]]</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Указания и AI препоръка -->
+                                <div class="alert alert-info d-flex align-items-start gap-2 mb-3 fs-13 py-2 px-3">
+                                    <i class="bi bi-info-circle-fill fs-16 flex-shrink-0 mt-1"></i>
+                                    <div>
+                                        <strong>Как се подготвя файлът / данните за импорт на уроци:</strong><br>
+                                        1. Натиснете бутона <strong>„AI Промптове за уроци“</strong> горе вдясно и изберете промпта за разпределяне на учебното съдържание по уроци (BOPPPS / MSCW).<br>
+                                        2. Копирайте го (всички данни за хорариума, сроковете, разделите и темите с MoSCoW анализ се попълват автоматично) и го поставете във вашия AI инструмент.<br>
+                                        3. Поставете генерирания JSON код в полето по-долу или качете сваления <code>.json</code> файл. Може също така да въведете или коригирате JSON данните ръчно.
+                                    </div>
+                                </div>
+
+                                <!-- Избор на начин на въвеждане: Текст или Файл -->
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label fw-semibold mb-0 fs-14">JSON данни за уроци и занятия:</label>
+                                        <div class="d-flex gap-2">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-12" @click="copySampleSessionsJson()">
+                                                <i class="bi bi-clipboard me-1"></i>Примерен JSON
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="input-group mb-2">
+                                        <input type="file" class="form-control form-control-sm border-green" id="importSessionsJsonFileInput" accept=".json,.txt" @change="handleFileUpload($event)">
+                                        <label class="input-group-text fs-12" for="importSessionsJsonFileInput"><i class="bi bi-upload me-1"></i>Зареди от файл</label>
+                                    </div>
+
+                                    <textarea class="form-control border-green font-monospace fs-13" rows="8"
+                                              v-model="importData.rawJson"
+                                              placeholder='Поставете JSON тук, например:&#10;[&#10;  {&#10;    "num": 1,&#10;    "name": "Въведение в синтаксиса и базовата структура на езика",&#10;    "session_type": "НЗ",&#10;    "duration": 2,&#10;    "basic_level": true,&#10;    "goals": "1. Разпознава основните типове данни;\\n2. Създава първата си програма.",&#10;    "focus": "Среда за разработка, базови типове и компилация.",&#10;    "topics": [&#10;      { "unit_num": 1, "topic_num": 1, "description": "Теоретично представяне" }&#10;    ]&#10;  }&#10;]'></textarea>
+                                </div>
+
+                                <!-- Предупреждение и избор при налични съществуващи уроци -->
+                                <div class="p-3 border rounded-2 mb-3" :class="listOfSessions.length > 0 ? 'bg-warning-transparent border-warning' : 'bg-light'">
+                                    <div class="d-flex align-items-center gap-2 mb-2" v-if="listOfSessions.length > 0">
+                                        <i class="bi bi-exclamation-triangle-fill text-warning fs-18"></i>
+                                        <span class="fw-semibold text-warning-emphasis fs-14">
+                                            Внимание: За този предмет вече има въведени [[ listOfSessions.length ]] урока.
+                                        </span>
+                                    </div>
+                                    <label class="form-label fw-semibold fs-14 mb-2">Опция при импорт:</label>
+                                    <div class="form-check mb-1">
+                                        <input class="form-check-input" type="radio" name="importSessionsMode" id="importSessionsModeReplace" :value="true" v-model="importData.replaceExisting">
+                                        <label class="form-check-label fs-13" for="importSessionsModeReplace">
+                                            <strong>Замени съществуващите</strong> – изтрива старите уроци и записва новите (препоръчително при първоначално цялостно зареждане).
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="importSessionsMode" id="importSessionsModeAppend" :value="false" v-model="importData.replaceExisting">
+                                        <label class="form-check-label fs-13" for="importSessionsModeAppend">
+                                            <strong>Добави към съществуващите</strong> – запазва наличните и добавя новите уроци отдолу.
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Съобщение за грешка -->
+                                <div class="alert alert-danger d-flex align-items-center gap-2 mb-0 fs-13 py-2 px-3" v-if="importData.errorMessage">
+                                    <i class="bi bi-exclamation-circle-fill fs-16 flex-shrink-0"></i>
+                                    <div>[[ importData.errorMessage ]]</div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer border-top bg-light">
+                                <button type="button" class="btn btn-outline-secondary btn-sm px-3" @click="closeImportModal" :disabled="importData.isSubmitting">
+                                    Отказ
+                                </button>
+                                <button type="button" class="btn btn-primary btn-sm px-4" @click="executeImport" :disabled="importData.isSubmitting || !importData.rawJson.trim()">
+                                    <span class="spinner-border spinner-border-sm me-1" v-if="importData.isSubmitting" role="status" aria-hidden="true"></span>
+                                    <i class="bi bi-check2-circle me-1" v-else></i>
+                                    Импортирай
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal за импорт край -->
             </div>
         <!-- End::app-content -->
 

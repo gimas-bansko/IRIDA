@@ -163,11 +163,23 @@
                 '{предмет}': context.subject || context.subject_name || '',
                 '{тема}': context.topic || context.topic_name || context.session_name || '',
                 '{урок}': context.session_name || context.topic || '',
+                '{урок_номер}': context.session_num || context.session?.num || '',
+                '{номер}': context.session_num || context.session?.num || '',
+                '{вид_урок}': context.session_type || '',
+                '{тип_урок}': context.session_type || '',
+                '{продължителност}': context.duration_hours || context.duration || '',
+                '{продължителност_минути}': context.duration_mins || '',
                 '{цели}': context.goals || '',
                 '{фокус}': context.focus || '',
                 '{точки}': context.points || context.plan_points || '',
-                '{клас}': context.grade ? `${context.grade} клас` : '',
-                '{специалност}': context.specialty || context.specialty_name || ''
+                '{клас}': context.grade ? (String(context.grade).includes('клас') ? context.grade : `${context.grade} клас`) : '',
+                '{специалност}': context.specialty || context.specialty_name || '',
+                '{включени_теми}': context.topics_list || context.units_and_topics || context.curriculum_text || '',
+                '{теми}': context.topics_list || context.units_and_topics || context.curriculum_text || '',
+                '{структура_часове}': context.hours_structure || context.hours_info || '',
+                '{хорариум}': context.hours_structure || context.hours_info || '',
+                '{раздели_и_теми}': context.units_and_topics || context.curriculum_text || '',
+                '{учебна_програма}': context.units_and_topics || context.curriculum_text || ''
             };
 
             for (const [key, val] of Object.entries(map)) {
