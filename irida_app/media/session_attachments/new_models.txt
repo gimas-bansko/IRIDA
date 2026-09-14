@@ -1,0 +1,72 @@
+# --- Справочници (заредени веднъж от Наредба №4/2017) ---
+class TeachingNormType(models.Model):
+    code = models.CharField(max_length=32, unique=True)
+    annual_norm_hours = models.PositiveIntegerField()
+    label = models.CharField(max_length=128)
+
+class NormConversionCoefficient(models.Model):
+    base_norm_type = models.ForeignKey(TeachingNormType, related_name="+")
+    other_norm_type = models.ForeignKey(TeachingNormType, related_name="+")
+    coefficient = models.DecimalField(max_digits=4, decimal_places=2)
+    class Meta:
+        unique_together = ("base_norm_type", "other_norm_type")
+
+# --- Разширение на съществуващ Subject ---
+# Subject.norm_type = models.ForeignKey(TeachingNormType, null=True, blank=True)
+# (задължителен за раздел А; за раздел Б може да е null, override на ниво ред)
+
+# --- Разширение на TypicalPlanLine ---
+# TypicalPlanLine.norm_type_override = FK(TeachingNormType, null=True)
+# TypicalPlanLine.is_extended_vocational = BooleanField(default=False)  # маркер за РПП split
+
+# --- Оперативен слой ---
+class AcademicYear(models.Model):
+    label = models.CharField(max_length=16)  # "2025/2026"
+    weeks_term1 = models.PositiveSmallIntegerField(default=18)
+    weeks_term2_default = models.PositiveSmallIntegerField(default=18)
+    weeks_term2_grade12 = models.PositiveSmallIntegerField(default=11)
+    production_practice_weeks = models.PositiveSmallIntegerField(default=2)
+
+class SchoolClass(models.Model):
+    academic_year = models.ForeignKey(AcademicYear)
+    grade = models.PositiveSmallIntegerField()  # 8-12
+    label = models.CharField(max_length=8)      # "9а"
+
+class ClassSpecialty(models.Model):
+    """Junction — паралелка може да съдържа 1 или 2 специалности."""
+    school_class = models.ForeignKey(SchoolClass, related_name="specialties")
+    specialty = models.ForeignKey(Specialty)
+    typical_plan = models.ForeignKey(TypicalPlan)
+    group_label = models.CharField(max_length=32, blank=True)  # "група 1"/"група 2"
+
+class Teacher(models.Model):
+    name = models.CharField(max_length=128)
+    base_norm_type = models.ForeignKey(TeachingNormType)  # по трудов договор
+    employment_share = models.DecimalField(max_digits=3, decimal_places=2, default=1.0)
+    is_active = models.BooleanField(default=True)
+
+class TeacherQualification(models.Model):
+    teacher = models.ForeignKey(Teacher, related_name="qualifications")
+    subject = models.ForeignKey(Subject)
+
+class ClassSubjectAssignment(models.Model):
+    """Генерирано от TypicalPlanLine за конкретна учебна година/паралелка."""
+    school_class = models.ForeignKey(SchoolClass, related_name="assignments")
+    class_specialty = models.ForeignKey(ClassSpecialty, null=True, blank=True)
+    subject = models.ForeignKey(Subject)
+    section = models.CharField(max_length=1, choices=[("A","A"),("B","B")])
+    annual_hours = models.PositiveSmallIntegerField()
+    theory_hours = models.PositiveSmallIntegerField(default=0)   # за РПП split
+    practice_hours = models.PositiveSmallIntegerField(default=0) # за РПП split
+    term1_hours = models.PositiveSmallIntegerField(default=0)
+    term2_hours = models.PositiveSmallIntegerField(default=0)
+    is_production_practice = models.BooleanField(default=False)  # отделен блок, извън term1/term2 баланс
+    group_count = models.PositiveSmallIntegerField(default=1)    # 1 или 2
+    effective_norm_type = models.ForeignKey(TeachingNormType, null=True)
+
+class TeacherAssignmentLine(models.Model):
+    """Ако group_count=2, всяка група може да има различен учител."""
+    class_subject_assignment = models.ForeignKey(ClassSubjectAssignment, related_name="teacher_lines")
+    group_number = models.PositiveSmallIntegerField(default=1)
+    teacher = models.ForeignKey(Teacher, null=True, blank=True, related_name="assignment_lines")
+    hours_share = models.DecimalField(max_digits=4, decimal_places=2, default=1.0)  # ако дели с колега
