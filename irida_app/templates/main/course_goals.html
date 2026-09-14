@@ -8,52 +8,63 @@
             <div class="container-fluid">
 
                 <!-- Page Header -->
-                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
-                     <div>
-                         <h1 class="page-title fw-normal fs-20 mb-12">Цели и задачи на обучението по учебен предмет </h1>
-                         <div class="d-flex align-items-center flex-wrap gap-3 mb-2">
-                             <div class="d-flex align-items-center gap-2">
-                                 <label for="selectSpecialty" class="form-label mb-0 fw-semibold fs-14">Специалност/професия:</label>
-                                 <select id="selectSpecialty" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
-                                         v-model="user.specialty" @change="setSpecialty(user.specialty)">
-                                     <option v-for="sp in listOfSpecialties" :key="sp.id" :value="sp.id">
-                                         [[sp.specialty_type]] [[ sp.specialty_num ]] - [[ sp.specialty_name ]]
-                                     </option>
-                                 </select>
-                             </div>
-                             <div class="d-flex align-items-center gap-2">
-                                 <label for="selectGrade" class="form-label mb-0 fw-semibold fs-14">Клас:</label>
-                                 <select id="selectGrade" class="form-select form-select-sm border-green fs-14" style="min-width: 140px; width: auto;"
-                                         v-model="selectedGrade" @change="onGradeChange()">
-                                     <option :value="0">Всички</option>
-                                     <option :value="9">9 клас</option>
-                                     <option :value="10">10 клас</option>
-                                     <option :value="11">11 клас</option>
-                                     <option :value="12">12 клас</option>
-                                 </select>
-                             </div>
-                             <div class="d-flex align-items-center gap-2">
-                                 <label for="selectSubject" class="form-label mb-0 fw-semibold fs-14">Предмет:</label>
-                                 <select id="selectSubject" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
-                                         v-model="user.subject" @change="setSubject(user.subject)">
-                                     <option v-for="sb in filteredSubjects" :key="sb.id" :value="sb.id">
-                                         [[ sb.name ]] ([[ sb.subject_type ]])
-                                     </option>
-                                 </select>
-                             </div>
-                         </div>
-                     </div>
+                <div class="my-4 page-header-breadcrumb">
+                    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+                        <h1 class="page-title fw-normal fs-20 mb-0">Цели и задачи на обучението по учебен предмет:</h1>
+                        <div>
+                            <button type="button" class="btn btn-primary-light btn-wave waves-effect waves-light label-btn btn-sm"
+                                    @click="openAIAssistant('course_goals')" data-ai-page-key="course_goals">
+                                <i class="bi bi-robot label-btn-icon me-2"></i>AI Промптове за цели
+                            </button>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center flex-wrap gap-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="selectSpecialty" class="form-label mb-0 fw-semibold fs-14 text-nowrap">Специалност/професия:</label>
+                            <select id="selectSpecialty" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
+                                    v-model="user.specialty" @change="setSpecialty(user.specialty)">
+                                <option v-for="sp in listOfSpecialties" :key="sp.id" :value="sp.id">
+                                    [[sp.specialty_type]] [[ sp.specialty_num ]] - [[ sp.specialty_name ]]
+                                </option>
+                            </select>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="selectGrade" class="form-label mb-0 fw-semibold fs-14 text-nowrap">Клас:</label>
+                            <select id="selectGrade" class="form-select form-select-sm border-green fs-14" style="min-width: 140px; width: auto;"
+                                    v-model="selectedGrade" @change="onGradeChange()">
+                                <option :value="0">Всички</option>
+                                <option :value="9">9 клас</option>
+                                <option :value="10">10 клас</option>
+                                <option :value="11">11 клас</option>
+                                <option :value="12">12 клас</option>
+                            </select>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="selectSubject" class="form-label mb-0 fw-semibold fs-14 text-nowrap">Предмет:</label>
+                            <select id="selectSubject" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
+                                    v-model="user.subject" @change="setSubject(user.subject)">
+                                <option v-for="sb in filteredSubjects" :key="sb.id" :value="sb.id">
+                                    [[ sb.name ]] ([[ sb.subject_type ]])
+                                </option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <!-- Page Header Close -->
 
                 <!-- Цели -->
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
                     <div class="card-1 custom-card" >
-                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4">
+                        <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4" style="padding-right: 28px;">
                             <div class="card-title ">
                                 <div>Цели на обучението по предмета</div>
                             </div>
-                            <div class="d-flex gap-12 align-items-center" v-if="!edit.editor">
+                            <div class="d-flex gap-2 align-items-center" v-if="!edit.editor">
+                                <button type="button" class="btn btn-outline-primary btn-sm" @click="openImportModal('goals')">
+                                    <span class="d-flex align-items-center gap-1">
+                                        <i class="bi bi-file-earmark-arrow-up"></i>Импорт на цели
+                                    </span>
+                                </button>
                                 <button type="button" class="btn-1 btn btn-outline-success btn-sm" @click="newGoal()">
                                     <span class="d-flex align-items-center gap-6">
                                         <i class="bi bi-plus-circle"></i>Добави цел</span>
@@ -103,82 +114,191 @@
                                     </div>
                                 </li>
                             </ul>
-                            <ul class="list-unstyled projects-items-success-list" v-else>
-                                <li v-for="(g, g_idx) in listOfGoals">
-                                    <div class="d-flex align-items-center gap-3" v-if="showItem(0,g_idx)">
-                                        <div class="flex-fill">
-                                            <span class="d-block fw-normal  fs-16 custom-black">
-                                                [[g.num]]. [[g.name]]</span>
+                            <div v-else>
+                                <p class="form-label">В края на обучението по учебния предмет ученикът трябва да:</p>
+                                <ul class="list-unstyled projects-items-success-list">
+                                    <li v-for="(g, g_idx) in listOfGoals">
+                                        <div class="d-flex align-items-center gap-3" v-if="showItem(0,g_idx)">
+                                            <div class="flex-fill">
+                                                <span class="d-block fw-normal  fs-16 custom-black">
+                                                    [[g.num]]. [[g.name]]</span>
+                                            </div>
+                                            <button type="button" class="btn btn-outline-success btn-wave btn-sm" @click="editGoal(g_idx)"
+                                                    v-if="!edit.editor">
+                                                <span class="d-flex align-items-center gap-6">
+                                                    <i class="bi bi-pen"></i>
+                                                    <span>Промени</span>
+                                                </span>
+                                            </button>
                                         </div>
-                                        <button type="button" class="btn btn-outline-success btn-wave btn-sm" @click="editGoal(g_idx)"
-                                                v-if="!edit.editor">
-                                            <span class="d-flex align-items-center gap-6">
-                                                <i class="bi bi-pen"></i>
-                                                <span>Промени</span>
-                                            </span>
-                                        </button>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-3" v-if="showEditor(0,g_idx)">
-                                        <div class="flex-fill">
-                                            <div class="row g-2 mt-0">
-                                                <!-- номер -->
-                                                <div class="col-md-1">
-                                                    <label for="goalNum2" class="form-label">Номер</label>
-                                                    <input id="goalNum2" type="number" class="form-control border-green" v-model="goal.num">
-                                                </div>
+                                        <div class="d-flex align-items-center gap-3" v-if="showEditor(0,g_idx)">
+                                            <div class="flex-fill">
+                                                <div class="row g-2 mt-0">
+                                                    <!-- номер -->
+                                                    <div class="col-md-1">
+                                                        <label for="goalNum2" class="form-label">Номер</label>
+                                                        <input id="goalNum2" type="number" class="form-control border-green" v-model="goal.num">
+                                                    </div>
 
-                                                <!-- текст -->
-                                                <div class="col-md-11">
-                                                    <label for="goalName2" class="form-label">Текст</label>
-                                                    <input id="goalName2" type="text" class="form-control" v-model="goal.name">
-                                                </div>
+                                                    <!-- текст -->
+                                                    <div class="col-md-11">
+                                                        <label for="goalName2" class="form-label">Текст</label>
+                                                        <input id="goalName2" type="text" class="form-control" v-model="goal.name">
+                                                    </div>
 
-                                                <!-- Бутони запис/отказ -->
-                                                <div class="col-md-12 text-center">
-                                                    <button class="btn btn-outline-secondary btn-sm fs-16" @click="clearEditMode()">
-                                                        Откажи</button>
-                                                    &nbsp; &nbsp; &nbsp;
-                                                    <button class="btn btn-outline-success btn-sm fs-16" @click="saveGoal()">
-                                                        Запиши</button>
-                                                </div><hr>
+                                                    <!-- Бутони запис/отказ -->
+                                                    <div class="col-md-12 text-center">
+                                                        <button class="btn btn-outline-secondary btn-sm fs-16" @click="clearEditMode()">
+                                                            Откажи</button>
+                                                        &nbsp; &nbsp; &nbsp;
+                                                        <button class="btn btn-outline-success btn-sm fs-16" @click="saveGoal()">
+                                                            Запиши</button>
+                                                    </div><hr>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </li>
-                                <!-- Дабавяне на цел -->
-                                <li v-if="showEditor(0,-1)">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="flex-fill">
-                                            <div class="row g-3 mt-0">
-                                                <!-- номер -->
-                                                <div class="col-md-1">
-                                                    <label for="goalNum3" class="form-label">Номер</label>
-                                                    <input id="goalNum3" type="number" class="form-control" v-model="goal.num">
-                                                </div>
+                                    </li>
+                                    <!-- Дабавяне на цел -->
+                                    <li v-if="showEditor(0,-1)">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="flex-fill">
+                                                <div class="row g-3 mt-0">
+                                                    <!-- номер -->
+                                                    <div class="col-md-1">
+                                                        <label for="goalNum3" class="form-label">Номер</label>
+                                                        <input id="goalNum3" type="number" class="form-control" v-model="goal.num">
+                                                    </div>
 
-                                                <!-- текст -->
-                                                <div class="col-md-11">
-                                                    <label for="goalName3" class="form-label">Текст</label>
-                                                    <input id="goalName3" type="text" class="form-control" v-model="goal.name">
-                                                </div>
+                                                    <!-- текст -->
+                                                    <div class="col-md-11">
+                                                        <label for="goalName3" class="form-label">Текст</label>
+                                                        <input id="goalName3" type="text" class="form-control" v-model="goal.name">
+                                                    </div>
 
-                                                <!-- Бутони запис/отказ -->
-                                                <div class="col-12 text-center">
-                                                    <button class="btn btn-outline-secondary btn-sm fs-16" @click="clearEditMode">
-                                                        Откажи</button>
-                                                    &nbsp; &nbsp; &nbsp;
-                                                    <button class="btn btn-outline-success btn-sm fs-16" @click="saveGoal()">
-                                                        Запиши</button>
-                                                </div><hr>
+                                                    <!-- Бутони запис/отказ -->
+                                                    <div class="col-12 text-center">
+                                                        <button class="btn btn-outline-secondary btn-sm fs-16" @click="clearEditMode">
+                                                            Откажи</button>
+                                                        &nbsp; &nbsp; &nbsp;
+                                                        <button class="btn btn-outline-success btn-sm fs-16" @click="saveGoal()">
+                                                            Запиши</button>
+                                                    </div><hr>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </li>
-                            </ul>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- Цели край -->
+
+                <!-- Modal за импорт на цели -->
+                <div class="modal fade" id="goalsImportModal" tabindex="-1" aria-labelledby="goalsImportModalLabel" aria-hidden="true" ref="goalsImportModal">
+                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content shadow-lg border-0">
+                            <div class="modal-header bg-primary-transparent border-bottom">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-file-earmark-arrow-up text-primary fs-20"></i>
+                                    <h5 class="modal-title fw-semibold text-primary mb-0" id="goalsImportModalLabel">
+                                        Импорт на педагогически цели и задачи по предмета
+                                    </h5>
+                                </div>
+                                <button type="button" class="btn-close" @click="closeImportModal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <!-- Контекстни данни за текущия предмет -->
+                                <div class="p-3 bg-light rounded-2 border mb-3">
+                                    <div class="row g-2 fs-14">
+                                        <div class="col-md-6">
+                                            <span class="text-muted">Предмет:</span>
+                                            <span class="fw-semibold text-dark ms-1">[[ currentSubject.name || 'Не е избран' ]]</span>
+                                            <span class="badge bg-primary-transparent text-primary ms-1" v-if="currentSubject.subject_type">[[ currentSubject.subject_type ]]</span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="text-muted">Специалност:</span>
+                                            <span class="fw-semibold text-dark ms-1">[[ currentSpecialty.specialty_name || 'Не е избрана' ]]</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Указания и AI препоръка -->
+                                <div class="alert alert-info d-flex align-items-start gap-2 mb-3 fs-13 py-2 px-3">
+                                    <i class="bi bi-info-circle-fill fs-16 flex-shrink-0 mt-1"></i>
+                                    <div>
+                                        <strong>Как се подготвя файлът / данните за импорт на цели:</strong><br>
+                                        1. Натиснете бутона <strong>„AI Промптове за цели“</strong> горе вдясно и изберете промпта за формулиране на педагогически цели по таксономията на Блум.<br>
+                                        2. Копирайте го и го поставете във вашия предпочитан AI инструмент (ChatGPT, Claude, Gemini, DeepSeek и др.) заедно с приложения файл с учебната програма от МОН.<br>
+                                        3. Поставете генерирания JSON код в полето по-долу или качете сваления <code>.json</code> файл. Може също така да въведете или коригирате JSON данните ръчно.
+                                    </div>
+                                </div>
+
+                                <!-- Избор на начин на въвеждане: Текст или Файл -->
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label fw-semibold mb-0 fs-14">JSON данни за образователни цели:</label>
+                                        <div class="d-flex gap-2">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 fs-12" @click="copySampleGoalsJson()">
+                                                <i class="bi bi-clipboard me-1"></i>Примерен JSON
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="input-group mb-2">
+                                        <input type="file" class="form-control form-control-sm border-green" id="importGoalsJsonFileInput" accept=".json,.txt" @change="handleFileUpload($event)">
+                                        <label class="input-group-text fs-12" for="importGoalsJsonFileInput"><i class="bi bi-upload me-1"></i>Зареди от файл</label>
+                                    </div>
+
+                                    <textarea class="form-control border-green font-monospace fs-13" rows="8"
+                                              v-model="importData.rawJson"
+                                              placeholder='Поставете JSON тук, например:&#10;[&#10;  {&#10;    "num": 1,&#10;    "name": "Дефинира и обяснява основните понятия, синтаксис и структури в езика"&#10;  },&#10;  {&#10;    "num": 2,&#10;    "name": "Проектира, разработва и тества модулни алгоритмични решения"&#10;  }&#10;]'></textarea>
+                                </div>
+
+                                <!-- Предупреждение и избор при налични съществуващи цели -->
+                                <div class="p-3 border rounded-2 mb-3" :class="listOfGoals.length > 0 ? 'bg-warning-transparent border-warning' : 'bg-light'">
+                                    <div class="d-flex align-items-center gap-2 mb-2" v-if="listOfGoals.length > 0">
+                                        <i class="bi bi-exclamation-triangle-fill text-warning fs-18"></i>
+                                        <span class="fw-semibold text-warning-emphasis fs-14">
+                                            Внимание: За този предмет вече има въведени [[ listOfGoals.length ]] цели.
+                                        </span>
+                                    </div>
+                                    <label class="form-label fw-semibold fs-14 mb-2">Опция при импорт:</label>
+                                    <div class="form-check mb-1">
+                                        <input class="form-check-input" type="radio" name="importGoalsMode" id="importGoalsModeReplace" :value="true" v-model="importData.replaceExisting">
+                                        <label class="form-check-label fs-13" for="importGoalsModeReplace">
+                                            <strong>Замени съществуващите</strong> – изтрива старите цели и записва новите (препоръчително при първоначално цялостно зареждане).
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="importGoalsMode" id="importGoalsModeAppend" :value="false" v-model="importData.replaceExisting">
+                                        <label class="form-check-label fs-13" for="importGoalsModeAppend">
+                                            <strong>Добави към съществуващите</strong> – запазва наличните и добавя новите цели отдолу.
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Съобщение за грешка -->
+                                <div class="alert alert-danger d-flex align-items-center gap-2 mb-0 fs-13 py-2 px-3" v-if="importData.errorMessage">
+                                    <i class="bi bi-exclamation-circle-fill fs-16 flex-shrink-0"></i>
+                                    <div>[[ importData.errorMessage ]]</div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer border-top bg-light">
+                                <button type="button" class="btn btn-outline-secondary btn-sm px-3" @click="closeImportModal" :disabled="importData.isSubmitting">
+                                    Отказ
+                                </button>
+                                <button type="button" class="btn btn-primary btn-sm px-4" @click="executeImport" :disabled="importData.isSubmitting || !importData.rawJson.trim()">
+                                    <span class="spinner-border spinner-border-sm me-1" v-if="importData.isSubmitting" role="status" aria-hidden="true"></span>
+                                    <i class="bi bi-check2-circle me-1" v-else></i>
+                                    Импортирай
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal за импорт край -->
 
             </div>
         <!-- End::app-content -->

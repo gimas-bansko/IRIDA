@@ -21,6 +21,7 @@ from .curriculum import (
     UnitSerializer,
     UnitWriteSerializer,
 )
+from .prompts import AIPromptSerializer
 from .lessons import (
     SessionMiniSerializer,
     SessionNoteSerializer,
@@ -53,6 +54,8 @@ __all__ = [
     'TopicWriteSerializer',
     'UnitSerializer',
     'UnitWriteSerializer',
+    # prompts
+    'AIPromptSerializer',
     # schools
     'SpecialtySerializer',
     'SpecialtyMiniSerializer',

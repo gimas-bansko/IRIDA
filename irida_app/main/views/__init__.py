@@ -23,6 +23,8 @@ from .api_context import (
     set_subject,
 )
 from .api_curriculum import (
+    CurriculumImportView,
+    GoalImportView,
     GoalUpsertView,
     SpecialtySubjectsView,
     SubjectGoalsView,
@@ -30,6 +32,11 @@ from .api_curriculum import (
     TopicUpsertView,
     UnitUpsertView,
     subject_detail,
+)
+from .api_prompts import (
+    AIPromptListView,
+    AIPromptUpsertView,
+    ai_prompt_delete,
 )
 from .api_lessons import (
     SessionAttachmentsForSessionView,
@@ -119,6 +126,8 @@ __all__ = [
     'SchoolDayConfigAPIView',
     'specialty_detail',
     # api_curriculum
+    'CurriculumImportView',
+    'GoalImportView',
     'SpecialtySubjectsView',
     'subject_detail',
     'SubjectGoalsView',
@@ -126,6 +135,10 @@ __all__ = [
     'SubjectUnitsWithTopicsView',
     'UnitUpsertView',
     'TopicUpsertView',
+    # api_prompts
+    'AIPromptListView',
+    'AIPromptUpsertView',
+    'ai_prompt_delete',
     # api_lessons
     'SessionListCreateView',
     'SessionRetrieveUpdateDestroyView',

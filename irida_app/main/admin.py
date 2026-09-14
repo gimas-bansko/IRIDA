@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from .models import (
+    AIPrompt,
     Documents,
     Goal,
     Log,
@@ -56,6 +57,14 @@ admin.site.register(SessionPoint)
 admin.site.register(SessionNote)
 admin.site.register(SessionTask)
 admin.site.register(SessionAttachment)
+
+
+@admin.register(AIPrompt)
+class AIPromptAdmin(admin.ModelAdmin):
+    list_display = ('title', 'page_key', 'is_system', 'order', 'created_by', 'updated_at')
+    list_filter = ('page_key', 'is_system', 'created_by')
+    search_fields = ('title', 'prompt_text', 'instructions')
+    ordering = ('page_key', 'order', 'title')
 
 
 @admin.register(Log)

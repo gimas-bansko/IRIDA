@@ -259,6 +259,11 @@
                             </ol>
                         </nav>
                     </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-primary-light btn-wave waves-effect waves-light label-btn" @click="openAIAssistant" data-ai-page-key="lesson_main">
+                            <i class="bi bi-robot label-btn-icon me-2"></i>AI Помощник
+                        </button>
+                    </div>
                 </div>
                 <!-- План - детайли -->
                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb"
@@ -1044,6 +1049,9 @@
     <script src="{% static 'js/custom.js' %}"></script>
     <script src="{% static 'js/date.js' %}"></script>
     <script src="{% static 'js/custom-switcher.min.js' %}"></script>
+
+    {% include 'main/components/ai_prompt_modal.html' %}
+    <script src="{% static 'irida/js/ai_prompts.js' %}"></script>
 </body>
 
 </html>

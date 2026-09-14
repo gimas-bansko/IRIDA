@@ -5,6 +5,10 @@ API маршрути. Включват се от urls.py под префикс '
 from django.urls import path
 
 from .views import (
+    AIPromptListView,
+    AIPromptUpsertView,
+    CurriculumImportView,
+    GoalImportView,
     GoalUpsertView,
     SchoolDayConfigAPIView,
     SchoolDetailAPIView,
@@ -29,6 +33,7 @@ from .views import (
     UserListCreateView,
     UserListView,
     UserRetrieveUpdateDestroyView,
+    ai_prompt_delete,
     ckeditor_image_upload,
     session_attachment_delete,
     session_attachment_upsert,
@@ -75,7 +80,9 @@ urlpatterns = [
     path('course_set/<int:sb>/', set_course, name='set_course'),
     path('course/<int:sb_id>/goals/', SubjectGoalsView.as_view(), name='subject-goals'),
     path('goals/upsert/', GoalUpsertView.as_view(), name='goal-upsert'),
+    path('subjects/<int:subject_id>/import-goals/', GoalImportView.as_view(), name='goal-import'),
     path('subjects/<int:subject_id>/units-with-topics/', SubjectUnitsWithTopicsView.as_view(), name='subject-units-with-topics'),
+    path('subjects/<int:subject_id>/import-curriculum/', CurriculumImportView.as_view(), name='curriculum-import'),
     path('units/upsert/', UnitUpsertView.as_view(), name='unit-upsert'),
     path('topics/upsert/', TopicUpsertView.as_view(), name='topic-upsert'),
 
@@ -123,4 +130,9 @@ urlpatterns = [
     path('users-list/<int:sc>/<int:lvl>/', UserListView.as_view(), name='users-list'),
     path('users/', UserListCreateView.as_view(), name='users-list-create'),
     path('users/<int:pk>/', UserRetrieveUpdateDestroyView.as_view(), name='user-detail'),
+
+    # AI Промптове
+    path('prompts/', AIPromptListView.as_view(), name='prompt-list'),
+    path('prompts/upsert/', AIPromptUpsertView.as_view(), name='prompt-upsert'),
+    path('prompts/<int:pk>/', ai_prompt_delete, name='prompt-delete'),
 ]

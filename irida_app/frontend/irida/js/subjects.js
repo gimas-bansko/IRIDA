@@ -45,10 +45,22 @@ const App = {
             editSessionTopics: [],       // копие на session_topics за редакция (локално)
             unitsList_idx:0,
             selectedGrade: 0,
+            importModalInstance: null,
+            importData: {
+                rawJson: '',
+                replaceExisting: true,
+                isSubmitting: false,
+                errorMessage: '',
+                modalType: 'curriculum'
+            },
 
         }
     },
     computed: {
+        currentSubject() {
+            if (!this.listOfSubjects || !this.user.subject) return this.subject || {};
+            return this.listOfSubjects.find(s => s.id === this.user.subject) || this.subject || {};
+        },
         currentSpecialty() {
             if (!this.listOfSpecialties || !this.user.specialty) return {};
             return this.listOfSpecialties.find(sp => sp.id === this.user.specialty) || {};
@@ -60,6 +72,10 @@ const App = {
         currentTopicMoSCoWText() {
             const code = this.topic?.MoSCoW_cat || 'M'
             return this.moscowMap[code] || code
+        },
+        totalExistingTopicsCount() {
+            if (!Array.isArray(this.listOfUnits)) return 0;
+            return this.listOfUnits.reduce((acc, u) => acc + (Array.isArray(u?.topics) ? u.topics.length : 0), 0);
         },
         filteredSubjects() {
             if (!Array.isArray(this.listOfSubjects)) return [];
@@ -678,6 +694,257 @@ const App = {
         },
         goToLesson(sessionId) {
             window.location.href = `/lesson/${sessionId}/`;
+        },
+        openAIAssistant(pageKey) {
+            const currentSubject = (this.listOfSubjects || []).find(s => s.id === this.user?.subject) || this.subject || {};
+            const currentSpec = (this.listOfSpecialties || []).find(sp => sp.id === this.user?.specialty) || {};
+            const goalsText = (this.listOfGoals || []).map(g => `${g.num}. ${g.name}`).join('; ');
+
+            const context = {
+                subject: currentSubject.name || '',
+                subject_name: currentSubject.name || '',
+                grade: currentSubject.grade || this.user?.grade || this.selectedGrade || '',
+                specialty: currentSpec.specialty_name || '',
+                goals: goalsText
+            };
+            if (window.AIPromptManager) {
+                window.AIPromptManager.open(pageKey || 'general', context);
+            }
+        },
+        openImportModal(modalType = 'auto') {
+            const subjectId = this.user?.subject;
+            if (!subjectId) {
+                alert('Моля, първо изберете учебен предмет!');
+                return;
+            }
+            this.importData.errorMessage = '';
+            this.importData.isSubmitting = false;
+            this.importData.rawJson = '';
+
+            let modalId = 'curriculumImportModal';
+            if (modalType === 'goals' || (modalType === 'auto' && document.getElementById('goalsImportModal'))) {
+                modalId = 'goalsImportModal';
+                this.importData.modalType = 'goals';
+            } else {
+                modalId = 'curriculumImportModal';
+                this.importData.modalType = 'curriculum';
+            }
+
+            const modalEl = document.getElementById(modalId);
+            if (modalEl && window.bootstrap) {
+                this.importModalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                this.importModalInstance.show();
+            }
+        },
+        closeImportModal() {
+            if (this.importModalInstance) {
+                this.importModalInstance.hide();
+            }
+        },
+        copySampleGoalsJson() {
+            const sample = [
+                {
+                    "num": 1,
+                    "name": "Дефинира и обяснява основните концепции, синтаксис и базови структури от данни в програмния език"
+                },
+                {
+                    "num": 2,
+                    "name": "Проектира, разработва и тества модулни алгоритмични решения за практически задачи"
+                },
+                {
+                    "num": 3,
+                    "name": "Прилага добри практики за дебъгване, структуриране и документиране на програмен код"
+                },
+                {
+                    "num": 4,
+                    "name": "Изгражда завършени софтуерни модули и работи съвместно в екипна среда за разработка"
+                }
+            ];
+            const text = JSON.stringify(sample, null, 2);
+            this.importData.rawJson = text;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).catch(() => {});
+            }
+        },
+        copySampleJson() {
+            if (this.importData.modalType === 'goals' || document.getElementById('goalsImportModal')) {
+                this.copySampleGoalsJson();
+                return;
+            }
+            const sample = [
+                {
+                    "num": 1,
+                    "name": "Въведение и основни понятия",
+                    "hours": 6,
+                    "topics": [
+                        {
+                            "num": 1,
+                            "name": "Основни концепции и терминология",
+                            "MoSCoW_cat": "M",
+                            "MoSCoW_rem": "Фундаментална за предмета база"
+                        },
+                        {
+                            "num": 2,
+                            "name": "Среда за разработка и инструменти",
+                            "MoSCoW_cat": "M",
+                            "MoSCoW_rem": "Необходима за практическата работа"
+                        }
+                    ]
+                },
+                {
+                    "num": 2,
+                    "name": "Практически структури и алгоритми",
+                    "hours": 12,
+                    "topics": [
+                        {
+                            "num": 1,
+                            "name": "Основни алгоритмични блокове",
+                            "MoSCoW_cat": "S",
+                            "MoSCoW_rem": "Важни умения за програмиране"
+                        },
+                        {
+                            "num": 2,
+                            "name": "Оптимизация и разширени техники",
+                            "MoSCoW_cat": "C",
+                            "MoSCoW_rem": "За напреднали ученици"
+                        }
+                    ]
+                }
+            ];
+            const text = JSON.stringify(sample, null, 2);
+            this.importData.rawJson = text;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).catch(() => {});
+            }
+        },
+        handleFileUpload(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this.importData.rawJson = e.target.result;
+                this.importData.errorMessage = '';
+            };
+            reader.onerror = () => {
+                this.importData.errorMessage = 'Възникна грешка при четене на файла.';
+            };
+            reader.readAsText(file);
+        },
+        async executeImport() {
+            const vm = this;
+            const subjectId = vm.user?.subject;
+            if (!subjectId) {
+                vm.importData.errorMessage = 'Моля, изберете учебен предмет!';
+                return;
+            }
+
+            const raw = (vm.importData.rawJson || '').trim();
+            if (!raw) {
+                vm.importData.errorMessage = 'Моля, въведете или заредете JSON данни за импорт.';
+                return;
+            }
+
+            let parsedData;
+            try {
+                let cleanJson = raw;
+                if (cleanJson.startsWith('```json')) {
+                    cleanJson = cleanJson.replace(/^```json\s*/i, '').replace(/\s*```$/, '');
+                } else if (cleanJson.startsWith('```')) {
+                    cleanJson = cleanJson.replace(/^```\s*/, '').replace(/\s*```$/, '');
+                }
+                parsedData = JSON.parse(cleanJson);
+            } catch (err) {
+                vm.importData.errorMessage = 'Невалиден JSON синтаксис: ' + err.message;
+                return;
+            }
+
+            const isGoals = vm.importData.modalType === 'goals' || !!document.getElementById('goalsImportModal');
+
+            if (isGoals) {
+                let parsedGoals = parsedData;
+                if (!Array.isArray(parsedGoals)) {
+                    if (parsedGoals && Array.isArray(parsedGoals.goals)) {
+                        parsedGoals = parsedGoals.goals;
+                    } else {
+                        vm.importData.errorMessage = 'Очаква се JSON масив от цели ([ {"num": 1, "name": "..."}, ... ]).';
+                        return;
+                    }
+                }
+
+                if (parsedGoals.length === 0) {
+                    vm.importData.errorMessage = 'JSON масивът не съдържа цели.';
+                    return;
+                }
+
+                vm.importData.isSubmitting = true;
+                vm.importData.errorMessage = '';
+
+                try {
+                    const response = await axios.post(`/api/subjects/${subjectId}/import-goals/`, {
+                        goals: parsedGoals,
+                        replace_existing: vm.importData.replaceExisting
+                    }, {
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN }
+                    });
+
+                    if (response.data && response.data.goals) {
+                        vm.listOfGoals = response.data.goals;
+                    } else {
+                        await vm.loadGoals(subjectId);
+                    }
+
+                    vm.closeImportModal();
+                    alert(response.data?.message || 'Целите бяха импортирани успешно!');
+                } catch (err) {
+                    console.error('Import goals error:', err);
+                    const errorMsg = err.response?.data?.error || err.response?.data?.detail || 'Възникна грешка при импорта на цели.';
+                    vm.importData.errorMessage = errorMsg;
+                } finally {
+                    vm.importData.isSubmitting = false;
+                }
+            } else {
+                let parsedUnits = parsedData;
+                if (!Array.isArray(parsedUnits)) {
+                    if (parsedUnits && Array.isArray(parsedUnits.units)) {
+                        parsedUnits = parsedUnits.units;
+                    } else {
+                        vm.importData.errorMessage = 'Очаква ��е JSON масив от раздели ([ {...}, {...} ]).';
+                        return;
+                    }
+                }
+
+                if (parsedUnits.length === 0) {
+                    vm.importData.errorMessage = 'JSON масивът не съдържа раздели.';
+                    return;
+                }
+
+                vm.importData.isSubmitting = true;
+                vm.importData.errorMessage = '';
+
+                try {
+                    const response = await axios.post(`/api/subjects/${subjectId}/import-curriculum/`, {
+                        units: parsedUnits,
+                        replace_existing: vm.importData.replaceExisting
+                    }, {
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN }
+                    });
+
+                    if (response.data && response.data.units) {
+                        vm.listOfUnits = response.data.units;
+                    } else {
+                        await vm.loadUnits(vm.user);
+                    }
+
+                    vm.closeImportModal();
+                    alert(response.data?.message || 'Учебната програма бе импортирана успешно!');
+                } catch (err) {
+                    console.error('Import curriculum error:', err);
+                    const errorMsg = err.response?.data?.error || err.response?.data?.detail || 'Възникна грешка при импорта на учебната програма.';
+                    vm.importData.errorMessage = errorMsg;
+                } finally {
+                    vm.importData.isSubmitting = false;
+                }
+            }
         },
     },
     created: function(){

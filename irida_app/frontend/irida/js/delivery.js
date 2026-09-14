@@ -1137,7 +1137,26 @@ const App = {
                 clearInterval(this._lessonTimingInterval);
                 this._lessonTimingInterval = null;
             }
-            },
+        },
+
+        openAIAssistant() {
+            const pointsText = (this.points || []).map(p => `${p.num}. ${p.name}`).join('; ');
+            const subjectName = this.user?.subject_name || '';
+            const specName = this.user?.specialty_name || '';
+            const context = {
+                subject: subjectName,
+                topic: this.session?.name || '',
+                session_name: this.session?.name || '',
+                goals: this.session?.goals || '',
+                focus: this.session?.focus || '',
+                points: pointsText,
+                grade: this.user?.grade || '',
+                specialty: specName
+            };
+            if (window.AIPromptManager) {
+                window.AIPromptManager.open('lesson_main', context);
+            }
+        },
     },
     created() {
         this.loadUserDetails();

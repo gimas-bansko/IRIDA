@@ -19,6 +19,7 @@ from .accounts import (
     save_user_profile,
 )
 from .curriculum import Goal, Subject, Topic, Unit
+from .prompts import AIPrompt
 from .lessons import (
     Session,
     SessionAttachment,
@@ -35,6 +36,8 @@ __all__ = [
     'Unit',
     'Topic',
     'Goal',
+    # prompts
+    'AIPrompt',
     # lessons
     'Session',
     'SessionTopic',

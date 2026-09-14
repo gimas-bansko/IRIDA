@@ -164,6 +164,19 @@ const App = {
                     alert('Възникна грешка!');
                 });
         },
+        openAIAssistant(pageKey) {
+            const currentSubject = (this.listOfSubjects || []).find(s => s.id === this.user?.subject) || {};
+            const currentSpec = (this.listOfSpecialties || []).find(sp => sp.id === this.user?.specialty) || {};
+            const context = {
+                subject: currentSubject.name || '',
+                subject_name: currentSubject.name || '',
+                grade: currentSubject.grade || this.user?.grade || this.selectedGrade || '',
+                specialty: currentSpec.specialty_name || ''
+            };
+            if (window.AIPromptManager) {
+                window.AIPromptManager.open(pageKey || 'session_list', context);
+            }
+        },
     },
     created(){
         this.loadUserDetails()

@@ -8,44 +8,44 @@
             <div class="container-fluid">
 
                 <!-- Page Header -->
-                 <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
-                     <div>
-                         <!--
-                         <p class="mb-1 mt-2 text-muted">
-                             <img class="avatar" src="{{ user_profile.school.logo.url }}" alt="{{ user_profile.school.short_name}}">
-                             {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
-                             -->
+                 <div class=" my-4 page-header-breadcrumb">
+                     <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
                          <h1 class="page-title fw-normal fs-20 mb-12">Занятия (Уроци) за: </h1>
-                         <div class="d-flex align-items-center flex-wrap gap-3 mb-2">
-                             <div class="d-flex align-items-center gap-2">
-                                 <label for="selectSpecialty" class="form-label mb-0 fw-semibold fs-14">Специалност/професия:</label>
-                                 <select id="selectSpecialty" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
-                                         v-model="user.specialty" @change="setSpecialty(user.specialty)">
-                                     <option v-for="sp in listOfSpecialties" :key="sp.id" :value="sp.id">
-                                         [[sp.specialty_type]] [[ sp.specialty_num ]] - [[ sp.specialty_name ]]
-                                     </option>
-                                 </select>
-                             </div>
-                             <div class="d-flex align-items-center gap-2">
-                                 <label for="selectGrade" class="form-label mb-0 fw-semibold fs-14">Клас:</label>
-                                 <select id="selectGrade" class="form-select form-select-sm border-green fs-14" style="min-width: 140px; width: auto;"
-                                         v-model="selectedGrade" @change="onGradeChange()">
-                                     <option :value="0">Всички</option>
-                                     <option :value="9">9 клас</option>
-                                     <option :value="10">10 клас</option>
-                                     <option :value="11">11 клас</option>
-                                     <option :value="12">12 клас</option>
-                                 </select>
-                             </div>
-                             <div class="d-flex align-items-center gap-2">
-                                 <label for="selectSubject" class="form-label mb-0 fw-semibold fs-14">Предмет:</label>
-                                 <select id="selectSubject" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
-                                         v-model="user.subject" @change="setSubject(user.subject)">
-                                     <option v-for="sb in filteredSubjects" :key="sb.id" :value="sb.id">
-                                         [[ sb.name ]] ([[ sb.subject_type ]])
-                                     </option>
-                                 </select>
-                             </div>
+                         <div>
+                             <button type="button" class="btn btn-primary-light btn-wave waves-effect waves-light label-btn" @click="openAIAssistant('course_lessons')" data-ai-page-key="course_lessons">
+                                 <i class="bi bi-robot label-btn-icon me-2"></i>AI Промптове за уроци
+                             </button>
+                         </div>
+                     </div>
+                     <div class="d-flex align-items-center flex-wrap gap-3 mb-2">
+                         <div class="d-flex align-items-center gap-2">
+                             <label for="selectSpecialty" class="form-label mb-0 fw-semibold fs-14">Специалност/професия:</label>
+                             <select id="selectSpecialty" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
+                                     v-model="user.specialty" @change="setSpecialty(user.specialty)">
+                                 <option v-for="sp in listOfSpecialties" :key="sp.id" :value="sp.id">
+                                     [[sp.specialty_type]] [[ sp.specialty_num ]] - [[ sp.specialty_name ]]
+                                 </option>
+                             </select>
+                         </div>
+                         <div class="d-flex align-items-center gap-2">
+                             <label for="selectGrade" class="form-label mb-0 fw-semibold fs-14">Клас:</label>
+                             <select id="selectGrade" class="form-select form-select-sm border-green fs-14" style="min-width: 140px; width: auto;"
+                                     v-model="selectedGrade" @change="onGradeChange()">
+                                 <option :value="0">Всички</option>
+                                 <option :value="9">9 клас</option>
+                                 <option :value="10">10 клас</option>
+                                 <option :value="11">11 клас</option>
+                                 <option :value="12">12 клас</option>
+                             </select>
+                         </div>
+                         <div class="d-flex align-items-center gap-2">
+                             <label for="selectSubject" class="form-label mb-0 fw-semibold fs-14">Предмет:</label>
+                             <select id="selectSubject" class="form-select form-select-sm border-green fs-14" style="min-width: 250px; width: auto;"
+                                     v-model="user.subject" @change="setSubject(user.subject)">
+                                 <option v-for="sb in filteredSubjects" :key="sb.id" :value="sb.id">
+                                     [[ sb.name ]] ([[ sb.subject_type ]])
+                                 </option>
+                             </select>
                          </div>
                      </div>
                  </div>
@@ -402,7 +402,7 @@
                 <div class="card-1 custom-card mt-1" v-if="!edit.editor">
                     <div class="card-body">
                         <div class="btn-list text-center">
-                            <button type="button" class="btn btn-outline btn-sm label-btn" @click="newSession()">
+                            <button type="button" class="btn btn-outline-primary btn-sm label-btn" @click="newSession()">
                                 <i class="bi bi-plus-circle label-btn-icon me-2"></i>
                                 Добави урок
                             </button>

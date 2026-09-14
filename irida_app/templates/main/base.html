@@ -103,6 +103,14 @@
                 <!-- Start::header-content-right -->
                 <div class="header-content-right">
 
+                    <!-- Start::header-element AI Помощник -->
+                    <div class="header-element d-flex align-items-center me-2">
+                        <button type="button" class="btn btn-sm btn-primary-light btn-wave waves-effect waves-light" onclick="window.AIPromptManager && window.AIPromptManager.open('general')" title="AI Помощник & Промптове">
+                            <i class="bi bi-robot me-1"></i><span class="d-none d-sm-inline">AI Помощник</span>
+                        </button>
+                    </div>
+                    <!-- End::header-element -->
+
                     <!-- Start::header-element потребител -->
                     <div class="header-element">
                         <!-- Start::header-link|dropdown-toggle -->
@@ -425,6 +433,9 @@
     <script src="{% static 'js/custom.js' %}"></script>
     <script src="{% static 'js/date.js' %}"></script>
     <script src="{% static 'js/custom-switcher.min.js' %}"></script>
+
+    {% include 'main/components/ai_prompt_modal.html' %}
+    <script src="{% static 'irida/js/ai_prompts.js' %}"></script>
 </body>
 
 </html>

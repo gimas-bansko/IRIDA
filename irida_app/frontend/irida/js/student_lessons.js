@@ -32,6 +32,30 @@ const App = {
         }
     },
     methods: {
+        toggleTheme() {
+            const html = document.querySelector('html');
+            if (html.getAttribute('data-theme-mode') === "dark") {
+                html.setAttribute('data-theme-mode', 'light');
+                html.setAttribute('data-header-styles', 'light');
+                html.setAttribute('data-menu-styles', 'light');
+                html.removeAttribute('data-bg-theme');
+                html.removeAttribute('style');
+                localStorage.removeItem("ynexdarktheme");
+                localStorage.removeItem("ynexMenu");
+                localStorage.removeItem("ynexHeader");
+                localStorage.removeItem("bodylightRGB");
+                localStorage.removeItem("bodyBgRGB");
+            } else {
+                html.setAttribute('data-theme-mode', 'dark');
+                html.setAttribute('data-header-styles', 'dark');
+                html.setAttribute('data-menu-styles', 'dark');
+                localStorage.setItem("ynexdarktheme", "true");
+                localStorage.setItem("ynexMenu", "dark");
+                localStorage.setItem("ynexHeader", "dark");
+                localStorage.removeItem("bodylightRGB");
+                localStorage.removeItem("bodyBgRGB");
+            }
+        },
         sanitize(html) {
             if (!html) return '';
             if (window.DOMPurify) {
@@ -181,3 +205,19 @@ const App = {
 };
 
 Vue.createApp(App).mount('#main_app');
+
+document.addEventListener('DOMContentLoaded', function () {
+    const scrollToTop = document.querySelector('.scrollToTop');
+    if (scrollToTop) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                scrollToTop.style.display = 'flex';
+            } else {
+                scrollToTop.style.display = 'none';
+            }
+        });
+        scrollToTop.onclick = () => {
+            window.scrollTo(0, 0);
+        };
+    }
+});
