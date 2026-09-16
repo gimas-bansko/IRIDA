@@ -80,9 +80,30 @@
                                                             <p class="mb-0 fs-14 fw-semibold">[[sbj.name]] ([[sbj.grade]]<sup>-ти</sup> клас, [[sbj.subject_type]])</p>
                                                         </div>
                                                         <div class="ms-auto">
-                                                            <button type="button" class="btn btn-outline-secondary btn-wave btn-sm"
-                                                                    @click="editSubject(sbj)">
-                                                                <i class="bi bi-pen"></i>&nbsp;Промени</button>
+                                                            <div class="btn-list">
+                                                                <button class="btn btn-outline-info label-btn btn-sm dropdown-toggle" type="button" :id="'dropdownMenuSubject' + sbj.id"
+                                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="ri-close-line label-btn-icon me-2"></i>
+                                                                    Премахни
+                                                                </button>
+                                                                <div class="dropdown-menu">
+                                                                    <div class="alert alert-solid-info alert-dismissible fade show">
+                                                                        <div class="text-center mb-3 mt-1">
+                                                                            Моля, потвърдете изтриването на този учебен предмет
+                                                                        </div>
+                                                                        <div class="text-center mb-3 mt-1">
+                                                                            <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
+                                                                                Не</button>
+                                                                            &nbsp; &nbsp; &nbsp;
+                                                                            <button class="btn btn-outline-success btn-sm fs-16" @click="deleteSubject(sbj)">
+                                                                                Да</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <button type="button" class="btn btn-outline-secondary btn-wave btn-sm"
+                                                                        @click="editSubject(sbj)">
+                                                                    <i class="bi bi-pen"></i>&nbsp;Промени</button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>

@@ -119,6 +119,24 @@ const App = {
             this.specialty.level = this.listOfSpecialties[idx].level
             this.edit_mode = true
         },
+        deleteSpecialty(sp) {
+            const vm = this;
+            axios.delete('/api/schools/' + vm.user.school + '/specialty/' + sp.id + '/', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': CSRF_TOKEN
+                }
+            })
+                .then(function(response) {
+                    vm.loadSpecialties(vm.user);
+                    const txt = `Изтрита специалност ${sp.specialty_name || sp.specialty_num}`;
+                    vm.sendLogRecord(txt);
+                })
+                .catch(function(error) {
+                    console.error('Грешка при изтриване на специалност:', error);
+                    alert('Възникна грешка при изтриване на специалността!');
+                });
+        },
         saveSpecialty() {
             const vm = this
             vm.edit_mode = false

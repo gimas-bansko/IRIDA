@@ -33,12 +33,12 @@ db.sqlite3-journal
 /irida_app/static/
 
 # Качени от потребители файлове
-#/irida_app/media/
-#/irida_app/media_files/
+/irida_app/media/
+/irida_app/media_files/
 
 # ---- Работни материали (не са код) ----
-#/Проект/
-#/Работна/
+/Проект/
+/Работна/
 /html_template/
 
 # ---- Разни ----

@@ -56,6 +56,25 @@
                                                                  <button type="button" class="btn btn-outline-success btn-sm"
                                                                          @click="setSpecialty(sp.id)">
                                                                      <i class="bi bi-book"></i>&nbsp;Предмети </button>
+                                                                 <button class="btn btn-outline-info label-btn btn-sm dropdown-toggle" type="button" :id="'dropdownMenuSpecialty' + sp.id"
+                                                                         data-bs-toggle="dropdown" aria-expanded="false">
+                                                                     <i class="ri-close-line label-btn-icon me-2"></i>
+                                                                     Премахни
+                                                                 </button>
+                                                                 <div class="dropdown-menu">
+                                                                     <div class="alert alert-solid-info alert-dismissible fade show">
+                                                                         <div class="text-center mb-3 mt-1">
+                                                                             Моля, потвърдете изтриването на тази специалност
+                                                                         </div>
+                                                                         <div class="text-center mb-3 mt-1">
+                                                                             <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
+                                                                                 Не</button>
+                                                                             &nbsp; &nbsp; &nbsp;
+                                                                             <button class="btn btn-outline-success btn-sm fs-16" @click="deleteSpecialty(sp)">
+                                                                                 Да</button>
+                                                                         </div>
+                                                                     </div>
+                                                                 </div>
                                                                  <button type="button" class="btn btn-outline-secondary btn-sm"
                                                                          @click="editSpecialty(sp_idx)">
                                                                      <i class="bi bi-pen"></i>&nbsp;Промени</button>

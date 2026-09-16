@@ -19,10 +19,18 @@ const App = {
     computed: {
         filteredSubjects() {
             if (!Array.isArray(this.listOfSubjects)) return [];
-            if (!this.selectedGrade || Number(this.selectedGrade) === 0) {
-                return this.listOfSubjects;
+            let list = this.listOfSubjects;
+            if (this.selectedGrade && Number(this.selectedGrade) !== 0) {
+                list = list.filter(sbj => Number(sbj.grade) === Number(this.selectedGrade));
             }
-            return this.listOfSubjects.filter(sbj => Number(sbj.grade) === Number(this.selectedGrade));
+            return list.slice().sort((a, b) => {
+                const nameCmp = (a?.name || '').localeCompare(b?.name || '', 'bg');
+                if (nameCmp !== 0) return nameCmp;
+                if (a?.subject_type === b?.subject_type) return 0;
+                if (a?.subject_type === 'теория') return -1;
+                if (b?.subject_type === 'теория') return 1;
+                return (a?.subject_type || '').localeCompare(b?.subject_type || '', 'bg');
+            });
         }
     },
     methods: {

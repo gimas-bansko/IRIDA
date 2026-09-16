@@ -26,6 +26,7 @@ class Subject(models.Model):
     class Meta:
         verbose_name = 'Учебен предмет'
         verbose_name_plural = 'Учебни предмети'
+        ordering = ['name', '-subject_type']
 
 
 # раздели за определен предмет (УП)

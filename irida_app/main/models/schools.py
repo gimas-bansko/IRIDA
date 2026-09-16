@@ -34,7 +34,8 @@ class Specialty(models.Model):
 # ***************************************
 def school_pic_path(instance, filename):
     ext = filename.split('.')[-1]
-    new_filename = f"school_logo_{instance.id}.{ext}"
+    ident = instance.id if instance.id is not None else (instance.short_name or 'logo')
+    new_filename = f"school_logo_{ident}.{ext}"
     return f"sys_pics/{new_filename}"
 
 

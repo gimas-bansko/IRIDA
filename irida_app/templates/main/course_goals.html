@@ -118,18 +118,39 @@
                                 <p class="form-label">В края на обучението по учебния предмет ученикът трябва да:</p>
                                 <ul class="list-unstyled projects-items-success-list">
                                     <li v-for="(g, g_idx) in listOfGoals">
-                                        <div class="d-flex align-items-center gap-3" v-if="showItem(0,g_idx)">
-                                            <div class="flex-fill">
+                                        <div v-if="showItem(0,g_idx)">
+                                            <div>
                                                 <span class="d-block fw-normal  fs-16 custom-black">
                                                     [[g.num]]. [[g.name]]</span>
                                             </div>
-                                            <button type="button" class="btn btn-outline-success btn-wave btn-sm" @click="editGoal(g_idx)"
-                                                    v-if="!edit.editor">
-                                                <span class="d-flex align-items-center gap-6">
-                                                    <i class="bi bi-pen"></i>
-                                                    <span>Промени</span>
-                                                </span>
-                                            </button>
+                                            <div class="btn-list text-center mt-3" v-if="!edit.editor">
+                                                <!-- бутон "Премахни" -->
+                                                <button class="btn btn-outline-info label-btn btn-sm dropdown-toggle" type="button" :id="'dropdownMenuGoal' + g.id"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="ri-close-line label-btn-icon me-2"></i>
+                                                    Премахни
+                                                </button>&nbsp;&nbsp;
+                                                <div class="dropdown-menu">
+                                                    <div class="alert alert-solid-info alert-dismissible fade show">
+                                                        <div class="text-center mb-3 mt-1">
+                                                            Моля, потвърдете изтриването на тази цел
+                                                        </div>
+                                                        <div class="text-center mb-3 mt-1">
+                                                            <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
+                                                                Не</button>
+                                                            &nbsp; &nbsp; &nbsp;
+                                                            <button class="btn btn-outline-success btn-sm fs-16" @click="deleteGoal(g)">
+                                                                Да</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- бутон "Промени" -->
+                                                <button type="button" class="btn btn-outline-success label-btn btn-sm" @click="editGoal(g_idx)">
+                                                    <i class="bi bi-pen label-btn-icon me-2"></i>
+                                                    Промени
+                                                </button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </div>
+                                            <hr>
                                         </div>
                                         <div class="d-flex align-items-center gap-3" v-if="showEditor(0,g_idx)">
                                             <div class="flex-fill">

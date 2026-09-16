@@ -14,6 +14,7 @@ from main.models import (
     SessionNote,
     SessionPoint,
     SessionTask,
+    SessionTopic,
     Specialty,
     Subject,
     Topic,
@@ -420,6 +421,21 @@ class CurriculumImportAPITest(TestCase):
         }, format='json')
         self.assertEqual(resp2.status_code, 400)
 
+    def test_curriculum_system_prompts_exist(self):
+        prompt_base = AIPrompt.objects.filter(page_key='course_units', is_system=True, order=2).first()
+        self.assertIsNotNone(prompt_base)
+        self.assertIn('MoSCoW', prompt_base.title)
+
+        prompt_stack = AIPrompt.objects.filter(page_key='course_units', is_system=True, order=3).first()
+        self.assertIsNotNone(prompt_stack)
+        self.assertIn('Python', prompt_stack.title)
+        self.assertIn('Django', prompt_stack.title)
+        self.assertIn('Vue', prompt_stack.title)
+        self.assertIn('Bootstrap', prompt_stack.title)
+        self.assertIn('Python', prompt_stack.prompt_text)
+        self.assertIn('Django', prompt_stack.prompt_text)
+        self.assertIn('Vue.js', prompt_stack.prompt_text)
+
 
 class GoalImportAPITest(TestCase):
     def setUp(self):
@@ -782,3 +798,106 @@ class SessionPlanImportAPITest(TestCase):
         notes_prompt = AIPrompt.objects.filter(page_key='lesson_main', is_system=True, order=2).first()
         self.assertIsNotNone(notes_prompt)
         self.assertIn('теоретични бележки', notes_prompt.title)
+
+
+class MediaServingTest(TestCase):
+    def test_media_serving_endpoint(self):
+        from django.core.files.storage import default_storage
+        from django.core.files.base import ContentFile
+
+        # Създаване на тестов медиен файл
+        test_path = default_storage.save("sys_pics/test_logo.png", ContentFile(b"fake-image-bytes"))
+        resp = self.client.get(f"/media/{test_path}")
+        self.assertEqual(resp.status_code, 200)
+        content = b"".join(resp.streaming_content)
+        self.assertEqual(content, b"fake-image-bytes")
+        resp.close()
+        if default_storage.exists(test_path):
+            default_storage.delete(test_path)
+
+
+class SubjectOrderingTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(username='testuser', password='password123')
+        self.client.force_authenticate(user=self.user)
+        self.school = School.objects.create(full_name='Тестово училище', short_name='ТУ', city='София')
+        self.specialty = Specialty.objects.create(school=self.school, specialty_name='Информатика')
+
+        # Създаваме предмети в разбъркан ред
+        self.s1 = Subject.objects.create(name='Програмиране', subject_type='практика', grade=10)
+        self.s2 = Subject.objects.create(name='Алгоритми', subject_type='практика', grade=10)
+        self.s3 = Subject.objects.create(name='Програмиране', subject_type='теория', grade=10)
+        self.s4 = Subject.objects.create(name='Алгоритми', subject_type='теория', grade=10)
+        self.s5 = Subject.objects.create(name='Бази данни', subject_type='теория', grade=10)
+        self.specialty.subjects.add(self.s1, self.s2, self.s3, self.s4, self.s5)
+
+    def test_subject_model_default_ordering(self):
+        subjects = list(Subject.objects.all())
+        expected = [
+            (self.s4.name, self.s4.subject_type),  # Алгоритми - теория
+            (self.s2.name, self.s2.subject_type),  # Алгоритми - практика
+            (self.s5.name, self.s5.subject_type),  # Бази данни - теория
+            (self.s3.name, self.s3.subject_type),  # Програмиране - теория
+            (self.s1.name, self.s1.subject_type),  # Програмиране - практика
+        ]
+        actual = [(s.name, s.subject_type) for s in subjects]
+        self.assertEqual(actual, expected)
+
+    def test_specialty_subjects_api_ordering(self):
+        resp = self.client.get(f'/api/specialty/{self.specialty.id}/subjects/')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        actual = [(s['name'], s['subject_type']) for s in resp.data]
+        expected = [
+            ('Алгоритми', 'теория'),
+            ('Алгоритми', 'практика'),
+            ('Бази данни', 'теория'),
+            ('Програмиране', 'теория'),
+            ('Програмиране', 'практика'),
+        ]
+        self.assertEqual(actual, expected)
+
+
+class ItemDeletionApiTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(username='testuser', password='password123')
+        self.client.force_authenticate(user=self.user)
+        self.school = School.objects.create(full_name='Тестово училище', short_name='ТУ', city='София')
+        self.specialty = Specialty.objects.create(specialty_num='100', specialty_name='Информатика')
+        self.school.specialities.add(self.specialty)
+        self.subject = Subject.objects.create(name='Програмиране', subject_type='теория', grade=10)
+        self.specialty.subjects.add(self.subject)
+        self.goal = Goal.objects.create(num=1, name='Основни концепции', course=self.subject)
+        self.unit = Unit.objects.create(num=1, name='Увод', hours=10, subject=self.subject)
+        self.topic = Topic.objects.create(num=1, name='Синтаксис', unit=self.unit)
+        self.session = Session.objects.create(course=self.subject, num=1, name='Урок 1')
+        self.session_topic = SessionTopic.objects.create(session=self.session, topic=self.topic)
+
+    def test_delete_specialty(self):
+        resp = self.client.delete(f'/api/schools/{self.school.id}/specialty/{self.specialty.id}/')
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Specialty.objects.filter(id=self.specialty.id).exists())
+
+    def test_delete_subject(self):
+        resp = self.client.delete(f'/api/specialty/{self.specialty.id}/subjects/{self.subject.id}/')
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Subject.objects.filter(id=self.subject.id).exists())
+
+    def test_delete_goal(self):
+        resp = self.client.delete(f'/api/goals/{self.goal.id}/')
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Goal.objects.filter(id=self.goal.id).exists())
+
+    def test_delete_topic_with_session_topic_protection_handled(self):
+        resp = self.client.delete(f'/api/topics/{self.topic.id}/')
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Topic.objects.filter(id=self.topic.id).exists())
+        self.assertFalse(SessionTopic.objects.filter(id=self.session_topic.id).exists())
+
+    def test_delete_unit_with_topics(self):
+        resp = self.client.delete(f'/api/units/{self.unit.id}/')
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Unit.objects.filter(id=self.unit.id).exists())
+        self.assertFalse(Topic.objects.filter(id=self.topic.id).exists())
+        self.assertFalse(SessionTopic.objects.filter(id=self.session_topic.id).exists())

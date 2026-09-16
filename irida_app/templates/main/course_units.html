@@ -122,17 +122,40 @@
                             </ul>
                             <ul class="list-unstyled projects-items-success-list" v-else>
                                 <li v-for="(c_unit, unit_idx) in listOfUnits">
-                                    <div class="d-flex align-items-center gap-3" v-if="showItem(0,unit_idx)" style="padding-right: 16px;">
-                                        <div class="flex-fill">
+                                    <div v-if="showItem(0,unit_idx)" style="padding-right: 16px;">
+                                        <div>
                                             <span class="d-block fw-normal  fs-16 custom-black">
                                                 Раздел [[c_unit.num]]. [[c_unit.name]]
                                                 <span class="text-muted">(Минимален брой часове: [[c_unit.hours]])</span>
                                             </span>
                                         </div>
-                                        <button type="button" class="btn-1 btn btn-outline-success btn-sm fw-medium" @click="edit_Unit(unit_idx)"
-                                                v-if="!edit.editor">
-                                            <span class="d-flex align-items-center gap-6"><i class="bi bi-pen"></i>Промени</span>
-                                        </button>
+                                        <div class="btn-list text-center mt-3" v-if="!edit.editor">
+                                            <!-- бутон "Премахни" -->
+                                            <button class="btn btn-outline-info label-btn btn-sm dropdown-toggle" type="button" :id="'dropdownMenuUnit' + c_unit.id"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="ri-close-line label-btn-icon me-2"></i>
+                                                Премахни
+                                            </button>&nbsp;&nbsp;
+                                            <div class="dropdown-menu">
+                                                <div class="alert alert-solid-info alert-dismissible fade show">
+                                                    <div class="text-center mb-3 mt-1">
+                                                        Моля, потвърдете изтриването на този раздел от учебната програма
+                                                    </div>
+                                                    <div class="text-center mb-3 mt-1">
+                                                        <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
+                                                            Не</button>
+                                                        &nbsp; &nbsp; &nbsp;
+                                                        <button class="btn btn-outline-success btn-sm fs-16" @click="deleteUnit(c_unit)">
+                                                            Да</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- бутон "Промени" -->
+                                            <button type="button" class="btn btn-outline-success label-btn btn-sm" @click="edit_Unit(unit_idx)">
+                                                <i class="bi bi-pen label-btn-icon me-2"></i>
+                                                Промени
+                                            </button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        </div>
                                     </div>
                                     <div class="d-flex align-items-center gap-3" v-if="showEditor(0,unit_idx)">
                                         <div class="flex-fill">
@@ -229,8 +252,8 @@
                                             </ul>
                                             <ul class="list-unstyled projects-items-primary-list" v-else>
                                                 <li v-for="(c_topic, topic_idx) in c_unit.topics">
-                                                    <div class="d-flex align-items-center gap-3" v-if="showItem(1,unit_idx,topic_idx)">
-                                                        <div class="flex-fill">
+                                                    <div v-if="showItem(1,unit_idx,topic_idx)">
+                                                        <div>
                                                             <span class="d-block fw-normal  fs-16 custom-black">
                                                                 [[c_topic.num]]. [[c_topic.name]]
                                                                 <span class="text-muted">([[moscowTextFor(c_topic)]]
@@ -239,11 +262,35 @@
                                                                 </span>
                                                             </span>
                                                         </div>
-                                                        <button type="button" class="btn-1 btn btn-outline-primary btn-sm fw-medium"
-                                                                @click="edit_Topic(unit_idx,topic_idx)"
-                                                                v-if="!edit.editor">
-                                                            <span class="d-flex align-items-center gap-6"><i class="bi bi-pen"></i>Промени</span>
-                                                        </button>
+                                                        <div class="btn-list text-center mt-2" v-if="!edit.editor">
+                                                            <!-- бутон "Премахни" -->
+                                                            <button class="btn btn-outline-info label-btn btn-sm dropdown-toggle" type="button" :id="'dropdownMenuTopic' + c_topic.id"
+                                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="ri-close-line label-btn-icon me-2"></i>
+                                                                Премахни
+                                                            </button>&nbsp;&nbsp;
+                                                            <div class="dropdown-menu">
+                                                                <div class="alert alert-solid-info alert-dismissible fade show">
+                                                                    <div class="text-center mb-3 mt-1">
+                                                                        Моля, потвърдете изтриването на тази тема от учебната програма
+                                                                    </div>
+                                                                    <div class="text-center mb-3 mt-1">
+                                                                        <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
+                                                                            Не</button>
+                                                                        &nbsp; &nbsp; &nbsp;
+                                                                        <button class="btn btn-outline-success btn-sm fs-16" @click="deleteTopic(c_topic)">
+                                                                            Да</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- бутон "Промени" -->
+                                                            <button type="button" class="btn btn-outline-primary label-btn btn-sm"
+                                                                    @click="edit_Topic(unit_idx,topic_idx)">
+                                                                <i class="bi bi-pen label-btn-icon me-2"></i>
+                                                                Промени
+                                                            </button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        </div>
+                                                        <hr>
                                                     </div>
                                                     <div class="d-flex align-items-center gap-3" v-if="showEditor(1,unit_idx,topic_idx)">
                                                         <div class="flex-fill">

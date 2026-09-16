@@ -130,7 +130,14 @@ const App = {
             const vm = this;
             axios.get(`/api/specialty/${specialtyId}/subjects/`)
                 .then(function(response) {
-                    const allSubjects = response.data || [];
+                    const allSubjects = (response.data || []).slice().sort((a, b) => {
+                        const nameCmp = (a?.name || '').localeCompare(b?.name || '', 'bg');
+                        if (nameCmp !== 0) return nameCmp;
+                        if (a?.subject_type === b?.subject_type) return 0;
+                        if (a?.subject_type === 'теория') return -1;
+                        if (b?.subject_type === 'теория') return 1;
+                        return (a?.subject_type || '').localeCompare(b?.subject_type || '', 'bg');
+                    });
                     if (vm.studentGrade && vm.studentGrade > 0) {
                         vm.studentSubjects = allSubjects.filter(sb => Number(sb.grade) === Number(vm.studentGrade));
                     } else {

@@ -25,11 +25,14 @@ from .api_context import (
 from .api_curriculum import (
     CurriculumImportView,
     GoalImportView,
+    GoalRetrieveUpdateDestroyView,
     GoalUpsertView,
     SpecialtySubjectsView,
     SubjectGoalsView,
     SubjectUnitsWithTopicsView,
+    TopicRetrieveUpdateDestroyView,
     TopicUpsertView,
+    UnitRetrieveUpdateDestroyView,
     UnitUpsertView,
     subject_detail,
 )
@@ -134,9 +137,12 @@ __all__ = [
     'subject_detail',
     'SubjectGoalsView',
     'GoalUpsertView',
+    'GoalRetrieveUpdateDestroyView',
     'SubjectUnitsWithTopicsView',
     'UnitUpsertView',
+    'UnitRetrieveUpdateDestroyView',
     'TopicUpsertView',
+    'TopicRetrieveUpdateDestroyView',
     # api_prompts
     'AIPromptListView',
     'AIPromptUpsertView',

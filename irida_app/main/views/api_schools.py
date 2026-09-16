@@ -40,8 +40,8 @@ class SchoolSpecialtiesView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# четене/обновяване на специалност
-@api_view(['GET', 'PUT'])
+# четене/обновяване/изтриване на специалност
+@api_view(['GET', 'PUT', 'DELETE'])
 def specialty_detail(request, specialty_id, school_id=None):
     # GET
     if request.method == 'GET':
@@ -89,6 +89,20 @@ def specialty_detail(request, specialty_id, school_id=None):
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # DELETE
+    elif request.method == 'DELETE':
+        try:
+            specialty = get_object_or_404(Specialty, id=specialty_id)
+            if school_id is not None:
+                school = get_object_or_404(School, id=school_id)
+                school.specialities.remove(specialty)
+            specialty.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             import traceback
             traceback.print_exc()

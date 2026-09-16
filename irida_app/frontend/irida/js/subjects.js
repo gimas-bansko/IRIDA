@@ -79,10 +79,18 @@ const App = {
         },
         filteredSubjects() {
             if (!Array.isArray(this.listOfSubjects)) return [];
-            if (!this.selectedGrade || Number(this.selectedGrade) === 0) {
-                return this.listOfSubjects;
+            let list = this.listOfSubjects;
+            if (this.selectedGrade && Number(this.selectedGrade) !== 0) {
+                list = list.filter(sbj => Number(sbj.grade) === Number(this.selectedGrade));
             }
-            return this.listOfSubjects.filter(sbj => Number(sbj.grade) === Number(this.selectedGrade));
+            return list.slice().sort((a, b) => {
+                const nameCmp = (a?.name || '').localeCompare(b?.name || '', 'bg');
+                if (nameCmp !== 0) return nameCmp;
+                if (a?.subject_type === b?.subject_type) return 0;
+                if (a?.subject_type === 'теория') return -1;
+                if (b?.subject_type === 'теория') return 1;
+                return (a?.subject_type || '').localeCompare(b?.subject_type || '', 'bg');
+            });
         },
         totalHours() {
             // защита при липсващ или неинициализиран списък
@@ -336,6 +344,24 @@ const App = {
                     alert("Възникна грешка при запазване на данните!");
                 });
         },
+        deleteSubject(sbj) {
+            const vm = this;
+            axios.delete('/api/specialty/' + vm.user.specialty + '/subjects/' + sbj.id + '/', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': CSRF_TOKEN
+                }
+            })
+                .then(function (response) {
+                    vm.loadSubjects(vm.user);
+                    const txt = `Изтрит учебен предмет ${sbj.name} (${sbj.grade} клас, ${sbj.subject_type})`;
+                    vm.sendLogRecord(txt);
+                })
+                .catch(function (error) {
+                    console.error("Грешка при изтриване на предмет:", error);
+                    alert("Възникна грешка при изтриване на предмета!");
+                });
+        },
         setSubjectGoal(sb_id) {
             axios.get(`/api/course_set/${sb_id}/`)
                 .then(() => {
@@ -416,6 +442,24 @@ const App = {
                     alert("Възникна грешка при запазване на данните!");
                 });
         },
+        deleteGoal(g) {
+            const vm = this;
+            axios.delete('/api/goals/' + g.id + '/', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': CSRF_TOKEN
+                }
+            })
+                .then(function (response) {
+                    vm.loadGoals(vm.user);
+                    const txt = `Изтрита цел ${g.num}. ${g.name}`;
+                    vm.sendLogRecord(txt);
+                })
+                .catch(function (error) {
+                    console.error("Грешка при изтриване на цел:", error);
+                    alert("Възникна грешка при изтриване на целта!");
+                });
+        },
 
         loadUnits(logged_user) {
             // чета списъка на целите на обучението по предмета по подразбиране на текущия потребител
@@ -475,6 +519,24 @@ const App = {
             this.unit.subject = this.user.subject
             this.setEditMode(0, idx)
         },
+        deleteUnit(unit) {
+            const vm = this;
+            axios.delete('/api/units/' + unit.id + '/', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': CSRF_TOKEN
+                }
+            })
+                .then(function (response) {
+                    vm.loadUnits(vm.user);
+                    const txt = `Изтрит раздел ${unit.num}. ${unit.name}`;
+                    vm.sendLogRecord(txt);
+                })
+                .catch(function (error) {
+                    console.error("Грешка при изтриване на раздел:", error);
+                    alert("Възникна грешка при изтриване на раздела!");
+                });
+        },
 
         saveTopic() {
             const vm = this;
@@ -525,6 +587,24 @@ const App = {
             this.topic.unit = unit.id; // не topic.unit
 
             this.setEditMode(1, unit_idx, idx);
+        },
+        deleteTopic(topic) {
+            const vm = this;
+            axios.delete('/api/topics/' + topic.id + '/', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': CSRF_TOKEN
+                }
+            })
+                .then(function (response) {
+                    vm.loadUnits(vm.user);
+                    const txt = `Изтрита тема ${topic.num}. ${topic.name}`;
+                    vm.sendLogRecord(txt);
+                })
+                .catch(function (error) {
+                    console.error("Грешка при изтриване на тема:", error);
+                    alert("Възникна грешка при изтриване на темата!");
+                });
         },
 
         getTotalHours() {

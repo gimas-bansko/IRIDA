@@ -151,7 +151,7 @@ USE_TZ = True
 #      Статични и медийни файлове
 # ***************************************
 # frontend/ = source (в git). static/ = изход на collectstatic (извън git).
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = [BASE_DIR / 'frontend']
 

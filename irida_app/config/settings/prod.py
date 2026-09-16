@@ -14,7 +14,7 @@ Production настройки.
 from .base import *  # noqa: F401,F403
 from .base import env
 
-DEBUG = False
+DEBUG = env.bool('DJANGO_DEBUG', default=False)
 
 # Нарочно без default - празен ALLOWED_HOSTS при DEBUG=False е тиха повреда.
 SECRET_KEY = env('DJANGO_SECRET_KEY')
@@ -60,7 +60,7 @@ else:
             'BACKEND': 'django.core.files.storage.FileSystemStorage',
         },
         'staticfiles': {
-            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+            'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
         },
     }
 
@@ -79,11 +79,22 @@ LOGGING = {
     },
     'handlers': {
         'console': {'class': 'logging.StreamHandler', 'formatter': 'verbose'},
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'django_error.log',
+            'formatter': 'verbose',
+            'level': 'ERROR',
+        },
     },
     'root': {'handlers': ['console'], 'level': 'INFO'},
     'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
         'django.request': {
-            'handlers': ['console'],
+            'handlers': ['console', 'file'],
             'level': 'ERROR',
             'propagate': False,
         },

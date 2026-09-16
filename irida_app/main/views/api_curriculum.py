@@ -36,7 +36,7 @@ class SpecialtySubjectsView(APIView):
             return Response({'error': 'Специалността не съществува.'}, status=status.HTTP_404_NOT_FOUND)
 
         # Вземаме всички предмети, свързани със специалността
-        subjects = specialty.subjects.all()
+        subjects = specialty.subjects.all().order_by('name', '-subject_type')
 
         # Сериализираме предметите
         serializer = SubjectSerializer(subjects, many=True)
@@ -44,8 +44,8 @@ class SpecialtySubjectsView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# четене/обновяване на предмет
-@api_view(['GET', 'PUT'])
+# четене/обновяване/изтриване на предмет
+@api_view(['GET', 'PUT', 'DELETE'])
 def subject_detail(request, subject_id, sp_id=None):
     # GET
     if request.method == 'GET':
@@ -101,6 +101,22 @@ def subject_detail(request, subject_id, sp_id=None):
             traceback.print_exc()
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    # DELETE
+    elif request.method == 'DELETE':
+        try:
+            subject = get_object_or_404(Subject, id=subject_id)
+            if sp_id is not None:
+                specialty = get_object_or_404(Specialty, id=sp_id)
+                specialty.subjects.remove(subject)
+            # Премахваме свързаните SessionTopic за темите в този предмет, за да избегнем ProtectedError
+            SessionTopic.objects.filter(topic__unit__subject=subject).delete()
+            subject.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 # ***************************
 #            Цели
@@ -136,6 +152,11 @@ class GoalUpsertView(APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class GoalRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Goal.objects.all()
+    serializer_class = GoalSerializer
 
 
 # ***************************
@@ -188,6 +209,16 @@ class UnitUpsertView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+class UnitRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Unit.objects.all()
+    serializer_class = UnitSerializer
+
+    def perform_destroy(self, instance):
+        # Премахваме свързаните SessionTopic за темите в този раздел, за да избегнем ProtectedError
+        SessionTopic.objects.filter(topic__unit=instance).delete()
+        instance.delete()
+
+
 class TopicUpsertView(APIView):
     """
     POST:
@@ -213,6 +244,16 @@ class TopicUpsertView(APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class TopicRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Topic.objects.all()
+    serializer_class = TopicWriteSerializer
+
+    def perform_destroy(self, instance):
+        # Премахваме свързаните SessionTopic, за да избегнем ProtectedError
+        SessionTopic.objects.filter(topic=instance).delete()
+        instance.delete()
 
 
 class CurriculumImportView(APIView):

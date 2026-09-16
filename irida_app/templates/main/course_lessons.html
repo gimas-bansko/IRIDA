@@ -190,7 +190,7 @@
                                             Виж повече
                                         </button>&nbsp;&nbsp;
                                         <!-- бутон "Премахни" -->
-                                        <button class="btn btn-outline-info btn-sm label-btn dropdown-toggle" type="button" id="dropdownMenu2"
+                                        <button class="btn btn-outline-info btn-sm label-btn dropdown-toggle" type="button" :id="'dropdownMenuSession' + session.id"
                                                 data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="ri-close-line label-btn-icon me-2"></i>
                                             Премахни
@@ -318,7 +318,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-4 text-end" v-if="showEditor(0,-1,-1)">
-                                                                <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" id="dropdownMenu3"
+                                                                <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" :id="'dropdownMenuSessionTopic' + topic_idx"
                                                                         data-bs-toggle="dropdown" aria-expanded="false">
                                                                     <i class="ri-close-line label-btn-icon me-2"></i>
                                                                     Премахни

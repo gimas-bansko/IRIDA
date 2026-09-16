@@ -6,6 +6,8 @@
 # Раздаване на статични файлове от самото приложение
 whitenoise==6.12.0
 
-# WSGI сървър. Не работи под Windows - при Windows хостинг ползвай
-# waitress вместо gunicorn.
-gunicorn==23.0.0
+# Забележка за WSGI сървър:
+# В cPanel (SuperHosting) приложението се управлява директно през Apache + Phusion Passenger
+# чрез passenger_wsgi.py, поради което gunicorn НЕ е необходим.
+# Ако проектът се качва на самостоятелен Linux VPS/Docker зад Nginx, може да се ползва gunicorn:
+# gunicorn==23.0.0
