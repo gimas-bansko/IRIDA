@@ -19,3 +19,5 @@ tzdata==2025.2
 # Ако не потрябват до края на рефакторинга - махни ги.
 django-filter==25.1
 Markdown==3.8.2
+python-docx==1.2.0
+xhtml2pdf==0.2.20

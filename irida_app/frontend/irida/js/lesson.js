@@ -52,12 +52,14 @@ const App = {
                 num: 1,
                 name: '',
                 attachment_type: 'other',
+                target_format: 'original',
                 file: null,
                 file_url: '',
                 file_name: '',
                 description: ''
             },
             selectedAttachmentFile: null,
+            isMarkdownFileSelected: false,
 
             // импорт на план
             importData: {
@@ -458,6 +460,7 @@ const App = {
         startCreateAttachment(type = 'other', pointId = null) {
             this.attachmentEditMode = true;
             this.selectedAttachmentFile = null;
+            this.isMarkdownFileSelected = false;
             const itemsInGroup = type === 'theory' ? this.theoryAttachments : this.otherAttachments;
             this.attachmentForm = {
                 id: 0,
@@ -466,6 +469,7 @@ const App = {
                 num: (itemsInGroup?.length || 0) + 1,
                 name: '',
                 attachment_type: type,
+                target_format: 'original',
                 file: null,
                 file_url: '',
                 file_name: '',
@@ -475,6 +479,7 @@ const App = {
         startEditAttachment(a) {
             this.attachmentEditMode = true;
             this.selectedAttachmentFile = null;
+            this.isMarkdownFileSelected = false;
             this.attachmentForm = {
                 id: a.id,
                 session: a.session ?? this.session.id,
@@ -482,6 +487,7 @@ const App = {
                 num: a.num,
                 name: a.name || '',
                 attachment_type: a.attachment_type || 'other',
+                target_format: 'original',
                 file: null,
                 file_url: a.file_url || '',
                 file_name: a.file_name || '',
@@ -492,11 +498,43 @@ const App = {
             const file = event.target.files[0];
             if (file) {
                 this.selectedAttachmentFile = file;
+                const isMd = file.name.toLowerCase().endsWith('.md') || file.name.toLowerCase().endsWith('.markdown');
+                this.isMarkdownFileSelected = isMd;
+                if (isMd) {
+                    if (!this.attachmentForm.target_format || this.attachmentForm.target_format === 'original') {
+                        this.attachmentForm.target_format = 'docx';
+                    }
+                } else {
+                    this.attachmentForm.target_format = 'original';
+                }
+
                 if (!this.attachmentForm.name) {
-                    this.attachmentForm.name = file.name;
+                    const baseName = file.name.replace(/\.(md|markdown)$/i, '');
+                    if (isMd && this.attachmentForm.target_format === 'docx') {
+                        this.attachmentForm.name = baseName + '.docx';
+                    } else if (isMd && this.attachmentForm.target_format === 'pdf') {
+                        this.attachmentForm.name = baseName + '.pdf';
+                    } else {
+                        this.attachmentForm.name = file.name;
+                    }
+                } else if (isMd) {
+                    this.onTargetFormatChange();
                 }
             } else {
                 this.selectedAttachmentFile = null;
+                this.isMarkdownFileSelected = false;
+                this.attachmentForm.target_format = 'original';
+            }
+        },
+        onTargetFormatChange() {
+            if (!this.attachmentForm.name) return;
+            const baseName = this.attachmentForm.name.replace(/\.(md|markdown|docx|pdf)$/i, '');
+            if (this.attachmentForm.target_format === 'docx') {
+                this.attachmentForm.name = baseName + '.docx';
+            } else if (this.attachmentForm.target_format === 'pdf') {
+                this.attachmentForm.name = baseName + '.pdf';
+            } else if (this.attachmentForm.target_format === 'original') {
+                this.attachmentForm.name = baseName + '.md';
             }
         },
         async saveAttachment() {
@@ -516,25 +554,36 @@ const App = {
                 formData.append('description', this.attachmentForm.description || '');
                 if (this.selectedAttachmentFile) {
                     formData.append('file', this.selectedAttachmentFile);
+                    if (this.isMarkdownFileSelected && this.attachmentForm.target_format) {
+                        formData.append('target_format', this.attachmentForm.target_format);
+                    }
                 }
 
                 await axios.post('/api/session-attachments/upsert/', formData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
                         'X-CSRFToken': CSRF_TOKEN
                     }
                 });
                 this.attachmentEditMode = false;
                 this.selectedAttachmentFile = null;
+                this.isMarkdownFileSelected = false;
                 await this.loadSessionAttachments();
             } catch(e) {
                 console.error(e);
-                alert('Грешка при запис на файл/приложение');
+                let errorDetail = e.response?.data?.detail || e.response?.data?.error;
+                if (!errorDetail && e.response?.data && typeof e.response.data === 'object') {
+                    const errors = Object.values(e.response.data).flat();
+                    if (errors.length > 0) {
+                        errorDetail = errors.join('; ');
+                    }
+                }
+                alert(errorDetail || 'Грешка при запис на файл/приложение');
             }
         },
         cancelAttachmentEdit() {
             this.attachmentEditMode = false;
             this.selectedAttachmentFile = null;
+            this.isMarkdownFileSelected = false;
         },
         deleteAttachment(a) {
             if (!confirm('Да се изтрие ли този прикачен файл?')) return;

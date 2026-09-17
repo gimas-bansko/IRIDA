@@ -8,6 +8,7 @@ HTML маршрути. API-то е изнесено в api_urls.py.
 from django.urls import include, path
 
 from .views import (
+    attachments_list_view,
     course_goals_view,
     course_lessons_view,
     course_units_view,
@@ -42,6 +43,7 @@ urlpatterns = [
     path('units', course_units_view, name='units_list'),
     path('lessons', course_lessons_view, name='lessons_list'),
     path('users', users_list_view, name='users_list'),
+    path('attachments', attachments_list_view, name='attachments_list'),
     path('lesson/<int:session_id>/', lesson_view, name='lesson_details'),
     path('session_home', session_home_view, name='session_menu'),
     path('session_list', session_list_view, name='session_list'),

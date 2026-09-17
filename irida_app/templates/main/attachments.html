@@ -1,0 +1,191 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block main_content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+        <div>
+            <h1 class="page-title fw-normal fs-20 mb-12">Приложения</h1>
+            <nav>
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Приложения</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="d-flex align-items-center gap-2" v-if="!attachmentEditMode">
+            <button type="button" class="btn btn-outline-success btn-wave waves-effect waves-light label-btn"
+                    @click="startCreateAttachment()">
+                <i class="bi bi-plus-circle label-btn-icon me-2"></i>Добави приложение / файл
+            </button>
+        </div>
+    </div>
+
+    <!-- Режим Списък с приложения -->
+    <div class="row justify-content-center" v-show="!attachmentEditMode">
+        <div class="col-12">
+            <div class="card-1 custom-card">
+                <div class="card-header d-md-flex d-block align-items-center justify-content-between my-4"
+                     style="padding-right: 28px;">
+                    <div class="card-title">
+                        <div>Общи приложения и файлове към системата</div>
+                        <div class="fs-12 text-muted">Списък с файлове и документи за цялостното приложение</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled projects-items-danger-list" v-if="attachments.length === 0">
+                        <li>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="flex-fill">
+                                    <span class="d-block fw-normal fs-16 custom-black">
+                                        Няма добавени приложения / файлове
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <!-- Списък файлове -->
+                    <div v-else>
+                        <ul class="list-unstyled projects-items-primary-list">
+                            <li v-for="a in attachments" :key="a.id">
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center flex-wrap">
+                                        <div>
+                                            <span class="badge bg-secondary me-2">[[ a.num ]]</span>
+                                            <strong>[[ a.name ]]</strong>
+                                            <span class="ms-3" v-if="a.file_url">
+                                                <a :href="a.file_url" target="_blank" class="badge bg-primary-transparent text-primary fs-12 text-decoration-none">
+                                                    <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.file_name || 'Свали файл' ]]
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 fs-12 text-muted" v-if="a.description && !a.collapsed">
+                                        <strong>Коментар / Описание:</strong> [[ a.description ]]
+                                    </div>
+                                    <div class="d-flex justify-content-center gap-2 mt-3">
+                                        <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" :id="'dropdownMenuApp' + a.id"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ri-close-line label-btn-icon me-2"></i>
+                                            Премахни
+                                        </button>&nbsp;&nbsp;
+                                        <div class="dropdown-menu">
+                                            <div class="alert alert-solid-info alert-dismissible fade show">
+                                                <div class="text-center mb-3 mt-1">
+                                                    Моля, потвърдете изтриване на този файл
+                                                </div>
+                                                <div class="text-center mb-3 mt-1">
+                                                    <button class="btn btn-outline-secondary btn-sm shadow-lg fs-16" @click="">
+                                                        Не</button>
+                                                    &nbsp; &nbsp; &nbsp;
+                                                    <button class="btn btn-outline-success btn-sm fs-16" @click="deleteAttachment(a)">
+                                                        Да</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-success btn-sm fs-12 label-btn" @click="startEditAttachment(a)">
+                                            <i class="bi bi-pen label-btn-icon me-2"></i>
+                                            Промени
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm label-btn" v-if="a.description" v-show="!a.collapsed" @click="a.collapsed=!a.collapsed">
+                                            <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
+                                            покажи по-малко
+                                        </button>
+                                        <button class="btn btn-outline-primary btn-sm label-btn" v-if="a.description" v-show="a.collapsed" @click="a.collapsed=!a.collapsed">
+                                            <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
+                                            покажи повече
+                                        </button>
+                                    </div>
+                                </div><hr>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-footer" style="padding-right: 15px;">
+                    <div class="d-flex gap-12 justify-content-between">
+                        <div></div>
+                        <button type="button" class="btn-1 btn-outline-success btn-sm" @click="startCreateAttachment()">
+                            <i class="bi bi-plus-circle"></i> Добави приложение / файл
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Режим Редакция / Ново приложение -->
+    <div class="row justify-content-center" v-show="attachmentEditMode">
+        <div class="col-12">
+            <div class="card mt-3">
+                <div class="card-header">
+                    <strong>[[ attachmentForm.id ? 'Редактиране на приложение / файл' : 'Ново приложение / файл' ]]</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-2 col-12">
+                            <label class="form-label">№</label>
+                            <input type="number" class="form-control" v-model.number="attachmentForm.num" min="1">
+                        </div>
+                        <div class="col-md-10 col-12">
+                            <label class="form-label">Име / Заглавие</label>
+                            <input type="text" class="form-control" v-model="attachmentForm.name" placeholder="Име на файла или приложението">
+                        </div>
+
+                        <!-- Файл -->
+                        <div class="col-12">
+                            <label class="form-label">Прикачен файл</label>
+                            <div v-if="attachmentForm.file_url" class="mb-2 text-muted fs-12">
+                                Текущ файл: <a :href="attachmentForm.file_url" target="_blank" class="fw-semibold">[[ attachmentForm.file_name ]]</a>
+                            </div>
+                            <input type="file" id="appAttachmentFileInput" class="form-control" @change="onAttachmentFileChange">
+
+                            <!-- Опции за конвертиране на Markdown файл -->
+                            <div v-if="isMarkdownFileSelected" class="mt-2 p-3 bg-light border border-primary-subtle rounded-2">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <i class="bi bi-filetype-md text-primary fs-18"></i>
+                                    <span class="fw-semibold fs-13 text-primary">Открит е Markdown (.md) файл. Желаете ли автоматично конвертиране?</span>
+                                </div>
+                                <div class="d-flex flex-wrap gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="conv_docx_app" value="docx" v-model="attachmentForm.target_format" @change="onTargetFormatChange">
+                                        <label class="form-check-label fs-12 fw-medium" for="conv_docx_app">
+                                            <i class="bi bi-file-earmark-word text-primary me-1"></i>Преобразувай в Word (.docx)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="conv_pdf_app" value="pdf" v-model="attachmentForm.target_format" @change="onTargetFormatChange">
+                                        <label class="form-check-label fs-12 fw-medium" for="conv_pdf_app">
+                                            <i class="bi bi-file-earmark-pdf text-danger me-1"></i>Преобразувай в PDF (.pdf)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="conv_orig_app" value="original" v-model="attachmentForm.target_format" @change="onTargetFormatChange">
+                                        <label class="form-check-label fs-12 fw-medium" for="conv_orig_app">
+                                            <i class="bi bi-filetype-md text-secondary me-1"></i>Запази оригинален Markdown (.md)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Коментар / Описание -->
+                        <div class="col-12">
+                            <label class="form-label">Коментар (описание на файла)</label>
+                            <textarea class="form-control" rows="3" v-model="attachmentForm.description" placeholder="Въведете коментар или описание на приложението..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-end gap-2">
+                    <button class="btn btn-outline-secondary btn-sm" @click="cancelAttachmentEdit">Отказ</button>
+                    <button class="btn btn-outline-primary btn-sm" @click="saveAttachment">Запази</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_script %}
+    <script src="{% static 'irida/js/attachments.js' %}"></script>
+{% endblock %}

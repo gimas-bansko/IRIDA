@@ -844,6 +844,34 @@
                                             Текущ файл: <a :href="attachmentForm.file_url" target="_blank" class="fw-semibold">[[ attachmentForm.file_name ]]</a>
                                         </div>
                                         <input type="file" class="form-control" @change="onAttachmentFileChange">
+
+                                        <!-- Опции за конвертиране на Markdown файл -->
+                                        <div v-if="isMarkdownFileSelected" class="mt-2 p-3 bg-light border border-primary-subtle rounded-2">
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <i class="bi bi-filetype-md text-primary fs-18"></i>
+                                                <span class="fw-semibold fs-13 text-primary">Открит е Markdown (.md) файл. Желаете ли автоматично конвертиране?</span>
+                                            </div>
+                                            <div class="d-flex flex-wrap gap-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" id="conv_docx_th" value="docx" v-model="attachmentForm.target_format" @change="onTargetFormatChange">
+                                                    <label class="form-check-label fs-12 fw-medium" for="conv_docx_th">
+                                                        <i class="bi bi-file-earmark-word text-primary me-1"></i>Преобразувай в Word (.docx)
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" id="conv_pdf_th" value="pdf" v-model="attachmentForm.target_format" @change="onTargetFormatChange">
+                                                    <label class="form-check-label fs-12 fw-medium" for="conv_pdf_th">
+                                                        <i class="bi bi-file-earmark-pdf text-danger me-1"></i>Преобразувай в PDF (.pdf)
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" id="conv_orig_th" value="original" v-model="attachmentForm.target_format" @change="onTargetFormatChange">
+                                                    <label class="form-check-label fs-12 text-muted" for="conv_orig_th">
+                                                        <i class="bi bi-file-earmark-code me-1"></i>Запази оригинален Markdown (.md)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- коментар / описание -->
@@ -983,6 +1011,34 @@
                                             Текущ файл: <a :href="attachmentForm.file_url" target="_blank" class="fw-semibold">[[ attachmentForm.file_name ]]</a>
                                         </div>
                                         <input type="file" class="form-control" @change="onAttachmentFileChange">
+
+                                        <!-- Опции за конвертиране на Markdown файл -->
+                                        <div v-if="isMarkdownFileSelected" class="mt-2 p-3 bg-light border border-primary-subtle rounded-2">
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <i class="bi bi-filetype-md text-primary fs-18"></i>
+                                                <span class="fw-semibold fs-13 text-primary">Открит е Markdown (.md) файл. Желаете ли автоматично конвертиране?</span>
+                                            </div>
+                                            <div class="d-flex flex-wrap gap-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" id="conv_docx_att" value="docx" v-model="attachmentForm.target_format" @change="onTargetFormatChange">
+                                                    <label class="form-check-label fs-12 fw-medium" for="conv_docx_att">
+                                                        <i class="bi bi-file-earmark-word text-primary me-1"></i>Преобразувай в Word (.docx)
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" id="conv_pdf_att" value="pdf" v-model="attachmentForm.target_format" @change="onTargetFormatChange">
+                                                    <label class="form-check-label fs-12 fw-medium" for="conv_pdf_att">
+                                                        <i class="bi bi-file-earmark-pdf text-danger me-1"></i>Преобразувай в PDF (.pdf)
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" id="conv_orig_att" value="original" v-model="attachmentForm.target_format" @change="onTargetFormatChange">
+                                                    <label class="form-check-label fs-12 text-muted" for="conv_orig_att">
+                                                        <i class="bi bi-file-earmark-code me-1"></i>Запази оригинален Markdown (.md)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- коментар / описание -->

@@ -12,6 +12,7 @@ from .accounts import (
     UserReadSerializer,
     UserSerializer,
 )
+from .attachments import AppAttachmentSerializer
 from .curriculum import (
     GoalSerializer,
     SubjectMiniSerializer,
@@ -56,6 +57,8 @@ __all__ = [
     'UnitWriteSerializer',
     # prompts
     'AIPromptSerializer',
+    # attachments
+    'AppAttachmentSerializer',
     # schools
     'SpecialtySerializer',
     'SpecialtyMiniSerializer',

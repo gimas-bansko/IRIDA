@@ -18,6 +18,7 @@ from .accounts import (
     create_user_profile,
     save_user_profile,
 )
+from .attachments import AppAttachment
 from .curriculum import Goal, Subject, Topic, Unit
 from .prompts import AIPrompt
 from .lessons import (
@@ -38,6 +39,8 @@ __all__ = [
     'Goal',
     # prompts
     'AIPrompt',
+    # attachments
+    'AppAttachment',
     # lessons
     'Session',
     'SessionTopic',

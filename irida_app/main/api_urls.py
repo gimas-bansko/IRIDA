@@ -7,6 +7,7 @@ from django.urls import path
 from .views import (
     AIPromptListView,
     AIPromptUpsertView,
+    AppAttachmentListView,
     CurriculumImportView,
     GoalImportView,
     GoalRetrieveUpdateDestroyView,
@@ -40,6 +41,8 @@ from .views import (
     UserListView,
     UserRetrieveUpdateDestroyView,
     ai_prompt_delete,
+    app_attachment_delete,
+    app_attachment_upsert,
     ckeditor_image_upload,
     session_attachment_delete,
     session_attachment_upsert,
@@ -132,6 +135,9 @@ urlpatterns = [
          name='session-attachments-for-session'),
     path('session-attachments/upsert/', session_attachment_upsert, name='session-attachment-upsert'),
     path('session-attachments/<int:pk>/', session_attachment_delete, name='session-attachment-delete'),
+    path('app-attachments/', AppAttachmentListView.as_view(), name='app-attachment-list'),
+    path('app-attachments/upsert/', app_attachment_upsert, name='app-attachment-upsert'),
+    path('app-attachments/<int:pk>/', app_attachment_delete, name='app-attachment-delete'),
 
     # Качване на картинки
     path('uploads/ckeditor-image/', ckeditor_image_upload, name='ckeditor-image-upload'),

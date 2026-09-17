@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import (
     AIPrompt,
+    AppAttachment,
     Documents,
     Goal,
     Log,
@@ -57,6 +58,7 @@ admin.site.register(SessionPoint)
 admin.site.register(SessionNote)
 admin.site.register(SessionTask)
 admin.site.register(SessionAttachment)
+admin.site.register(AppAttachment)
 
 
 @admin.register(AIPrompt)

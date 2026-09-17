@@ -41,6 +41,11 @@ from .api_prompts import (
     AIPromptUpsertView,
     ai_prompt_delete,
 )
+from .api_attachments import (
+    AppAttachmentListView,
+    app_attachment_delete,
+    app_attachment_upsert,
+)
 from .api_lessons import (
     SessionAttachmentsForSessionView,
     SessionImportView,
@@ -77,6 +82,7 @@ from .api_users import (
 )
 from .auth import login_view, logout_view, sign_in
 from .pages import (
+    attachments_list_view,
     course_goals_view,
     course_lessons_view,
     course_units_view,
@@ -117,6 +123,7 @@ __all__ = [
     'session_main_view',
     'session_main_view_old',
     'lesson_view',
+    'attachments_list_view',
     # api_context
     'UserDataAPIView',
     'UserDataExpandedAPIView',
@@ -147,6 +154,10 @@ __all__ = [
     'AIPromptListView',
     'AIPromptUpsertView',
     'ai_prompt_delete',
+    # api_attachments
+    'AppAttachmentListView',
+    'app_attachment_upsert',
+    'app_attachment_delete',
     # api_lessons
     'SessionImportView',
     'SessionPlanImportView',

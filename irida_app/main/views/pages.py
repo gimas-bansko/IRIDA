@@ -139,3 +139,9 @@ def lesson_view(request, session_id):
     context = make_user_context(request)
     context['session_id'] = session_id
     return render(request, 'main/lesson.html', context)
+
+
+@login_required
+def attachments_list_view(request):
+    context = make_user_context(request)
+    return render(request, 'main/attachments.html', context)
