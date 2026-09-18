@@ -644,11 +644,13 @@ class SessionImportAPITest(TestCase):
         self.assertIsNotNone(prompt_excel)
         self.assertIn('Excel', prompt_excel.title)
         self.assertIn('topic_plan_template.xlsx', prompt_excel.title)
+        self.assertIn('{списък_уроци}', prompt_excel.prompt_text)
 
         prompt_word = AIPrompt.objects.filter(page_key='course_lessons', is_system=True, order=4).first()
         self.assertIsNotNone(prompt_word)
         self.assertIn('Word', prompt_word.title)
         self.assertIn('Шаблон Тематично разпределение.docx', prompt_word.title)
+        self.assertIn('{списък_уроци}', prompt_word.prompt_text)
 
 
 class SessionPlanImportAPITest(TestCase):

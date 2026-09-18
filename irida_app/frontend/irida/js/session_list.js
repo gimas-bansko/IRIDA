@@ -175,11 +175,45 @@ const App = {
         openAIAssistant(pageKey) {
             const currentSubject = (this.listOfSubjects || []).find(s => s.id === this.user?.subject) || {};
             const currentSpec = (this.listOfSpecialties || []).find(sp => sp.id === this.user?.specialty) || {};
+
+            const grade = parseInt(currentSubject.grade || this.user?.grade || this.selectedGrade || 10, 10);
+            const term1Weeks = 18;
+            const term2Weeks = (grade === 12) ? 11 : 18;
+            const hpw1 = parseInt(currentSubject.hpw1 || 0, 10);
+            const hpw2 = parseInt(currentSubject.hpw2 || 0, 10);
+            const hpy = parseInt(currentSubject.hpy || ((hpw1 * term1Weeks) + (hpw2 * term2Weeks)), 10);
+
+            let lessonDuration = 2;
+            if (hpw1 === 1 || hpw2 === 1) lessonDuration = 1;
+            else if (hpw1 === 3 || hpw2 === 3) lessonDuration = 3;
+            else if (hpw1 === 4 || hpw2 === 4) lessonDuration = 2;
+
+            const hoursStructure = `Годишен хорариум: ${hpy} уч. часа (${currentSubject.subject_type || 'теория'}).\n- I учебен срок: 18 седмици по ${hpw1} ч./седмично (общо ${hpw1 * term1Weeks} часа);\n- II учебен срок: ${term2Weeks} седмици по ${hpw2} ч./седмично (общо ${hpw2 * term2Weeks} часа).\n- Препоръчителна продължителност на едно занятие (урок): ${lessonDuration} учебни часа.`;
+
+            // Форматиране на списък с уроци
+            let lessonsListText = '';
+            if (this.listOfSessions && this.listOfSessions.length > 0) {
+                lessonsListText = this.listOfSessions.map(s => {
+                    const typeLabel = this.sessionType(s.session_type);
+                    const typeStr = typeLabel ? `${s.session_type} (${typeLabel})` : (s.session_type || 'НЗ');
+                    const durationStr = `${s.duration || 2} уч. ч.`;
+                    const levelStr = s.basic_level ? 'Основен' : 'Резерв';
+                    return `Урок ${s.num}. "${s.name}" [Вид: ${typeStr}, Продължителност: ${durationStr}, Статус: ${levelStr}]`;
+                }).join('\n');
+            } else {
+                lessonsListText = 'Не са въведени уроци по предмета.';
+            }
+
             const context = {
                 subject: currentSubject.name || '',
                 subject_name: currentSubject.name || '',
                 grade: currentSubject.grade || this.user?.grade || this.selectedGrade || '',
-                specialty: currentSpec.specialty_name || ''
+                specialty: currentSpec.specialty_name || '',
+                hours_structure: hoursStructure,
+                hours_info: hoursStructure,
+                lessons_list: lessonsListText,
+                sessions_list: lessonsListText,
+                lessons: lessonsListText
             };
             if (window.AIPromptManager) {
                 window.AIPromptManager.open(pageKey || 'session_list', context);

@@ -176,6 +176,8 @@
                 '{специалност}': context.specialty || context.specialty_name || '',
                 '{включени_теми}': context.topics_list || context.units_and_topics || context.curriculum_text || '',
                 '{теми}': context.topics_list || context.units_and_topics || context.curriculum_text || '',
+                '{списък_уроци}': context.lessons_list || context.sessions_list || context.lessons || '',
+                '{уроци}': context.lessons_list || context.sessions_list || context.lessons || '',
                 '{структура_часове}': context.hours_structure || context.hours_info || '',
                 '{хорариум}': context.hours_structure || context.hours_info || '',
                 '{раздели_и_теми}': context.units_and_topics || context.curriculum_text || '',

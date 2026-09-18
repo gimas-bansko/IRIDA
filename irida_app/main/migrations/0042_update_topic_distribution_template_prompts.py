@@ -14,7 +14,7 @@ EXCEL_TEMPLATE_PROMPT = {
         'Таблицата се състои от следните колони (започвайки от ред 2, след заглавния ред):\n'
         '1. Колона A: "Учебна седмица*" – номер на учебната седмица (число от 1 до 36 за 8, 9, 10 и 11 клас, или от 1 до 29 за 12 клас). '
         'Ако за една седмица има предвидени 2 занятия (напр. при 4 ч./седмично с 2 урока по 2 часа), номерът на седмицата се повтаря на отделен ред за всяко занятие.\n'
-        '2. Колона B: "Тема*" – кратко заглавие на урока от предоставения списък с уроц��.\n'
+        '2. Колона B: "Тема*" – кратко заглавие на урока от предоставения списък с уроци.\n'
         '3. Колона C: "Вид" – вид на урока, задължително едно от следните стандартни съкращения:\n'
         '   - НЗ (Нови знания)\n'
         '   - УПР (Упражнение / Практика)\n'
@@ -27,7 +27,7 @@ EXCEL_TEMPLATE_PROMPT = {
         '2. Продължителност на сроковете: I учебен срок = 18 седмици; II учебен срок = 11 седмици (12 клас) или 18 седмици (8-11 клас).\n'
         '3. Продължителност на занятие: определя се според седмичния хорариум (напр. 2 ч./седм. -> 1 урок от 2 часа; 3 ч./седм. -> 1 урок от 3 часа; 4 ч./седм. -> 2 урока по 2 часа седмично).\n'
         '4. Разпредели последователно уроците по учебните седмици. Ако в списъка с уроци има означени резервни уроци или часове за обобщение/консултации, ги позиционирай в края на съответните срокове или раздели.\n\n'
-        '### 4. ФОРМАТ Н�� ИЗХОДА:\n'
+        '### 4. ФОРМАТ НА ИЗХОДА:\n'
         'Предостави резултата в следния формат:\n'
         'Готова таблица, която потребителят може директно да маркира, копира и постави в Excel без нужда от допълнително форматиране:\n'
         '| Учебна седмица | Тема | Вид |\n'
@@ -102,10 +102,10 @@ WORD_TEMPLATE_PROMPT = {
 }
 
 
-def seed_template_prompts(apps, schema_editor):
+def update_template_prompts(apps, schema_editor):
     AIPrompt = apps.get_model('main', 'AIPrompt')
 
-    # Seed Excel template prompt
+    # Update Excel template prompt
     excel_prompt = AIPrompt.objects.filter(
         page_key='course_lessons',
         title__icontains='Excel',
@@ -120,7 +120,7 @@ def seed_template_prompts(apps, schema_editor):
     else:
         AIPrompt.objects.create(**EXCEL_TEMPLATE_PROMPT)
 
-    # Seed Word template prompt
+    # Update Word template prompt
     word_prompt = AIPrompt.objects.filter(
         page_key='course_lessons',
         title__icontains='Word',
@@ -136,16 +136,16 @@ def seed_template_prompts(apps, schema_editor):
         AIPrompt.objects.create(**WORD_TEMPLATE_PROMPT)
 
 
-def unseed_template_prompts(apps, schema_editor):
+def rollback_template_prompts(apps, schema_editor):
     pass
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0037_seed_lesson_theory_notes_prompt'),
+        ('main', '0041_appattachment'),
     ]
 
     operations = [
-        migrations.RunPython(seed_template_prompts, unseed_template_prompts),
+        migrations.RunPython(update_template_prompts, rollback_template_prompts),
     ]

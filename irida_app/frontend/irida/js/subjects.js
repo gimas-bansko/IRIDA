@@ -782,7 +782,7 @@ const App = {
 
             const grade = parseInt(currentSubject.grade || this.user?.grade || this.selectedGrade || 10, 10);
             const term1Weeks = 18;
-            const term2Weeks = (grade === 12) ? 12 : 18;
+            const term2Weeks = (grade === 12) ? 11 : 18;
             const hpw1 = parseInt(currentSubject.hpw1 || 0, 10);
             const hpw2 = parseInt(currentSubject.hpw2 || 0, 10);
             const hpy = parseInt(currentSubject.hpy || ((hpw1 * term1Weeks) + (hpw2 * term2Weeks)), 10);
@@ -814,6 +814,20 @@ const App = {
                 unitsAndTopicsText = 'Не са въведени раздели и теми по предмета.';
             }
 
+            // Форматиране на списък с уроци
+            let lessonsListText = '';
+            if (this.listOfSessions && this.listOfSessions.length > 0) {
+                lessonsListText = this.listOfSessions.map(s => {
+                    const typeLabel = this.sessionType(s.session_type);
+                    const typeStr = typeLabel ? `${s.session_type} (${typeLabel})` : (s.session_type || 'НЗ');
+                    const durationStr = `${s.duration || 2} уч. ч.`;
+                    const levelStr = s.basic_level ? 'Основен' : 'Резерв';
+                    return `Урок ${s.num}. "${s.name}" [Вид: ${typeStr}, Продължителност: ${durationStr}, Статус: ${levelStr}]`;
+                }).join('\n');
+            } else {
+                lessonsListText = 'Не са въведени уроци по предмета.';
+            }
+
             const context = {
                 subject: currentSubject.name || '',
                 subject_name: currentSubject.name || '',
@@ -823,7 +837,10 @@ const App = {
                 hours_structure: hoursStructure,
                 hours_info: hoursStructure,
                 units_and_topics: unitsAndTopicsText,
-                curriculum_text: unitsAndTopicsText
+                curriculum_text: unitsAndTopicsText,
+                lessons_list: lessonsListText,
+                sessions_list: lessonsListText,
+                lessons: lessonsListText
             };
             if (window.AIPromptManager) {
                 window.AIPromptManager.open(pageKey || 'general', context);
