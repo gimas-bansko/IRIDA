@@ -507,6 +507,40 @@ const App = {
                 }
             });
         },
+
+        openAIAssistant() {
+            const pointsText = (this.points || []).map(p => `${p.num}. ${p.name} (${p.duration} мин.)`).join('; ');
+            const subjectObj = this.user?.profile?.subject || {};
+            const specObj = this.user?.profile?.speciality || {};
+            const subjectName = subjectObj.name || (document.querySelector('h1.page-title') ? document.querySelector('h1.page-title').textContent.replace('предмет:', '').trim() : '');
+            const specName = specObj.specialty_name || (document.querySelector('h2.page-title') ? document.querySelector('h2.page-title').textContent.replace('специалност/професия:', '').trim() : '');
+            const grade = subjectObj.grade || this.user?.profile?.grade || this.user?.grade || '';
+            const durationHours = this.session?.duration || 1;
+            const durationMins = durationHours * 45;
+            const sessionTypeText = this.sessionType(this.session?.session_type) || this.session?.session_type || 'Нови знания';
+            const topicsText = (this.topics || []).map(t => `- ${t.topic?.name || ''} [${t.topic?.MoSCoW_cat || 'M'} - ${this.moscowTextFor(t.topic)}]${t.description ? ' (' + t.description + ')' : ''}`).join('\n');
+
+            const context = {
+                subject: subjectName,
+                subject_name: subjectName,
+                specialty: specName,
+                specialty_name: specName,
+                grade: grade,
+                topic: this.session?.name || '',
+                session_num: this.session?.num || '',
+                session_name: this.session?.name || '',
+                session_type: sessionTypeText,
+                duration_hours: `${durationHours} ${durationHours === 1 ? 'учебен час' : 'учебни часа'}`,
+                duration_mins: `${durationMins} минути`,
+                goals: this.session?.goals || '',
+                focus: this.session?.focus || '',
+                topics_list: topicsText || '[няма въведени теми]',
+                points: pointsText || '[няма въведени точки]'
+            };
+            if (window.AIPromptManager) {
+                window.AIPromptManager.open('lesson_main', context);
+            }
+        },
     },
     created: function(){
         this.loadUserDetails();

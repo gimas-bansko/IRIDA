@@ -6,6 +6,7 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from ..utils import session_attachment_upload_path
 from .curriculum import Subject, Topic
 
 
@@ -119,7 +120,7 @@ class SessionAttachment(models.Model):
     num = models.SmallIntegerField('№', default=1, validators=[MinValueValidator(1)])
     name = models.CharField('Име / Заглавие', max_length=200, blank=True, default='')
     attachment_type = models.CharField('Тип', max_length=20, choices=ATTACHMENT_TYPE_CHOICES, default=OTHER)
-    file = models.FileField('Файл', upload_to='session_attachments/', blank=True, null=True)
+    file = models.FileField('Файл', upload_to=session_attachment_upload_path, blank=True, null=True)
     description = models.TextField('Коментар / Описание', default='', blank=True, help_text='Коментар или описание на файла')
 
     def __str__(self):

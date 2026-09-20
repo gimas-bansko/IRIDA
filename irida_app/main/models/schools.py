@@ -2,8 +2,14 @@
 Училища/организации, специалности и прикачени документи.
 """
 
+import re
 from django.db import models
 
+from ..utils import (
+    document_upload_path,
+    get_safe_ascii_extension,
+    specialty_plan_upload_path,
+)
 from .curriculum import Subject
 
 
@@ -33,9 +39,10 @@ class Specialty(models.Model):
 #                Училища
 # ***************************************
 def school_pic_path(instance, filename):
-    ext = filename.split('.')[-1]
-    ident = instance.id if instance.id is not None else (instance.short_name or 'logo')
-    new_filename = f"school_logo_{ident}.{ext}"
+    safe_ext = get_safe_ascii_extension(filename) or '.png'
+    raw_ident = instance.id if instance.id is not None else (instance.short_name or 'logo')
+    safe_ident = re.sub(r'[^a-zA-Z0-9_-]', '', str(raw_ident)) or 'logo'
+    new_filename = f"school_logo_{safe_ident}{safe_ext}"
     return f"sys_pics/{new_filename}"
 
 
@@ -67,7 +74,7 @@ class School(models.Model):
 # ***************************************
 class Documents(models.Model):
     title = models.CharField('Име', max_length=200)
-    attachment = models.FileField('Файл', upload_to='docs/')
+    attachment = models.FileField('Файл', upload_to=document_upload_path)
 
     def __str__(self):
         return self.title

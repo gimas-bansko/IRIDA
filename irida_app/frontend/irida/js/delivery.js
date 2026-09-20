@@ -1141,17 +1141,29 @@ const App = {
 
         openAIAssistant() {
             const pointsText = (this.points || []).map(p => `${p.num}. ${p.name}`).join('; ');
-            const subjectName = this.user?.subject_name || '';
-            const specName = this.user?.specialty_name || '';
+            const subjectObj = this.user?.profile?.subject || {};
+            const specObj = this.user?.profile?.speciality || {};
+            const subjectName = subjectObj.name || this.user?.subject_name || '';
+            const specName = specObj.specialty_name || this.user?.specialty_name || '';
+            const grade = subjectObj.grade || this.user?.profile?.grade || this.user?.grade || '';
+            const durationHours = this.session?.duration || 1;
+            const durationMins = durationHours * 45;
+            const sessionTypeText = this.sessionType(this.session?.session_type) || this.session?.session_type || 'Нови знания';
             const context = {
                 subject: subjectName,
+                subject_name: subjectName,
+                specialty: specName,
+                specialty_name: specName,
+                grade: grade,
                 topic: this.session?.name || '',
+                session_num: this.session?.num || '',
                 session_name: this.session?.name || '',
+                session_type: sessionTypeText,
+                duration_hours: `${durationHours} ${durationHours === 1 ? 'учебен час' : 'учебни часа'}`,
+                duration_mins: `${durationMins} минути`,
                 goals: this.session?.goals || '',
                 focus: this.session?.focus || '',
-                points: pointsText,
-                grade: this.user?.grade || '',
-                specialty: specName
+                points: pointsText || '[няма въведени точки]'
             };
             if (window.AIPromptManager) {
                 window.AIPromptManager.open('lesson_main', context);

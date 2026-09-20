@@ -708,8 +708,11 @@ const App = {
 
         openAIAssistant() {
             const pointsText = (this.points || []).map(p => `${p.num}. ${p.name} (${p.duration} мин.)`).join('; ');
-            const subjectName = this.user?.subject_name || (document.querySelector('h1.page-title') ? document.querySelector('h1.page-title').textContent.replace('предмет:', '').trim() : '');
-            const specName = this.user?.specialty_name || (document.querySelector('h2.page-title') ? document.querySelector('h2.page-title').textContent.replace('специалност/професия:', '').trim() : '');
+            const subjectObj = this.user?.profile?.subject || {};
+            const specObj = this.user?.profile?.speciality || {};
+            const subjectName = subjectObj.name || (document.querySelector('h1.page-title') ? document.querySelector('h1.page-title').textContent.replace('предмет:', '').trim() : '');
+            const specName = specObj.specialty_name || (document.querySelector('h2.page-title') ? document.querySelector('h2.page-title').textContent.replace('специалност/професия:', '').trim() : '');
+            const grade = subjectObj.grade || this.user?.profile?.grade || this.user?.grade || '';
             const durationHours = this.session?.duration || 1;
             const durationMins = durationHours * 45;
             const sessionTypeText = this.sessionType(this.session?.session_type) || this.session?.session_type || 'Нови знания';
@@ -717,8 +720,10 @@ const App = {
 
             const context = {
                 subject: subjectName,
+                subject_name: subjectName,
                 specialty: specName,
-                grade: this.user?.grade || '',
+                specialty_name: specName,
+                grade: grade,
                 topic: this.session?.name || '',
                 session_num: this.session?.num || '',
                 session_name: this.session?.name || '',

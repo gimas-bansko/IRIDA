@@ -1,11 +1,14 @@
+import re
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
+from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIClient
 from rest_framework import status
 from main.constants import STUDENT, TEACHER
 from main.models import (
     AIPrompt,
+    AppAttachment,
     Goal,
     School,
     SchoolDayConfig,
@@ -73,8 +76,9 @@ class SessionAttachmentAPITest(TestCase):
         self.assertEqual(resp.data['name'], 'Теория 1')
         self.assertEqual(resp.data['attachment_type'], 'theory')
         self.assertEqual(resp.data['description'], 'Описание на теорията')
-        self.assertTrue(resp.data['file_url'].endswith('theory_doc.pdf') or 'theory_doc' in resp.data['file_url'])
-        self.assertTrue(resp.data['file_name'].startswith('theory_doc') and resp.data['file_name'].endswith('.pdf'))
+        self.assertTrue(resp.data['file_url'].endswith('.pdf'))
+        self.assertTrue(resp.data['file_url'].startswith('/media/session_attachments/'))
+        self.assertTrue(resp.data['file_name'].endswith('.pdf'))
 
         # Create other attachment via upsert
         other_file = SimpleUploadedFile("appendix.zip", b"ZIP content", content_type="application/zip")
@@ -801,6 +805,22 @@ class SessionPlanImportAPITest(TestCase):
         self.assertIsNotNone(notes_prompt)
         self.assertIn('теоретични бележки', notes_prompt.title)
 
+    def test_lesson_view_and_expanded_context_contains_grade(self):
+        # Достъпване на изгледа за урок обновява профила на потребителя със съответния урок и предмет
+        self.client.force_login(self.user)
+        resp = self.client.get(f'/lesson/{self.session.id}/')
+        self.assertEqual(resp.status_code, 200)
+
+        self.user.userprofile.refresh_from_db()
+        self.assertEqual(self.user.userprofile.session, self.session)
+        self.assertEqual(self.user.userprofile.subject, self.subject)
+
+        # Проверка на API контекста за наличието на клас в профила и предмета
+        resp_ctx = self.client.get('/api/context/expanded/')
+        self.assertEqual(resp_ctx.status_code, 200)
+        self.assertEqual(resp_ctx.data['profile']['subject']['grade'], 10)
+        self.assertEqual(resp_ctx.data['profile']['subject']['name'], 'Обектно-ориентирано програмиране')
+
 
 class MediaServingTest(TestCase):
     def test_media_serving_endpoint(self):
@@ -903,3 +923,102 @@ class ItemDeletionApiTest(TestCase):
         self.assertFalse(Unit.objects.filter(id=self.unit.id).exists())
         self.assertFalse(Topic.objects.filter(id=self.topic.id).exists())
         self.assertFalse(SessionTopic.objects.filter(id=self.session_topic.id).exists())
+
+
+class FileUploadAsciiSafetyTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(username='upload_tester', password='password123')
+        self.client.force_authenticate(user=self.user)
+        self.subject = Subject.objects.create(name='Информатика', subject_type='теория', grade=10)
+        self.session = Session.objects.create(course=self.subject, num=1, name='Урок 1: Архитектура')
+
+    def test_generate_unique_ascii_filename_with_cyrillic(self):
+        from main.utils import generate_unique_ascii_filename
+
+        cyrillic_name = "Тематично разпределение за 10 клас.DOCX"
+        safe_name = generate_unique_ascii_filename(cyrillic_name)
+
+        # Трябва да съдържа само ASCII шестнадесетични знаци и разширение .docx
+        self.assertTrue(re.match(r'^[a-f0-9]{32}\.docx$', safe_name))
+        self.assertTrue(safe_name.isascii())
+
+        # Генерирането на ново име за същия файл трябва да е уникално
+        safe_name_2 = generate_unique_ascii_filename(cyrillic_name)
+        self.assertNotEqual(safe_name, safe_name_2)
+
+    def test_session_attachment_upload_cyrillic_filename_saves_as_ascii(self):
+        uploaded_file = SimpleUploadedFile(
+            'Тематичен_План_2026.docx',
+            b'word-binary-content',
+            content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        )
+
+        resp = self.client.post('/api/session-attachments/upsert/', {
+            'session': self.session.id,
+            'name': 'Тематичен план 2026',
+            'file': uploaded_file,
+            'attachment_type': 'other'
+        }, format='multipart')
+
+        self.assertEqual(resp.status_code, 201)
+        attachment = SessionAttachment.objects.get(id=resp.data['id'])
+
+        # Името в базата / UI се запазва четимо
+        self.assertEqual(attachment.name, 'Тематичен план 2026')
+
+        # Физическият файл на диска е в session_attachments/ с безопасно ASCII име
+        self.assertTrue(attachment.file.name.startswith('session_attachments/'))
+        self.assertTrue(attachment.file.name.isascii())
+        self.assertTrue(re.search(r'session_attachments/[a-f0-9]{32}\.docx$', attachment.file.name))
+
+        # Почистване
+        if attachment.file and default_storage.exists(attachment.file.name):
+            default_storage.delete(attachment.file.name)
+
+    def test_app_attachment_upload_cyrillic_filename_saves_as_ascii(self):
+        uploaded_file = SimpleUploadedFile(
+            'Наредба_№5_на_МОН.pdf',
+            b'%PDF-1.4 sample content',
+            content_type='application/pdf'
+        )
+
+        resp = self.client.post('/api/app-attachments/upsert/', {
+            'name': 'Наредба №5 на МОН',
+            'file': uploaded_file,
+            'num': 1
+        }, format='multipart')
+
+        self.assertEqual(resp.status_code, 201)
+        app_att = AppAttachment.objects.get(id=resp.data['id'])
+
+        self.assertEqual(app_att.name, 'Наредба №5 на МОН')
+        self.assertTrue(app_att.file.name.startswith('app_attachments/'))
+        self.assertTrue(app_att.file.name.isascii())
+        self.assertTrue(re.search(r'app_attachments/[a-f0-9]{32}\.pdf$', app_att.file.name))
+
+        # Почистване
+        if app_att.file and default_storage.exists(app_att.file.name):
+            default_storage.delete(app_att.file.name)
+
+    def test_image_upload_with_cyrillic_filename(self):
+        image_file = SimpleUploadedFile(
+            'Схема на алгоритъм.png',
+            b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR',
+            content_type='image/png'
+        )
+
+        resp = self.client.post('/api/uploads/tinymce-image/', {
+            'file': image_file
+        }, format='multipart')
+
+        self.assertEqual(resp.status_code, 201)
+        location = resp.data.get('location', '')
+        self.assertTrue(location.isascii())
+        self.assertIn('/media/session_pics/img_', location)
+        self.assertTrue(location.endswith('.png'))
+
+        # Извличане на относителния път за изтриване
+        rel_path = location.split('/media/')[-1]
+        if default_storage.exists(rel_path):
+            default_storage.delete(rel_path)

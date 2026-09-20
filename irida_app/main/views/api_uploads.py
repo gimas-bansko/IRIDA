@@ -11,6 +11,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from ..utils import session_image_upload_path
+
 
 @api_view(['POST'])
 @csrf_exempt  # вероятно без ефект - DRF/SessionAuthentication налага CSRF сама
@@ -23,10 +25,9 @@ def ckeditor_image_upload(request):
     if not f:
         return Response({'error': 'No file'}, status=400)
 
-    # записваме файла
-    # ВНИМАНИЕ: пази оригиналното име - файл със същото име се презаписва.
-    # utils.session_image_upload_path() дава уникално име по timestamp.
-    path = default_storage.save(f"session_pics/{f.name}", ContentFile(f.read()))
+    # записваме файла с безопасно уникално име без кирилица
+    target_path = session_image_upload_path(f.name)
+    path = default_storage.save(target_path, ContentFile(f.read()))
     url = default_storage.url(path)  # напр. /media/session_pics/...
 
     # CKEditor expects { url }
@@ -46,8 +47,9 @@ def tinymce_image_upload(request):
     if not f:
         return Response({'error': 'No file'}, status=400)
 
-    # Запис на файл в MEDIA
-    path = default_storage.save(f"session_pics/{f.name}", ContentFile(f.read()))
+    # Запис на файл в MEDIA с безопасно уникално име без кирилица
+    target_path = session_image_upload_path(f.name)
+    path = default_storage.save(target_path, ContentFile(f.read()))
     url = default_storage.url(path)  # напр. /media/session_pics/...
 
     # Върни във формат, който TinyMCE очаква

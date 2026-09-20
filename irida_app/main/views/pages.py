@@ -30,7 +30,7 @@ def make_user_context(r):
         'schools': schools,
         # ВНИМАНИЕ: user_profile.school е nullable - при потребител без
         # училище тук пада с AttributeError.
-        'specialities': user_profile.school.specialities.all(),
+        'specialities': user_profile.school.specialities.all() if user_profile.school else [],
         'specialty': specialty,
         'subject': subject,
         'session': session,
@@ -134,6 +134,8 @@ def lesson_view(request, session_id):
     user_profile = user.userprofile
     session = Session.objects.get(id=session_id)
     user_profile.session = session
+    if session.course:
+        user_profile.subject = session.course
     user_profile.save()
 
     context = make_user_context(request)
