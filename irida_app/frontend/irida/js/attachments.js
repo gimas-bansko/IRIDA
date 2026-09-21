@@ -24,6 +24,7 @@ const App = {
     data() {
         return {
             attachments: [],
+            filterType: 'all', // 'all', 'system', 'mine'
             attachmentEditMode: false,
             selectedAttachmentFile: null,
             isMarkdownFileSelected: false,
@@ -35,20 +36,46 @@ const App = {
                 file_url: null,
                 file_name: '',
                 description: '',
+                is_system: false,
                 target_format: 'docx',
             },
         };
     },
+    computed: {
+        filteredAttachments() {
+            if (this.filterType === 'system') {
+                return this.attachments.filter(a => !!a.is_system);
+            }
+            if (this.filterType === 'mine') {
+                return this.attachments.filter(a => this.isOwner(a));
+            }
+            return this.attachments;
+        },
+        countSystem() {
+            return this.attachments.filter(a => !!a.is_system).length;
+        },
+        countMine() {
+            return this.attachments.filter(a => this.isOwner(a)).length;
+        },
+    },
     methods: {
+        setFilter(type) {
+            this.filterType = type;
+        },
+        isOwner(a) {
+            if (!a) return false;
+            if (a.is_owner === true) return true;
+            if (window.CURRENT_USER_ID && a.created_by && Number(a.created_by) === Number(window.CURRENT_USER_ID)) {
+                return true;
+            }
+            return false;
+        },
         loadAttachments() {
             const vm = this;
             axios.get('/api/app-attachments/')
                 .then(function(response) {
                     if (response.data) {
-                        vm.attachments = response.data.map(item => ({
-                            ...item,
-                            collapsed: true
-                        }));
+                        vm.attachments = response.data;
                     }
                 })
                 .catch(function(error) {
@@ -67,6 +94,7 @@ const App = {
                 file_url: null,
                 file_name: '',
                 description: '',
+                is_system: false,
                 target_format: 'docx',
             };
             this.selectedAttachmentFile = null;
@@ -86,6 +114,7 @@ const App = {
                 file_url: a.file_url,
                 file_name: a.file_name,
                 description: a.description || '',
+                is_system: !!a.is_system,
                 target_format: 'docx',
             };
             this.selectedAttachmentFile = null;
@@ -172,6 +201,7 @@ const App = {
             formData.append('num', vm.attachmentForm.num || 1);
             formData.append('name', nameVal);
             formData.append('description', vm.attachmentForm.description || '');
+            formData.append('is_system', vm.attachmentForm.is_system ? 'true' : 'false');
 
             if (vm.selectedAttachmentFile) {
                 formData.append('file', vm.selectedAttachmentFile);
@@ -225,6 +255,30 @@ const App = {
                 .catch(function(error) {
                     console.error('Грешка при изтриване на приложение:', error);
                     alert('Възникна грешка при изтриването на приложението.');
+                });
+        },
+        downloadFile(fileUrl, fileName) {
+            if (!fileUrl) return;
+            axios.get(fileUrl, { responseType: 'blob' })
+                .then(function(response) {
+                    const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.setAttribute('download', fileName || 'attachment');
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    window.URL.revokeObjectURL(blobUrl);
+                })
+                .catch(function(error) {
+                    console.error('Грешка при сваляне на файла:', error);
+                    const link = document.createElement('a');
+                    link.href = fileUrl;
+                    link.setAttribute('download', fileName || '');
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
                 });
         },
     },

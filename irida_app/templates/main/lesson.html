@@ -260,7 +260,7 @@
                             {{ user_profile.school.short_name}} - {{ user_profile.school.city}}</p>
                             -->
                         <h2 class="page-title fw-normal fs-16 mb-12">специалност/професия: {{ specialty.specialty_name}}</h2>
-                        <h1 class="page-title fw-normal fs-20 mb-12">предмет: {{ subject.name}}</h1>
+                        <h1 class="page-title fw-normal fs-20 mb-12">предмет: {{ subject.name}}{% if subject.subject_type %} ({{ subject.subject_type }}){% endif %}</h1>
                         <nav>
                             <ol class="breadcrumb mb-2">
                                 <li class="breadcrumb-item"><a href="{% url 'home' %}">Начало</a></li>

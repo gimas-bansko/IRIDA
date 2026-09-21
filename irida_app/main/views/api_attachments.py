@@ -18,10 +18,22 @@ from ..serializers.attachments import AppAttachmentSerializer
 class AppAttachmentListView(generics.ListAPIView):
     """
     GET /api/app-attachments/
-    Връща списък с всички глобални приложения / файлове, сортирани по номер и id.
+    Връща списък с глобални приложения / файлове, сортирани по номер и id.
+    Поддържа незадължителен query параметър ?filter=all|system|mine
     """
     serializer_class = AppAttachmentSerializer
-    queryset = AppAttachment.objects.all().order_by('num', 'id')
+
+    def get_queryset(self):
+        qs = AppAttachment.objects.all().order_by('num', 'id')
+        filter_type = self.request.query_params.get('filter', '').strip().lower()
+        if filter_type == 'system':
+            qs = qs.filter(is_system=True)
+        elif filter_type == 'mine':
+            if self.request.user.is_authenticated:
+                qs = qs.filter(created_by=self.request.user)
+            else:
+                qs = qs.none()
+        return qs
 
 
 @api_view(['POST'])
@@ -29,7 +41,7 @@ class AppAttachmentListView(generics.ListAPIView):
 def app_attachment_upsert(request):
     """
     POST /api/app-attachments/upsert/
-    POST body: { id, num, name, file, description, target_format }
+    POST body: { id, num, name, file, description, is_system, target_format }
     id == 0/missing -> create; id > 0 -> update
     """
     attachment_id = request.data.get('id', 0) or 0
@@ -40,6 +52,10 @@ def app_attachment_upsert(request):
 
     data = request.data.copy() if hasattr(request.data, 'copy') else dict(request.data)
     target_format = (request.data.get('target_format') or '').strip().lower()
+
+    if 'is_system' in data:
+        is_sys_val = str(data.get('is_system', '')).lower() in ('true', '1', 'yes')
+        data['is_system'] = is_sys_val
 
     # Проверка за качен файл и евентуално преобразуване от Markdown към docx / pdf
     uploaded_file = request.FILES.get('file')
@@ -71,18 +87,26 @@ def app_attachment_upsert(request):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
+    user = request.user if request.user.is_authenticated else None
+
     if attachment_id > 0:
         instance = get_object_or_404(AppAttachment, id=attachment_id)
+        if user and not (user.is_staff or user.is_superuser) and instance.created_by != user:
+            return Response(
+                {'detail': 'Нямате права да променяте това приложение.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
         if 'file' not in request.FILES and ('file' not in data or not data['file']):
             data.pop('file', None)
-        serializer = AppAttachmentSerializer(instance, data=data, partial=True)
+        serializer = AppAttachmentSerializer(instance, data=data, partial=True, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        serializer = AppAttachmentSerializer(data=data)
+        serializer = AppAttachmentSerializer(data=data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(created_by=user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -93,5 +117,11 @@ def app_attachment_delete(request, pk):
     Изтрива запис за глобално приложение / файл.
     """
     instance = get_object_or_404(AppAttachment, id=pk)
+    user = request.user if request.user.is_authenticated else None
+    if user and not (user.is_staff or user.is_superuser) and instance.created_by != user:
+        return Response(
+            {'detail': 'Нямате права да премахвате това приложение.'},
+            status=status.HTTP_403_FORBIDDEN
+        )
     instance.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)

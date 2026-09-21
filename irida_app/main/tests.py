@@ -810,6 +810,7 @@ class SessionPlanImportAPITest(TestCase):
         self.client.force_login(self.user)
         resp = self.client.get(f'/lesson/{self.session.id}/')
         self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, f'предмет: {self.subject.name} ({self.subject.subject_type})')
 
         self.user.userprofile.refresh_from_db()
         self.assertEqual(self.user.userprofile.session, self.session)
@@ -1022,3 +1023,91 @@ class FileUploadAsciiSafetyTest(TestCase):
         rel_path = location.split('/media/')[-1]
         if default_storage.exists(rel_path):
             default_storage.delete(rel_path)
+
+
+class AppAttachmentAPITest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create_user(username='teacher1', first_name='Иван', last_name='Иванов', password='pass')
+        self.user2 = User.objects.create_user(username='teacher2', first_name='Петър', last_name='Петров', password='pass')
+        self.admin = User.objects.create_superuser(username='admin', password='adminpass')
+
+    def test_create_attachment_sets_author_and_system_flag(self):
+        self.client.force_authenticate(user=self.user1)
+        resp = self.client.post('/api/app-attachments/upsert/', {
+            'num': 1,
+            'name': 'Учебен план',
+            'description': 'Описание на плана',
+            'is_system': 'false'
+        }, format='multipart')
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp.data['created_by'], self.user1.id)
+        self.assertEqual(resp.data['created_by_name'], 'Иван Иванов')
+        self.assertFalse(resp.data['is_system'])
+        self.assertTrue(resp.data['is_owner'])
+
+    def test_list_and_filter_attachments(self):
+        # 1. User1 creates normal attachment
+        att1 = AppAttachment.objects.create(
+            num=1, name='Файл 1', created_by=self.user1, is_system=False
+        )
+        # 2. User2 creates normal attachment
+        att2 = AppAttachment.objects.create(
+            num=2, name='Файл 2', created_by=self.user2, is_system=False
+        )
+        # 3. System attachment
+        att3 = AppAttachment.objects.create(
+            num=3, name='Системен файл', created_by=self.admin, is_system=True
+        )
+
+        self.client.force_authenticate(user=self.user1)
+
+        # All
+        resp_all = self.client.get('/api/app-attachments/')
+        self.assertEqual(resp_all.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(resp_all.data), 3)
+
+        # System
+        resp_sys = self.client.get('/api/app-attachments/?filter=system')
+        self.assertEqual(resp_sys.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(resp_sys.data), 1)
+        self.assertEqual(resp_sys.data[0]['id'], att3.id)
+
+        # Mine
+        resp_mine = self.client.get('/api/app-attachments/?filter=mine')
+        self.assertEqual(resp_mine.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(resp_mine.data), 1)
+        self.assertEqual(resp_mine.data[0]['id'], att1.id)
+        self.assertTrue(resp_mine.data[0]['is_owner'])
+
+    def test_edit_and_delete_permissions(self):
+        att1 = AppAttachment.objects.create(
+            num=1, name='Файл на Иван', created_by=self.user1, is_system=False
+        )
+
+        # User2 tries to edit User1's attachment -> 403 Forbidden
+        self.client.force_authenticate(user=self.user2)
+        resp_edit_forbidden = self.client.post('/api/app-attachments/upsert/', {
+            'id': att1.id,
+            'name': 'Хакнато име'
+        }, format='multipart')
+        self.assertEqual(resp_edit_forbidden.status_code, status.HTTP_403_FORBIDDEN)
+
+        # User2 tries to delete User1's attachment -> 403 Forbidden
+        resp_del_forbidden = self.client.delete(f'/api/app-attachments/{att1.id}/')
+        self.assertEqual(resp_del_forbidden.status_code, status.HTTP_403_FORBIDDEN)
+
+        # User1 edits own attachment -> 200 OK
+        self.client.force_authenticate(user=self.user1)
+        resp_edit_ok = self.client.post('/api/app-attachments/upsert/', {
+            'id': att1.id,
+            'name': 'Обновено име'
+        }, format='multipart')
+        self.assertEqual(resp_edit_ok.status_code, status.HTTP_200_OK)
+        att1.refresh_from_db()
+        self.assertEqual(att1.name, 'Обновено име')
+
+        # User1 deletes own attachment -> 204 No Content
+        resp_del_ok = self.client.delete(f'/api/app-attachments/{att1.id}/')
+        self.assertEqual(resp_del_ok.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(AppAttachment.objects.filter(id=att1.id).exists())

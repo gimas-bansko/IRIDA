@@ -34,12 +34,36 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <ul class="list-unstyled projects-items-danger-list" v-if="attachments.length === 0">
+                    <!-- Филтър преди списъка: Всички, Системни, Мои (собствени) -->
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-3 border-bottom">
+                        <div class="btn-group" role="group" aria-label="Филтър на приложения">
+                            <button type="button" class="btn btn-sm"
+                                    :class="filterType === 'all' ? 'btn-primary' : 'btn-outline-primary'"
+                                    @click="setFilter('all')">
+                                <i class="bi bi-collection me-1"></i>Всички
+                                <span class="badge ms-1" :class="filterType === 'all' ? 'bg-white text-primary' : 'bg-primary text-white'">[[ attachments.length ]]</span>
+                            </button>
+                            <button type="button" class="btn btn-sm"
+                                    :class="filterType === 'system' ? 'btn-primary' : 'btn-outline-primary'"
+                                    @click="setFilter('system')">
+                                <i class="bi bi-patch-check me-1"></i>Системни
+                                <span class="badge ms-1" :class="filterType === 'system' ? 'bg-white text-primary' : 'bg-primary text-white'">[[ countSystem ]]</span>
+                            </button>
+                            <button type="button" class="btn btn-sm"
+                                    :class="filterType === 'mine' ? 'btn-primary' : 'btn-outline-primary'"
+                                    @click="setFilter('mine')">
+                                <i class="bi bi-person me-1"></i>Мои (собствени)
+                                <span class="badge ms-1" :class="filterType === 'mine' ? 'bg-white text-primary' : 'bg-primary text-white'">[[ countMine ]]</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <ul class="list-unstyled projects-items-danger-list" v-if="filteredAttachments.length === 0">
                         <li>
                             <div class="d-flex align-items-center gap-3">
                                 <div class="flex-fill">
                                     <span class="d-block fw-normal fs-16 custom-black">
-                                        Няма добавени приложения / файлове
+                                        [[ filterType === 'all' ? 'Няма добавени приложения / файлове' : (filterType === 'system' ? 'Няма системни приложения / файлове' : 'Няма ваши собствени приложения / файлове') ]]
                                     </span>
                                 </div>
                             </div>
@@ -48,23 +72,55 @@
                     <!-- Списък файлове -->
                     <div v-else>
                         <ul class="list-unstyled projects-items-primary-list">
-                            <li v-for="a in attachments" :key="a.id">
+                            <li v-for="a in filteredAttachments" :key="a.id">
                                 <div class="mb-3">
-                                    <div class="d-flex align-items-center flex-wrap">
+                                    <div class="d-flex align-items-center flex-wrap gap-2">
                                         <div>
                                             <span class="badge bg-secondary me-2">[[ a.num ]]</span>
                                             <strong>[[ a.name ]]</strong>
-                                            <span class="ms-3" v-if="a.file_url">
-                                                <a :href="a.file_url" target="_blank" class="badge bg-primary-transparent text-primary fs-12 text-decoration-none">
-                                                    <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.file_name || 'Свали файл' ]]
-                                                </a>
+
+                                            <!-- Маркер Системен -->
+                                            <span class="badge bg-primary-transparent text-primary ms-2" v-if="a.is_system">
+                                                <i class="bi bi-patch-check me-1"></i>Системен
+                                            </span>
+
+                                            <!-- Маркер за Автор -->
+                                            <span class="badge bg-success-transparent text-success ms-2" v-if="a.created_by_name">
+                                                <i class="bi bi-person me-1"></i>[[ a.created_by_name ]]
+                                            </span>
+                                            <span class="badge bg-light text-muted border ms-2" v-else-if="!a.is_system">
+                                                <i class="bi bi-person me-1"></i>Неизвестен
+                                            </span>
+
+                                            <!-- Файл dropdown -->
+                                            <span class="ms-3 dropdown d-inline-block" v-if="a.file_url">
+                                                <button class="badge bg-primary-transparent text-primary fs-12 border-0 dropdown-toggle text-decoration-none"
+                                                        type="button"
+                                                        :id="'fileDropdownApp' + a.id"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-expanded="false"
+                                                        style="cursor: pointer;">
+                                                    <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.file_name || 'Файл' ]]
+                                                </button>
+                                                <ul class="dropdown-menu shadow-sm" :aria-labelledby="'fileDropdownApp' + a.id">
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center py-2 fs-12" :href="a.file_url" target="_blank">
+                                                            <i class="bi bi-box-arrow-up-right me-2 text-primary"></i>Отвори в браузъра
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(a.file_url, a.file_name)">
+                                                            <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
+                                                        </a>
+                                                    </li>
+                                                </ul>
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="mt-2 fs-12 text-muted" v-if="a.description && !a.collapsed">
+                                    <div class="mt-2 fs-12 text-muted" v-if="a.description">
                                         <strong>Коментар / Описание:</strong> [[ a.description ]]
                                     </div>
-                                    <div class="d-flex justify-content-center gap-2 mt-3">
+                                    <div class="d-flex justify-content-center gap-2 mt-3" v-if="isOwner(a)">
                                         <button class="btn btn-outline-info label-btn btn-sm fs-12 dropdown-toggle" type="button" :id="'dropdownMenuApp' + a.id"
                                                 data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="ri-close-line label-btn-icon me-2"></i>
@@ -87,14 +143,6 @@
                                         <button type="button" class="btn btn-outline-success btn-sm fs-12 label-btn" @click="startEditAttachment(a)">
                                             <i class="bi bi-pen label-btn-icon me-2"></i>
                                             Промени
-                                        </button>
-                                        <button class="btn btn-outline-primary btn-sm label-btn" v-if="a.description" v-show="!a.collapsed" @click="a.collapsed=!a.collapsed">
-                                            <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
-                                            покажи по-малко
-                                        </button>
-                                        <button class="btn btn-outline-primary btn-sm label-btn" v-if="a.description" v-show="a.collapsed" @click="a.collapsed=!a.collapsed">
-                                            <i class="bi bi-arrows-expand label-btn-icon me-2"></i>
-                                            покажи повече
                                         </button>
                                     </div>
                                 </div><hr>
@@ -132,11 +180,43 @@
                             <input type="text" class="form-control" v-model="attachmentForm.name" placeholder="Име на файла или приложението">
                         </div>
 
+                        <!-- Системен файл -->
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="is_system_app" v-model="attachmentForm.is_system">
+                                <label class="form-check-label fs-13 fw-medium" for="is_system_app">
+                                    <i class="bi bi-patch-check text-primary me-1"></i>Системен файл / приложение
+                                </label>
+                            </div>
+                        </div>
+
                         <!-- Файл -->
                         <div class="col-12">
                             <label class="form-label">Прикачен файл</label>
-                            <div v-if="attachmentForm.file_url" class="mb-2 text-muted fs-12">
-                                Текущ файл: <a :href="attachmentForm.file_url" target="_blank" class="fw-semibold">[[ attachmentForm.file_name ]]</a>
+                            <div v-if="attachmentForm.file_url" class="mb-2 text-muted fs-12 d-flex align-items-center flex-wrap gap-2">
+                                <span>Текущ файл:</span>
+                                <div class="dropdown d-inline-block">
+                                    <button class="badge bg-primary-transparent text-primary fs-12 border-0 dropdown-toggle text-decoration-none"
+                                            type="button"
+                                            id="formFileDropdownApp"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                            style="cursor: pointer;">
+                                        <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ attachmentForm.file_name || 'Файл' ]]
+                                    </button>
+                                    <ul class="dropdown-menu shadow-sm" aria-labelledby="formFileDropdownApp">
+                                        <li>
+                                            <a class="dropdown-item d-flex align-items-center py-2 fs-12" :href="attachmentForm.file_url" target="_blank">
+                                                <i class="bi bi-box-arrow-up-right me-2 text-primary"></i>Отвори в браузъра
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(attachmentForm.file_url, attachmentForm.file_name)">
+                                                <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                             <input type="file" id="appAttachmentFileInput" class="form-control" @change="onAttachmentFileChange">
 
@@ -187,5 +267,8 @@
 {% endblock %}
 
 {% block page_script %}
+    <script>
+        window.CURRENT_USER_ID = {{ user.id|default:'null' }};
+    </script>
     <script src="{% static 'irida/js/attachments.js' %}"></script>
 {% endblock %}

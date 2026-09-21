@@ -58,7 +58,14 @@ admin.site.register(SessionPoint)
 admin.site.register(SessionNote)
 admin.site.register(SessionTask)
 admin.site.register(SessionAttachment)
-admin.site.register(AppAttachment)
+
+
+@admin.register(AppAttachment)
+class AppAttachmentAdmin(admin.ModelAdmin):
+    list_display = ('num', 'name', 'file', 'is_system', 'created_by', 'created_at', 'updated_at')
+    list_filter = ('is_system', 'created_by')
+    search_fields = ('name', 'description')
+    ordering = ('num', 'id')
 
 
 @admin.register(AIPrompt)
