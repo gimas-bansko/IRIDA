@@ -281,10 +281,16 @@ const App = {
                 return;
             }
 
+            if (this.lessonRun.started) {
+                this.showSelectedPointContent.content = true;
+                this.showSelectedPointContent.notes = true;
+                this.showSelectedPointContent.tasks = true;
+            } else {
+                this.showSelectedPointContent.content = false;
+                this.showSelectedPointContent.notes = false;
+                this.showSelectedPointContent.tasks = false;
+            }
             this.showSelectedPointContent.timing = false;
-            this.showSelectedPointContent.content = false;
-            this.showSelectedPointContent.notes = false;
-            this.showSelectedPointContent.tasks = false;
             this.showSelectedPointContent.theory = false;
             this.showSelectedPointContent.tests = false;
             this.showSelectedPointContent.attachments = false;
@@ -541,8 +547,13 @@ const App = {
         addCollapsedToTasks() {
             if (!Array.isArray(this.tasks)) return;
             for (const n of this.tasks) {
-                if (n && typeof n === 'object' && !Object.prototype.hasOwnProperty.call(n, 'collapsed')) {
-                    n.collapsed = true;
+                if (n && typeof n === 'object') {
+                    if (!Object.prototype.hasOwnProperty.call(n, 'collapsed')) {
+                        n.collapsed = true;
+                    }
+                    if (!Object.prototype.hasOwnProperty.call(n, 'showAnswer')) {
+                        n.showAnswer = false;
+                    }
                 }
             }
         },
@@ -564,6 +575,50 @@ const App = {
             // Премахни изображенията като доп. защита, ако желаеш:
             // return DOMPurify.sanitize(html, {FORBID_TAGS: ['img', 'svg']});
             return DOMPurify.sanitize(html);
+        },
+
+        cleanTaskCondition(html) {
+            if (!html || typeof html !== 'string') return '';
+            let res = html.trim();
+
+            // 1. Самостоятелен параграф/заглавен блок само с "Условие..."
+            res = res.replace(/^\s*<(p|h[1-6]|div)[^>]*>\s*(?:<(?:strong|b|em|span)[^>]*>\s*)*Условие(?:\s+на\s+заданието[^:<]*)?\s*:?\s*(?:<\/(?:strong|b|em|span)>\s*)*<\/\1>\s*/i, '');
+
+            // 2. В началото на параграф: <p><strong>Условие:</strong> Текст...
+            res = res.replace(/^(\s*<(?:p|h[1-6]|div)[^>]*>)\s*(?:<(?:strong|b|em|span)[^>]*>\s*)+Условие(?:\s+на\s+заданието[^:<]*)?\s*:?\s*(?:<\/(?:strong|b|em|span)>\s*)+(?:<br\s*\/?>)?\s*/i, '$1');
+
+            // 3. В началото на параграф като чист текст: <p>Условие: Текст...
+            res = res.replace(/^(\s*<(?:p|h[1-6]|div)[^>]*>)\s*Условие\s*:\s*(?:<br\s*\/?>)?\s*/i, '$1');
+
+            // 4. В началото извън контейнер: <strong>Условие:</strong> Текст...
+            res = res.replace(/^\s*(?:<(?:strong|b|em|span)[^>]*>\s*)+Условие(?:\s+на\s+заданието[^:<]*)?\s*:?\s*(?:<\/(?:strong|b|em|span)>\s*)+(?:<br\s*\/?>)?\s*/i, '');
+
+            // 5. Чист текст в началото: Условие: Текст...
+            res = res.replace(/^\s*Условие\s*:\s*/i, '');
+
+            return res.trim();
+        },
+
+        cleanTaskAnswer(html) {
+            if (!html || typeof html !== 'string') return '';
+            let res = html.trim();
+
+            // 1. Самостоятелен блок с "Отговор" / "Решение"
+            res = res.replace(/^\s*<(p|h[1-6]|div)[^>]*>\s*(?:<(?:strong|b|em|span)[^>]*>\s*)*(?:Отговор|Отговори|Решение)(?:\s+и\s+[^:<]*)?\s*:?\s*(?:<\/(?:strong|b|em|span)>\s*)*<\/\1>\s*/i, '');
+
+            // 2. В началото на параграф с тагове
+            res = res.replace(/^(\s*<(?:p|h[1-6]|div)[^>]*>)\s*(?:<(?:strong|b|em|span)[^>]*>\s*)+(?:Отговор|Отговори|Решение)(?:\s+и\s+[^:<]*)?\s*:?\s*(?:<\/(?:strong|b|em|span)>\s*)+(?:<br\s*\/?>)?\s*/i, '$1');
+
+            // 3. В началото на параграф като чист текст
+            res = res.replace(/^(\s*<(?:p|h[1-6]|div)[^>]*>)\s*(?:Отговор|Отговори|Решение)\s*:\s*(?:<br\s*\/?>)?\s*/i, '$1');
+
+            // 4. Извън контейнер
+            res = res.replace(/^\s*(?:<(?:strong|b|em|span)[^>]*>\s*)+(?:Отговор|Отговори|Решение)(?:\s+и\s+[^:<]*)?\s*:?\s*(?:<\/(?:strong|b|em|span)>\s*)+(?:<br\s*\/?>)?\s*/i, '');
+
+            // 5. Чист текст
+            res = res.replace(/^\s*(?:Отговор|Отговори|Решение)\s*:\s*/i, '');
+
+            return res.trim();
         },
 
         moscowTextFor(topic) {
@@ -884,16 +939,26 @@ const App = {
             this.lessonRun.anchoredStartMode = anchor.mode;
             this.lessonRun.totalPlannedSeconds = this.toNumberSafe(this.session.duration, 0) * 45 * 60;
 
+            this.showSelectedPointContent.content = true;
+            this.showSelectedPointContent.notes = true;
+            this.showSelectedPointContent.tasks = true;
+
             this.updateLessonRunTiming();
             this.updateSelectedPointTiming();
             this.startLessonTimingTicker();
         },
 
         stopLesson() {
-        this.lessonRun.started = false;
+            this.lessonRun.started = false;
             this.lessonRun.paused = false;
             this.stopLessonTimingTicker();
             this.resetLessonRun();
+            this.showSelectedPointContent.content = false;
+            this.showSelectedPointContent.notes = false;
+            this.showSelectedPointContent.tasks = false;
+            this.showSelectedPointContent.theory = false;
+            this.showSelectedPointContent.tests = false;
+            this.showSelectedPointContent.attachments = false;
         },
 
         pauseLesson() {

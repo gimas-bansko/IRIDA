@@ -155,10 +155,10 @@
         <div id='main_app'>
             <aside class="app-sidebar sticky" id="sidebar">
                 <!-- Start::main-sidebar -->
-                <div class="main-sidebar" id="sidebar-scroll">
+                <div class="main-sidebar" id="sidebar-scroll" style="overflow-x: hidden;">
 
                     <!-- Start::nav -->
-                    <nav class="main-menu-container nav nav-pills flex-column sub-open">
+                    <nav class="main-menu-container nav nav-pills flex-column sub-open" style="width: 100%; max-width: 100%;">
                         <div class="main-sidebar-header mb-24">
                             <!-- Лого горе ляво -->
                             <a href="{% url 'home' %}" class="header-logo">
@@ -176,20 +176,20 @@
                         </div>
 
                         <!-- Меню -->
-                        <ul class="main-menu">
+                        <ul class="main-menu" style="width: 100%; max-width: 100%; overflow: hidden;">
                             <!-- Група ВРЕМЕ -->
-                            <li class="slide__category"><span class="category-name">Сега:</span></li>
+                            <li class="slide__category" style="margin-bottom: 0; margin-top: 6px;"><span class="category-name">Сега:</span></li>
                             <!-- Часовник -->
                             <li class="slide">
-                                <div class="side-menu__item">
-                                    <i class="bi bi-clock side-menu__icon"></i>
+                                <div class="side-menu__item" style="min-width: 0; width: 100%;">
+                                    <i class="bi bi-clock side-menu__icon flex-shrink-0"></i>
                                     <span class="fs-34 fw-bold">[[ currentTime ]]</span>
                                 </div>
                             </li>
                             <!-- Час/междучасие -->
                             <li class="slide">
-                                <div class="side-menu__item">
-                                    <i class="bi bi-clock-history side-menu__icon"></i>
+                                <div class="side-menu__item" style="min-width: 0; width: 100%;">
+                                    <i class="bi bi-clock-history side-menu__icon flex-shrink-0"></i>
                                     <div v-if="scheduleInfo.state === 'before'" class="fs-12 text-muted">
                                         До началото остават: [[ scheduleInfo.remaining ]]
                                     </div>
@@ -214,7 +214,7 @@
                                 </div>
                             </li>
                             <!-- Изминало/остава -->
-                            <li class="slide">
+                            <li class="slide" style="width: 100%; max-width: 100%;">
                                 <div class="fs-16">
                                     <div v-if="scheduleInfo.state === 'lesson'">
                                         <div>Изминало време: [[ scheduleInfo.elapsed ]]</div>
@@ -229,17 +229,17 @@
                                      :aria-valuenow="scheduleInfo.elapsedSeconds"
                                      aria-valuemin="0"
                                      :aria-valuemax="scheduleInfo.intervalSeconds"
-                                     style="margin-right: 13px;">
+                                     style="width: 100%; max-width: 100%;">
                                     <div class="progress-bar bg-primary"
                                          :style="{ width: scheduleInfo.elapsedPercentage + '%' }">
                                     </div>
                                 </div>
                             </li>
                             <!-- Група УРОК -->
-                            <li class="slide__category"><span class="category-name">Урок:</span></li>
+                            <li class="slide__category" style="margin-bottom: 0; margin-top: 6px;"><span class="category-name">Урок:</span></li>
                             <li class="slide">
-                                <div class="side-menu__item">
-                                    <i class="bi bi-book side-menu__icon"></i>
+                                <div class="side-menu__item" style="min-width: 0; width: 100%;">
+                                    <i class="bi bi-book side-menu__icon flex-shrink-0"></i>
                                     <button class="btn btn-outline-success btn-sm btn-wave fs-16"
                                             v-if="isLessonRunning"
                                             @click="stopLesson">
@@ -253,8 +253,8 @@
                                 </div>
                             </li>
                             <li class="slide">
-                                <div class="side-menu__item">
-                                    <i class="bi bi-hourglass-split side-menu__icon"></i>
+                                <div class="side-menu__item" style="min-width: 0; width: 100%;">
+                                    <i class="bi bi-hourglass-split side-menu__icon flex-shrink-0"></i>
                                     <div v-if="!isLessonRunning" class="fs-12 text-muted">
                                         Урокът не е стартиран
                                     </div>
@@ -263,7 +263,7 @@
                                     </div>
                                 </div>
                             </li>
-                            <li class="slide" v-if="isLessonRunning">
+                            <li class="slide" v-if="isLessonRunning" style="width: 100%; max-width: 100%;">
                                 <div  class="fs-16 mt-2">
                                     <div>Изминало време: [[ lessonRun.totalElapsed ]]</div>
                                     <div>Оставащо време: [[ lessonRun.totalRemaining ]]</div>
@@ -273,9 +273,42 @@
                                      :aria-valuenow="lessonRun.totalElapsedSeconds"
                                      aria-valuemin="0"
                                      :aria-valuemax="lessonRun.totalPlannedSeconds"
-                                     style="margin-right: 13px;">
+                                     style="width: 100%; max-width: 100%;">
                                     <div class="progress-bar bg-success"
                                          :style="{ width: lessonRun.totalPlannedSeconds > 0 ? Math.min(100, Math.floor((lessonRun.totalElapsedSeconds * 100) / lessonRun.totalPlannedSeconds)) + '%' : '0%' }">
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- Тайминг на текущо активната точка -->
+                            <li class="slide__category" style="margin-bottom: 0; margin-top: 10px;" v-if="isLessonRunning && pointTiming.pointNum != null">
+                                <span class="category-name">Текуща точка:</span>
+                            </li>
+                            <li class="slide" v-if="isLessonRunning && pointTiming.pointNum != null">
+                                <div class="side-menu__item d-flex align-items-center" style="min-width: 0; width: 100%;">
+                                    <i class="bi bi-stopwatch side-menu__icon flex-shrink-0"></i>
+                                    <div class="fs-14 fw-semibold text-truncate" style="min-width: 0; flex: 1;" :title="pointTiming.pointNum + '. ' + pointTiming.pointName">
+                                        [[ pointTiming.pointNum ]]. [[ pointTiming.pointName ]]
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="slide" v-if="isLessonRunning && pointTiming.pointNum != null" style="width: 100%; max-width: 100%;">
+                                <div class="fs-16 mt-2">
+                                    <div class="fs-13 text-muted" v-if="selectedPoint">
+                                        Планирано: [[ selectedPoint.duration ]] мин.
+                                    </div>
+                                    <div>Изминало време: [[ pointTiming.pointElapsed ]]</div>
+                                    <div>Оставащо време: [[ pointTiming.pointRemaining ]]</div>
+                                    <div v-if="pointTiming.pointOverdueSeconds > 0" class="text-danger">
+                                        Просрочено: [[ pointTiming.pointOverdue ]]
+                                    </div>
+                                </div>
+                                <div class="progress progress-sm mt-3" role="progressbar"
+                                     :aria-valuenow="pointTiming.pointElapsedSeconds"
+                                     aria-valuemin="0"
+                                     :aria-valuemax="pointTiming.pointPlannedSeconds"
+                                     style="width: 100%; max-width: 100%;">
+                                    <div class="progress-bar bg-info"
+                                         :style="{ width: pointTiming.pointPlannedSeconds > 0 ? Math.min(100, Math.floor((pointTiming.pointElapsedSeconds * 100) / pointTiming.pointPlannedSeconds)) + '%' : '0%' }">
                                     </div>
                                 </div>
                             </li>
@@ -382,69 +415,6 @@
                                                 </div>
                                                 <!-- съдържание и приложения -->
                                                 <ul class="list-unstyled projects-items-danger-list">
-                                                    <!-- Тайминг -->
-                                                    <li>
-                                                        <div class="card-1 custom-card" v-if="isSelectedPoint(p)" style="margin-bottom: 0;">
-                                                            <div class="card-header d-flex justify-content-between align-items-center"
-                                                                 style="padding-top: 0; padding-bottom: 5px;">
-                                                                    <div>
-                                                                        Тайминг:
-                                                                    </div>
-                                                                    <div class="d-flex gap-2" v-if="isSelectedPoint(p)">
-                                                                        <button type="button" class="btn btn-outline-primary btn-sm fs-12 label-btn"
-                                                                                v-if="showSelectedPointContent.timing"
-                                                                                @click="showSelectedPointContent.timing=false"
-                                                                                style="width: 90px;">
-                                                                            <i class="bi bi-eye-slash label-btn-icon me-2"></i>
-                                                                            Скрий&nbsp;&nbsp;&nbsp;
-                                                                        </button>
-                                                                        <button type="button" class="btn btn-outline-primary btn-sm fs-12 label-btn"
-                                                                                v-else
-                                                                                @click="showSelectedPointContent.timing=true"
-                                                                                style="width: 90px;">
-                                                                            <i class="bi bi-eye label-btn-icon me-2"></i>
-                                                                            Покажи
-                                                                        </button>
-                                                                    </div>
-                                                            </div>
-                                                            <div class="card-body" v-if="showSelectedPointContent.timing">
-                                                                <div class="mt-2 fs-12 note-content">
-                                                                    <div class="row g-1">
-                                                                        <div class="col-md-4 text-muted text-end">
-                                                                            Планирана продължителност:
-                                                                        </div>
-                                                                        <div class="col-md-8">
-                                                                            [[p.duration]] мин.
-                                                                        </div>
-
-                                                                        <div class="col-md-4 text-muted text-end">
-                                                                            Изминало време:
-                                                                        </div>
-                                                                        <div class="col-md-8">[[ pointTiming.pointElapsed
-                                                                            ]]
-                                                                        </div>
-
-                                                                        <div class="col-md-4 text-muted text-end">
-                                                                            Оставащо време:
-                                                                        </div>
-                                                                        <div class="col-md-8">[[ pointTiming.pointRemaining
-                                                                            ]]
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="progress progress-sm mt-3"
-                                                                         role="progressbar"
-                                                                         :aria-valuenow="pointTiming.pointElapsedSeconds"
-                                                                         aria-valuemin="0"
-                                                                         :aria-valuemax="pointTiming.pointPlannedSeconds">
-                                                                        <div class="progress-bar bg-info"
-                                                                             :style="{ width: pointTiming.pointPlannedSeconds > 0 ? Math.min(100, Math.floor((pointTiming.pointElapsedSeconds * 100) / pointTiming.pointPlannedSeconds)) + '%' : '0%' }">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <!-- Тайминг край -->
-                                                    </li>
                                                     <!-- Съдържание -->
                                                     <li>
                                                         <div class="card-1 custom-card" v-if="isSelectedPoint(p)" style="margin-bottom: 0;">
@@ -604,10 +574,34 @@
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="mt-2 fs-12 note-content" v-if="!t.collapsed">
-                                                                                    <div class="fw-bold">Условие:</div>
-                                                                                    <div v-html="sanitize(t.condition)"></div>
-                                                                                    <div class="fw-bold mt-2">Отговор:</div>
-                                                                                    <div v-html="sanitize(t.answer)"></div>
+                                                                                    <div class="mb-2">
+                                                                                        <div class="fw-bold mb-1">Условие:</div>
+                                                                                        <div v-html="sanitize(cleanTaskCondition(t.condition))"></div>
+                                                                                    </div>
+                                                                                    <div class="mt-3" v-if="t.answer">
+                                                                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                                                                            <div class="fw-bold">Отговор:</div>
+                                                                                            <div class="d-flex gap-2">
+                                                                                                <button type="button" class="btn btn-outline-primary btn-sm fs-12 label-btn"
+                                                                                                        v-if="t.showAnswer"
+                                                                                                        @click="t.showAnswer=false"
+                                                                                                        style="width: 90px;">
+                                                                                                    <i class="bi bi-eye-slash label-btn-icon me-2"></i>
+                                                                                                    Скрий
+                                                                                                </button>
+                                                                                                <button type="button" class="btn btn-outline-primary btn-sm fs-12 label-btn"
+                                                                                                        v-else
+                                                                                                        @click="t.showAnswer=true"
+                                                                                                        style="width: 90px;">
+                                                                                                    <i class="bi bi-eye label-btn-icon me-2"></i>
+                                                                                                    Покажи
+                                                                                                </button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div v-if="t.showAnswer" class="mt-2">
+                                                                                            <div v-html="sanitize(cleanTaskAnswer(t.answer))"></div>
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div><hr>
                                                                         </li>
@@ -941,10 +935,34 @@
                                                             </div>
                                                         </div>
                                                         <div class="mt-2 fs-12 note-content" v-if="!t.collapsed">
-                                                            <div class="fw-bold">Условие:</div>
-                                                            <div v-html="sanitize(t.condition)"></div>
-                                                            <div class="fw-bold mt-2">Отговор:</div>
-                                                            <div v-html="sanitize(t.answer)"></div>
+                                                            <div class="mb-2">
+                                                                <div class="fw-bold mb-1">Условие:</div>
+                                                                <div v-html="sanitize(cleanTaskCondition(t.condition))"></div>
+                                                            </div>
+                                                            <div class="mt-3" v-if="t.answer">
+                                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                                    <div class="fw-bold">Отговор:</div>
+                                                                    <div class="d-flex gap-2">
+                                                                        <button type="button" class="btn btn-outline-primary btn-sm fs-12 label-btn"
+                                                                                v-if="t.showAnswer"
+                                                                                @click="t.showAnswer=false"
+                                                                                style="width: 90px;">
+                                                                            <i class="bi bi-eye-slash label-btn-icon me-2"></i>
+                                                                            Скрий
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-outline-primary btn-sm fs-12 label-btn"
+                                                                                v-else
+                                                                                @click="t.showAnswer=true"
+                                                                                style="width: 90px;">
+                                                                            <i class="bi bi-eye label-btn-icon me-2"></i>
+                                                                            Покажи
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <div v-if="t.showAnswer" class="mt-2">
+                                                                    <div v-html="sanitize(cleanTaskAnswer(t.answer))"></div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div><hr>
                                                 </li>
