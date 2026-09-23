@@ -296,7 +296,7 @@ def session_attachment_upsert(request):
     except (TypeError, ValueError):
         return Response({'detail': 'Invalid id'}, status=status.HTTP_400_BAD_REQUEST)
 
-    data = request.data.copy() if hasattr(request.data, 'copy') else dict(request.data)
+    data = request.data.dict() if hasattr(request.data, 'dict') else dict(request.data)
     if data.get('point') in ['', 'null', 'None', None]:
         data['point'] = None
 
@@ -333,6 +333,10 @@ def session_attachment_upsert(request):
                     {'detail': f'Грешка при конвертиране на Markdown файл: {str(e)}'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
+        else:
+            name_val = (data.get('name') or '').strip()
+            if not name_val:
+                data['name'] = uploaded_file.name
 
     if attachment_id > 0:
         instance = get_object_or_404(SessionAttachment, id=attachment_id)

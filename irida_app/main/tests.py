@@ -132,6 +132,25 @@ class SessionAttachmentAPITest(TestCase):
         self.assertEqual(del_resp.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(SessionAttachment.objects.count(), 1)
 
+    def test_create_large_attachment(self):
+        # Test uploading a large file (~28MB) such as a PowerPoint presentation
+        large_content = b'0' * (28 * 1024 * 1024)
+        large_file = SimpleUploadedFile("Презентация_1.pptx", large_content, content_type="application/vnd.openxmlformats-officedocument.presentationml.presentation")
+        create_data = {
+            'id': 0,
+            'session': self.session.id,
+            'point': '',
+            'num': 1,
+            'name': 'Презентация 1',
+            'attachment_type': 'other',
+            'description': 'Голяма презентация',
+            'file': large_file
+        }
+        resp = self.client.post('/api/session-attachments/upsert/', create_data, format='multipart')
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp.data['original_filename'], 'Презентация_1.pptx')
+        self.assertTrue(resp.data['file_url'].endswith('.pptx'))
+
 
 class SchoolDayConfigAPITest(TestCase):
     def setUp(self):
@@ -1058,7 +1077,8 @@ class FileUploadAsciiSafetyTest(TestCase):
         self.assertEqual(resp2.data['original_filename'], 'Първи_файл.pdf')
 
         # Редакция с качване на нов файл -> original_filename се обновява
-        f2 = SimpleUploadedFile('Втори_файл.docx', b'DOCX content', content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+        f2 = SimpleUploadedFile('Втори_файл.docx', b'DOCX content',
+                                content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
         resp3 = self.client.post('/api/app-attachments/upsert/', {
             'id': att_id,
             'name': 'Втори файл',
@@ -1182,6 +1202,22 @@ class AppAttachmentAPITest(TestCase):
         resp_del_ok = self.client.delete(f'/api/app-attachments/{att1.id}/')
         self.assertEqual(resp_del_ok.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(AppAttachment.objects.filter(id=att1.id).exists())
+
+    def test_create_large_app_attachment(self):
+        self.client.force_authenticate(user=self.user1)
+        large_content = b'0' * (28 * 1024 * 1024)
+        large_file = SimpleUploadedFile("Голям_документ.pptx", large_content, content_type="application/vnd.openxmlformats-officedocument.presentationml.presentation")
+        resp = self.client.post('/api/app-attachments/upsert/', {
+            'id': 0,
+            'num': 1,
+            'name': '',
+            'description': 'Голяма презентация',
+            'file': large_file
+        }, format='multipart')
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp.data['original_filename'], 'Голям_документ.pptx')
+        self.assertEqual(resp.data['name'], 'Голям_документ.pptx')
+        self.assertTrue(resp.data['file_url'].endswith('.pptx'))
 
 
 class UserManagementAPITest(TestCase):

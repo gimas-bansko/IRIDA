@@ -157,3 +157,7 @@ STATICFILES_DIRS = [BASE_DIR / 'frontend']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Максимален размер на тялото на заявката и качваните файлове (по подразбиране 100MB)
+DATA_UPLOAD_MAX_MEMORY_SIZE = env.int('DATA_UPLOAD_MAX_MEMORY_SIZE', default=104857600)  # 100 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = env.int('FILE_UPLOAD_MAX_MEMORY_SIZE', default=10485760)   # 10 MB

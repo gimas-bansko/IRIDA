@@ -50,7 +50,7 @@ def app_attachment_upsert(request):
     except (TypeError, ValueError):
         return Response({'detail': 'Невалидно ID'}, status=status.HTTP_400_BAD_REQUEST)
 
-    data = request.data.copy() if hasattr(request.data, 'copy') else dict(request.data)
+    data = request.data.dict() if hasattr(request.data, 'dict') else dict(request.data)
     target_format = (request.data.get('target_format') or '').strip().lower()
 
     if 'is_system' in data:
@@ -89,6 +89,9 @@ def app_attachment_upsert(request):
                 )
         else:
             data['original_filename'] = uploaded_file.name
+            name_val = (data.get('name') or '').strip()
+            if not name_val:
+                data['name'] = uploaded_file.name
 
     user = request.user if request.user.is_authenticated else None
 
