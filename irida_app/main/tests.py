@@ -994,6 +994,9 @@ class FileUploadAsciiSafetyTest(TestCase):
         app_att = AppAttachment.objects.get(id=resp.data['id'])
 
         self.assertEqual(app_att.name, 'Наредба №5 на МОН')
+        self.assertEqual(app_att.original_filename, 'Наредба_№5_на_МОН.pdf')
+        self.assertEqual(resp.data['original_filename'], 'Наредба_№5_на_МОН.pdf')
+        self.assertEqual(resp.data['file_name'], 'Наредба_№5_на_МОН.pdf')
         self.assertTrue(app_att.file.name.startswith('app_attachments/'))
         self.assertTrue(app_att.file.name.isascii())
         self.assertTrue(re.search(r'app_attachments/[a-f0-9]{32}\.pdf$', app_att.file.name))
@@ -1001,6 +1004,74 @@ class FileUploadAsciiSafetyTest(TestCase):
         # Почистване
         if app_att.file and default_storage.exists(app_att.file.name):
             default_storage.delete(app_att.file.name)
+
+    def test_app_attachment_markdown_conversion_original_filename(self):
+        md_file = SimpleUploadedFile(
+            'Урок_1_Въведение.md',
+            b'# Introduction\nSome markdown text.',
+            content_type='text/markdown'
+        )
+
+        resp = self.client.post('/api/app-attachments/upsert/', {
+            'name': 'Урок 1',
+            'file': md_file,
+            'num': 2,
+            'target_format': 'docx'
+        }, format='multipart')
+
+        self.assertEqual(resp.status_code, 201)
+        app_att = AppAttachment.objects.get(id=resp.data['id'])
+
+        self.assertEqual(app_att.original_filename, 'Урок_1_Въведение.docx')
+        self.assertEqual(resp.data['original_filename'], 'Урок_1_Въведение.docx')
+        self.assertEqual(resp.data['file_name'], 'Урок_1_Въведение.docx')
+        self.assertTrue(app_att.file.name.startswith('app_attachments/'))
+        self.assertTrue(app_att.file.name.endswith('.docx'))
+
+        # Почистване
+        if app_att.file and default_storage.exists(app_att.file.name):
+            default_storage.delete(app_att.file.name)
+
+    def test_app_attachment_update_preserves_or_updates_original_filename(self):
+        self.client.force_authenticate(user=self.user)
+        f1 = SimpleUploadedFile('Първи_файл.pdf', b'%PDF-1.4 content', content_type='application/pdf')
+        resp1 = self.client.post('/api/app-attachments/upsert/', {
+            'name': 'Първи файл',
+            'file': f1,
+            'num': 1
+        }, format='multipart')
+        self.assertEqual(resp1.status_code, 201)
+        att_id = resp1.data['id']
+        att = AppAttachment.objects.get(id=att_id)
+        self.assertEqual(att.original_filename, 'Първи_файл.pdf')
+
+        # Редакция само на описанието без качване на нов файл -> original_filename се запазва
+        resp2 = self.client.post('/api/app-attachments/upsert/', {
+            'id': att_id,
+            'name': 'Първи файл - редактиран',
+            'description': 'Ново описание'
+        }, format='multipart')
+        self.assertEqual(resp2.status_code, 200)
+        att.refresh_from_db()
+        self.assertEqual(att.name, 'Първи файл - редактиран')
+        self.assertEqual(att.original_filename, 'Първи_файл.pdf')
+        self.assertEqual(resp2.data['original_filename'], 'Първи_файл.pdf')
+
+        # Редакция с качване на нов файл -> original_filename се обновява
+        f2 = SimpleUploadedFile('Втори_файл.docx', b'DOCX content', content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+        resp3 = self.client.post('/api/app-attachments/upsert/', {
+            'id': att_id,
+            'name': 'Втори файл',
+            'file': f2
+        }, format='multipart')
+        self.assertEqual(resp3.status_code, 200)
+        att.refresh_from_db()
+        self.assertEqual(att.original_filename, 'Втори_файл.docx')
+        self.assertEqual(resp3.data['original_filename'], 'Втори_файл.docx')
+
+        # Почистване
+        if att.file and default_storage.exists(att.file.name):
+            default_storage.delete(att.file.name)
 
     def test_image_upload_with_cyrillic_filename(self):
         image_file = SimpleUploadedFile(
@@ -1111,3 +1182,151 @@ class AppAttachmentAPITest(TestCase):
         resp_del_ok = self.client.delete(f'/api/app-attachments/{att1.id}/')
         self.assertEqual(resp_del_ok.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(AppAttachment.objects.filter(id=att1.id).exists())
+
+
+class UserManagementAPITest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.admin = User.objects.create_superuser(username='admin_main', password='adminpass')
+        self.client.force_authenticate(user=self.admin)
+
+    def test_create_administrator_user(self):
+        data = {
+            'username': 'admin_new',
+            'password': 'password123',
+            'first_name': 'Администратор',
+            'last_name': 'Системен',
+            'email': 'admin_new@example.com',
+            'userprofile': {
+                'gender': True,
+                'school': 0,
+                'access_level': 3,
+                'session_screen': 1,
+                'session': 0,
+                'grade': 8,
+                'section': 'a',
+                'speciality': 0,
+                'subject': 0,
+            }
+        }
+        resp = self.client.post('/api/users/', data, format='json')
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        user = User.objects.get(username='admin_new')
+        self.assertEqual(user.first_name, 'Администратор')
+        self.assertEqual(user.userprofile.access_level, 3)
+        self.assertEqual(user.userprofile.section, 'а')
+        self.assertIsNone(user.userprofile.school)
+
+    def test_update_user(self):
+        u = User.objects.create_user(username='teacher_edit', first_name='Иван', last_name='Петров')
+        u.userprofile.access_level = 4
+        u.userprofile.save()
+
+        data = {
+            'username': 'teacher_edit',
+            'first_name': 'Иван (Редактиран)',
+            'last_name': 'Петров',
+            'userprofile': {
+                'gender': True,
+                'access_level': 4,
+                'section': 'b',
+            }
+        }
+        resp = self.client.put(f'/api/users/{u.id}/', data, format='json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        u.refresh_from_db()
+        self.assertEqual(u.first_name, 'Иван (Редактиран)')
+        self.assertEqual(u.userprofile.section, 'б')
+
+    def test_school_specialties_for_zero_school(self):
+        resp = self.client.get('/api/schools/0/specialties/')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp.data, [])
+
+    def test_user_list_view_with_school_zero_and_admin_level(self):
+        resp = self.client.get('/api/users-list/0/1/')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertTrue(len(resp.data) >= 1)
+
+        # Test school 0 level 3 includes level 3 admin
+        resp_admin = self.client.get('/api/users-list/0/3/')
+        self.assertEqual(resp_admin.status_code, status.HTTP_200_OK)
+        admin_ids = [u['id'] for u in resp_admin.data]
+        self.assertIn(self.admin.id, admin_ids)
+
+
+class SessionAttachmentOriginalFilenameTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_superuser(username='admin_att', password='adminpass')
+        self.client.force_authenticate(user=self.user)
+
+        self.school = School.objects.create(short_name='ТУ', full_name='Тестово училище', city='София')
+        self.subject = Subject.objects.create(name='Информатика')
+        self.session = Session.objects.create(course=self.subject, num=1, name='Урок 1')
+
+    def test_session_attachment_upload_cyrillic_filename(self):
+        cyrillic_content = b'Sample content in file'
+        uploaded_file = SimpleUploadedFile(
+            'Учебен_материал_тест.pdf',
+            cyrillic_content,
+            content_type='application/pdf'
+        )
+
+        resp = self.client.post('/api/session-attachments/upsert/', {
+            'id': 0,
+            'session': self.session.id,
+            'name': 'Материал по теория',
+            'attachment_type': 'theory',
+            'file': uploaded_file
+        }, format='multipart')
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp.data['original_filename'], 'Учебен_материал_тест.pdf')
+        self.assertEqual(resp.data['file_name'], 'Учебен_материал_тест.pdf')
+
+        att = SessionAttachment.objects.get(id=resp.data['id'])
+        self.assertEqual(att.original_filename, 'Учебен_материал_тест.pdf')
+
+    def test_session_attachment_markdown_conversion_original_filename(self):
+        md_content = b'# Heading\nText'
+        uploaded_file = SimpleUploadedFile(
+            'План_урок_1.md',
+            md_content,
+            content_type='text/markdown'
+        )
+
+        resp = self.client.post('/api/session-attachments/upsert/', {
+            'id': 0,
+            'session': self.session.id,
+            'name': 'План',
+            'attachment_type': 'theory',
+            'target_format': 'docx',
+            'file': uploaded_file
+        }, format='multipart')
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp.data['original_filename'], 'План_урок_1.docx')
+        self.assertTrue(resp.data['file_name'].endswith('.docx'))
+
+    def test_session_attachment_edit_without_new_file_preserves_original_filename(self):
+        att = SessionAttachment.objects.create(
+            session=self.session,
+            num=1,
+            name='Старо заглавие',
+            original_filename='Оригинално_име.pdf',
+            attachment_type='other'
+        )
+
+        resp = self.client.post('/api/session-attachments/upsert/', {
+            'id': att.id,
+            'session': self.session.id,
+            'name': 'Ново заглавие',
+            'attachment_type': 'other'
+        }, format='multipart')
+
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        att.refresh_from_db()
+        self.assertEqual(att.name, 'Ново заглавие')
+        self.assertEqual(att.original_filename, 'Оригинално_име.pdf')
+        self.assertEqual(resp.data['original_filename'], 'Оригинално_име.pdf')

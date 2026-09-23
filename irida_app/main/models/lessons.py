@@ -119,9 +119,22 @@ class SessionAttachment(models.Model):
                               null=True, blank=True, related_name='point_attachments')
     num = models.SmallIntegerField('№', default=1, validators=[MinValueValidator(1)])
     name = models.CharField('Име / Заглавие', max_length=200, blank=True, default='')
+    original_filename = models.CharField(
+        'Оригинално име на файла',
+        max_length=255,
+        blank=True,
+        default='',
+        help_text='Оригинално име на качения файл преди промяна'
+    )
     attachment_type = models.CharField('Тип', max_length=20, choices=ATTACHMENT_TYPE_CHOICES, default=OTHER)
     file = models.FileField('Файл', upload_to=session_attachment_upload_path, blank=True, null=True)
     description = models.TextField('Коментар / Описание', default='', blank=True, help_text='Коментар или описание на файла')
+
+    def save(self, *args, **kwargs):
+        if not self.original_filename and self.file and self.file.name:
+            import os
+            self.original_filename = os.path.basename(self.file.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.id} {self.name or (self.file.name if self.file else "")}'

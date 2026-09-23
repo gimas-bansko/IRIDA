@@ -57,14 +57,19 @@ admin.site.register(SessionTopic)
 admin.site.register(SessionPoint)
 admin.site.register(SessionNote)
 admin.site.register(SessionTask)
-admin.site.register(SessionAttachment)
+@admin.register(SessionAttachment)
+class SessionAttachmentAdmin(admin.ModelAdmin):
+    list_display = ('num', 'name', 'original_filename', 'attachment_type', 'session', 'point', 'file')
+    list_filter = ('attachment_type', 'session')
+    search_fields = ('name', 'original_filename', 'description')
+    ordering = ('session', 'num', 'id')
 
 
 @admin.register(AppAttachment)
 class AppAttachmentAdmin(admin.ModelAdmin):
-    list_display = ('num', 'name', 'file', 'is_system', 'created_by', 'created_at', 'updated_at')
+    list_display = ('num', 'name', 'original_filename', 'file', 'is_system', 'created_by', 'created_at', 'updated_at')
     list_filter = ('is_system', 'created_by')
-    search_fields = ('name', 'description')
+    search_fields = ('name', 'original_filename', 'description')
     ordering = ('num', 'id')
 
 

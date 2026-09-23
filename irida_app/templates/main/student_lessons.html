@@ -241,9 +241,28 @@
                                                                 <small class="text-muted ms-2" v-if="att.point">
                                                                     ([[ getPointNumNameById(session, att.point) ]])
                                                                 </small>
-                                                                <a :href="att.file_url" target="_blank" v-if="att.file_url" class="badge bg-primary-transparent text-primary fs-12 text-decoration-none ms-2">
-                                                                    <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ att.file_name || 'Свали файл' ]]
-                                                                </a>
+                                                                <span class="ms-2 dropdown d-inline-block" v-if="att.file_url">
+                                                                    <button class="badge bg-primary-transparent text-primary fs-12 border-0 dropdown-toggle text-decoration-none"
+                                                                            type="button"
+                                                                            :id="'fileDropdownTheory' + session.id + '_' + att.id"
+                                                                            data-bs-toggle="dropdown"
+                                                                            aria-expanded="false"
+                                                                            style="cursor: pointer;">
+                                                                        <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ att.original_filename || att.file_name || 'Файл' ]]
+                                                                    </button>
+                                                                    <ul class="dropdown-menu shadow-sm" :aria-labelledby="'fileDropdownTheory' + session.id + '_' + att.id">
+                                                                        <li>
+                                                                            <a class="dropdown-item d-flex align-items-center py-2 fs-12" :href="att.file_url" target="_blank">
+                                                                                <i class="bi bi-box-arrow-up-right me-2 text-primary"></i>Отвори в браузъра
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(att.file_url, att.original_filename || att.file_name)">
+                                                                                <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </span>
                                                             </div>
                                                             <div v-if="att.description">
                                                                 <button class="btn btn-outline-primary btn-sm label-btn" v-show="!att.collapsed" @click="att.collapsed = true">
@@ -356,9 +375,28 @@
                                                                 <small class="text-muted ms-2" v-if="att.point">
                                                                     ([[ getPointNumNameById(session, att.point) ]])
                                                                 </small>
-                                                                <a :href="att.file_url" target="_blank" v-if="att.file_url" class="badge bg-secondary-transparent text-secondary fs-12 text-decoration-none ms-2">
-                                                                    <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ att.file_name || 'Свали файл' ]]
-                                                                </a>
+                                                                <span class="ms-2 dropdown d-inline-block" v-if="att.file_url">
+                                                                    <button class="badge bg-secondary-transparent text-secondary fs-12 border-0 dropdown-toggle text-decoration-none"
+                                                                            type="button"
+                                                                            :id="'fileDropdownOther' + session.id + '_' + att.id"
+                                                                            data-bs-toggle="dropdown"
+                                                                            aria-expanded="false"
+                                                                            style="cursor: pointer;">
+                                                                        <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ att.original_filename || att.file_name || 'Файл' ]]
+                                                                    </button>
+                                                                    <ul class="dropdown-menu shadow-sm" :aria-labelledby="'fileDropdownOther' + session.id + '_' + att.id">
+                                                                        <li>
+                                                                            <a class="dropdown-item d-flex align-items-center py-2 fs-12" :href="att.file_url" target="_blank">
+                                                                                <i class="bi bi-box-arrow-up-right me-2 text-primary"></i>Отвори в браузъра
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(att.file_url, att.original_filename || att.file_name)">
+                                                                                <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </span>
                                                             </div>
                                                             <div v-if="att.description">
                                                                 <button class="btn btn-outline-secondary btn-sm label-btn" v-show="!att.collapsed" @click="att.collapsed = true">

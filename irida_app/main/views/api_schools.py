@@ -25,6 +25,8 @@ class SchoolDetailAPIView(generics.RetrieveAPIView):
 # специалности за определено по id училище
 class SchoolSpecialtiesView(APIView):
     def get(self, request, school_id, *args, **kwargs):
+        if school_id == 0:
+            return Response([], status=status.HTTP_200_OK)
         try:
             # Намираме училището по зададеното ID
             school = School.objects.get(id=school_id)

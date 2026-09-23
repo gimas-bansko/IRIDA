@@ -74,19 +74,33 @@ const App = {
         loadSpecialties(logged_user){
             // чета списъка на всички специалности които са от същото училище, като влезлия потребител
             const vm = this;
+            if (!logged_user || !logged_user.school || logged_user.school === 0) {
+                vm.listOfSpecialties = [];
+                return;
+            }
             axios.get('/api/schools/'+logged_user.school+'/specialties/')
                 .then(function(response){
-                    vm.listOfSpecialties = response.data
+                    vm.listOfSpecialties = response.data || [];
                 })
+                .catch(function(err){
+                    vm.listOfSpecialties = [];
+                });
         },
         loadSchool(logged_user){
             // чета списъка на всички специалности които са от същото училище, като влезлия потребител
             const vm = this;
+            if (!logged_user || !logged_user.school || logged_user.school === 0) {
+                vm.school = {};
+                return;
+            }
             axios.get('/api/schools/'+logged_user.school+'/')
                 .then(function(response){
-                    vm.school = response.data
+                    vm.school = response.data || {};
                     console.log(vm.school)
                 })
+                .catch(function(err){
+                    vm.school = {};
+                });
         },
         loadUserDetails(){
             const vm = this;

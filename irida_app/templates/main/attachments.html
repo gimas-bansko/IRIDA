@@ -100,7 +100,7 @@
                                                         data-bs-toggle="dropdown"
                                                         aria-expanded="false"
                                                         style="cursor: pointer;">
-                                                    <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.file_name || 'Файл' ]]
+                                                    <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.original_filename || a.file_name || 'Файл' ]]
                                                 </button>
                                                 <ul class="dropdown-menu shadow-sm" :aria-labelledby="'fileDropdownApp' + a.id">
                                                     <li>
@@ -109,7 +109,7 @@
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(a.file_url, a.file_name)">
+                                                        <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(a.file_url, a.original_filename || a.file_name)">
                                                             <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
                                                         </a>
                                                     </li>
@@ -202,7 +202,7 @@
                                             data-bs-toggle="dropdown"
                                             aria-expanded="false"
                                             style="cursor: pointer;">
-                                        <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ attachmentForm.file_name || 'Файл' ]]
+                                        <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ attachmentForm.original_filename || attachmentForm.file_name || 'Файл' ]]
                                     </button>
                                     <ul class="dropdown-menu shadow-sm" aria-labelledby="formFileDropdownApp">
                                         <li>
@@ -211,7 +211,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(attachmentForm.file_url, attachmentForm.file_name)">
+                                            <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(attachmentForm.file_url, attachmentForm.original_filename || attachmentForm.file_name)">
                                                 <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
                                             </a>
                                         </li>

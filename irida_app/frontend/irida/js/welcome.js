@@ -81,10 +81,17 @@ const App = {
         loadSchool(logged_user){
             // чета всички данни за училището на влезлия потребител
             const vm = this;
+            if (!logged_user || !logged_user.school || logged_user.school === 0) {
+                vm.school = {};
+                return;
+            }
             axios.get('/api/schools/'+logged_user.school+'/')
                 .then(function(response){
                     vm.school = response.data
                 })
+                .catch(function(){
+                    vm.school = {};
+                });
         },
         loadUserDetails(){
             const vm = this;
@@ -98,10 +105,17 @@ const App = {
         loadSpecialties(logged_user){
             // чета списъка на всички специалности които са от същото училище, като влезлия потребител
             const vm = this;
+            if (!logged_user || !logged_user.school || logged_user.school === 0) {
+                vm.listOfSpecialties = [];
+                return;
+            }
             axios.get('/api/schools/'+logged_user.school+'/specialties/')
                 .then(function(response){
-                    vm.listOfSpecialties = response.data
+                    vm.listOfSpecialties = response.data || [];
                 })
+                .catch(function(){
+                    vm.listOfSpecialties = [];
+                });
         },
         newSpecialty(){
             this.specialty.id = 0

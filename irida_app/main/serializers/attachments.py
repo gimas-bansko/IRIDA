@@ -23,6 +23,7 @@ class AppAttachmentSerializer(serializers.ModelSerializer):
             'file',
             'file_url',
             'file_name',
+            'original_filename',
             'description',
             'is_system',
             'created_by',
@@ -33,7 +34,8 @@ class AppAttachmentSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_at', 'updated_at', 'created_by']
         extra_kwargs = {
-            'file': {'required': False, 'allow_null': True}
+            'file': {'required': False, 'allow_null': True},
+            'original_filename': {'required': False, 'allow_blank': True},
         }
 
     def get_file_url(self, obj):
@@ -45,6 +47,8 @@ class AppAttachmentSerializer(serializers.ModelSerializer):
         return None
 
     def get_file_name(self, obj):
+        if obj.original_filename:
+            return obj.original_filename
         if obj.file:
             return os.path.basename(obj.file.name)
         return ''

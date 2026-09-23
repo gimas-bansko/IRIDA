@@ -83,15 +83,23 @@ const App = {
                     vm.loadSpecialties(vm.user);
                     vm.loadUsers();
                 })
+                .catch(function (error) {
+                    console.error('Грешка при зареждане на потребителски контекст:', error);
+                });
         },
         loadUsers(){
             const vm = this;
-            axios.get('/api/users-list/'+vm.user.school+'/'+vm.user.user_level_num+'/')
+            const schoolId = (vm.user && vm.user.school) ? vm.user.school : 0;
+            const levelNum = (vm.user && vm.user.user_level_num) ? vm.user.user_level_num : 1;
+            axios.get('/api/users-list/' + schoolId + '/' + levelNum + '/')
                 .then(function(response){
-                    vm.listOfUsers = response.data;
+                    vm.listOfUsers = response.data || [];
                     vm.recount();
                     vm.buildGroupedStudents();
                 })
+                .catch(function(error) {
+                    console.error('Грешка при зареждане на потребители:', error);
+                });
         },
         recount(){
             const vm = this;
@@ -109,11 +117,18 @@ const App = {
         loadSpecialties(logged_user) {
             // чета списъка на всички специалности които са от същото училище, като влезлия потребител
             const vm = this;
+            if (!logged_user || !logged_user.school || logged_user.school === 0) {
+                vm.listOfSpecialties = [];
+                return;
+            }
             axios.get('/api/schools/' + logged_user.school + '/specialties/')
                 .then(function (response) {
-                    vm.listOfSpecialties = response.data
-                    console.log(vm.listOfSpecialties)
+                    vm.listOfSpecialties = response.data || [];
                 })
+                .catch(function (error) {
+                    console.error('Грешка при зареждане на специалности:', error);
+                    vm.listOfSpecialties = [];
+                });
         },
         buildGroupedStudents() {
             const groups = {};
@@ -141,8 +156,10 @@ const App = {
                 for (const s of sectionKeys) {
                     // сортиране на учениците по фамилия, после собствено име
                     sortedSections[s] = sections[s].slice().sort((u1, u2) => {
-                        const a = `${u1.first_name || ''} ${u1.last_name || ''} ${u1.userprofile.speciality.specialty_name || ''}`.trim();
-                        const b = `${u2.first_name || ''} ${u2.last_name || ''} ${u2.userprofile.speciality.specialty_name || ''}`.trim();
+                        const spec1 = u1.userprofile?.speciality?.specialty_name || '';
+                        const spec2 = u2.userprofile?.speciality?.specialty_name || '';
+                        const a = `${u1.first_name || ''} ${u1.last_name || ''} ${spec1}`.trim();
+                        const b = `${u2.first_name || ''} ${u2.last_name || ''} ${spec2}`.trim();
                         return a.localeCompare(b, 'bg');
                     });
                 }
@@ -178,12 +195,12 @@ const App = {
                 last_name: '',
                 userprofile: {
                     gender: true,
-                    school: this.user.school || null,  // по подразбиране същото училище
+                    school: this.user.school ? this.user.school : null,  // по подразбиране същото училище
                     access_level: 5,
                     session_screen: 1,
                     session: null,
                     grade: 8,
-                    section: 'a',
+                    section: 'а',
                     speciality: null,
                     subject: null,
                 }
@@ -206,42 +223,73 @@ const App = {
             // парола не пълним
             const up = row.userprofile || {};
             this.form.userprofile.gender = up.gender ?? true;
-            this.form.userprofile.school = up.school?.id || this.user.school || null;
+            this.form.userprofile.school = (typeof up.school === 'object' ? up.school?.id : up.school) || (this.user.school ? this.user.school : null);
             this.form.userprofile.access_level = up.access_level ?? 5;
             this.form.userprofile.session_screen = up.session_screen ?? 1;
-            this.form.userprofile.session = up.session?.id || null;
-            this.form.userprofile.grade = up.grade;
-            this.form.userprofile.section = up.section;
-            this.form.userprofile.speciality = up.speciality?.id || null;
-            this.form.userprofile.subject = up.subject?.id || null;
+            this.form.userprofile.session = (typeof up.session === 'object' ? up.session?.id : up.session) || null;
+            this.form.userprofile.grade = up.grade ?? 8;
+            this.form.userprofile.section = up.section || 'а';
+            this.form.userprofile.speciality = (typeof up.speciality === 'object' ? up.speciality?.id : up.speciality) || null;
+            this.form.userprofile.subject = (typeof up.subject === 'object' ? up.subject?.id : up.subject) || null;
             this.setEditMode(lvl)
         },
         saveUser(){
-            this.clearEditMode()
             const vm = this;
             const payload = JSON.parse(JSON.stringify(vm.form));
             // Ако сме в edit и паролата е празна -> премахни, да не се сменя
             if (vm.formMode === 'edit' && (!payload.password || payload.password.trim() === '')) {
                 delete payload.password;
             }
+            delete payload.password2;
 
-            if (vm.formMode === 'create') {
-                axios.post('/api/users/', payload, {
-                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN}
-                })
-                    .then(() => {
-                        vm.loadUsers();
-                        vm.resetForm();
-                    })
-            } else {
-                axios.put(`/api/users/${vm.formUserId}/`, payload, {
-                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN}
-                })
-                    .then(() => {
-                        vm.loadUsers();
-                        vm.resetForm();
-                    })
+            if (payload.userprofile) {
+                for (const k of ['school', 'speciality', 'subject', 'session']) {
+                    if (payload.userprofile[k] === 0 || payload.userprofile[k] === '0' || payload.userprofile[k] === '') {
+                        payload.userprofile[k] = null;
+                    }
+                }
             }
+
+            const request = (vm.formMode === 'create')
+                ? axios.post('/api/users/', payload, {
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN}
+                })
+                : axios.put(`/api/users/${vm.formUserId}/`, payload, {
+                    headers: {'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN}
+                });
+
+            request
+                .then(() => {
+                    vm.clearEditMode();
+                    vm.loadUsers();
+                    vm.resetForm();
+                })
+                .catch((error) => {
+                    console.error('Грешка при запис на потребител:', error);
+                    let errorDetail = error.response?.data?.detail || error.response?.data?.error;
+                    if (!errorDetail && error.response?.data && typeof error.response.data === 'object') {
+                        const messages = [];
+                        const extractErrors = (obj) => {
+                            for (const [k, v] of Object.entries(obj)) {
+                                if (Array.isArray(v)) {
+                                    messages.push(`${k}: ${v.join(', ')}`);
+                                } else if (typeof v === 'object' && v !== null) {
+                                    extractErrors(v);
+                                } else {
+                                    messages.push(`${k}: ${v}`);
+                                }
+                            }
+                        };
+                        extractErrors(error.response.data);
+                        if (messages.length > 0) {
+                            errorDetail = messages.join('\n');
+                        }
+                    }
+                    if (!errorDetail) {
+                        errorDetail = 'Възникна грешка при записа на потребителя.';
+                    }
+                    alert(errorDetail);
+                });
         },
         deleteUser(row){
             const vm = this;

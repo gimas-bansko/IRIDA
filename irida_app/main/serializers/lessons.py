@@ -87,7 +87,7 @@ class SessionAttachmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SessionAttachment
-        fields = ['id', 'session', 'point', 'num', 'name', 'attachment_type', 'file', 'file_url', 'file_name', 'description']
+        fields = ['id', 'session', 'point', 'num', 'name', 'attachment_type', 'file', 'file_url', 'file_name', 'original_filename', 'description']
         extra_kwargs = {
             'file': {'required': False, 'allow_null': True}
         }
@@ -101,6 +101,8 @@ class SessionAttachmentSerializer(serializers.ModelSerializer):
         return None
 
     def get_file_name(self, obj):
+        if obj.original_filename:
+            return obj.original_filename
         if obj.file:
             return os.path.basename(obj.file.name)
         return ''

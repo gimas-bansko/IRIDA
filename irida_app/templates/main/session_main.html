@@ -661,10 +661,27 @@
                                                                                     <div>
                                                                                         <span class="badge bg-secondary me-2">[[ theoryIndex + 1 ]]</span>
                                                                                         <strong>[[ a.name ]]</strong>
-                                                                                        <span class="ms-3" v-if="a.file_url">
-                                                                                            <a :href="a.file_url" target="_blank" class="badge bg-primary-transparent text-primary fs-12 text-decoration-none">
-                                                                                                <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.file_name || 'Свали файл' ]]
-                                                                                            </a>
+                                                                                        <span class="ms-3 dropdown d-inline-block" v-if="a.file_url">
+                                                                                            <button class="badge bg-primary-transparent text-primary fs-12 border-0 dropdown-toggle text-decoration-none"
+                                                                                                    type="button"
+                                                                                                    :id="'fileDropdownPointTheory' + (p.id || index) + '_' + a.id"
+                                                                                                    data-bs-toggle="dropdown"
+                                                                                                    aria-expanded="false"
+                                                                                                    style="cursor: pointer;">
+                                                                                                <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.original_filename || a.file_name || 'Файл' ]]
+                                                                                            </button>
+                                                                                            <ul class="dropdown-menu shadow-sm" :aria-labelledby="'fileDropdownPointTheory' + (p.id || index) + '_' + a.id">
+                                                                                                <li>
+                                                                                                    <a class="dropdown-item d-flex align-items-center py-2 fs-12" :href="a.file_url" target="_blank">
+                                                                                                        <i class="bi bi-box-arrow-up-right me-2 text-primary"></i>Отвори в браузъра
+                                                                                                    </a>
+                                                                                                </li>
+                                                                                                <li>
+                                                                                                    <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(a.file_url, a.original_filename || a.file_name)">
+                                                                                                        <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
+                                                                                                    </a>
+                                                                                                </li>
+                                                                                            </ul>
                                                                                         </span>
                                                                                     </div>
                                                                                     <div class="d-flex gap-2" v-if="a.description">
@@ -733,10 +750,27 @@
                                                                                     <div>
                                                                                         <span class="badge bg-secondary me-2">[[ attIndex + 1 ]]</span>
                                                                                         <strong>[[ a.name ]]</strong>
-                                                                                        <span class="ms-3" v-if="a.file_url">
-                                                                                            <a :href="a.file_url" target="_blank" class="badge bg-primary-transparent text-primary fs-12 text-decoration-none">
-                                                                                                <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.file_name || 'Свали файл' ]]
-                                                                                            </a>
+                                                                                        <span class="ms-3 dropdown d-inline-block" v-if="a.file_url">
+                                                                                            <button class="badge bg-secondary-transparent text-secondary fs-12 border-0 dropdown-toggle text-decoration-none"
+                                                                                                    type="button"
+                                                                                                    :id="'fileDropdownPointOther' + (p.id || index) + '_' + a.id"
+                                                                                                    data-bs-toggle="dropdown"
+                                                                                                    aria-expanded="false"
+                                                                                                    style="cursor: pointer;">
+                                                                                                <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.original_filename || a.file_name || 'Файл' ]]
+                                                                                            </button>
+                                                                                            <ul class="dropdown-menu shadow-sm" :aria-labelledby="'fileDropdownPointOther' + (p.id || index) + '_' + a.id">
+                                                                                                <li>
+                                                                                                    <a class="dropdown-item d-flex align-items-center py-2 fs-12" :href="a.file_url" target="_blank">
+                                                                                                        <i class="bi bi-box-arrow-up-right me-2 text-primary"></i>Отвори в браузъра
+                                                                                                    </a>
+                                                                                                </li>
+                                                                                                <li>
+                                                                                                    <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(a.file_url, a.original_filename || a.file_name)">
+                                                                                                        <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
+                                                                                                    </a>
+                                                                                                </li>
+                                                                                            </ul>
                                                                                         </span>
                                                                                     </div>
                                                                                     <div class="d-flex gap-2" v-if="a.description">
@@ -956,18 +990,35 @@
                                         <div v-else>
                                             <ul class="list-unstyled projects-items-primary-list">
                                                 <li v-for="(a, theoryIndex) in generalTheoryAttachments" :key="a.id || theoryIndex">
-                                                    <div class="mb-3">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <span class="badge bg-secondary me-2">[[ theoryIndex + 1 ]]</span>
-                                                                <strong>[[ a.name ]]</strong>
-                                                                <span class="ms-3" v-if="a.file_url">
-                                                                    <a :href="a.file_url" target="_blank" class="badge bg-primary-transparent text-primary fs-12 text-decoration-none">
-                                                                        <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.file_name || 'Свали файл' ]]
-                                                                    </a>
-                                                                </span>
-                                                            </div>
-                                                            <div class="d-flex gap-2" v-if="a.description">
+                                                                                    <div class="mb-3">
+                                                                                        <div class="d-flex justify-content-between align-items-center">
+                                                                                            <div>
+                                                                                                <span class="badge bg-secondary me-2">[[ theoryIndex + 1 ]]</span>
+                                                                                                <strong>[[ a.name ]]</strong>
+                                                                                                <span class="ms-3 dropdown d-inline-block" v-if="a.file_url">
+                                                                                                    <button class="badge bg-primary-transparent text-primary fs-12 border-0 dropdown-toggle text-decoration-none"
+                                                                                                            type="button"
+                                                                                                            :id="'fileDropdownGenTheory' + (a.id || theoryIndex)"
+                                                                                                            data-bs-toggle="dropdown"
+                                                                                                            aria-expanded="false"
+                                                                                                            style="cursor: pointer;">
+                                                                                                        <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.original_filename || a.file_name || 'Файл' ]]
+                                                                                                    </button>
+                                                                                                    <ul class="dropdown-menu shadow-sm" :aria-labelledby="'fileDropdownGenTheory' + (a.id || theoryIndex)">
+                                                                                                        <li>
+                                                                                                            <a class="dropdown-item d-flex align-items-center py-2 fs-12" :href="a.file_url" target="_blank">
+                                                                                                                <i class="bi bi-box-arrow-up-right me-2 text-primary"></i>Отвори в браузъра
+                                                                                                            </a>
+                                                                                                        </li>
+                                                                                                        <li>
+                                                                                                            <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(a.file_url, a.original_filename || a.file_name)">
+                                                                                                                <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
+                                                                                                            </a>
+                                                                                                        </li>
+                                                                                                    </ul>
+                                                                                                </span>
+                                                                                            </div>
+                                                                                            <div class="d-flex gap-2" v-if="a.description">
                                                                 <button class="btn btn-outline-primary btn-sm label-btn" v-show="!a.collapsed" @click="a.collapsed=!a.collapsed">
                                                                     <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
                                                                     покажи по-малко
@@ -1025,18 +1076,35 @@
                                         <div v-else>
                                             <ul class="list-unstyled projects-items-primary-list">
                                                 <li v-for="(a, attIndex) in generalOtherAttachments" :key="a.id || attIndex">
-                                                    <div class="mb-3">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <span class="badge bg-secondary me-2">[[ attIndex + 1 ]]</span>
-                                                                <strong>[[ a.name ]]</strong>
-                                                                <span class="ms-3" v-if="a.file_url">
-                                                                    <a :href="a.file_url" target="_blank" class="badge bg-primary-transparent text-primary fs-12 text-decoration-none">
-                                                                        <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.file_name || 'Свали файл' ]]
-                                                                    </a>
-                                                                </span>
-                                                            </div>
-                                                            <div class="d-flex gap-2" v-if="a.description">
+                                                                                    <div class="mb-3">
+                                                                                        <div class="d-flex justify-content-between align-items-center">
+                                                                                            <div>
+                                                                                                <span class="badge bg-secondary me-2">[[ attIndex + 1 ]]</span>
+                                                                                                <strong>[[ a.name ]]</strong>
+                                                                                                <span class="ms-3 dropdown d-inline-block" v-if="a.file_url">
+                                                                                                    <button class="badge bg-secondary-transparent text-secondary fs-12 border-0 dropdown-toggle text-decoration-none"
+                                                                                                            type="button"
+                                                                                                            :id="'fileDropdownGenOther' + (a.id || attIndex)"
+                                                                                                            data-bs-toggle="dropdown"
+                                                                                                            aria-expanded="false"
+                                                                                                            style="cursor: pointer;">
+                                                                                                        <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.original_filename || a.file_name || 'Файл' ]]
+                                                                                                    </button>
+                                                                                                    <ul class="dropdown-menu shadow-sm" :aria-labelledby="'fileDropdownGenOther' + (a.id || attIndex)">
+                                                                                                        <li>
+                                                                                                            <a class="dropdown-item d-flex align-items-center py-2 fs-12" :href="a.file_url" target="_blank">
+                                                                                                                <i class="bi bi-box-arrow-up-right me-2 text-primary"></i>Отвори в браузъра
+                                                                                                            </a>
+                                                                                                        </li>
+                                                                                                        <li>
+                                                                                                            <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(a.file_url, a.original_filename || a.file_name)">
+                                                                                                                <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
+                                                                                                            </a>
+                                                                                                        </li>
+                                                                                                    </ul>
+                                                                                                </span>
+                                                                                            </div>
+                                                                                            <div class="d-flex gap-2" v-if="a.description">
                                                                 <button class="btn btn-outline-primary btn-sm label-btn" v-show="!a.collapsed" @click="a.collapsed=!a.collapsed">
                                                                     <i class="bi bi-arrows-collapse label-btn-icon me-2"></i>
                                                                     покажи по-малко

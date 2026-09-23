@@ -204,6 +204,30 @@ const App = {
                     vm.listOfSessions = [];
                     vm.loading = false;
                 });
+        },
+        downloadFile(fileUrl, fileName) {
+            if (!fileUrl) return;
+            axios.get(fileUrl, { responseType: 'blob' })
+                .then(function(response) {
+                    const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.setAttribute('download', fileName || 'attachment');
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    window.URL.revokeObjectURL(blobUrl);
+                })
+                .catch(function(error) {
+                    console.error('Грешка при сваляне на файла:', error);
+                    const link = document.createElement('a');
+                    link.href = fileUrl;
+                    link.setAttribute('download', fileName || '');
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                });
         }
     },
     created() {

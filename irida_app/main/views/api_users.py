@@ -16,13 +16,13 @@ class UserListView(APIView):
         # Извличане на параметрите за филтриране от заявката
         school_id = sc
         level = lvl
-        # Филтриране на потребителите
-        users = User.objects.filter(
-            userprofile__school=school_id,
-            userprofile__access_level__gt=level,
-        )
+        qs = User.objects.all().select_related('userprofile')
+        if school_id and school_id != 0:
+            qs = qs.filter(userprofile__school=school_id)
+        if level:
+            qs = qs.filter(userprofile__access_level__gte=level)
         # Сериализиране на резултатите
-        serializer = UserReadSerializer(users, many=True)
+        serializer = UserReadSerializer(qs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

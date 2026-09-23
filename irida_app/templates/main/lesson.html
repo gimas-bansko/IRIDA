@@ -755,10 +755,27 @@
                                                     <span class="badge bg-secondary me-2">[[ a.num ]]</span>
                                                     <strong>[[ a.name ]]</strong>
                                                     <small class="text-muted ms-2"> <span v-if="a.point">([[ getPointNumNameById(a.point)]])</span></small>
-                                                    <span class="ms-3" v-if="a.file_url">
-                                                        <a :href="a.file_url" target="_blank" class="badge bg-primary-transparent text-primary fs-12 text-decoration-none">
-                                                            <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.file_name || 'Свали файл' ]]
-                                                        </a>
+                                                    <span class="ms-3 dropdown d-inline-block" v-if="a.file_url">
+                                                        <button class="badge bg-primary-transparent text-primary fs-12 border-0 dropdown-toggle text-decoration-none"
+                                                                type="button"
+                                                                :id="'fileDropdownTheory' + a.id"
+                                                                data-bs-toggle="dropdown"
+                                                                aria-expanded="false"
+                                                                style="cursor: pointer;">
+                                                            <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.original_filename || a.file_name || 'Файл' ]]
+                                                        </button>
+                                                        <ul class="dropdown-menu shadow-sm" :aria-labelledby="'fileDropdownTheory' + a.id">
+                                                            <li>
+                                                                <a class="dropdown-item d-flex align-items-center py-2 fs-12" :href="a.file_url" target="_blank">
+                                                                    <i class="bi bi-box-arrow-up-right me-2 text-primary"></i>Отвори в браузъра
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(a.file_url, a.original_filename || a.file_name)">
+                                                                    <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
+                                                                </a>
+                                                            </li>
+                                                        </ul>
                                                     </span>
                                                 </div>
                                             </div>
@@ -843,7 +860,25 @@
                                     <div class="col-12">
                                         <label class="form-label">Прикачен файл</label>
                                         <div v-if="attachmentForm.file_url" class="mb-2 text-muted fs-12">
-                                            Текущ файл: <a :href="attachmentForm.file_url" target="_blank" class="fw-semibold">[[ attachmentForm.file_name ]]</a>
+                                            Текущ файл:
+                                            <span class="dropdown d-inline-block">
+                                                <a href="javascript:void(0)" class="fw-semibold text-primary dropdown-toggle text-decoration-none"
+                                                   id="fileDropdownCurrentTheory" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    [[ attachmentForm.original_filename || attachmentForm.file_name ]]
+                                                </a>
+                                                <ul class="dropdown-menu shadow-sm" aria-labelledby="fileDropdownCurrentTheory">
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center py-2 fs-12" :href="attachmentForm.file_url" target="_blank">
+                                                            <i class="bi bi-box-arrow-up-right me-2 text-primary"></i>Отвори в браузъра
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(attachmentForm.file_url, attachmentForm.original_filename || attachmentForm.file_name)">
+                                                            <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </span>
                                         </div>
                                         <input type="file" class="form-control" @change="onAttachmentFileChange">
 
@@ -922,10 +957,27 @@
                                                     <span class="badge bg-secondary me-2">[[ a.num ]]</span>
                                                     <strong>[[ a.name ]]</strong>
                                                     <small class="text-muted ms-2"> <span v-if="a.point">([[ getPointNumNameById(a.point)]])</span></small>
-                                                    <span class="ms-3" v-if="a.file_url">
-                                                        <a :href="a.file_url" target="_blank" class="badge bg-primary-transparent text-primary fs-12 text-decoration-none">
-                                                            <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.file_name || 'Свали файл' ]]
-                                                        </a>
+                                                    <span class="ms-3 dropdown d-inline-block" v-if="a.file_url">
+                                                        <button class="badge bg-primary-transparent text-primary fs-12 border-0 dropdown-toggle text-decoration-none"
+                                                                type="button"
+                                                                :id="'fileDropdownOther' + a.id"
+                                                                data-bs-toggle="dropdown"
+                                                                aria-expanded="false"
+                                                                style="cursor: pointer;">
+                                                            <i class="bi bi-file-earmark-arrow-down me-1"></i>[[ a.original_filename || a.file_name || 'Файл' ]]
+                                                        </button>
+                                                        <ul class="dropdown-menu shadow-sm" :aria-labelledby="'fileDropdownOther' + a.id">
+                                                            <li>
+                                                                <a class="dropdown-item d-flex align-items-center py-2 fs-12" :href="a.file_url" target="_blank">
+                                                                    <i class="bi bi-box-arrow-up-right me-2 text-primary"></i>Отвори в браузъра
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(a.file_url, a.original_filename || a.file_name)">
+                                                                    <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
+                                                                </a>
+                                                            </li>
+                                                        </ul>
                                                     </span>
                                                 </div>
                                             </div>
@@ -1010,7 +1062,25 @@
                                     <div class="col-12">
                                         <label class="form-label">Прикачен файл</label>
                                         <div v-if="attachmentForm.file_url" class="mb-2 text-muted fs-12">
-                                            Текущ файл: <a :href="attachmentForm.file_url" target="_blank" class="fw-semibold">[[ attachmentForm.file_name ]]</a>
+                                            Текущ файл:
+                                            <span class="dropdown d-inline-block">
+                                                <a href="javascript:void(0)" class="fw-semibold text-primary dropdown-toggle text-decoration-none"
+                                                   id="fileDropdownCurrentOther" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    [[ attachmentForm.original_filename || attachmentForm.file_name ]]
+                                                </a>
+                                                <ul class="dropdown-menu shadow-sm" aria-labelledby="fileDropdownCurrentOther">
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center py-2 fs-12" :href="attachmentForm.file_url" target="_blank">
+                                                            <i class="bi bi-box-arrow-up-right me-2 text-primary"></i>Отвори в браузъра
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center py-2 fs-12" href="javascript:void(0)" @click="downloadFile(attachmentForm.file_url, attachmentForm.original_filename || attachmentForm.file_name)">
+                                                            <i class="bi bi-download me-2 text-success"></i>Свали на компютъра
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </span>
                                         </div>
                                         <input type="file" class="form-control" @change="onAttachmentFileChange">
 

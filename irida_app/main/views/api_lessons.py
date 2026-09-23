@@ -305,6 +305,7 @@ def session_attachment_upsert(request):
     # Проверка за качен файл и евентуално преобразуване от Markdown към docx / pdf
     uploaded_file = request.FILES.get('file')
     if uploaded_file and uploaded_file.name:
+        data['original_filename'] = uploaded_file.name
         fname_lower = uploaded_file.name.lower()
         if fname_lower.endswith(('.md', '.markdown')) and target_format in ('docx', 'pdf'):
             try:
@@ -318,6 +319,7 @@ def session_attachment_upsert(request):
                     content_type=content_type
                 )
                 data['file'] = converted_file
+                data['original_filename'] = new_filename
 
                 # Актуализиране на наименованието на материала, ако е било със старо разширение или празно
                 name_val = (data.get('name') or '').strip()
@@ -336,6 +338,7 @@ def session_attachment_upsert(request):
         instance = get_object_or_404(SessionAttachment, id=attachment_id)
         if 'file' not in request.FILES and ('file' not in data or not data['file']):
             data.pop('file', None)
+            data.pop('original_filename', None)
         serializer = SessionAttachmentSerializer(instance, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()

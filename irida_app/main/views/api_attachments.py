@@ -73,6 +73,7 @@ def app_attachment_upsert(request):
                     content_type=content_type
                 )
                 data['file'] = converted_file
+                data['original_filename'] = new_filename
 
                 # Актуализиране на наименованието на материала, ако е било със старо разширение или празно
                 name_val = (data.get('name') or '').strip()
@@ -86,6 +87,8 @@ def app_attachment_upsert(request):
                     {'detail': f'Грешка при конвертиране на Markdown файл: {str(e)}'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
+        else:
+            data['original_filename'] = uploaded_file.name
 
     user = request.user if request.user.is_authenticated else None
 
@@ -99,6 +102,7 @@ def app_attachment_upsert(request):
 
         if 'file' not in request.FILES and ('file' not in data or not data['file']):
             data.pop('file', None)
+            data.pop('original_filename', None)
         serializer = AppAttachmentSerializer(instance, data=data, partial=True, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()

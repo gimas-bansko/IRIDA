@@ -35,6 +35,7 @@ const App = {
                 name: '',
                 file_url: null,
                 file_name: '',
+                original_filename: '',
                 description: '',
                 is_system: false,
                 target_format: 'docx',
@@ -93,6 +94,7 @@ const App = {
                 name: '',
                 file_url: null,
                 file_name: '',
+                original_filename: '',
                 description: '',
                 is_system: false,
                 target_format: 'docx',
@@ -113,6 +115,7 @@ const App = {
                 name: a.name,
                 file_url: a.file_url,
                 file_name: a.file_name,
+                original_filename: a.original_filename || a.file_name || '',
                 description: a.description || '',
                 is_system: !!a.is_system,
                 target_format: 'docx',
@@ -138,13 +141,13 @@ const App = {
 
                 if (isMd) {
                     this.attachmentForm.target_format = 'docx';
-                    if (!this.attachmentForm.name || this.attachmentForm.name === this.attachmentForm.file_name) {
+                    if (!this.attachmentForm.name || this.attachmentForm.name === this.attachmentForm.file_name || this.attachmentForm.name === this.attachmentForm.original_filename) {
                         const baseName = file.name.replace(/\.(md|markdown)$/i, '');
                         this.attachmentForm.name = baseName + '.docx';
                     }
                 } else {
                     this.attachmentForm.target_format = 'original';
-                    if (!this.attachmentForm.name || this.attachmentForm.name === this.attachmentForm.file_name) {
+                    if (!this.attachmentForm.name || this.attachmentForm.name === this.attachmentForm.file_name || this.attachmentForm.name === this.attachmentForm.original_filename) {
                         this.attachmentForm.name = file.name;
                     }
                 }
