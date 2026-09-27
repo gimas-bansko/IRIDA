@@ -14,6 +14,20 @@ const App = {
             studentSubjects: [],
             listOfSessions: [],
             loading: false,
+            feedbackModal: {
+                show: false,
+            },
+            selectedSessionForFeedback: null,
+            feedbackForm: {
+                session_id: null,
+                first_name: '',
+                last_name: '',
+                attachment_type: 'task',
+                file: null,
+                errorMessage: '',
+                successMessage: '',
+                isSubmitting: false,
+            },
         };
     },
     computed: {
@@ -93,7 +107,33 @@ const App = {
         },
         getOtherAttachments(session) {
             if (!session || !Array.isArray(session.session_attachments)) return [];
-            return session.session_attachments.filter(a => a.attachment_type === 'other');
+            return session.session_attachments.filter(a => a.attachment_type !== 'theory' && (a.is_student_visible === undefined || a.is_student_visible === true || a.is_student_visible === 'true'));
+        },
+        attachmentTypeText(type) {
+            switch (type) {
+                case 'theory': return 'Теория';
+                case 'worksheet': return 'Работен лист';
+                case 'rubric': return 'Оценъчна карта / Чек-лист';
+                case 'exit_ticket': return 'Изходен билет';
+                case 'task': return 'Задача';
+                case 'test': return 'Тест';
+                case 'self_study': return 'Самостоятелна работа';
+                case 'other': return 'Други';
+                default: return 'Приложение';
+            }
+        },
+        attachmentTypeBadgeClass(type) {
+            switch (type) {
+                case 'theory': return 'bg-primary-transparent text-primary';
+                case 'worksheet': return 'bg-info-transparent text-info';
+                case 'rubric': return 'bg-warning-transparent text-warning';
+                case 'exit_ticket': return 'bg-purple-transparent text-purple';
+                case 'task': return 'bg-success-transparent text-success';
+                case 'test': return 'bg-danger-transparent text-danger';
+                case 'self_study': return 'bg-teal-transparent text-teal';
+                case 'other': return 'bg-secondary-transparent text-secondary';
+                default: return 'bg-light text-muted';
+            }
         },
         getPointNumNameById(session, pointId) {
             if (!session || !pointId || !Array.isArray(session.session_points)) return '';
@@ -227,6 +267,98 @@ const App = {
                     document.body.appendChild(link);
                     link.click();
                     link.remove();
+                });
+        },
+        openFeedbackModal(session) {
+            this.selectedSessionForFeedback = session;
+            let firstName = this.user?.first_name || '';
+            let lastName = this.user?.last_name || '';
+            if (!firstName && !lastName && this.user?.user_name) {
+                const parts = this.user.user_name.trim().split(/\s+/);
+                firstName = parts[0] || '';
+                lastName = parts.slice(1).join(' ') || '';
+            }
+            this.feedbackForm = {
+                session_id: session.id,
+                first_name: firstName,
+                last_name: lastName,
+                attachment_type: 'task',
+                file: null,
+                errorMessage: '',
+                successMessage: '',
+                isSubmitting: false,
+            };
+            if (this.$refs.feedbackFileInput) {
+                this.$refs.feedbackFileInput.value = '';
+            }
+            this.feedbackModal.show = true;
+        },
+        closeFeedbackModal() {
+            this.feedbackModal.show = false;
+            this.selectedSessionForFeedback = null;
+            this.feedbackForm.errorMessage = '';
+            this.feedbackForm.successMessage = '';
+            this.feedbackForm.file = null;
+            if (this.$refs.feedbackFileInput) {
+                this.$refs.feedbackFileInput.value = '';
+            }
+        },
+        onFeedbackFileChange(event) {
+            const files = event.target.files;
+            if (files && files.length > 0) {
+                this.feedbackForm.file = files[0];
+            } else {
+                this.feedbackForm.file = null;
+            }
+        },
+        submitFeedback() {
+            const vm = this;
+            if (!vm.feedbackForm.first_name || !vm.feedbackForm.first_name.trim()) {
+                vm.feedbackForm.errorMessage = 'Моля, въведете име.';
+                return;
+            }
+            if (!vm.feedbackForm.last_name || !vm.feedbackForm.last_name.trim()) {
+                vm.feedbackForm.errorMessage = 'Моля, въведете фамилия.';
+                return;
+            }
+            if (!vm.feedbackForm.file) {
+                vm.feedbackForm.errorMessage = 'Моля, изберете файл за качване.';
+                return;
+            }
+
+            const fullName = `${vm.feedbackForm.first_name.trim()} ${vm.feedbackForm.last_name.trim()}`.trim();
+            const formData = new FormData();
+            formData.append('id', 0);
+            formData.append('session', vm.feedbackForm.session_id);
+            formData.append('name', fullName);
+            formData.append('attachment_type', vm.feedbackForm.attachment_type || 'task');
+            formData.append('is_student_visible', 'false');
+            formData.append('description', `Обратна връзка: ${fullName}`);
+            formData.append('file', vm.feedbackForm.file);
+
+            vm.feedbackForm.isSubmitting = true;
+            vm.feedbackForm.errorMessage = '';
+            vm.feedbackForm.successMessage = '';
+
+            const headers = {
+                'Content-Type': 'multipart/form-data',
+            };
+            if (window.CSRF_TOKEN) {
+                headers['X-CSRFToken'] = window.CSRF_TOKEN;
+            }
+
+            axios.post('/api/session-attachments/upsert/', formData, { headers: headers })
+                .then(function(response) {
+                    vm.feedbackForm.isSubmitting = false;
+                    vm.feedbackForm.successMessage = 'Обратната връзка и файлът бяха изпратени успешно!';
+                    setTimeout(function() {
+                        vm.closeFeedbackModal();
+                    }, 1500);
+                })
+                .catch(function(error) {
+                    vm.feedbackForm.isSubmitting = false;
+                    console.error('Грешка при изпращане на обратна връзка:', error);
+                    vm.feedbackForm.errorMessage = error.response?.data?.detail || error.response?.data?.error || 'Възникна грешка при качване на файла. Моля, опитайте отново.';
                 });
         }
     },

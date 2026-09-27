@@ -170,6 +170,8 @@
                 '{продължителност}': context.duration_hours || context.duration || '',
                 '{продължителност_минути}': context.duration_mins || '',
                 '{цели}': context.goals || '',
+                '{социално_емоционални_цели}': context.social_emotional_goals || context.sel_goals || '',
+                '{сео_цели}': context.social_emotional_goals || context.sel_goals || '',
                 '{фокус}': context.focus || '',
                 '{точки}': context.points || context.plan_points || '',
                 '{клас}': context.grade ? (String(context.grade).includes('клас') ? context.grade : `${context.grade} клас`) : '',

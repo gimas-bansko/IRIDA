@@ -19,13 +19,13 @@ from .curriculum import TopicSerializer
 class SessionWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
-        fields = ['id', 'course', 'num', 'name', 'focus', 'goals', 'duration', 'session_type', 'basic_level', 'collapsed']
+        fields = ['id', 'course', 'num', 'name', 'focus', 'goals', 'social_emotional_goals', 'duration', 'session_type', 'basic_level', 'collapsed']
 
 
 class SessionMiniSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
-        fields = ('id', 'num', 'name', 'focus', 'goals', 'duration', 'session_type', 'basic_level')
+        fields = ('id', 'num', 'name', 'focus', 'goals', 'social_emotional_goals', 'duration', 'session_type', 'basic_level')
 
 
 class SessionSerializer(serializers.ModelSerializer):
@@ -87,7 +87,7 @@ class SessionAttachmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SessionAttachment
-        fields = ['id', 'session', 'point', 'num', 'name', 'attachment_type', 'file', 'file_url', 'file_name', 'original_filename', 'description']
+        fields = ['id', 'session', 'point', 'num', 'name', 'attachment_type', 'is_student_visible', 'file', 'file_url', 'file_name', 'original_filename', 'description']
         extra_kwargs = {
             'file': {'required': False, 'allow_null': True}
         }
@@ -117,7 +117,7 @@ class SessionReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
         fields = [
-            'id', 'course', 'num', 'name', 'focus', 'goals', 'duration',
+            'id', 'course', 'num', 'name', 'focus', 'goals', 'social_emotional_goals', 'duration',
             'session_type', 'basic_level', 'collapsed',
             'session_topics', 'session_tasks', 'session_attachments', 'session_points'
         ]

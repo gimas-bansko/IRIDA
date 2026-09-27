@@ -43,6 +43,8 @@ class UserDataExpandedAPIView(APIView):
             'user_id': user.id,
             'user_nick': user.username,
             'user_name': f'{user.first_name} {user.last_name}'.strip(),
+            'first_name': user.first_name,
+            'last_name': user.last_name,
             'user_level_num': up.access_level,
             'user_level_text': USER_LEVEL[up.access_level - 1][1] if up.access_level else '',
             'profile': UserProfileExpandedSerializer(up).data,

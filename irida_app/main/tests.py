@@ -257,6 +257,137 @@ class StudentPortalTest(TestCase):
         self.assertEqual(len(session_data['session_attachments']), 1)
         self.assertEqual(session_data['session_attachments'][0]['attachment_type'], 'theory')
 
+    def test_student_attachment_visibility_filtering(self):
+        # 1. Създаваме разнообразни приложения:
+        # self.attachment е 'Теория 1' (theory, is_student_visible=True по подразбиране)
+        att_other_visible = SessionAttachment.objects.create(
+            session=self.session, num=2, name='Приложение видимо',
+            attachment_type='other', is_student_visible=True
+        )
+        att_other_hidden = SessionAttachment.objects.create(
+            session=self.session, num=3, name='Приложение скрито',
+            attachment_type='other', is_student_visible=False
+        )
+        att_theory_flagged_false = SessionAttachment.objects.create(
+            session=self.session, num=4, name='Теория 2',
+            attachment_type='theory', is_student_visible=False
+        )
+
+        # 2. Проверка за ученик през sessions-with-topics
+        student_client = APIClient()
+        student_client.force_authenticate(user=self.student_user)
+        resp_student = student_client.get(f'/api/subjects/{self.subject.id}/sessions-with-topics/')
+        self.assertEqual(resp_student.status_code, 200)
+        student_att_names = [a['name'] for a in resp_student.data[0]['session_attachments']]
+        self.assertIn('Теория 1', student_att_names)
+        self.assertIn('Приложение видимо', student_att_names)
+        self.assertIn('Теория 2', student_att_names)  # Теорията е по подразбиране видима за учениците
+        self.assertNotIn('Приложение скрито', student_att_names)
+        self.assertEqual(len(student_att_names), 3)
+
+        # 3. Проверка за ученик през direct session attachments endpoint
+        resp_student_direct = student_client.get(f'/api/sessions/{self.session.id}/attachments/')
+        self.assertEqual(resp_student_direct.status_code, 200)
+        direct_names = [a['name'] for a in resp_student_direct.data]
+        self.assertIn('Теория 1', direct_names)
+        self.assertIn('Приложение видимо', direct_names)
+        self.assertIn('Теория 2', direct_names)
+        self.assertNotIn('Приложение скрито', direct_names)
+        self.assertEqual(len(direct_names), 3)
+
+        # 4. Проверка за учител през sessions-with-topics
+        teacher_client = APIClient()
+        teacher_client.force_authenticate(user=self.teacher_user)
+        resp_teacher = teacher_client.get(f'/api/subjects/{self.subject.id}/sessions-with-topics/')
+        self.assertEqual(resp_teacher.status_code, 200)
+        teacher_att_names = [a['name'] for a in resp_teacher.data[0]['session_attachments']]
+        self.assertEqual(len(teacher_att_names), 4)
+        self.assertIn('Приложение скрито', teacher_att_names)
+
+        # 5. Проверка за учител през direct session attachments endpoint
+        resp_teacher_direct = teacher_client.get(f'/api/sessions/{self.session.id}/attachments/')
+        self.assertEqual(resp_teacher_direct.status_code, 200)
+        self.assertEqual(len(resp_teacher_direct.data), 4)
+
+    def test_session_attachment_upsert_is_student_visible_flag(self):
+        client = APIClient()
+        client.force_authenticate(user=self.teacher_user)
+
+        # Създаване на скрито приложение с 'false' низ
+        resp = client.post('/api/session-attachments/upsert/', {
+            'session': self.session.id,
+            'name': 'Само за учители',
+            'attachment_type': 'other',
+            'is_student_visible': 'false'
+        })
+        self.assertEqual(resp.status_code, 201)
+        att_id = resp.data['id']
+        att = SessionAttachment.objects.get(id=att_id)
+        self.assertFalse(att.is_student_visible)
+        self.assertFalse(resp.data['is_student_visible'])
+
+        # Редакция на същото приложение до видимо с 'true'
+        resp_update = client.post('/api/session-attachments/upsert/', {
+            'id': att_id,
+            'is_student_visible': 'true'
+        })
+        self.assertEqual(resp_update.status_code, 200)
+        att.refresh_from_db()
+        self.assertTrue(att.is_student_visible)
+        self.assertTrue(resp_update.data['is_student_visible'])
+
+    def test_student_feedback_upload_attachment(self):
+        student_client = APIClient()
+        student_client.force_authenticate(user=self.student_user)
+
+        test_file = SimpleUploadedFile("zadacha_reshenie.docx", b"Word content", content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        full_name = f"{self.student_user.first_name} {self.student_user.last_name}"
+
+        # 1. Изпращане на обратна връзка от ученика като задача
+        resp = student_client.post('/api/session-attachments/upsert/', {
+            'id': 0,
+            'session': self.session.id,
+            'name': full_name,
+            'attachment_type': 'task',
+            'is_student_visible': 'false',
+            'description': f'Обратна връзка: {full_name}',
+            'file': test_file
+        }, format='multipart')
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        att_id = resp.data['id']
+        att = SessionAttachment.objects.get(id=att_id)
+        self.assertEqual(att.session, self.session)
+        self.assertIsNone(att.point)
+        self.assertEqual(att.name, full_name)
+        self.assertEqual(att.attachment_type, 'task')
+        self.assertFalse(att.is_student_visible)
+        self.assertEqual(att.description, f'Обратна връзка: {full_name}')
+
+        # 2. Проверка, че прикаченият файл НЕ е видим за ученика в sessions-with-topics
+        resp_student_sessions = student_client.get(f'/api/subjects/{self.subject.id}/sessions-with-topics/')
+        self.assertEqual(resp_student_sessions.status_code, 200)
+        student_attachments = resp_student_sessions.data[0]['session_attachments']
+        student_att_ids = [a['id'] for a in student_attachments]
+        self.assertNotIn(att_id, student_att_ids)
+
+        # 3. Проверка, че прикаченият файл Е видим за учителя
+        teacher_client = APIClient()
+        teacher_client.force_authenticate(user=self.teacher_user)
+        resp_teacher = teacher_client.get(f'/api/sessions/{self.session.id}/attachments/')
+        self.assertEqual(resp_teacher.status_code, 200)
+        teacher_att_ids = [a['id'] for a in resp_teacher.data]
+        self.assertIn(att_id, teacher_att_ids)
+
+    def test_user_data_expanded_includes_first_and_last_name(self):
+        client = APIClient()
+        client.force_authenticate(user=self.student_user)
+        resp = client.get('/api/context/expanded/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.data['first_name'], 'Иван')
+        self.assertEqual(resp.data['last_name'], 'Иванов')
+        self.assertEqual(resp.data['user_name'], 'Иван Иванов')
+
 
 class AIPromptAPITest(TestCase):
     def setUp(self):
@@ -308,6 +439,16 @@ class AIPromptAPITest(TestCase):
         }, format='json')
         self.assertEqual(resp_update.status_code, 200)
         self.assertEqual(resp_update.data['title'], 'Мой обновен промпт')
+
+    def test_lesson_main_seeded_micro_prompts(self):
+        resp = self.client.get('/api/prompts/?page_key=lesson_main')
+        self.assertEqual(resp.status_code, 200)
+        titles = [p['title'] for p in resp.data]
+        self.assertIn('Критериална матрица, чек-лист за самооценка и изходен билет (Exit Ticket)', titles)
+        self.assertIn('Диференцирани работни карти и карти за подкрепа при затруднения (Scaffolding)', titles)
+        self.assertIn('Социално-емоционални цели, екипни роли и правила за лабораторно занятие', titles)
+        self.assertIn('Предварителна оценка на урок (Стандарт за качество / Оценъчна карта)', titles)
+        self.assertIn('Попълване на бланка за планиране на урок (ПГЕЕ / .docx шаблон)', titles)
 
     def test_delete_user_prompt(self):
         prompt = AIPrompt.objects.create(
@@ -1366,3 +1507,92 @@ class SessionAttachmentOriginalFilenameTest(TestCase):
         self.assertEqual(att.name, 'Ново заглавие')
         self.assertEqual(att.original_filename, 'Оригинално_име.pdf')
         self.assertEqual(resp.data['original_filename'], 'Оригинално_име.pdf')
+
+
+class Step3FeaturesTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.teacher_user = User.objects.create_user(username='teacher_step3', password='password123')
+        self.teacher_user.userprofile.access_level = 4
+        self.teacher_user.userprofile.save()
+        self.client.force_authenticate(user=self.teacher_user)
+
+        self.subject = Subject.objects.create(name='Интернет програмиране')
+        self.session = Session.objects.create(
+            course=self.subject,
+            num=1,
+            name='HTTP протокол',
+            goals='Разбиране на клиент-сървър архитектура',
+            social_emotional_goals='Сътрудничество при работа по двойки',
+            duration=2,
+            session_type='НЗ'
+        )
+
+    def test_session_social_emotional_goals_crud(self):
+        # Read session
+        resp = self.client.get(f'/api/sessions/{self.session.id}/')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp.data['social_emotional_goals'], 'Сътрудничество при работа по двойки')
+
+        # Update session
+        update_payload = {
+            'course': self.subject.id,
+            'num': 1,
+            'name': 'HTTP протокол (обновен)',
+            'goals': 'Академични цели',
+            'social_emotional_goals': 'Упоритост при откриване на грешки в заявките',
+            'duration': 2,
+            'session_type': 'НЗ',
+            'basic_level': True,
+            'collapsed': False
+        }
+        resp_update = self.client.put(f'/api/sessions/{self.session.id}/', update_payload, format='json')
+        self.assertEqual(resp_update.status_code, status.HTTP_200_OK)
+        self.session.refresh_from_db()
+        self.assertEqual(self.session.social_emotional_goals, 'Упоритост при откриване на грешки в заявките')
+
+    def test_session_attachment_new_types_and_visibility(self):
+        # Create worksheet, rubric, exit_ticket
+        ws = SessionAttachment.objects.create(
+            session=self.session,
+            num=1,
+            name='Работен лист за HTTP методи',
+            attachment_type=SessionAttachment.WORKSHEET,
+            is_student_visible=True
+        )
+        rubric = SessionAttachment.objects.create(
+            session=self.session,
+            num=2,
+            name='Критериална карта за взаимна проверка',
+            attachment_type=SessionAttachment.RUBRIC,
+            is_student_visible=False
+        )
+        exit_ticket = SessionAttachment.objects.create(
+            session=self.session,
+            num=3,
+            name='Изходен билет',
+            attachment_type=SessionAttachment.EXIT_TICKET,
+            is_student_visible=True
+        )
+
+        # Teacher sees all 3
+        resp_teacher = self.client.get(f'/api/sessions/{self.session.id}/attachments/')
+        self.assertEqual(resp_teacher.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(resp_teacher.data), 3)
+
+        # Student user
+        student_user = User.objects.create_user(username='student_step3', password='password123')
+        student_user.userprofile.access_level = STUDENT
+        student_user.userprofile.save()
+
+        student_client = APIClient()
+        student_client.force_authenticate(user=student_user)
+
+        # Student should only see worksheet and exit_ticket (not rubric because is_student_visible=False)
+        resp_student = student_client.get(f'/api/sessions/{self.session.id}/attachments/')
+        self.assertEqual(resp_student.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(resp_student.data), 2)
+        types_visible = [att['attachment_type'] for att in resp_student.data]
+        self.assertIn(SessionAttachment.WORKSHEET, types_visible)
+        self.assertIn(SessionAttachment.EXIT_TICKET, types_visible)
+        self.assertNotIn(SessionAttachment.RUBRIC, types_visible)

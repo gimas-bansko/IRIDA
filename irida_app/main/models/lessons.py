@@ -17,6 +17,12 @@ class Session(models.Model):
     name = models.CharField('Име', max_length=200, help_text='Общо име на урока')
     focus = models.TextField('Фокус', default='', blank=True, help_text='Фокус(основни акценти на урока)')
     goals = models.TextField('Цели', default='', blank=True, help_text='Оосновни цели на урока')
+    social_emotional_goals = models.TextField(
+        'Социално-емоционални цели',
+        default='',
+        blank=True,
+        help_text='Социално-емоционални цели / умения на 21. век'
+    )
     duration = models.SmallIntegerField('Продължителност', default=1, validators=[ MinValueValidator(1), MaxValueValidator(7)])
     session_type = models.CharField('Вид на урочната единица', default='', max_length=3, blank=True,
                                   choices=[('НЗ', 'Нови знания'), ('УПР', 'Упражнение'), ('ПК', 'Проверка и контрол'),
@@ -105,12 +111,24 @@ class SessionTask(models.Model):
         verbose_name_plural = 'Задачи към точка от план'
 
 
-# Занятие - Приложения (прикачени файлове - теория и други)
+# Занятие - Приложения (прикачени файлове - теория, работни листове, рубрики и други)
 class SessionAttachment(models.Model):
     THEORY = 'theory'
+    WORKSHEET = 'worksheet'
+    RUBRIC = 'rubric'
+    EXIT_TICKET = 'exit_ticket'
+    TASK = 'task'
+    TEST = 'test'
+    SELF_STUDY = 'self_study'
     OTHER = 'other'
     ATTACHMENT_TYPE_CHOICES = [
         (THEORY, 'Теория'),
+        (WORKSHEET, 'Работен лист'),
+        (RUBRIC, 'Оценъчна карта / Чек-лист'),
+        (EXIT_TICKET, 'Изходен билет'),
+        (TASK, 'Задача'),
+        (TEST, 'Тест'),
+        (SELF_STUDY, 'Самостоятелна работа'),
         (OTHER, 'Други'),
     ]
 
@@ -127,6 +145,7 @@ class SessionAttachment(models.Model):
         help_text='Оригинално име на качения файл преди промяна'
     )
     attachment_type = models.CharField('Тип', max_length=20, choices=ATTACHMENT_TYPE_CHOICES, default=OTHER)
+    is_student_visible = models.BooleanField('Видимо за учениците', default=True, help_text='Указва дали файлът е видим за учениците')
     file = models.FileField('Файл', upload_to=session_attachment_upload_path, blank=True, null=True)
     description = models.TextField('Коментар / Описание', default='', blank=True, help_text='Коментар или описание на файла')
 

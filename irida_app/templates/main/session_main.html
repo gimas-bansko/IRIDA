@@ -744,6 +744,9 @@
                                                                                     <div>
                                                                                         <span class="badge bg-secondary me-2">[[ attIndex + 1 ]]</span>
                                                                                         <strong>[[ a.name ]]</strong>
+                                                                                        <span class="badge ms-2 fs-11" :class="attachmentTypeBadgeClass(a.attachment_type)" v-if="a.attachment_type">
+                                                                                            [[ attachmentTypeText(a.attachment_type) ]]
+                                                                                        </span>
                                                                                         <span class="ms-3 dropdown d-inline-block" v-if="a.file_url">
                                                                                             <button class="badge bg-secondary-transparent text-secondary fs-12 border-0 dropdown-toggle text-decoration-none"
                                                                                                     type="button"
@@ -1099,6 +1102,9 @@
                                                                                             <div>
                                                                                                 <span class="badge bg-secondary me-2">[[ attIndex + 1 ]]</span>
                                                                                                 <strong>[[ a.name ]]</strong>
+                                                                                                <span class="badge ms-2 fs-11" :class="attachmentTypeBadgeClass(a.attachment_type)" v-if="a.attachment_type">
+                                                                                                    [[ attachmentTypeText(a.attachment_type) ]]
+                                                                                                </span>
                                                                                                 <span class="ms-3 dropdown d-inline-block" v-if="a.file_url">
                                                                                                     <button class="badge bg-secondary-transparent text-secondary fs-12 border-0 dropdown-toggle text-decoration-none"
                                                                                                             type="button"

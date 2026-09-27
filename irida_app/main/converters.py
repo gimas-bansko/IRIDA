@@ -211,82 +211,127 @@ def _set_cell_margins(cell, top=100, bottom=100, left=150, right=150):
 
 def _add_inline_formatted_text(paragraph, text: str, default_color=None, default_size=11):
     """
-    Парсва инлайн Markdown форматиране (bold, italic, code, link) и добавя runs към параграфа.
+    Парсва инлайн Markdown форматиране (bold, italic, code, link) и <br> тагове,
+    добавяйки runs с коректно пренасяне на редовете към параграфа.
     """
-    # Regex токенизатор за inline Markdown
+    if not text:
+        return
+
+    # Разделяне по <br> / <br/> / нови редове
+    sub_lines = re.split(r'(?i)<br\s*/?>|\n', text)
     pattern = re.compile(
         r'(\*\*\*[^*]+\*\*\*|___[^_]+___|'  # Bold Italic
         r'\*\*[^*]+\*\*|__[^_]+__|'          # Bold
         r'\*[^*]+\*|_[^_]+_|'                # Italic
-        r'`[^`]+`|'                          # Inline Code
+        r'```[^`]+```|`[^`]+`|'              # Code (block or inline)
         r'\[([^\]]+)\]\(([^)]+)\)|'          # Links [text](url)
         r'~~[^~]+~~)'                        # Strikethrough
     )
 
-    last_end = 0
-    for match in pattern.finditer(text):
-        start, end = match.span()
-        if start > last_end:
-            plain = text[last_end:start]
+    for line_idx, line in enumerate(sub_lines):
+        if line_idx > 0:
+            paragraph.add_run().add_break()
+
+        last_end = 0
+        for match in pattern.finditer(line):
+            start, end = match.span()
+            if start > last_end:
+                plain = line[last_end:start]
+                run = paragraph.add_run(plain)
+                run.font.name = 'Calibri'
+                run.font.size = Pt(default_size)
+                if default_color:
+                    run.font.color.rgb = default_color
+
+            token = match.group(0)
+            link_text = match.group(2)
+            link_url = match.group(3)
+
+            if token.startswith('***') and token.endswith('***'):
+                inner = token[3:-3]
+                run = paragraph.add_run(inner)
+                run.bold = True
+                run.italic = True
+            elif token.startswith('___') and token.endswith('___'):
+                inner = token[3:-3]
+                run = paragraph.add_run(inner)
+                run.bold = True
+                run.italic = True
+            elif (token.startswith('**') and token.endswith('**')) or (token.startswith('__') and token.endswith('__')):
+                inner = token[2:-2]
+                run = paragraph.add_run(inner)
+                run.bold = True
+            elif (token.startswith('*') and token.endswith('*')) or (token.startswith('_') and token.endswith('_')):
+                inner = token[1:-1]
+                run = paragraph.add_run(inner)
+                run.italic = True
+            elif token.startswith('```') and token.endswith('```'):
+                inner = token[3:-3].strip()
+                run = paragraph.add_run(inner)
+                run.font.name = 'Consolas'
+                run.font.size = Pt(default_size - 1)
+                run.font.color.rgb = RGBColor(180, 40, 40)
+            elif token.startswith('`') and token.endswith('`'):
+                inner = token[1:-1]
+                run = paragraph.add_run(inner)
+                run.font.name = 'Consolas'
+                run.font.size = Pt(default_size - 1)
+                run.font.color.rgb = RGBColor(180, 40, 40)
+            elif token.startswith('~~') and token.endswith('~~'):
+                inner = token[2:-2]
+                run = paragraph.add_run(inner)
+                run.font.strike = True
+            elif link_text and link_url:
+                run = paragraph.add_run(f'{link_text} ({link_url})')
+                run.font.color.rgb = RGBColor(37, 99, 235)
+                run.underline = True
+            else:
+                run = paragraph.add_run(token)
+
+            run.font.name = run.font.name or 'Calibri'
+            run.font.size = run.font.size or Pt(default_size)
+            if default_color and not run.font.color.rgb:
+                run.font.color.rgb = default_color
+
+            last_end = end
+
+        if last_end < len(line):
+            plain = line[last_end:]
             run = paragraph.add_run(plain)
             run.font.name = 'Calibri'
             run.font.size = Pt(default_size)
             if default_color:
                 run.font.color.rgb = default_color
 
-        token = match.group(0)
-        link_text = match.group(2)
-        link_url = match.group(3)
 
-        if token.startswith('***') and token.endswith('***'):
-            inner = token[3:-3]
-            run = paragraph.add_run(inner)
-            run.bold = True
-            run.italic = True
-        elif token.startswith('___') and token.endswith('___'):
-            inner = token[3:-3]
-            run = paragraph.add_run(inner)
-            run.bold = True
-            run.italic = True
-        elif (token.startswith('**') and token.endswith('**')) or (token.startswith('__') and token.endswith('__')):
-            inner = token[2:-2]
-            run = paragraph.add_run(inner)
-            run.bold = True
-        elif (token.startswith('*') and token.endswith('*')) or (token.startswith('_') and token.endswith('_')):
-            inner = token[1:-1]
-            run = paragraph.add_run(inner)
-            run.italic = True
-        elif token.startswith('`') and token.endswith('`'):
-            inner = token[1:-1]
-            run = paragraph.add_run(inner)
-            run.font.name = 'Consolas'
-            run.font.size = Pt(default_size - 1)
-            run.font.color.rgb = RGBColor(180, 40, 40)
-        elif token.startswith('~~') and token.endswith('~~'):
-            inner = token[2:-2]
-            run = paragraph.add_run(inner)
-            run.font.strike = True
-        elif link_text and link_url:
-            run = paragraph.add_run(f'{link_text} ({link_url})')
-            run.font.color.rgb = RGBColor(37, 99, 235)
-            run.underline = True
-        else:
-            run = paragraph.add_run(token)
+def _populate_table_cell(cell, cell_text: str, default_size=10, is_header=False):
+    """
+    Попълва клетка от docx таблица, като разделя множествените <br><br> на отделни параграфи
+    и обработва единичните <br> като редови прекъсвания с цялостно Markdown форматиране.
+    """
+    if not cell_text:
+        return
 
-        run.font.name = run.font.name or 'Calibri'
-        run.font.size = run.font.size or Pt(default_size)
-        if default_color and not run.font.color.rgb:
-            run.font.color.rgb = default_color
+    # Разделяне на параграфи при двойни прекъсвания
+    paragraphs_raw = re.split(r'(?i)<br\s*/?>\s*<br\s*/?>|\n\n', cell_text)
 
-        last_end = end
+    for p_idx, p_text in enumerate(paragraphs_raw):
+        p_text = p_text.strip()
+        if not p_text and p_idx > 0:
+            continue
 
-    if last_end < len(text):
-        plain = text[last_end:]
-        run = paragraph.add_run(plain)
-        run.font.name = 'Calibri'
-        run.font.size = Pt(default_size)
-        if default_color:
-            run.font.color.rgb = default_color
+        p = cell.paragraphs[0] if p_idx == 0 else cell.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        p.paragraph_format.space_before = Pt(1 if not is_header else 2)
+        p.paragraph_format.space_after = Pt(2 if not is_header else 2)
+        p.paragraph_format.line_spacing = 1.15
+
+        color = RGBColor(30, 58, 138) if is_header else None
+        _add_inline_formatted_text(p, p_text, default_color=color, default_size=default_size)
+
+        if is_header:
+            for r in p.runs:
+                r.bold = True
 
 
 # ----------------------------------------------------------------------
@@ -453,11 +498,7 @@ def markdown_to_docx(md_content: str, title: str = '') -> bytes:
                         cell = hdr_row.cells[c_idx]
                         _set_cell_background(cell, 'EBF3FA')
                         _set_cell_margins(cell, top=120, bottom=120, left=150, right=150)
-                        p = cell.paragraphs[0]
-                        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-                        _add_inline_formatted_text(p, h_text, default_color=RGBColor(30, 58, 138), default_size=10)
-                        for r in p.runs:
-                            r.bold = True
+                        _populate_table_cell(cell, h_text, default_size=10, is_header=True)
 
                 # Редове с данни
                 for row_idx, r_text in enumerate(table_lines[data_start_idx:]):
@@ -470,8 +511,7 @@ def markdown_to_docx(md_content: str, title: str = '') -> bytes:
                         if bg_color != 'FFFFFF':
                             _set_cell_background(cell, bg_color)
                         _set_cell_margins(cell, top=100, bottom=100, left=150, right=150)
-                        p = cell.paragraphs[0]
-                        _add_inline_formatted_text(p, c_text, default_size=10)
+                        _populate_table_cell(cell, c_text, default_size=10, is_header=False)
 
                 # Добавяне на малко разстояние след таблицата
                 spacer = doc.add_paragraph()
@@ -531,13 +571,48 @@ def markdown_to_docx(md_content: str, title: str = '') -> bytes:
 # Конвертиране: Markdown -> PDF
 # ----------------------------------------------------------------------
 
+def _preprocess_markdown_for_pdf(md_content: str, max_row_chars: int = 1000) -> str:
+    """
+    Предварителна обработка на Markdown за генериране на PDF:
+    Разделя прекомерно дълги редове в таблици на отделни редове (tr),
+    за да се избегне срив в ReportLab (Flowable too large on page in frame),
+    тъй като ReportLab не може да пренася отделен <tr> елемент през няколко страници.
+    """
+    lines = md_content.splitlines()
+    new_lines = []
+
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith('|') and '|' in stripped[1:] and len(stripped) > max_row_chars:
+            parts = [p.strip() for p in stripped.split('|')]
+            if len(parts) >= 4 and not re.match(r'^:?-+:?$', parts[1]):
+                col1 = parts[1]
+                col2 = parts[2]
+                sub_chunks = re.split(r'(?i)<br\s*/?>\s*<br\s*/?>', col2)
+                if len(sub_chunks) > 1:
+                    for idx, chunk in enumerate(sub_chunks):
+                        c_text = chunk.strip()
+                        if not c_text:
+                            continue
+                        c1_title = col1 if idx == 0 else f"{col1} *(продължение)*"
+                        new_lines.append(f'| {c1_title} | {c_text} |')
+                    continue
+
+        new_lines.append(line)
+
+    return '\n'.join(new_lines)
+
+
 def markdown_to_pdf(md_content: str, title: str = '') -> bytes:
     """
     Преобразува Markdown текст в PDF документ с отлична кирилица и стилизиране.
     """
+    # 0. Предварителна обработка за предотвратяване на свръхголеми таблични редове в PDF
+    md_content_prepared = _preprocess_markdown_for_pdf(md_content)
+
     # 1. Преобразуване на Markdown към HTML чрез markdown ��иблиотеката
     html_body = markdown.markdown(
-        md_content,
+        md_content_prepared,
         extensions=[
             'extra',
             'tables',

@@ -8,13 +8,15 @@ import os
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import transaction
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from ..constants import STUDENT
 
 from ..converters import convert_markdown_file
 from ..models import (
@@ -73,9 +75,13 @@ class SubjectSessionsWithTopicsView(generics.ListAPIView):
             'session_tasks',
             queryset=SessionTask.objects.order_by('num', 'id')
         )
+        att_qs = SessionAttachment.objects.all()
+        user_profile = getattr(self.request.user, 'userprofile', None)
+        if user_profile and user_profile.access_level == STUDENT:
+            att_qs = att_qs.filter(Q(attachment_type=SessionAttachment.THEORY) | Q(is_student_visible=True))
         attachments_prefetch = Prefetch(
             'session_attachments',
-            queryset=SessionAttachment.objects.order_by('num', 'id')
+            queryset=att_qs.order_by('num', 'id')
         )
         points_prefetch = Prefetch(
             'session_points',
@@ -277,6 +283,9 @@ class SessionAttachmentsForSessionView(generics.ListAPIView):
         session_id = self.kwargs['session_id']
         get_object_or_404(Session, id=session_id)
         qs = SessionAttachment.objects.filter(session_id=session_id)
+        user_profile = getattr(self.request.user, 'userprofile', None)
+        if user_profile and user_profile.access_level == STUDENT:
+            qs = qs.filter(Q(attachment_type=SessionAttachment.THEORY) | Q(is_student_visible=True))
         attachment_type = self.request.query_params.get('type')
         if attachment_type:
             qs = qs.filter(attachment_type=attachment_type)
@@ -287,7 +296,7 @@ class SessionAttachmentsForSessionView(generics.ListAPIView):
 @csrf_exempt
 def session_attachment_upsert(request):
     """
-    POST body: { id, session, point, num, name, attachment_type, file, description, target_format }
+    POST body: { id, session, point, num, name, attachment_type, is_student_visible, file, description, target_format }
     id == 0/missing -> create; id > 0 -> update
     """
     attachment_id = request.data.get('id', 0) or 0
@@ -299,6 +308,16 @@ def session_attachment_upsert(request):
     data = request.data.dict() if hasattr(request.data, 'dict') else dict(request.data)
     if data.get('point') in ['', 'null', 'None', None]:
         data['point'] = None
+
+    if 'is_student_visible' in data:
+        val = data['is_student_visible']
+        if isinstance(val, str):
+            data['is_student_visible'] = val.strip().lower() in ('true', '1', 'yes', 't', 'on')
+        else:
+            data['is_student_visible'] = bool(val)
+
+    if data.get('attachment_type') == SessionAttachment.THEORY and 'is_student_visible' not in data:
+        data['is_student_visible'] = True
 
     target_format = (request.data.get('target_format') or '').strip().lower()
 

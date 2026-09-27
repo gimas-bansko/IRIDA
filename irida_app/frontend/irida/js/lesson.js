@@ -77,7 +77,7 @@ const App = {
             return (this.attachments || []).filter(a => a.attachment_type === 'theory');
         },
         otherAttachments() {
-            return (this.attachments || []).filter(a => a.attachment_type === 'other' || !a.attachment_type);
+            return (this.attachments || []).filter(a => a.attachment_type !== 'theory');
         }
     },
     methods: {
@@ -121,6 +121,32 @@ const App = {
                 case 'ОС': return 'Обобщаване и систематизиране';
                 case 'K': return 'Комбиниран урок';
                 default:  return '';
+            }
+        },
+        attachmentTypeText(type) {
+            switch (type) {
+                case 'theory': return 'Теория';
+                case 'worksheet': return 'Работен лист';
+                case 'rubric': return 'Оценъчна карта / Чек-лист';
+                case 'exit_ticket': return 'Изходен билет';
+                case 'task': return 'Задача';
+                case 'test': return 'Тест';
+                case 'self_study': return 'Самостоятелна работа';
+                case 'other': return 'Други';
+                default: return 'Приложение';
+            }
+        },
+        attachmentTypeBadgeClass(type) {
+            switch (type) {
+                case 'theory': return 'bg-primary-transparent text-primary';
+                case 'worksheet': return 'bg-info-transparent text-info';
+                case 'rubric': return 'bg-warning-transparent text-warning';
+                case 'exit_ticket': return 'bg-purple-transparent text-purple';
+                case 'task': return 'bg-success-transparent text-success';
+                case 'test': return 'bg-danger-transparent text-danger';
+                case 'self_study': return 'bg-teal-transparent text-teal';
+                case 'other': return 'bg-secondary-transparent text-secondary';
+                default: return 'bg-light text-muted';
             }
         },
 
@@ -469,6 +495,7 @@ const App = {
                 num: (itemsInGroup?.length || 0) + 1,
                 name: '',
                 attachment_type: type,
+                is_student_visible: true,
                 target_format: 'original',
                 file: null,
                 file_url: '',
@@ -488,6 +515,7 @@ const App = {
                 num: a.num,
                 name: a.name || '',
                 attachment_type: a.attachment_type || 'other',
+                is_student_visible: a.is_student_visible !== undefined ? Boolean(a.is_student_visible) : true,
                 target_format: 'original',
                 file: null,
                 file_url: a.file_url || '',
@@ -553,6 +581,7 @@ const App = {
                 formData.append('num', this.attachmentForm.num || 1);
                 formData.append('name', this.attachmentForm.name || '');
                 formData.append('attachment_type', this.attachmentForm.attachment_type || 'other');
+                formData.append('is_student_visible', this.attachmentForm.is_student_visible ? 'true' : 'false');
                 formData.append('description', this.attachmentForm.description || '');
                 if (this.selectedAttachmentFile) {
                     formData.append('file', this.selectedAttachmentFile);
@@ -757,6 +786,7 @@ const App = {
                 duration_hours: `${durationHours} ${durationHours === 1 ? 'учебен час' : 'учебни часа'}`,
                 duration_mins: `${durationMins} минути`,
                 goals: this.session?.goals || '',
+                social_emotional_goals: this.session?.social_emotional_goals || '',
                 focus: this.session?.focus || '',
                 topics_list: topicsText || '[няма въведени теми]',
                 points: pointsText || '[няма въведени точки]'

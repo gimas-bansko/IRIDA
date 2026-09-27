@@ -533,6 +533,7 @@ const App = {
                 duration_hours: `${durationHours} ${durationHours === 1 ? 'учебен час' : 'учебни часа'}`,
                 duration_mins: `${durationMins} минути`,
                 goals: this.session?.goals || '',
+                social_emotional_goals: this.session?.social_emotional_goals || '',
                 focus: this.session?.focus || '',
                 topics_list: topicsText || '[няма въведени теми]',
                 points: pointsText || '[няма въведени точки]'

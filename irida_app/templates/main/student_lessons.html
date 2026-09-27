@@ -375,6 +375,9 @@
                                                                 <small class="text-muted ms-2" v-if="att.point">
                                                                     ([[ getPointNumNameById(session, att.point) ]])
                                                                 </small>
+                                                                <span class="badge ms-2 fs-11" :class="attachmentTypeBadgeClass(att.attachment_type)">
+                                                                    [[ attachmentTypeText(att.attachment_type) ]]
+                                                                </span>
                                                                 <span class="ms-2 dropdown d-inline-block" v-if="att.file_url">
                                                                     <button class="badge bg-secondary-transparent text-secondary fs-12 border-0 dropdown-toggle text-decoration-none"
                                                                             type="button"
@@ -418,6 +421,10 @@
 
                                     <!-- Бутони за урок -->
                                     <div class="btn-list text-center mt-3">
+                                        <button v-if="!session.collapsed" type="button" class="btn btn-outline-success btn-sm label-btn me-2" @click="openFeedbackModal(session)">
+                                            <i class="bi bi-chat-left-text label-btn-icon me-2"></i>
+                                            Обратна връзка
+                                        </button>
                                         <button v-if="!session.collapsed" type="button" class="btn btn-outline-primary btn-sm label-btn" @click="session.collapsed=true">
                                             <i class="ri-arrow-up-s-line label-btn-icon me-2"></i>
                                             По-малко
@@ -436,6 +443,93 @@
             </div>
         </div>
         <!-- End::app-content -->
+
+        <!-- Modal за обратна връзка -->
+        <div class="modal fade show" id="feedbackModal" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5);" v-if="feedbackModal.show">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content shadow-lg border-0">
+                    <div class="modal-header bg-success-transparent border-bottom">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar avatar-sm bg-success text-fixed-white rounded-circle">
+                                <i class="bi bi-chat-left-text fs-16"></i>
+                            </div>
+                            <div>
+                                <h6 class="modal-title fw-semibold mb-0">Обратна връзка към преподавателя</h6>
+                                <small class="text-muted" v-if="selectedSessionForFeedback">
+                                    Урок [[ selectedSessionForFeedback.num ]]. [[ selectedSessionForFeedback.name ]]
+                                </small>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" @click="closeFeedbackModal" :disabled="feedbackForm.isSubmitting" aria-label="Затвори"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <form @submit.prevent="submitFeedback">
+                            <div class="row g-3">
+                                <!-- Име -->
+                                <div class="col-md-6">
+                                    <label for="feedbackFirstName" class="form-label fw-semibold fs-13">Име <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="feedbackFirstName"
+                                           v-model="feedbackForm.first_name" placeholder="Въведете име" required>
+                                </div>
+
+                                <!-- Фамилия -->
+                                <div class="col-md-6">
+                                    <label for="feedbackLastName" class="form-label fw-semibold fs-13">Фамилия <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="feedbackLastName"
+                                           v-model="feedbackForm.last_name" placeholder="Въведете фамилия" required>
+                                </div>
+
+                                <!-- Тема (тип на приложението) -->
+                                <div class="col-12">
+                                    <label for="feedbackAttachmentType" class="form-label fw-semibold fs-13">Тема (тип на приложението) <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="feedbackAttachmentType" v-model="feedbackForm.attachment_type" required>
+                                        <option value="task">Задача</option>
+                                        <option value="test">Тест</option>
+                                        <option value="self_study">Самостоятелна работа</option>
+                                        <option value="worksheet">Работен лист</option>
+                                        <option value="rubric">Оценъчна карта / Чек-лист</option>
+                                        <option value="exit_ticket">Изходен билет</option>
+                                        <option value="other">Други</option>
+                                    </select>
+                                </div>
+
+                                <!-- Избор на файл -->
+                                <div class="col-12">
+                                    <label for="feedbackFileInput" class="form-label fw-semibold fs-13">Избор на файл <span class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" id="feedbackFileInput"
+                                           ref="feedbackFileInput" @change="onFeedbackFileChange" required>
+                                    <div class="form-text text-muted fs-11 mt-1">
+                                        Прикаченият файл ще бъде изпратен като приложение към урока без отметка "видим за ученика".
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Съобщения за статус -->
+                            <div class="alert alert-danger d-flex align-items-center gap-2 mt-3 mb-0 fs-13 py-2 px-3" v-if="feedbackForm.errorMessage">
+                                <i class="bi bi-exclamation-circle-fill fs-16 flex-shrink-0"></i>
+                                <div>[[ feedbackForm.errorMessage ]]</div>
+                            </div>
+
+                            <div class="alert alert-success d-flex align-items-center gap-2 mt-3 mb-0 fs-13 py-2 px-3" v-if="feedbackForm.successMessage">
+                                <i class="bi bi-check-circle-fill fs-16 flex-shrink-0"></i>
+                                <div>[[ feedbackForm.successMessage ]]</div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer border-top bg-light">
+                        <button type="button" class="btn btn-outline-secondary btn-sm px-3" @click="closeFeedbackModal" :disabled="feedbackForm.isSubmitting">
+                            Отказ
+                        </button>
+                        <button type="button" class="btn btn-success btn-sm px-4" @click="submitFeedback" :disabled="feedbackForm.isSubmitting">
+                            <span class="spinner-border spinner-border-sm me-1" v-if="feedbackForm.isSubmitting" role="status" aria-hidden="true"></span>
+                            <i class="bi bi-cloud-arrow-up me-1" v-else></i>
+                            Изпрати
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal за обратна връзка край -->
     </div>
 
     <!-- Scroll To Top -->

@@ -306,6 +306,8 @@
                                     </div>
                                     <div class="col-md-2 fs-12 text-muted text-end">Очаквани резултати :</div>
                                     <div class="col-md-10 fs-12">[[session.goals]]</div>
+                                    <div class="col-md-2 fs-12 text-muted text-end" v-if="session.social_emotional_goals">СЕО цели :</div>
+                                    <div class="col-md-10 fs-12" v-if="session.social_emotional_goals">[[session.social_emotional_goals]]</div>
                                     <div class="col-md-2 fs-12 text-muted text-end">Акценти :</div>
                                     <div class="col-md-10 fs-12">[[session.focus]]</div>
                                 </div>
@@ -957,6 +959,15 @@
                                                     <span class="badge bg-secondary me-2">[[ a.num ]]</span>
                                                     <strong>[[ a.name ]]</strong>
                                                     <small class="text-muted ms-2"> <span v-if="a.point">([[ getPointNumNameById(a.point)]])</span></small>
+                                                    <span class="badge ms-2 fs-11" :class="attachmentTypeBadgeClass(a.attachment_type)">
+                                                        [[ attachmentTypeText(a.attachment_type) ]]
+                                                    </span>
+                                                    <span class="badge bg-success-transparent text-success ms-2 fs-11" v-if="a.is_student_visible !== false && a.is_student_visible !== 'false'">
+                                                        <i class="bi bi-eye me-1"></i>Видимо за ученици
+                                                    </span>
+                                                    <span class="badge bg-danger-transparent text-danger ms-2 fs-11" v-else>
+                                                        <i class="bi bi-eye-slash me-1"></i>Скрито за ученици
+                                                    </span>
                                                     <span class="ms-3 dropdown d-inline-block" v-if="a.file_url">
                                                         <button class="badge bg-primary-transparent text-primary fs-12 border-0 dropdown-toggle text-decoration-none"
                                                                 type="button"
@@ -1047,6 +1058,20 @@
                                         <input type="text" class="form-control" v-model="attachmentForm.name" placeholder="Име на файла или приложението">
                                     </div>
 
+                                    <!-- Тип на приложението (ако не е теория) -->
+                                    <div class="col-12" v-if="attachmentForm.attachment_type !== 'theory'">
+                                        <label class="form-label" for="attachment_type_select">Тип на приложението</label>
+                                        <select class="form-select" id="attachment_type_select" v-model="attachmentForm.attachment_type">
+                                            <option value="worksheet">Работен лист</option>
+                                            <option value="rubric">Оценъчна карта / Чек-лист</option>
+                                            <option value="exit_ticket">Изходен билет</option>
+                                            <option value="task">Задача</option>
+                                            <option value="test">Тест</option>
+                                            <option value="self_study">Самостоятелна работа</option>
+                                            <option value="other">Други</option>
+                                        </select>
+                                    </div>
+
                                     <!-- select за точка -->
                                     <div class="col-12">
                                         <label class="form-label" for="attachment_point">Точка от плана</label>
@@ -1109,6 +1134,19 @@
                                                         <i class="bi bi-file-earmark-code me-1"></i>Запази оригинален Markdown (.md)
                                                     </label>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Видимо за учениците -->
+                                    <div class="col-12">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="is_student_visible_att" v-model="attachmentForm.is_student_visible">
+                                            <label class="form-check-label fs-13 fw-semibold" for="is_student_visible_att">
+                                                Видимо за учениците
+                                            </label>
+                                            <div class="form-text text-muted fs-11 mt-0">
+                                                Когато е отметнато, приложението ще бъде видимо за учениците в техния профил на страницата за уроци.
                                             </div>
                                         </div>
                                     </div>

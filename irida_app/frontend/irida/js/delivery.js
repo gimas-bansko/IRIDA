@@ -163,7 +163,7 @@ const App = {
         },
 
         generalOtherAttachments() {
-            return this.attachments.filter(a => (a.point === null || a.point == null) && (a.attachment_type === 'other' || !a.attachment_type));
+            return this.attachments.filter(a => (a.point === null || a.point == null) && a.attachment_type !== 'theory');
         },
 
         sortedPoints() {
@@ -637,6 +637,34 @@ const App = {
             }
         },
 
+        attachmentTypeText(type) {
+            switch (type) {
+                case 'theory': return 'Теория';
+                case 'worksheet': return 'Работен лист';
+                case 'rubric': return 'Оценъчна карта / Чек-лист';
+                case 'exit_ticket': return 'Изходен билет';
+                case 'task': return 'Задача';
+                case 'test': return 'Тест';
+                case 'self_study': return 'Самостоятелна работа';
+                case 'other': return 'Други';
+                default: return 'Приложение';
+            }
+        },
+
+        attachmentTypeBadgeClass(type) {
+            switch (type) {
+                case 'theory': return 'bg-primary-transparent text-primary';
+                case 'worksheet': return 'bg-info-transparent text-info';
+                case 'rubric': return 'bg-warning-transparent text-warning';
+                case 'exit_ticket': return 'bg-purple-transparent text-purple';
+                case 'task': return 'bg-success-transparent text-success';
+                case 'test': return 'bg-danger-transparent text-danger';
+                case 'self_study': return 'bg-teal-transparent text-teal';
+                case 'other': return 'bg-secondary-transparent text-secondary';
+                default: return 'bg-light text-muted';
+            }
+        },
+
         getPointNumNameById(id) {
             if (!Array.isArray(this.points) || id == null) return null;
             const pointId = Number(id);
@@ -666,7 +694,7 @@ const App = {
         getOtherAttachmentsForPoint(id) {
             if (!Array.isArray(this.attachments) || id == null) return [];
             const pointId = Number(id);
-            return this.attachments.filter(a => a.point != null && Number(a.point) === pointId && (a.attachment_type === 'other' || !a.attachment_type));
+            return this.attachments.filter(a => a.point != null && Number(a.point) === pointId && a.attachment_type !== 'theory');
         },
 
         getTotalMinutes() {
@@ -1227,6 +1255,7 @@ const App = {
                 duration_hours: `${durationHours} ${durationHours === 1 ? 'учебен час' : 'учебни часа'}`,
                 duration_mins: `${durationMins} минути`,
                 goals: this.session?.goals || '',
+                social_emotional_goals: this.session?.social_emotional_goals || '',
                 focus: this.session?.focus || '',
                 points: pointsText || '[няма въведени точки]'
             };

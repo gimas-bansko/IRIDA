@@ -59,8 +59,8 @@ admin.site.register(SessionNote)
 admin.site.register(SessionTask)
 @admin.register(SessionAttachment)
 class SessionAttachmentAdmin(admin.ModelAdmin):
-    list_display = ('num', 'name', 'original_filename', 'attachment_type', 'session', 'point', 'file')
-    list_filter = ('attachment_type', 'session')
+    list_display = ('num', 'name', 'original_filename', 'attachment_type', 'is_student_visible', 'session', 'point', 'file')
+    list_filter = ('attachment_type', 'is_student_visible', 'session')
     search_fields = ('name', 'original_filename', 'description')
     ordering = ('session', 'num', 'id')
 
