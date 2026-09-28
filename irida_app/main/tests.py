@@ -1486,6 +1486,33 @@ class SessionAttachmentOriginalFilenameTest(TestCase):
         self.assertEqual(resp.data['original_filename'], 'План_урок_1.docx')
         self.assertTrue(resp.data['file_name'].endswith('.docx'))
 
+    def test_session_attachment_markdown_to_pdf_with_large_table(self):
+        # Създаване на Markdown файл с много голям табличен ред (>1000 символа и <br> елементи)
+        large_cell_content = '<br>- '.join([f'Дейност {i}: Обяснение на подробности и примери по темата HTTP' for i in range(1, 15)])
+        md_table = f"""# План на урок
+| Елемент | Описание |
+| --- | --- |
+| **Основни цели и дейности**<br>- *Инструкции* | - {large_cell_content} |
+"""
+        uploaded_file = SimpleUploadedFile(
+            'Бланка_урок.md',
+            md_table.encode('utf-8'),
+            content_type='text/markdown'
+        )
+
+        resp = self.client.post('/api/session-attachments/upsert/', {
+            'id': 0,
+            'session': self.session.id,
+            'name': 'Бланка урок',
+            'attachment_type': 'theory',
+            'target_format': 'pdf',
+            'file': uploaded_file
+        }, format='multipart')
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp.data['original_filename'], 'Бланка_урок.pdf')
+        self.assertTrue(resp.data['file_name'].endswith('.pdf'))
+
     def test_session_attachment_edit_without_new_file_preserves_original_filename(self):
         att = SessionAttachment.objects.create(
             session=self.session,

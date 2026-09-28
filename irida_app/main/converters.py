@@ -6,7 +6,7 @@
 import io
 import os
 import re
-from typing import Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import markdown
 from docx import Document
@@ -571,32 +571,161 @@ def markdown_to_docx(md_content: str, title: str = '') -> bytes:
 # Конвертиране: Markdown -> PDF
 # ----------------------------------------------------------------------
 
-def _preprocess_markdown_for_pdf(md_content: str, max_row_chars: int = 1000) -> str:
+def _break_long_token(token: str, max_len: int = 25) -> str:
+    """
+    Ако даден токен (без интервали) е по-дълъг от max_len,
+    вмъква интервал след пунктуационни знаци (/ ? & = _ . , : -) или на всеки max_len символа,
+    за да позволи на ReportLab/xhtml2pdf да пренася реда без наслагване на текст.
+    """
+    if len(token) <= max_len:
+        return token
+
+    if re.search(r'[/?&=_.,:\-\(\)]', token):
+        parts = re.split(r'([/?&=_.,:\-\(\)])', token)
+        result = []
+        curr_segment = ""
+        for p in parts:
+            curr_segment += p
+            if len(curr_segment) >= max_len:
+                result.append(curr_segment)
+                curr_segment = ""
+        if curr_segment:
+            result.append(curr_segment)
+        return " ".join(result)
+
+    return " ".join(token[i:i + max_len] for i in range(0, len(token), max_len))
+
+
+def _wrap_long_tokens(text: str, max_len: int = 25) -> str:
+    """
+    Обработва непрекъснати дълги низове (URL адреси, inline код, дълги идентификатори),
+    за да предотврати излизане извън границите на колоните и припокриване на редове в ReportLab.
+    """
+    def replace_token(match):
+        tok = match.group(0)
+        if tok.startswith('<') and tok.endswith('>'):
+            return tok
+        if '<' in tok and '>' in tok:
+            sub_parts = re.split(r'(<[^>]+>)', tok)
+            return "".join(
+                _break_long_token(sp, max_len) if not (sp.startswith('<') and sp.endswith('>')) else sp
+                for sp in sub_parts
+            )
+        return _break_long_token(tok, max_len)
+
+    return re.sub(r'\S+', replace_token, text)
+
+
+def _split_cell_into_chunks(cell_text: str, max_chunk_len: int = 350) -> List[str]:
+    """
+    Разделя съдържанието на една таблична клетка на по-малки смислови части,
+    за да не надвишава максимално допустимата височина на страница в ReportLab.
+    """
+    # 1. Разделяне по <br>, <br/>, <br /> тагове
+    br_parts = re.split(r'(?i)<br\s*/?>', cell_text)
+
+    # 2. Обединяване в групи до max_chunk_len символа
+    grouped_chunks = []
+    curr_group = []
+    curr_len = 0
+    for p in br_parts:
+        p_clean = p.strip()
+        if not p_clean:
+            continue
+        if curr_group and (curr_len + len(p_clean) > max_chunk_len):
+            grouped_chunks.append('<br>'.join(curr_group))
+            curr_group = [p_clean]
+            curr_len = len(p_clean)
+        else:
+            curr_group.append(p_clean)
+            curr_len += len(p_clean)
+    if curr_group:
+        grouped_chunks.append('<br>'.join(curr_group))
+
+    if not grouped_chunks:
+        grouped_chunks = [cell_text]
+
+    # 3. Ако даден фрагмент все още е прекомерно дълъг (без <br>), разделяме по изречения/пунктуация
+    final_chunks = []
+    for chunk in grouped_chunks:
+        if len(chunk) > max_chunk_len * 1.5:
+            sentences = re.split(r'(?<=[.!?;\n])\s+', chunk)
+            sub_curr = []
+            sub_len = 0
+            for s in sentences:
+                s_clean = s.strip()
+                if not s_clean:
+                    continue
+                if sub_curr and (sub_len + len(s_clean) > max_chunk_len):
+                    final_chunks.append(' '.join(sub_curr))
+                    sub_curr = [s_clean]
+                    sub_len = len(s_clean)
+                else:
+                    sub_curr.append(s_clean)
+                    sub_len += len(s_clean)
+            if sub_curr:
+                final_chunks.append(' '.join(sub_curr))
+        else:
+            final_chunks.append(chunk)
+
+    return final_chunks if final_chunks else [cell_text]
+
+
+def _preprocess_markdown_for_pdf(md_content: str, max_row_chars: int = 300) -> str:
     """
     Предварителна обработка на Markdown за генериране на PDF:
-    Разделя прекомерно дълги редове в таблици на отделни редове (tr),
-    за да се избегне срив в ReportLab (Flowable too large on page in frame),
-    тъй като ReportLab не може да пренася отделен <tr> елемент през няколко страници.
+    1. Пренасяне/разделяне на свръхдълги непрекъснати токени (код, URL, дълги думи),
+       за да се предотврати припокриване на редове и преливане на текст в ReportLab.
+    2. Разделя прекомерно дълги редове в таблици на отделни редове (tr),
+       за да се избегне срив в ReportLab (Flowable too large on page in frame),
+       тъй като ReportLab не може да пренася отделен <tr> елемент през няколко страници.
     """
-    lines = md_content.splitlines()
+    wrapped_content = _wrap_long_tokens(md_content)
+    lines = wrapped_content.splitlines()
     new_lines = []
 
     for line in lines:
         stripped = line.strip()
-        if stripped.startswith('|') and '|' in stripped[1:] and len(stripped) > max_row_chars:
+        if stripped.startswith('|') and '|' in stripped[1:]:
             parts = [p.strip() for p in stripped.split('|')]
-            if len(parts) >= 4 and not re.match(r'^:?-+:?$', parts[1]):
-                col1 = parts[1]
-                col2 = parts[2]
-                sub_chunks = re.split(r'(?i)<br\s*/?>\s*<br\s*/?>', col2)
-                if len(sub_chunks) > 1:
-                    for idx, chunk in enumerate(sub_chunks):
-                        c_text = chunk.strip()
-                        if not c_text:
+            # Таблични редове от вида | col1 | col2 | ... | дават ['', col1, col2, ..., '']
+            if len(parts) >= 4 and not re.match(r'^\s*:?-+:?\s*$', parts[1]):
+                if len(parts) == 4:
+                    # Двуколонна таблица (най-честият случай за планове/бланки)
+                    col1 = parts[1]
+                    col2 = parts[2]
+                    if len(stripped) > max_row_chars or len(col2) > 250:
+                        chunks = _split_cell_into_chunks(col2, max_chunk_len=350)
+                        if len(chunks) > 1:
+                            col1_main = re.split(r'(?i)<br\s*/?>', col1)[0].strip()
+                            for idx, chunk in enumerate(chunks):
+                                if idx == 0:
+                                    c1_title = col1
+                                else:
+                                    c1_title = f"{col1_main} *(продължение)*" if col1_main else "*(продължение)*"
+                                new_lines.append(f"| {c1_title} | {chunk} |")
                             continue
-                        c1_title = col1 if idx == 0 else f"{col1} *(продължение)*"
-                        new_lines.append(f'| {c1_title} | {c_text} |')
-                    continue
+                elif len(parts) > 4 and len(stripped) > max_row_chars:
+                    # Многоколонна таблица (>2 колони)
+                    cols = parts[1:-1]
+                    max_col_idx = max(range(len(cols)), key=lambda i: len(cols[i]))
+                    if len(cols[max_col_idx]) > 250:
+                        col_chunks = [_split_cell_into_chunks(c, max_chunk_len=350) for c in cols]
+                        max_splits = max(len(ch) for ch in col_chunks)
+                        if max_splits > 1:
+                            for idx in range(max_splits):
+                                row_cells = []
+                                for c_idx, ch in enumerate(col_chunks):
+                                    if idx < len(ch):
+                                        cell_val = ch[idx]
+                                    else:
+                                        cell_val = ''
+                                    if idx > 0 and c_idx == 0 and not cell_val:
+                                        c0_main = re.split(r'(?i)<br\s*/?>', cols[0])[0].strip()
+                                        cell_val = f"{c0_main} *(продължение)*" if c0_main else "*(продължение)*"
+                                    row_cells.append(cell_val)
+                                new_lines.append("| " + " | ".join(row_cells) + " |")
+                            continue
 
         new_lines.append(line)
 
