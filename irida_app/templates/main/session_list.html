@@ -100,8 +100,8 @@
                                                       :class="sessionTypeClass(session.session_type)">
                                                     [[sessionType(session.session_type)]]</span>
                                                 <!-- -->
-                                                <span v-if="session.hours===1" class="text-muted fs-12">, Продължителност [[session.duration]] учебен час, </span>
-                                                <span v-if="session.hours!=1" class="text-muted fs-12">, Продължителност [[session.duration]] учебни часа, </span>
+                                                <span v-if="session.duration == 1" class="text-muted fs-12">, Продължителност [[session.duration]] учебен час, </span>
+                                                <span v-else class="text-muted fs-12">, Продължителност [[session.duration]] учебни часа, </span>
                                                 <span v-if="session.basic_level" class="badge bg-info fs-12">Основен (задължителен) урок</span>
                                                 <span v-else class="badge bg-warning fs-12">Резервен (при необходимост) урок</span>
                                             </span>

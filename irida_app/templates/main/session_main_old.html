@@ -41,7 +41,7 @@
 
                                 <div class="col-md-2 fs-12 text-muted text-end">Продължителност :</div>
                                 <div class="col-md-10 fs-12">[[session.duration]]
-                                    <span v-if="session.duration===1">час</span><span v-else>часа</span>
+                                    <span v-if="session.duration == 1">час</span><span v-else>часа</span>
                                     &nbsp;([[session.duration*45]] min.)
                                 </div>
 
@@ -73,7 +73,7 @@
                                     <div class="col-md-2 fs-12 text-muted text-end">Тема :</div>
                                     <div class="col-md-10 fs-12">[[session.name]]</div>
                                     <div class="col-md-2 fs-12 text-muted text-end">Продължителност :</div>
-                                    <div class="col-md-10 fs-12">[[session.duration]] <span v-if="session.duration===1">час</span><span v-else>часа</span></div>
+                                    <div class="col-md-10 fs-12">[[session.duration]] <span v-if="session.duration == 1">час</span><span v-else>часа</span></div>
                                     <div class="col-md-2 fs-12 text-muted text-end">Тип на занятието :</div>
                                     <div class="col-md-10 fs-12">[[sessionType(session.session_type)]]</div>
                                     <div class="col-md-2 fs-12 text-muted text-end">Включени теми :</div>
