@@ -37,7 +37,7 @@ db.sqlite3-journal
 /irida_app/media_files/
 
 # ---- Работни материали (не са код) ----
-/Проект/
+#/Проект/
 /Работна/
 /html_template/
 

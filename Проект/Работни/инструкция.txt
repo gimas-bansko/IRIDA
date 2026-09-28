@@ -1,0 +1,6 @@
+1. Премини в папката, в която e разположен index.html и изпълни
+    python -m http.server 8000
+
+2. В Chrome отвори:
+    http://localhost:8000/index.html
+
