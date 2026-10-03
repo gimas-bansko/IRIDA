@@ -290,14 +290,14 @@
                     authorBadge = `<span class="badge bg-info-transparent text-info"><i class="bi bi-person me-1"></i>${escapeHtml(p.created_by_name || 'Учител')}</span>`;
                 }
 
-                const pageBadge = `<span class="badge bg-light text-muted border">${escapeHtml(p.page_key_display || p.page_key)}</span>`;
+                const pageBadge = `<span class="badge bg-secondary-transparent text-muted border">${escapeHtml(p.page_key_display || p.page_key)}</span>`;
 
                 html += `
                     <div class="card border custom-card shadow-none mb-0 prompt-card" data-prompt-id="${p.id}">
                         <!-- Заглавен ред: компактен изглед -->
-                        <div class="card-header py-2 px-3 bg-light d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="card-header py-2 px-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
                             <div class="d-flex align-items-center gap-2 flex-wrap">
-                                <strong class="fs-14 text-dark">${escapeHtml(p.title)}</strong>
+                                <strong class="fs-14 custom-black">${escapeHtml(p.title)}</strong>
                                 ${authorBadge}
                                 ${pageBadge}
                             </div>
@@ -314,7 +314,7 @@
                                 </div>
                             ` : ''}
 
-                            <div class="prompt-preview bg-light p-2 rounded border fs-13 font-monospace text-secondary" style="white-space: pre-wrap; max-height: 200px; overflow-y: auto;">${escapeHtml(resolvedText)}</div>
+                            <div class="prompt-preview p-2 rounded border fs-13 font-monospace" style="white-space: pre-wrap; max-height: 200px; overflow-y: auto;">${escapeHtml(resolvedText)}</div>
 
                             <small class="text-muted fs-11 mt-1 d-block">
                                 ${p.prompt_text.includes('{') ? '<i class="bi bi-info-circle me-1"></i>Данните от урока са попълнени автоматично в текста.' : ''}
@@ -322,7 +322,7 @@
                         </div>
 
                         <!-- Ред с бутони: на отделен ред, подредени вдясно -->
-                        <div class="card-footer bg-white border-top py-2 px-3 d-flex justify-content-end align-items-center gap-2 flex-wrap">
+                        <div class="card-footer border-top py-2 px-3 d-flex justify-content-end align-items-center gap-2 flex-wrap">
                             <!-- Бутон за разгъване/свиване на детайлите -->
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.AIPromptManager.toggleDetails(${p.id}, this)" title="Преглед на съдържанието и указанията">
                                 <i class="bi ${isExpanded ? 'bi-chevron-up' : 'bi-chevron-down'} me-1"></i><span>${isExpanded ? 'Свий' : 'Покажи'}</span>

@@ -1,4 +1,211 @@
 <!-- Modal: AI Помощник и Промптове -->
+<style>
+/* AI Prompt Modal - Light & Dark Theme Custom Styles */
+#aiPromptModal .modal-content {
+    border: 1px solid var(--default-border, rgba(0, 0, 0, 0.1));
+}
+
+#aiPromptModal .prompt-card {
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+#aiPromptModal .prompt-card .card-header {
+    border-bottom: 1px solid var(--default-border, rgba(0, 0, 0, 0.08));
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+#aiPromptModal .prompt-card .card-footer {
+    border-top: 1px solid var(--default-border, rgba(0, 0, 0, 0.08));
+    background-color: transparent;
+}
+
+#aiPromptModal .prompt-preview {
+    background-color: #f8f9fa;
+    color: #212529;
+    border: 1px solid #e9ecef;
+}
+
+/* Light Theme Enhancements */
+[data-theme-mode="light"] #aiPromptModal .prompt-card .card-header {
+    background-color: #f8fafc;
+}
+
+/* Dark Theme Full Compatibility */
+[data-theme-mode="dark"] #aiPromptModal .modal-content {
+    background-color: var(--custom-white, #1a1c1e);
+    color: var(--default-text-color, rgba(255, 255, 255, 0.85));
+}
+
+[data-theme-mode="dark"] #aiPromptModal .modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .modal-footer {
+    background-color: var(--custom-white, #1a1c1e);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .prompt-card {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme-mode="dark"] #aiPromptModal .prompt-card .card-header {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .prompt-card .card-footer {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .prompt-preview {
+    background-color: rgba(0, 0, 0, 0.35);
+    color: #e3e3e8;
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .custom-black {
+    color: #ffffff !important;
+}
+
+[data-theme-mode="dark"] #aiPromptModal .badge.bg-primary-transparent {
+    background-color: rgba(46, 144, 250, 0.18) !important;
+    color: #53b1fd !important;
+    border: 1px solid rgba(46, 144, 250, 0.35);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .badge.bg-success-transparent {
+    background-color: rgba(18, 183, 106, 0.18) !important;
+    color: #47cd89 !important;
+    border: 1px solid rgba(18, 183, 106, 0.35);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .badge.bg-info-transparent {
+    background-color: rgba(35, 183, 229, 0.18) !important;
+    color: #70bbfd !important;
+    border: 1px solid rgba(35, 183, 229, 0.35);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .badge.bg-warning-transparent {
+    background-color: rgba(247, 144, 9, 0.18) !important;
+    color: #fec84b !important;
+    border: 1px solid rgba(247, 144, 9, 0.35);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .badge.bg-secondary-transparent {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .alert-info {
+    background-color: rgba(46, 144, 250, 0.12);
+    border-color: rgba(46, 144, 250, 0.25);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .alert-info code {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #70bbfd;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+}
+
+[data-theme-mode="dark"] #aiPromptModal .btn-outline-primary {
+    border-color: rgba(46, 144, 250, 0.6);
+    color: #53b1fd;
+}
+
+[data-theme-mode="dark"] #aiPromptModal .btn-outline-primary:hover,
+[data-theme-mode="dark"] #aiPromptModal .btn-outline-primary.active {
+    background-color: #2E90FA;
+    border-color: #2E90FA;
+    color: #ffffff;
+}
+
+[data-theme-mode="dark"] #aiPromptModal .btn-outline-secondary {
+    border-color: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .btn-outline-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+}
+
+[data-theme-mode="dark"] #aiPromptModal .btn-outline-warning {
+    border-color: rgba(247, 144, 9, 0.6);
+    color: #fec84b;
+}
+
+[data-theme-mode="dark"] #aiPromptModal .btn-outline-warning:hover {
+    background-color: #f79009;
+    border-color: #f79009;
+    color: #ffffff;
+}
+
+[data-theme-mode="dark"] #aiPromptModal .btn-outline-danger {
+    border-color: rgba(240, 68, 56, 0.6);
+    color: #fda29b;
+}
+
+[data-theme-mode="dark"] #aiPromptModal .btn-outline-danger:hover {
+    background-color: #f04438;
+    border-color: #f04438;
+    color: #ffffff;
+}
+
+[data-theme-mode="dark"] #aiPromptModal .input-group-text {
+    background-color: var(--form-control-bg, #232628);
+    border-color: var(--input-border, #313335);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .form-control,
+[data-theme-mode="dark"] #aiPromptModal .form-select {
+    background-color: var(--form-control-bg, #232628);
+    border-color: var(--input-border, #313335);
+    color: #ffffff;
+}
+
+[data-theme-mode="dark"] #aiPromptModal .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .nav-pills .nav-link:not(.active) {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .nav-pills .nav-link:not(.active):hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .dropdown-menu {
+    background-color: #232628;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .dropdown-item {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme-mode="dark"] #aiPromptModal .dropdown-item:hover,
+[data-theme-mode="dark"] #aiPromptModal .dropdown-item:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+[data-theme-mode="dark"] #aiPromptModal .dropdown-item code {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #70bbfd;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+}
+</style>
 <div class="modal fade" id="aiPromptModal" tabindex="-1" aria-labelledby="aiPromptModalLabel" aria-hidden="true" style="z-index: 1060;">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content" id="aiPromptModalRoot">
@@ -6,7 +213,7 @@
                 <div class="d-flex align-items-center gap-2">
                     <i class="bi bi-robot fs-20"></i>
                     <h5 class="modal-title mb-0 text-white" id="aiPromptModalLabel">AI Помощник & Промптове</h5>
-                    <span class="badge bg-white text-primary fs-12 ms-2" id="aiPromptPageBadge">Общи</span>
+                    <span class="badge fs-12 ms-2" id="aiPromptPageBadge" style="background-color: #ffffff; color: #0d6efd; font-weight: 600;">Общи</span>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Затвори"></button>
             </div>
@@ -34,7 +241,7 @@
                         <div class="row g-2 mb-3 align-items-center">
                             <div class="col-12 col-md-6">
                                 <div class="input-group input-group-sm">
-                                    <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+                                    <span class="input-group-text"><i class="bi bi-search text-muted"></i></span>
                                     <input type="text" id="aiPromptSearchInput" class="form-control" placeholder="Търсене по заглавие или текст..." oninput="window.AIPromptManager.filterPrompts()">
                                     <button class="btn btn-outline-secondary" type="button" id="aiPromptClearSearchBtn" onclick="window.AIPromptManager.clearSearch()" title="Изчисти търсенето">
                                         <i class="bi bi-x-lg"></i>
@@ -91,14 +298,14 @@
 
                     <!-- ТАБ 2: Добавяне / Редакция / Дублиране на промпт -->
                     <div class="tab-pane fade" id="ai-prompts-add-pane" role="tabpanel">
-                        <div class="card border-0 shadow-none mb-0">
-                            <div class="card-header bg-light py-2 px-3 d-flex justify-content-between align-items-center rounded-top">
-                                <span class="fw-semibold fs-14 text-dark" id="aiPromptFormHeading">
+                        <div class="card custom-card border shadow-none mb-0">
+                            <div class="card-header py-2 px-3 d-flex justify-content-between align-items-center rounded-top">
+                                <span class="fw-semibold fs-14 custom-black" id="aiPromptFormHeading">
                                     <i class="bi bi-plus-circle text-primary me-1"></i>Създаване на нов авторски промпт
                                 </span>
                                 <span class="badge bg-secondary-transparent text-secondary fs-11" id="aiPromptFormModeBadge">Нов запис</span>
                             </div>
-                            <div class="card-body p-3 border border-top-0 rounded-bottom">
+                            <div class="card-body p-3">
                                 <form id="aiPromptCreateForm" onsubmit="event.preventDefault(); window.AIPromptManager.submitNewPrompt();">
                                     <input type="hidden" id="aiNewPromptId" value="0">
                                     <div class="mb-3">
@@ -151,7 +358,7 @@
                                     <div id="aiPromptFormError" class="alert alert-danger py-2 fs-13 d-none"></div>
 
                                     <div class="d-flex justify-content-end gap-2 pt-2 border-top">
-                                        <button type="button" class="btn btn-sm btn-light" id="aiPromptCancelBtn" onclick="window.AIPromptManager.cancelEdit()">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" id="aiPromptCancelBtn" onclick="window.AIPromptManager.cancelEdit()">
                                             <i class="bi bi-x-circle me-1"></i>Отказ
                                         </button>
                                         <button type="submit" class="btn btn-sm btn-primary" id="aiPromptSubmitBtn">
@@ -165,9 +372,9 @@
                 </div>
             </div>
 
-            <div class="modal-footer py-2 bg-light d-flex justify-content-between">
+            <div class="modal-footer py-2 border-top d-flex justify-content-between">
                 <small class="text-muted"><i class="bi bi-shield-check me-1"></i>Всеки вижда всички промптове; редакция и изтриване са достъпни само за автора</small>
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Затвори</button>
+                <button type="button" class="btn btn-warning btn-sm text-white" data-bs-dismiss="modal">Затвори</button>
             </div>
         </div>
     </div>
