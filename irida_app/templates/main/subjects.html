@@ -77,7 +77,12 @@
                                                 <div class="flex-fill">
                                                     <div class="d-flex align-items-center">
                                                         <div class="mt-sm-0 mt-2">
-                                                            <p class="mb-0 fs-14 fw-semibold">[[sbj.name]] ([[sbj.grade]]<sup>-ти</sup> клас, [[sbj.subject_type]])</p>
+                                                            <p class="mb-0 fs-14 fw-semibold">
+                                                                [[sbj.name]] ([[sbj.grade]]<sup>-ти</sup> клас, [[sbj.subject_type]])
+                                                                <span class="badge bg-secondary-transparent text-secondary fs-12 ms-2" v-if="sbj.creator_name" :title="'Създател: ' + sbj.creator_name">
+                                                                    <i class="bi bi-person me-1"></i>[[ sbj.creator_name ]]
+                                                                </span>
+                                                            </p>
                                                         </div>
                                                         <div class="ms-auto">
                                                             <div class="btn-list">

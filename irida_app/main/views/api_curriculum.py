@@ -3,6 +3,7 @@ API за учебната програма: предмети, цели, разд
 """
 
 import json
+import logging
 
 from django.db import transaction
 from django.db.models import Prefetch
@@ -12,7 +13,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from ..audit import log_audit_event
+from ..constants import STUDENT
 from ..models import Goal, SessionTopic, Specialty, Subject, Topic, Unit
+from ..permissions import handle_author_on_save, is_admin_user
 from ..serializers import (
     GoalSerializer,
     SubjectSerializer,
@@ -20,6 +24,7 @@ from ..serializers import (
     UnitSerializer,
     UnitWriteSerializer,
 )
+from ..serializers.curriculum import check_subject_can_edit
 
 
 # ***************************
@@ -67,17 +72,27 @@ def subject_detail(request, subject_id, sp_id=None):
 
     # PUT
     elif request.method == 'PUT':
+        if not request.user or not request.user.is_authenticated:
+            return Response({'detail': 'Необходима е автентикация.'}, status=status.HTTP_403_FORBIDDEN)
         data = request.data
         try:
             # Създаване при id == 0
             if int(subject_id) == 0:
                 serializer = SubjectSerializer(data=data, context={'request': request})
                 if serializer.is_valid():
-                    subject = serializer.save()
+                    subject = serializer.save(creator=request.user)
                     # Ако имаме sp_id в URL, добавяме M2M връзка
                     if sp_id is not None:
                         specialty = get_object_or_404(Specialty, id=sp_id)
                         specialty.subjects.add(subject)
+                    log_audit_event(
+                        request=request,
+                        action="CREATE",
+                        target_model="Subject",
+                        target_id=subject.id,
+                        status="SUCCESS",
+                        details=f"Created subject '{subject.name}'"
+                    )
                     return Response(SubjectSerializer(subject, context={'request': request}).data,
                                     status=status.HTTP_201_CREATED)
                 else:
@@ -85,13 +100,35 @@ def subject_detail(request, subject_id, sp_id=None):
 
             # Обновяване при id != 0
             subject = get_object_or_404(Subject, id=subject_id)
+            if not check_subject_can_edit(request, subject):
+                log_audit_event(
+                    request=request,
+                    action="PERMISSION_DENIED",
+                    target_model="Subject",
+                    target_id=subject.id,
+                    status="DENIED",
+                    details=f"Unauthorized update attempt on Subject '{subject.name}'",
+                    level=logging.WARNING,
+                )
+                return Response({'detail': 'Нямате права за редакция на този предмет.'}, status=status.HTTP_403_FORBIDDEN)
+
             serializer = SubjectSerializer(subject, data=data, partial=True, context={'request': request})
             if serializer.is_valid():
                 subject = serializer.save()
+                handle_author_on_save(subject, request, is_create=False)
+                subject.save()
                 # По желание: ако sp_id е подаден, уверете се, че връзката съществува
                 if sp_id is not None:
                     specialty = get_object_or_404(Specialty, id=sp_id)
                     specialty.subjects.add(subject)
+                log_audit_event(
+                    request=request,
+                    action="UPDATE",
+                    target_model="Subject",
+                    target_id=subject.id,
+                    status="SUCCESS",
+                    details=f"Updated subject '{subject.name}'"
+                )
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -105,12 +142,33 @@ def subject_detail(request, subject_id, sp_id=None):
     elif request.method == 'DELETE':
         try:
             subject = get_object_or_404(Subject, id=subject_id)
+            if not (is_admin_user(request.user) or (subject.creator_id and subject.creator_id == request.user.id) or subject.creator_id is None):
+                log_audit_event(
+                    request=request,
+                    action="PERMISSION_DENIED",
+                    target_model="Subject",
+                    target_id=subject.id,
+                    status="DENIED",
+                    details=f"Unauthorized delete attempt on Subject '{subject.name}'",
+                    level=logging.WARNING,
+                )
+                return Response({'detail': 'Нямате права за изтриване на този предмет.'}, status=status.HTTP_403_FORBIDDEN)
+
             if sp_id is not None:
                 specialty = get_object_or_404(Specialty, id=sp_id)
                 specialty.subjects.remove(subject)
             # Премахваме свързаните SessionTopic за темите в този предмет, за да избегнем ProtectedError
             SessionTopic.objects.filter(topic__unit__subject=subject).delete()
+            subj_name = subject.name
             subject.delete()
+            log_audit_event(
+                request=request,
+                action="DELETE",
+                target_model="Subject",
+                target_id=subject_id,
+                status="SUCCESS",
+                details=f"Deleted subject '{subj_name}'"
+            )
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             import traceback
@@ -263,6 +321,18 @@ class CurriculumImportView(APIView):
     """
     def post(self, request, subject_id):
         subject = get_object_or_404(Subject, id=subject_id)
+        if not check_subject_can_edit(request, subject):
+            log_audit_event(
+                request=request,
+                action="PERMISSION_DENIED",
+                target_model="Subject",
+                target_id=subject.id,
+                status="DENIED",
+                details=f"Unauthorized curriculum import attempt on Subject '{subject.name}'",
+                level=logging.WARNING,
+            )
+            return Response({'detail': 'Нямате права за импорт на учебна програма по този предмет.'}, status=status.HTTP_403_FORBIDDEN)
+
         data = request.data
 
         # Поддръжка както на структуриран обект с ключ "units", така и на директен масив или raw_json низ
@@ -406,6 +476,15 @@ class CurriculumImportView(APIView):
         serializer = UnitSerializer(updated_units, many=True)
         total_topics = sum(len(u['topics']) for u in cleaned_units)
 
+        log_audit_event(
+            request=request,
+            action="IMPORT_CURRICULUM",
+            target_model="Subject",
+            target_id=subject.id,
+            status="SUCCESS",
+            details=f"Imported {len(cleaned_units)} units and {total_topics} topics for subject '{subject.name}'"
+        )
+
         return Response({
             'message': f'Успешно бяха импортирани {len(cleaned_units)} раздела и {total_topics} теми по предмета.',
             'units': serializer.data
@@ -419,6 +498,18 @@ class GoalImportView(APIView):
     """
     def post(self, request, subject_id):
         subject = get_object_or_404(Subject, id=subject_id)
+        if not check_subject_can_edit(request, subject):
+            log_audit_event(
+                request=request,
+                action="PERMISSION_DENIED",
+                target_model="Subject",
+                target_id=subject.id,
+                status="DENIED",
+                details=f"Unauthorized goals import attempt on Subject '{subject.name}'",
+                level=logging.WARNING,
+            )
+            return Response({'detail': 'Нямате права за импорт на цели по този предмет.'}, status=status.HTTP_403_FORBIDDEN)
+
         data = request.data
 
         # Поддръжка както на структуриран обект с ключ "goals", така и на директен масив или raw_json низ
@@ -503,6 +594,15 @@ class GoalImportView(APIView):
         # Презареждане и сериализиране на актуализирания списък
         updated_goals = Goal.objects.filter(course=subject).order_by('num', 'id')
         serializer = GoalSerializer(updated_goals, many=True)
+
+        log_audit_event(
+            request=request,
+            action="IMPORT_GOALS",
+            target_model="Subject",
+            target_id=subject.id,
+            status="SUCCESS",
+            details=f"Imported {len(cleaned_goals)} goals for subject '{subject.name}'"
+        )
 
         return Response({
             'message': f'Успешно бяха импортирани {len(cleaned_goals)} цели по предмета.',

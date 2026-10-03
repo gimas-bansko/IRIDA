@@ -3,6 +3,7 @@
 с бележките и задачите им.
 """
 
+from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -13,6 +14,14 @@ from .curriculum import Subject, Topic
 # Урок - основен
 class Session(models.Model):
     course = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='course_session')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='authored_sessions',
+        verbose_name='Автор'
+    )
     num = models.SmallIntegerField('Урок №', default=1, validators=[ MinValueValidator(1)])
     name = models.CharField('Име', max_length=200, help_text='Общо име на урока')
     focus = models.TextField('Фокус', default='', blank=True, help_text='Фокус(основни акценти на урока)')
@@ -61,6 +70,14 @@ class SessionTopic(models.Model):
 # Занятие - точки от плана
 class SessionPoint(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='session_points', verbose_name='Занятие')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='authored_points',
+        verbose_name='Автор'
+    )
     num = models.SmallIntegerField('Занятие №', default=1, validators=[ MinValueValidator(1)])
     name = models.CharField('Текст(име)', max_length=200, blank=True, default='')
     description = models.CharField('Описание', max_length=200, blank=True, default='')
@@ -81,6 +98,14 @@ class SessionNote(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='session_notes', verbose_name='Занятие')
     point = models.ForeignKey(SessionPoint, verbose_name='Точка от плана на урока', on_delete=models.SET_NULL,
                               null=True, blank=True,related_name='point_notes')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='authored_notes',
+        verbose_name='Автор'
+    )
     num = models.SmallIntegerField('Бележка №', default=1, validators=[MinValueValidator(1)])
     name = models.CharField('Текст(име)', max_length=200, blank=True, default='')
     content = models.TextField('Съдържание', default='', blank=True, help_text='Съдържание на точката (html)')
@@ -98,6 +123,14 @@ class SessionTask(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='session_tasks', verbose_name='Занятие')
     point = models.ForeignKey(SessionPoint, verbose_name='Задача към точка от план', on_delete=models.SET_NULL,
                               null=True, blank=True,related_name='point_tasks')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='authored_tasks',
+        verbose_name='Автор'
+    )
     num = models.SmallIntegerField('Бележка №', default=1, validators=[MinValueValidator(1)])
     name = models.CharField('Текст(име)', max_length=200, blank=True, default='')
     condition = models.TextField('Условие', default='', blank=True, help_text='Условие на задачата (html)')
@@ -135,6 +168,14 @@ class SessionAttachment(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='session_attachments', verbose_name='Занятие')
     point = models.ForeignKey(SessionPoint, verbose_name='Точка от плана на урока', on_delete=models.SET_NULL,
                               null=True, blank=True, related_name='point_attachments')
+    author = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='authored_session_attachments',
+        verbose_name='Автор'
+    )
     num = models.SmallIntegerField('№', default=1, validators=[MinValueValidator(1)])
     name = models.CharField('Име / Заглавие', max_length=200, blank=True, default='')
     original_filename = models.CharField(

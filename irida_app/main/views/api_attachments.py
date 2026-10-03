@@ -2,6 +2,7 @@
 API за управление на глобални приложения / прикачени файлове към системата.
 """
 
+import logging
 import os
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.shortcuts import get_object_or_404
@@ -10,8 +11,11 @@ from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from ..audit import log_audit_event
+from ..constants import STUDENT, TEACHER
 from ..converters import convert_markdown_file
 from ..models import AppAttachment
+from ..permissions import handle_author_on_save, is_admin_user
 from ..serializers.attachments import AppAttachmentSerializer
 
 
@@ -44,6 +48,9 @@ def app_attachment_upsert(request):
     POST body: { id, num, name, file, description, is_system, target_format }
     id == 0/missing -> create; id > 0 -> update
     """
+    if not request.user or not request.user.is_authenticated:
+        return Response({'detail': 'Необходима е автентикация.'}, status=status.HTTP_403_FORBIDDEN)
+
     attachment_id = request.data.get('id', 0) or 0
     try:
         attachment_id = int(attachment_id)
@@ -93,11 +100,22 @@ def app_attachment_upsert(request):
             if not name_val:
                 data['name'] = uploaded_file.name
 
-    user = request.user if request.user.is_authenticated else None
+    user = request.user if getattr(request, 'user', None) and request.user.is_authenticated else None
 
     if attachment_id > 0:
         instance = get_object_or_404(AppAttachment, id=attachment_id)
-        if user and not (user.is_staff or user.is_superuser) and instance.created_by != user:
+        is_admin = is_admin_user(user)
+        can_edit = is_admin or (user and instance.created_by == user) or (instance.created_by is None and not instance.is_system)
+        if not can_edit:
+            log_audit_event(
+                request=request,
+                action="PERMISSION_DENIED",
+                target_model="AppAttachment",
+                target_id=instance.id,
+                status="DENIED",
+                details=f"Unauthorized update attempt on AppAttachment '{instance.name}'",
+                level=logging.WARNING,
+            )
             return Response(
                 {'detail': 'Нямате права да променяте това приложение.'},
                 status=status.HTTP_403_FORBIDDEN
@@ -109,11 +127,31 @@ def app_attachment_upsert(request):
         serializer = AppAttachmentSerializer(instance, data=data, partial=True, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        handle_author_on_save(instance, request, is_create=False)
+        instance.save()
+        log_audit_event(
+            request=request,
+            action="UPDATE",
+            target_model="AppAttachment",
+            target_id=instance.id,
+            status="SUCCESS",
+            details=f"Updated AppAttachment '{instance.name}'"
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         serializer = AppAttachmentSerializer(data=data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        serializer.save(created_by=user)
+        instance = serializer.save(created_by=user)
+        handle_author_on_save(instance, request, is_create=True)
+        instance.save()
+        log_audit_event(
+            request=request,
+            action="CREATE",
+            target_model="AppAttachment",
+            target_id=instance.id,
+            status="SUCCESS",
+            details=f"Created AppAttachment '{instance.name}'"
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -124,11 +162,31 @@ def app_attachment_delete(request, pk):
     Изтрива запис за глобално приложение / файл.
     """
     instance = get_object_or_404(AppAttachment, id=pk)
-    user = request.user if request.user.is_authenticated else None
-    if user and not (user.is_staff or user.is_superuser) and instance.created_by != user:
+    user = request.user if getattr(request, 'user', None) and request.user.is_authenticated else None
+    is_admin = is_admin_user(user)
+    can_delete = is_admin or (user and instance.created_by == user)
+    if not can_delete:
+        log_audit_event(
+            request=request,
+            action="PERMISSION_DENIED",
+            target_model="AppAttachment",
+            target_id=instance.id,
+            status="DENIED",
+            details=f"Unauthorized delete attempt on AppAttachment '{instance.name}'",
+            level=logging.WARNING,
+        )
         return Response(
             {'detail': 'Нямате права да премахвате това приложение.'},
             status=status.HTTP_403_FORBIDDEN
         )
+    att_name = instance.name
     instance.delete()
+    log_audit_event(
+        request=request,
+        action="DELETE",
+        target_model="AppAttachment",
+        target_id=pk,
+        status="SUCCESS",
+        details=f"Deleted AppAttachment '{att_name}'"
+    )
     return Response(status=status.HTTP_204_NO_CONTENT)

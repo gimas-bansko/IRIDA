@@ -2,11 +2,13 @@
 Вход и изход от системата.
 """
 
+import logging
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_protect
 
+from ..audit import log_audit_event
 from ..constants import STUDENT
 
 
@@ -24,6 +26,17 @@ def login_view(request):
             if next_url and next_url != 'home':
                 return redirect(next_url)
             return redirect('home')
+        else:
+            username = request.POST.get('username', '')
+            log_audit_event(
+                request=request,
+                action="LOGIN_FAILED",
+                target_model="User",
+                target_id=username or '-',
+                status="FAILED",
+                details=f"Failed login attempt for username '{username}'",
+                level=logging.WARNING,
+            )
     else:
         form = AuthenticationForm(request)
 

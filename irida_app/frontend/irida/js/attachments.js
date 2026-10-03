@@ -65,6 +65,7 @@ const App = {
         },
         isOwner(a) {
             if (!a) return false;
+            if (a.can_edit !== undefined) return !!a.can_edit;
             if (a.is_owner === true) return true;
             if (window.CURRENT_USER_ID && a.created_by && Number(a.created_by) === Number(window.CURRENT_USER_ID)) {
                 return true;

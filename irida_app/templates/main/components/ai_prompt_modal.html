@@ -21,7 +21,7 @@
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link py-2" id="ai-prompts-add-tab" data-bs-toggle="tab" data-bs-target="#ai-prompts-add-pane" type="button" role="tab">
-                            <i class="bi bi-plus-circle me-1"></i>Добави нов промпт
+                            <i class="bi bi-plus-circle me-1" id="aiPromptAddTabIcon"></i><span id="aiPromptAddTabLabel">Добави нов промпт</span>
                         </button>
                     </li>
                 </ul>
@@ -30,11 +30,35 @@
                 <div class="tab-content" id="aiPromptTabContent">
                     <!-- ТАБ 1: Списък с промптове -->
                     <div class="tab-pane fade show active" id="ai-prompts-list-pane" role="tabpanel">
-                        <!-- Търсене и филтър -->
-                        <div class="d-flex gap-2 mb-3">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" id="aiPromptSearchInput" class="form-control" placeholder="Търсене на промпт по заглавие или ключова дума..." oninput="window.AIPromptManager.filterPrompts()">
+                        <!-- Търсене и филтри за видимост -->
+                        <div class="row g-2 mb-3 align-items-center">
+                            <div class="col-12 col-md-6">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+                                    <input type="text" id="aiPromptSearchInput" class="form-control" placeholder="Търсене по заглавие или текст..." oninput="window.AIPromptManager.filterPrompts()">
+                                    <button class="btn btn-outline-secondary" type="button" id="aiPromptClearSearchBtn" onclick="window.AIPromptManager.clearSearch()" title="Изчисти търсенето">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center gap-2 flex-wrap">
+                                <!-- Филтър за видимост (Всички, Системни, Собствени) -->
+                                <div class="btn-group btn-group-sm" role="group" id="aiPromptVisibilityFilterGroup">
+                                    <button type="button" class="btn btn-outline-primary active" data-filter="all" onclick="window.AIPromptManager.setVisibilityFilter('all')">
+                                        Всички <span class="badge bg-secondary ms-1" id="aiCountAll">0</span>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary" data-filter="system" onclick="window.AIPromptManager.setVisibilityFilter('system')">
+                                        <i class="bi bi-patch-check me-1"></i>Системни <span class="badge bg-secondary ms-1" id="aiCountSystem">0</span>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary" data-filter="mine" onclick="window.AIPromptManager.setVisibilityFilter('mine')">
+                                        <i class="bi bi-person-check me-1"></i>Собствени <span class="badge bg-secondary ms-1" id="aiCountMine">0</span>
+                                    </button>
+                                </div>
+
+                                <!-- Бутон за разгъване/свиване на всички -->
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="aiPromptToggleAllBtn" onclick="window.AIPromptManager.toggleAllCards()" title="Разгъни / свий всички">
+                                    <i class="bi bi-arrows-expand me-1"></i><span id="aiPromptToggleAllText">Разгъни всички</span>
+                                </button>
                             </div>
                         </div>
 
@@ -42,7 +66,7 @@
                         <div class="alert alert-info py-2 px-3 fs-13 mb-3 d-flex align-items-center justify-content-between" id="aiPromptContextNotice">
                             <div>
                                 <i class="bi bi-info-circle me-1"></i>
-                                Плейсхолдърите <code>{тема}</code>, <code>{предмет}</code>, <code>{цели}</code> и др. се заместват автоматично при копиране.
+                                Плейсхолдърите <code>{тема}</code>, <code>{предмет}</code>, <code>{цели}</code> и др. се заместват автоматично при копиране на промпта.
                             </div>
                         </div>
 
@@ -58,79 +82,91 @@
                         <!-- Съобщение при празен резултат -->
                         <div id="aiPromptEmptyState" class="text-center py-5 d-none">
                             <i class="bi bi-chat-square-dots fs-40 text-muted mb-2"></i>
-                            <p class="text-muted mb-2">Няма намерени промптове за този контекст.</p>
+                            <p class="text-muted mb-2" id="aiPromptEmptyMsg">Няма намерени промптове за този филтър и контекст.</p>
                             <button type="button" class="btn btn-sm btn-outline-primary" onclick="window.AIPromptManager.switchToNewTab()">
-                                <i class="bi bi-plus-circle me-1"></i>Създай първия промпт
+                                <i class="bi bi-plus-circle me-1"></i>Създай нов промпт
                             </button>
                         </div>
                     </div>
 
-                    <!-- ТАБ 2: Добавяне на нов промпт -->
+                    <!-- ТАБ 2: Добавяне / Редакция / Дублиране на промпт -->
                     <div class="tab-pane fade" id="ai-prompts-add-pane" role="tabpanel">
-                        <form id="aiPromptCreateForm" onsubmit="event.preventDefault(); window.AIPromptManager.submitNewPrompt();">
-                            <input type="hidden" id="aiNewPromptId" value="0">
-                            <div class="mb-3">
-                                <label for="aiNewPromptTitle" class="form-label fw-semibold fs-13">Заглавие на промпта *</label>
-                                <input type="text" class="form-control" id="aiNewPromptTitle" placeholder="напр. План на урок за нови знания" required>
+                        <div class="card border-0 shadow-none mb-0">
+                            <div class="card-header bg-light py-2 px-3 d-flex justify-content-between align-items-center rounded-top">
+                                <span class="fw-semibold fs-14 text-dark" id="aiPromptFormHeading">
+                                    <i class="bi bi-plus-circle text-primary me-1"></i>Създаване на нов авторски промпт
+                                </span>
+                                <span class="badge bg-secondary-transparent text-secondary fs-11" id="aiPromptFormModeBadge">Нов запис</span>
                             </div>
-
-                            <div class="mb-3">
-                                <label for="aiNewPromptPageKey" class="form-label fw-semibold fs-13">Контекст / Страница</label>
-                                <select class="form-select" id="aiNewPromptPageKey">
-                                    <option value="general">Общи промптове (за всички страници)</option>
-                                    <option value="lesson_main">Подготовка на урок / занятие</option>
-                                    <option value="course_goals">Цели на курс/предмет</option>
-                                    <option value="course_units">Учебни раздели/модули</option>
-                                    <option value="course_lessons">Теми за уроци</option>
-                                    <option value="session_list">Списък с уроци</option>
-                                    <option value="school_day">Учебен ден и програма</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="aiNewPromptInstructions" class="form-label fw-semibold fs-13">Указания за ползване и очакван резултат</label>
-                                <textarea class="form-control" id="aiNewPromptInstructions" rows="2" placeholder="Кратка насока за колегите какъв резултат ще даде промпта в ChatGPT/Claude..."></textarea>
-                            </div>
-
-                            <div class="mb-3">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label for="aiNewPromptText" class="form-label fw-semibold fs-13 mb-0">Текст на промпта (шаблон) *</label>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="aiPlaceholderDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-braces me-1"></i>Вмъкни плейсхолдър
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm py-1" aria-labelledby="aiPlaceholderDropdown" style="min-width: 420px; max-width: 95vw;">
-                                            <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{предмет}')"><code>{предмет}</code> – Наименование на предмет</button></li>
-                                            <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{специалност}')"><code>{специалност}</code> – Специалност</button></li>
-                                            <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{клас}')"><code>{клас}</code> – Клас</button></li>
-                                            <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{тема}')"><code>{тема}</code> – Тема / Заглавие на урок</button></li>
-                                            <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{цели}')"><code>{цели}</code> – Цели на урока/предмета</button></li>
-                                            <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{социално_емоционални_цели}')"><code>{социално_емоционални_цели}</code> – Социално-емоционални цели (СЕО)</button></li>
-                                            <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{точки}')"><code>{точки}</code> – План / точки на урока</button></li>
-                                            <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{списък_уроци}')"><code>{списък_уроци}</code> – Списък с разработени уроци</button></li>
-                                            <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{раздели_и_теми}')"><code>{раздели_и_теми}</code> – Раздели и теми (програма)</button></li>
-                                            <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{структура_часове}')"><code>{структура_часове}</code> – Хорариум и седмично разпределение</button></li>
-                                        </ul>
+                            <div class="card-body p-3 border border-top-0 rounded-bottom">
+                                <form id="aiPromptCreateForm" onsubmit="event.preventDefault(); window.AIPromptManager.submitNewPrompt();">
+                                    <input type="hidden" id="aiNewPromptId" value="0">
+                                    <div class="mb-3">
+                                        <label for="aiNewPromptTitle" class="form-label fw-semibold fs-13">Заглавие на промпта *</label>
+                                        <input type="text" class="form-control" id="aiNewPromptTitle" placeholder="напр. План на урок за нови знания" required>
                                     </div>
-                                </div>
-                                <textarea class="form-control" id="aiNewPromptText" rows="5" placeholder="Напиши промпта тук. Използвай падащото меню горе, за да вмъкнеш данни от урока." required></textarea>
-                            </div>
 
-                            <div id="aiPromptFormError" class="alert alert-danger py-2 fs-13 d-none"></div>
+                                    <div class="mb-3">
+                                        <label for="aiNewPromptPageKey" class="form-label fw-semibold fs-13">Контекст / Страница</label>
+                                        <select class="form-select" id="aiNewPromptPageKey">
+                                            <option value="general">Общи промптове (за всички страници)</option>
+                                            <option value="lesson_main">Подготовка на урок / занятие</option>
+                                            <option value="course_goals">Цели на курс/предмет</option>
+                                            <option value="course_units">Учебни раздели/модули</option>
+                                            <option value="course_lessons">Теми за уроци</option>
+                                            <option value="session_list">Списък с уроци</option>
+                                            <option value="school_day">Учебен ден и програма</option>
+                                        </select>
+                                    </div>
 
-                            <div class="d-flex justify-content-end gap-2">
-                                <button type="button" class="btn btn-sm btn-light" onclick="window.AIPromptManager.cancelEdit()">Изчисти</button>
-                                <button type="submit" class="btn btn-sm btn-primary" id="aiPromptSubmitBtn">
-                                    <i class="bi bi-check2 me-1"></i>Запази и сподели промпта
-                                </button>
+                                    <div class="mb-3">
+                                        <label for="aiNewPromptInstructions" class="form-label fw-semibold fs-13">Указания за ползване и очакван резултат</label>
+                                        <textarea class="form-control" id="aiNewPromptInstructions" rows="2" placeholder="Кратка насока за колегите какъв резултат ще даде промпта в ChatGPT/Claude..."></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <label for="aiNewPromptText" class="form-label fw-semibold fs-13 mb-0">Текст на промпта (шаблон) *</label>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="aiPlaceholderDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bi bi-braces me-1"></i>Вмъкни плейсхолдър
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end shadow-sm py-1" aria-labelledby="aiPlaceholderDropdown" style="min-width: 420px; max-width: 95vw;">
+                                                    <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{предмет}')"><code>{предмет}</code> – Наименование на предмет</button></li>
+                                                    <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{специалност}')"><code>{специалност}</code> – Специалност</button></li>
+                                                    <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{клас}')"><code>{клас}</code> – Клас</button></li>
+                                                    <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{тема}')"><code>{тема}</code> – Тема / Заглавие на урок</button></li>
+                                                    <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{цели}')"><code>{цели}</code> – Цели на урока/предмета</button></li>
+                                                    <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{социално_емоционални_цели}')"><code>{социално_емоционални_цели}</code> – Социално-емоционални цели (СЕО)</button></li>
+                                                    <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{точки}')"><code>{точки}</code> – План / точки на урока</button></li>
+                                                    <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{списък_уроци}')"><code>{списък_уроци}</code> – Списък с разработени уроци</button></li>
+                                                    <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{раздели_и_теми}')"><code>{раздели_и_теми}</code> – Раздели и теми (програма)</button></li>
+                                                    <li><button type="button" class="dropdown-item py-1 px-3 fs-13" onclick="window.AIPromptManager.insertPlaceholder('{структура_часове}')"><code>{структура_часове}</code> – Хорариум и седмично разпределение</button></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <textarea class="form-control" id="aiNewPromptText" rows="6" placeholder="Напиши промпта тук. Използвай падащото меню горе, за да вмъкнеш данни от урока." required></textarea>
+                                    </div>
+
+                                    <div id="aiPromptFormError" class="alert alert-danger py-2 fs-13 d-none"></div>
+
+                                    <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+                                        <button type="button" class="btn btn-sm btn-light" id="aiPromptCancelBtn" onclick="window.AIPromptManager.cancelEdit()">
+                                            <i class="bi bi-x-circle me-1"></i>Отказ
+                                        </button>
+                                        <button type="submit" class="btn btn-sm btn-primary" id="aiPromptSubmitBtn">
+                                            <i class="bi bi-check2 me-1"></i>Запази и сподели промпта
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="modal-footer py-2 bg-light d-flex justify-content-between">
-                <small class="text-muted"><i class="bi bi-shield-check me-1"></i>Всички учители имат достъп до споделените промптове</small>
+                <small class="text-muted"><i class="bi bi-shield-check me-1"></i>Всеки вижда всички промптове; редакция и изтриване са достъпни само за автора</small>
                 <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Затвори</button>
             </div>
         </div>

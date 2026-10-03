@@ -1,0 +1,34 @@
+<!-- Modal: Броадкаст системни известия -->
+<div class="modal fade" id="broadcastModal" tabindex="-1" aria-labelledby="broadcastModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" style="z-index: 1065;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white py-3">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-megaphone-fill fs-20"></i>
+                    <h5 class="modal-title mb-0 text-white" id="broadcastModalLabel">Системно известие</h5>
+                </div>
+                <span class="badge bg-white text-primary fs-12 ms-auto" id="broadcastBadge">Съобщение</span>
+            </div>
+
+            <div class="modal-body p-4">
+                <h5 class="fw-bold mb-3 text-dark" id="broadcastTitle"></h5>
+                
+                <div class="d-flex align-items-center gap-2 mb-3 text-muted fs-12">
+                    <span id="broadcastSender"><i class="bi bi-person-fill me-1"></i>Администратор</span>
+                    <span>•</span>
+                    <span id="broadcastDate"><i class="bi bi-calendar3 me-1"></i>Дата</span>
+                </div>
+
+                <div class="p-3 bg-light rounded border text-dark fs-14" id="broadcastMessageBody" style="white-space: pre-wrap; line-height: 1.6; max-height: 350px; overflow-y: auto;">
+                </div>
+            </div>
+
+            <div class="modal-footer py-2 bg-light d-flex justify-content-between align-items-center">
+                <small class="text-muted fw-semibold" id="broadcastCounter"></small>
+                <button type="button" class="btn btn-primary px-4" id="broadcastAcknowledgeBtn">
+                    <i class="bi bi-check2-circle me-1"></i>Разбрах
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

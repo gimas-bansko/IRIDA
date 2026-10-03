@@ -76,6 +76,11 @@ LOGGING = {
             'format': '{levelname} {asctime} {name} {process:d} {thread:d} {message}',
             'style': '{',
         },
+        'audit': {
+            'format': '[{asctime}] {message}',
+            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
     },
     'handlers': {
         'console': {'class': 'logging.StreamHandler', 'formatter': 'verbose'},
@@ -84,6 +89,14 @@ LOGGING = {
             'filename': BASE_DIR / 'django_error.log',
             'formatter': 'verbose',
             'level': 'ERROR',
+        },
+        'audit_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGS_DIR / 'audit.log',
+            'maxBytes': 10 * 1024 * 1024,
+            'backupCount': 10,
+            'formatter': 'audit',
+            'encoding': 'utf-8',
         },
     },
     'root': {'handlers': ['console'], 'level': 'INFO'},
@@ -96,6 +109,11 @@ LOGGING = {
         'django.request': {
             'handlers': ['console', 'file'],
             'level': 'ERROR',
+            'propagate': False,
+        },
+        'irida.audit': {
+            'handlers': ['audit_file'],
+            'level': 'INFO',
             'propagate': False,
         },
     },

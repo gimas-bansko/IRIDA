@@ -4,6 +4,7 @@ API за урок/занятие: самите уроци, темите към �
 """
 
 import json
+import logging
 import os
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -16,8 +17,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from ..audit import log_audit_event
 from ..constants import STUDENT
-
 from ..converters import convert_markdown_file
 from ..models import (
     Session,
@@ -29,6 +30,12 @@ from ..models import (
     Subject,
     Topic,
 )
+from ..permissions import (
+    IsAuthorOrAdminOrReadOnly,
+    get_object_author_id,
+    handle_author_on_save,
+    is_admin_user,
+)
 from ..serializers import (
     SessionAttachmentSerializer,
     SessionNoteSerializer,
@@ -39,6 +46,26 @@ from ..serializers import (
     SessionTopicWriteSerializer,
     SessionWriteSerializer,
 )
+from ..serializers.lessons import check_user_can_edit
+
+
+def check_user_can_delete(request, obj):
+    if not request or not getattr(request, 'user', None) or not request.user.is_authenticated:
+        return False
+    user = request.user
+    if is_admin_user(user):
+        return True
+    author_id = get_object_author_id(obj)
+    if hasattr(obj, 'session') and getattr(obj.session, 'author_id', None) == user.id:
+        return True
+    if author_id is not None:
+        return author_id == user.id
+    user_profile = getattr(user, 'userprofile', None)
+    role = getattr(user_profile, 'access_level', None)
+    if role == STUDENT:
+        return False
+    # Ако няма автор (анонимен обект), разрешено за аутентикирани учители
+    return True
 
 
 # ***************************
@@ -47,17 +74,57 @@ from ..serializers import (
 
 # Списък и създаване на Session
 class SessionListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthorOrAdminOrReadOnly]
     serializer_class = SessionWriteSerializer
 
     def get_queryset(self):
-        # Показва всички на текущия потребител course_lessons_view? Или глобално. Ако имаш филтър, добави го.
         return Session.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        handle_author_on_save(instance, self.request, is_create=True)
+        instance.save()
+        log_audit_event(
+            request=self.request,
+            action="CREATE",
+            target_model="Session",
+            target_id=instance.id,
+            status="SUCCESS",
+            details=f"Created lesson '{instance.name}'"
+        )
 
 
 # Изглед за детайли/редакция/изтриване на Session
 class SessionRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthorOrAdminOrReadOnly]
     queryset = Session.objects.all()
     serializer_class = SessionWriteSerializer
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        handle_author_on_save(instance, self.request, is_create=False)
+        instance.save()
+        log_audit_event(
+            request=self.request,
+            action="UPDATE",
+            target_model="Session",
+            target_id=instance.id,
+            status="SUCCESS",
+            details=f"Updated lesson '{instance.name}'"
+        )
+
+    def perform_destroy(self, instance):
+        inst_id = instance.id
+        name = instance.name
+        instance.delete()
+        log_audit_event(
+            request=self.request,
+            action="DELETE",
+            target_model="Session",
+            target_id=inst_id,
+            status="SUCCESS",
+            details=f"Deleted lesson '{name}'"
+        )
 
 
 # Списък на Session за даден Subject (с вложени SessionTopic, SessionTask, SessionAttachment, SessionPoint)
@@ -150,13 +217,16 @@ class SessionPointsForSessionView(generics.ListAPIView):
 
 
 @api_view(['POST'])
-@csrf_exempt  # вероятно без ефект - DRF/SessionAuthentication налага CSRF сама
+@csrf_exempt
 def session_point_upsert(request):
     """
     POST body: { id, session, num, name, description, duration, content }
     - id == 0 или липсва -> create
     - id > 0 -> update
     """
+    if not request.user or not request.user.is_authenticated:
+        return Response({'detail': 'Необходима е автентикация.'}, status=status.HTTP_403_FORBIDDEN)
+
     point_id = request.data.get('id', 0) or 0
     try:
         point_id = int(point_id)
@@ -165,21 +235,72 @@ def session_point_upsert(request):
 
     if point_id > 0:
         instance = get_object_or_404(SessionPoint, id=point_id)
-        serializer = SessionPointSerializer(instance, data=request.data, partial=False)
+        if not check_user_can_edit(request, instance):
+            log_audit_event(
+                request=request,
+                action="PERMISSION_DENIED",
+                target_model="SessionPoint",
+                target_id=instance.id,
+                status="DENIED",
+                details=f"Unauthorized update attempt on SessionPoint '{instance.name}'",
+                level=logging.WARNING,
+            )
+            return Response({'detail': 'Нямате права за редакция на тази точка от плана.'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = SessionPointSerializer(instance, data=request.data, partial=False, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        handle_author_on_save(instance, request, is_create=False)
+        instance.save()
+        log_audit_event(
+            request=request,
+            action="UPDATE",
+            target_model="SessionPoint",
+            target_id=instance.id,
+            status="SUCCESS",
+            details=f"Updated SessionPoint '{instance.name}'"
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        serializer = SessionPointSerializer(data=request.data)
+        serializer = SessionPointSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        instance = serializer.save()
+        handle_author_on_save(instance, request, is_create=True)
+        instance.save()
+        log_audit_event(
+            request=request,
+            action="CREATE",
+            target_model="SessionPoint",
+            target_id=instance.id,
+            status="SUCCESS",
+            details=f"Created SessionPoint '{instance.name}'"
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['DELETE'])
 def session_point_delete(request, pk):
     instance = get_object_or_404(SessionPoint, id=pk)
+    if not check_user_can_delete(request, instance):
+        log_audit_event(
+            request=request,
+            action="PERMISSION_DENIED",
+            target_model="SessionPoint",
+            target_id=instance.id,
+            status="DENIED",
+            details=f"Unauthorized delete attempt on SessionPoint '{instance.name}'",
+            level=logging.WARNING,
+        )
+        return Response({'detail': 'Нямате права за изтриване на тази точка от плана.'}, status=status.HTTP_403_FORBIDDEN)
+    point_name = instance.name
     instance.delete()
+    log_audit_event(
+        request=request,
+        action="DELETE",
+        target_model="SessionPoint",
+        target_id=pk,
+        status="SUCCESS",
+        details=f"Deleted SessionPoint '{point_name}'"
+    )
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -196,12 +317,15 @@ class SessionNotesForSessionView(generics.ListAPIView):
 
 
 @api_view(['POST'])
-@csrf_exempt  # вероятно без ефект - виж бележката при session_point_upsert
+@csrf_exempt
 def session_note_upsert(request):
     """
     POST body: { id, session, point, num, name, content }
     id == 0/missing -> create; id > 0 -> update
     """
+    if not request.user or not request.user.is_authenticated:
+        return Response({'detail': 'Необходима е автентикация.'}, status=status.HTTP_403_FORBIDDEN)
+
     note_id = request.data.get('id', 0) or 0
     try:
         note_id = int(note_id)
@@ -210,21 +334,72 @@ def session_note_upsert(request):
 
     if note_id > 0:
         instance = get_object_or_404(SessionNote, id=note_id)
-        serializer = SessionNoteSerializer(instance, data=request.data, partial=False)
+        if not check_user_can_edit(request, instance):
+            log_audit_event(
+                request=request,
+                action="PERMISSION_DENIED",
+                target_model="SessionNote",
+                target_id=instance.id,
+                status="DENIED",
+                details=f"Unauthorized update attempt on SessionNote '{instance.name}'",
+                level=logging.WARNING,
+            )
+            return Response({'detail': 'Нямате права за редакция на тази бележка.'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = SessionNoteSerializer(instance, data=request.data, partial=False, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        handle_author_on_save(instance, request, is_create=False)
+        instance.save()
+        log_audit_event(
+            request=request,
+            action="UPDATE",
+            target_model="SessionNote",
+            target_id=instance.id,
+            status="SUCCESS",
+            details=f"Updated SessionNote '{instance.name}'"
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        serializer = SessionNoteSerializer(data=request.data)
+        serializer = SessionNoteSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        instance = serializer.save()
+        handle_author_on_save(instance, request, is_create=True)
+        instance.save()
+        log_audit_event(
+            request=request,
+            action="CREATE",
+            target_model="SessionNote",
+            target_id=instance.id,
+            status="SUCCESS",
+            details=f"Created SessionNote '{instance.name}'"
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['DELETE'])
 def session_note_delete(request, pk):
     instance = get_object_or_404(SessionNote, id=pk)
+    if not check_user_can_delete(request, instance):
+        log_audit_event(
+            request=request,
+            action="PERMISSION_DENIED",
+            target_model="SessionNote",
+            target_id=instance.id,
+            status="DENIED",
+            details=f"Unauthorized delete attempt on SessionNote '{instance.name}'",
+            level=logging.WARNING,
+        )
+        return Response({'detail': 'Нямате права за изтриване на тази бележка.'}, status=status.HTTP_403_FORBIDDEN)
+    note_name = instance.name
     instance.delete()
+    log_audit_event(
+        request=request,
+        action="DELETE",
+        target_model="SessionNote",
+        target_id=pk,
+        status="SUCCESS",
+        details=f"Deleted SessionNote '{note_name}'"
+    )
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -241,12 +416,15 @@ class SessionTasksForSessionView(generics.ListAPIView):
 
 
 @api_view(['POST'])
-@csrf_exempt  # вероятно без ефект - виж бележката при session_point_upsert
+@csrf_exempt
 def session_task_upsert(request):
     """
     POST body: { id, session, point, num, name, condition, answer }
     id == 0/missing -> create; id > 0 -> update
     """
+    if not request.user or not request.user.is_authenticated:
+        return Response({'detail': 'Необходима е автентикация.'}, status=status.HTTP_403_FORBIDDEN)
+
     task_id = request.data.get('id', 0) or 0
     try:
         task_id = int(task_id)
@@ -255,21 +433,72 @@ def session_task_upsert(request):
 
     if task_id > 0:
         instance = get_object_or_404(SessionTask, id=task_id)
-        serializer = SessionTaskSerializer(instance, data=request.data, partial=False)
+        if not check_user_can_edit(request, instance):
+            log_audit_event(
+                request=request,
+                action="PERMISSION_DENIED",
+                target_model="SessionTask",
+                target_id=instance.id,
+                status="DENIED",
+                details=f"Unauthorized update attempt on SessionTask '{instance.name}'",
+                level=logging.WARNING,
+            )
+            return Response({'detail': 'Нямате права за редакция на тази задача.'}, status=status.HTTP_403_FORBIDDEN)
+        serializer = SessionTaskSerializer(instance, data=request.data, partial=False, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        handle_author_on_save(instance, request, is_create=False)
+        instance.save()
+        log_audit_event(
+            request=request,
+            action="UPDATE",
+            target_model="SessionTask",
+            target_id=instance.id,
+            status="SUCCESS",
+            details=f"Updated SessionTask '{instance.name}'"
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        serializer = SessionTaskSerializer(data=request.data)
+        serializer = SessionTaskSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        instance = serializer.save()
+        handle_author_on_save(instance, request, is_create=True)
+        instance.save()
+        log_audit_event(
+            request=request,
+            action="CREATE",
+            target_model="SessionTask",
+            target_id=instance.id,
+            status="SUCCESS",
+            details=f"Created SessionTask '{instance.name}'"
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['DELETE'])
 def session_task_delete(request, pk):
     instance = get_object_or_404(SessionTask, id=pk)
+    if not check_user_can_delete(request, instance):
+        log_audit_event(
+            request=request,
+            action="PERMISSION_DENIED",
+            target_model="SessionTask",
+            target_id=instance.id,
+            status="DENIED",
+            details=f"Unauthorized delete attempt on SessionTask '{instance.name}'",
+            level=logging.WARNING,
+        )
+        return Response({'detail': 'Нямате права за изтриване на тази задача.'}, status=status.HTTP_403_FORBIDDEN)
+    task_name = instance.name
     instance.delete()
+    log_audit_event(
+        request=request,
+        action="DELETE",
+        target_model="SessionTask",
+        target_id=pk,
+        status="SUCCESS",
+        details=f"Deleted SessionTask '{task_name}'"
+    )
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -299,6 +528,9 @@ def session_attachment_upsert(request):
     POST body: { id, session, point, num, name, attachment_type, is_student_visible, file, description, target_format }
     id == 0/missing -> create; id > 0 -> update
     """
+    if not request.user or not request.user.is_authenticated:
+        return Response({'detail': 'Необходима е автентикация.'}, status=status.HTTP_403_FORBIDDEN)
+
     attachment_id = request.data.get('id', 0) or 0
     try:
         attachment_id = int(attachment_id)
@@ -359,24 +591,75 @@ def session_attachment_upsert(request):
 
     if attachment_id > 0:
         instance = get_object_or_404(SessionAttachment, id=attachment_id)
+        if not check_user_can_edit(request, instance):
+            log_audit_event(
+                request=request,
+                action="PERMISSION_DENIED",
+                target_model="SessionAttachment",
+                target_id=instance.id,
+                status="DENIED",
+                details=f"Unauthorized update attempt on SessionAttachment '{instance.name}'",
+                level=logging.WARNING,
+            )
+            return Response({'detail': 'Нямате права за редакция на това приложение.'}, status=status.HTTP_403_FORBIDDEN)
         if 'file' not in request.FILES and ('file' not in data or not data['file']):
             data.pop('file', None)
             data.pop('original_filename', None)
-        serializer = SessionAttachmentSerializer(instance, data=data, partial=True)
+        serializer = SessionAttachmentSerializer(instance, data=data, partial=True, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        handle_author_on_save(instance, request, is_create=False)
+        instance.save()
+        log_audit_event(
+            request=request,
+            action="UPDATE",
+            target_model="SessionAttachment",
+            target_id=instance.id,
+            status="SUCCESS",
+            details=f"Updated SessionAttachment '{instance.name}'"
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
-        serializer = SessionAttachmentSerializer(data=data)
+        serializer = SessionAttachmentSerializer(data=data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        instance = serializer.save()
+        handle_author_on_save(instance, request, is_create=True)
+        instance.save()
+        log_audit_event(
+            request=request,
+            action="CREATE",
+            target_model="SessionAttachment",
+            target_id=instance.id,
+            status="SUCCESS",
+            details=f"Created SessionAttachment '{instance.name}'"
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['DELETE'])
 def session_attachment_delete(request, pk):
     instance = get_object_or_404(SessionAttachment, id=pk)
+    if not check_user_can_delete(request, instance):
+        log_audit_event(
+            request=request,
+            action="PERMISSION_DENIED",
+            target_model="SessionAttachment",
+            target_id=instance.id,
+            status="DENIED",
+            details=f"Unauthorized delete attempt on SessionAttachment '{instance.name}'",
+            level=logging.WARNING,
+        )
+        return Response({'detail': 'Нямате права за изтриване на това приложение.'}, status=status.HTTP_403_FORBIDDEN)
+    att_name = instance.name
     instance.delete()
+    log_audit_event(
+        request=request,
+        action="DELETE",
+        target_model="SessionAttachment",
+        target_id=pk,
+        status="SUCCESS",
+        details=f"Deleted SessionAttachment '{att_name}'"
+    )
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -387,6 +670,18 @@ class SessionImportView(APIView):
     """
     def post(self, request, subject_id):
         subject = get_object_or_404(Subject, id=subject_id)
+        if not check_user_can_edit(request, subject):
+            log_audit_event(
+                request=request,
+                action="PERMISSION_DENIED",
+                target_model="Subject",
+                target_id=subject.id,
+                status="DENIED",
+                details=f"Unauthorized session import attempt on Subject '{subject.name}'",
+                level=logging.WARNING,
+            )
+            return Response({'detail': 'Нямате права за импорт на уроци по този предмет.'}, status=status.HTTP_403_FORBIDDEN)
+
         data = request.data
 
         # Поддръжка както на структуриран обект с ключ "sessions", така и на директен масив или raw_json низ
@@ -557,6 +852,7 @@ class SessionImportView(APIView):
                 for s_data in cleaned_sessions:
                     new_session = Session.objects.create(
                         course=subject,
+                        author=request.user if request.user and request.user.is_authenticated else None,
                         num=s_data['num'],
                         name=s_data['name'],
                         session_type=s_data['session_type'],
@@ -585,6 +881,7 @@ class SessionImportView(APIView):
 
                     new_session = Session.objects.create(
                         course=subject,
+                        author=request.user if request.user and request.user.is_authenticated else None,
                         num=session_num,
                         name=s_data['name'],
                         session_type=s_data['session_type'],
@@ -599,6 +896,15 @@ class SessionImportView(APIView):
                             topic=t_data['topic'],
                             description=t_data['description']
                         )
+
+        log_audit_event(
+            request=request,
+            action="IMPORT_SESSIONS",
+            target_model="Subject",
+            target_id=subject.id,
+            status="SUCCESS",
+            details=f"Imported {len(cleaned_sessions)} sessions for subject '{subject.name}'"
+        )
 
         # Презареждане и сериализиране на обновения списък с уроци
         topics_prefetch = Prefetch(
@@ -631,6 +937,18 @@ class SessionPlanImportView(APIView):
 
     def post(self, request, session_id):
         session = get_object_or_404(Session, id=session_id)
+        if not check_user_can_edit(request, session):
+            log_audit_event(
+                request=request,
+                action="PERMISSION_DENIED",
+                target_model="Session",
+                target_id=session.id,
+                status="DENIED",
+                details=f"Unauthorized plan import attempt on Session '{session.name}'",
+                level=logging.WARNING,
+            )
+            return Response({'detail': 'Нямате права за редакция на този урок.'}, status=status.HTTP_403_FORBIDDEN)
+
         data = request.data
 
         if not data:
@@ -773,6 +1091,7 @@ class SessionPlanImportView(APIView):
 
         # Запис в базата данни в транзакция
         with transaction.atomic():
+            handle_author_on_save(session, request, is_create=False)
             if replace_existing:
                 SessionNote.objects.filter(session=session).delete()
                 SessionTask.objects.filter(session=session).delete()
@@ -784,11 +1103,14 @@ class SessionPlanImportView(APIView):
                     session.focus = str(focus_val).strip()
                 session.save()
 
+                item_author = session.author or (request.user if request.user and request.user.is_authenticated else None)
+
                 # Създаване на точки
                 point_map = {}
                 for p_data in cleaned_points:
                     pt_obj = SessionPoint.objects.create(
                         session=session,
+                        author=item_author,
                         num=p_data['num'],
                         name=p_data['name'],
                         description=p_data['description'],
@@ -803,6 +1125,7 @@ class SessionPlanImportView(APIView):
                     SessionNote.objects.create(
                         session=session,
                         point=pt_obj,
+                        author=item_author,
                         num=n_data['num'],
                         name=n_data['name'],
                         content=n_data['content']
@@ -814,6 +1137,7 @@ class SessionPlanImportView(APIView):
                     SessionTask.objects.create(
                         session=session,
                         point=pt_obj,
+                        author=item_author,
                         num=t_data['num'],
                         name=t_data['name'],
                         condition=t_data['condition'],
@@ -826,6 +1150,8 @@ class SessionPlanImportView(APIView):
                 if focus_val is not None and str(focus_val).strip() and not session.focus:
                     session.focus = str(focus_val).strip()
                 session.save()
+
+                item_author = session.author or (request.user if request.user and request.user.is_authenticated else None)
 
                 max_point_num = SessionPoint.objects.filter(session=session).order_by('-num').values_list('num', flat=True).first() or 0
                 point_map = {}
@@ -840,6 +1166,7 @@ class SessionPlanImportView(APIView):
 
                     pt_obj = SessionPoint.objects.create(
                         session=session,
+                        author=item_author,
                         num=p_num,
                         name=p_data['name'],
                         description=p_data['description'],
@@ -862,6 +1189,7 @@ class SessionPlanImportView(APIView):
                     SessionNote.objects.create(
                         session=session,
                         point=pt_obj,
+                        author=item_author,
                         num=n_num,
                         name=n_data['name'],
                         content=n_data['content']
@@ -881,11 +1209,21 @@ class SessionPlanImportView(APIView):
                     SessionTask.objects.create(
                         session=session,
                         point=pt_obj,
+                        author=item_author,
                         num=t_num,
                         name=t_data['name'],
                         condition=t_data['condition'],
                         answer=t_data['answer']
                     )
+
+        log_audit_event(
+            request=request,
+            action="IMPORT_PLAN",
+            target_model="Session",
+            target_id=session.id,
+            status="SUCCESS",
+            details=f"Imported plan for lesson '{session.name}'"
+        )
 
         # Презареждане и връщане на резултата
         points_qs = SessionPoint.objects.filter(session=session).order_by('num', 'id')

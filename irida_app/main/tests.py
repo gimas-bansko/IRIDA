@@ -1,15 +1,19 @@
 import re
 from django.test import TestCase, Client
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIClient
 from rest_framework import status
-from main.constants import STUDENT, TEACHER
+from main.constants import STUDENT, TEACHER, SUPERADMIN, SCHOOLADMIN
 from main.models import (
     AIPrompt,
     AppAttachment,
+    BroadcastMessage,
+    BroadcastMessageRead,
     Goal,
+    Log,
     School,
     SchoolDayConfig,
     Session,
@@ -393,12 +397,13 @@ class AIPromptAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.teacher_user = User.objects.create_user(username='teacher_ai', password='password123', first_name='Иван', last_name='Иванов')
+        self.other_teacher = User.objects.create_user(username='other_teacher_ai', password='password123', first_name='Петър', last_name='Петров')
         self.admin_user = User.objects.create_superuser(username='admin_ai', password='password123', email='admin@test.com')
         self.client.force_authenticate(user=self.teacher_user)
 
     def test_list_prompts_with_page_key(self):
         # Create sample prompt
-        AIPrompt.objects.create(
+        prompt = AIPrompt.objects.create(
             title='Тест промпт за урок',
             page_key='lesson_main',
             prompt_text='План за {тема}',
@@ -411,7 +416,20 @@ class AIPromptAPITest(TestCase):
         # Should include lesson_main prompts and general prompts
         keys = {p['page_key'] for p in resp.data}
         self.assertTrue(keys.issubset({'lesson_main', 'general'}))
-        self.assertTrue(any(p['title'] == 'Тест промпт за урок' for p in resp.data))
+        item = next(p for p in resp.data if p['id'] == prompt.id)
+        self.assertEqual(item['title'], 'Тест промпт за урок')
+        self.assertTrue(item['is_author'])
+        self.assertTrue(item['can_edit'])
+        self.assertTrue(item['can_delete'])
+
+        # Check for another teacher
+        client2 = APIClient()
+        client2.force_authenticate(user=self.other_teacher)
+        resp2 = client2.get('/api/prompts/?page_key=lesson_main')
+        item2 = next(p for p in resp2.data if p['id'] == prompt.id)
+        self.assertFalse(item2['is_author'])
+        self.assertFalse(item2['can_edit'])
+        self.assertFalse(item2['can_delete'])
 
     def test_create_and_update_prompt(self):
         # Create
@@ -427,8 +445,10 @@ class AIPromptAPITest(TestCase):
         created_id = resp.data['id']
         self.assertEqual(resp.data['title'], 'Мой нов промпт')
         self.assertEqual(resp.data['created_by_name'], 'Иван Иванов')
+        self.assertTrue(resp.data['is_author'])
+        self.assertTrue(resp.data['can_edit'])
 
-        # Update
+        # Update by author
         resp_update = self.client.post('/api/prompts/upsert/', {
             'id': created_id,
             'title': 'Мой обновен промпт',
@@ -439,6 +459,17 @@ class AIPromptAPITest(TestCase):
         }, format='json')
         self.assertEqual(resp_update.status_code, 200)
         self.assertEqual(resp_update.data['title'], 'Мой обновен промпт')
+
+        # Update by other teacher should be forbidden 403
+        client_other = APIClient()
+        client_other.force_authenticate(user=self.other_teacher)
+        resp_unauth = client_other.post('/api/prompts/upsert/', {
+            'id': created_id,
+            'title': 'Неоторизирана промяна',
+            'page_key': 'lesson_main',
+            'prompt_text': 'Хакнат текст',
+        }, format='json')
+        self.assertEqual(resp_unauth.status_code, 403)
 
     def test_lesson_main_seeded_micro_prompts(self):
         resp = self.client.get('/api/prompts/?page_key=lesson_main')
@@ -458,6 +489,14 @@ class AIPromptAPITest(TestCase):
             is_system=False,
             created_by=self.teacher_user
         )
+        # Other teacher tries to delete -> 403
+        client_other = APIClient()
+        client_other.force_authenticate(user=self.other_teacher)
+        resp_other = client_other.delete(f'/api/prompts/{prompt.id}/')
+        self.assertEqual(resp_other.status_code, 403)
+        self.assertTrue(AIPrompt.objects.filter(id=prompt.id).exists())
+
+        # Author deletes -> 204
         resp = self.client.delete(f'/api/prompts/{prompt.id}/')
         self.assertEqual(resp.status_code, 204)
         self.assertFalse(AIPrompt.objects.filter(id=prompt.id).exists())
@@ -1623,3 +1662,315 @@ class Step3FeaturesTest(TestCase):
         self.assertIn(SessionAttachment.WORKSHEET, types_visible)
         self.assertIn(SessionAttachment.EXIT_TICKET, types_visible)
         self.assertNotIn(SessionAttachment.RUBRIC, types_visible)
+
+
+class AuditLoggingTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='teacher_audit', password='password123')
+        self.user.userprofile.access_level = TEACHER
+        self.user.userprofile.save()
+
+    def test_audit_login_success_and_logout(self):
+        client = Client()
+        resp_login = client.post(reverse('login'), {'username': 'teacher_audit', 'password': 'password123'})
+        self.assertEqual(resp_login.status_code, 302)
+
+        login_logs = Log.objects.filter(user_name='teacher_audit', action__contains='[LOGIN]')
+        self.assertTrue(login_logs.exists())
+
+        resp_logout = client.get(reverse('logout'))
+        self.assertEqual(resp_logout.status_code, 302)
+
+        logout_logs = Log.objects.filter(user_name='teacher_audit', action__contains='[LOGOUT]')
+        self.assertTrue(logout_logs.exists())
+
+    def test_audit_login_failed(self):
+        client = Client()
+        resp_login_bad = client.post(reverse('login'), {'username': 'teacher_audit', 'password': 'wrongpassword'})
+        self.assertEqual(resp_login_bad.status_code, 200)
+
+        fail_logs = Log.objects.filter(action__contains='[LOGIN_FAILED]')
+        self.assertTrue(fail_logs.exists())
+
+    def test_audit_helper_direct(self):
+        from main.audit import log_audit_event
+        log_audit_event(
+            request=None,
+            action="TEST_ACTION",
+            target_model="TestModel",
+            target_id=999,
+            status="SUCCESS",
+            details="Direct test detail",
+            user=self.user,
+        )
+        direct_logs = Log.objects.filter(action__contains='[TEST_ACTION]')
+        self.assertTrue(direct_logs.exists())
+
+
+class OwnershipAndAuthorizationTest(TestCase):
+    def setUp(self):
+        self.teacher_a = User.objects.create_user(username='teacher_a', password='password123')
+        self.teacher_a.userprofile.access_level = TEACHER
+        self.teacher_a.userprofile.save()
+
+        self.teacher_b = User.objects.create_user(username='teacher_b', password='password123')
+        self.teacher_b.userprofile.access_level = TEACHER
+        self.teacher_b.userprofile.save()
+
+        self.admin_user = User.objects.create_user(username='admin_user', password='password123')
+        self.admin_user.userprofile.access_level = SUPERADMIN
+        self.admin_user.userprofile.save()
+
+        self.student_user = User.objects.create_user(username='student_u', password='password123')
+        self.student_user.userprofile.access_level = STUDENT
+        self.student_user.userprofile.save()
+
+        self.school = School.objects.create(full_name='Училище Авторство', short_name='УА', city='София')
+        self.specialty = Specialty.objects.create(school=self.school, specialty_name='Информатика')
+        self.subject = Subject.objects.create(
+            specialty=self.specialty,
+            name='Уеб дизайн',
+            grade=11,
+            creator=self.teacher_a
+        )
+        self.session_a = Session.objects.create(
+            course=self.subject,
+            num=1,
+            name='Урок на Учител А',
+            author=self.teacher_a
+        )
+        self.session_anon = Session.objects.create(
+            course=self.subject,
+            num=2,
+            name='Анонимен урок',
+            author=None
+        )
+
+    def test_teacher_b_cannot_edit_or_delete_teacher_a_lesson(self):
+        client = APIClient()
+        client.force_authenticate(user=self.teacher_b)
+
+        # PUT attempt
+        resp_put = client.put(f'/api/sessions/{self.session_a.id}/', {
+            'course': self.subject.id,
+            'num': 1,
+            'name': 'Опит за промяна от Б'
+        })
+        self.assertEqual(resp_put.status_code, status.HTTP_403_FORBIDDEN)
+
+        # DELETE attempt
+        resp_del = client.delete(f'/api/sessions/{self.session_a.id}/')
+        self.assertEqual(resp_del.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_teacher_a_can_edit_own_lesson(self):
+        client = APIClient()
+        client.force_authenticate(user=self.teacher_a)
+
+        resp_put = client.put(f'/api/sessions/{self.session_a.id}/', {
+            'course': self.subject.id,
+            'num': 1,
+            'name': 'Обновено име от Учител А'
+        })
+        self.assertEqual(resp_put.status_code, status.HTTP_200_OK)
+        self.session_a.refresh_from_db()
+        self.assertEqual(self.session_a.name, 'Обновено име от Учител А')
+        self.assertEqual(self.session_a.author, self.teacher_a)
+
+    def test_admin_can_edit_teacher_a_lesson_keeping_author(self):
+        client = APIClient()
+        client.force_authenticate(user=self.admin_user)
+
+        resp_put = client.put(f'/api/sessions/{self.session_a.id}/', {
+            'course': self.subject.id,
+            'num': 1,
+            'name': 'Коригирана грешка от Админ',
+            'keep_original_author': True
+        })
+        self.assertEqual(resp_put.status_code, status.HTTP_200_OK)
+        self.session_a.refresh_from_db()
+        self.assertEqual(self.session_a.name, 'Коригирана грешка от Админ')
+        self.assertEqual(self.session_a.author, self.teacher_a)
+
+    def test_admin_can_claim_ownership(self):
+        client = APIClient()
+        client.force_authenticate(user=self.admin_user)
+
+        resp_put = client.put(f'/api/sessions/{self.session_a.id}/', {
+            'course': self.subject.id,
+            'num': 1,
+            'name': 'Присвоен урок от Админ',
+            'claim_ownership': True
+        })
+        self.assertEqual(resp_put.status_code, status.HTTP_200_OK)
+        self.session_a.refresh_from_db()
+        self.assertEqual(self.session_a.name, 'Присвоен урок от Админ')
+        self.assertEqual(self.session_a.author, self.admin_user)
+
+    def test_anonymous_content_claimed_on_first_edit(self):
+        client = APIClient()
+        client.force_authenticate(user=self.teacher_a)
+
+        self.assertIsNone(self.session_anon.author)
+        resp_put = client.put(f'/api/sessions/{self.session_anon.id}/', {
+            'course': self.subject.id,
+            'num': 2,
+            'name': 'Вече авторски урок на А'
+        })
+        self.assertEqual(resp_put.status_code, status.HTTP_200_OK)
+        self.session_anon.refresh_from_db()
+        self.assertEqual(self.session_anon.name, 'Вече авторски урок на А')
+        self.assertEqual(self.session_anon.author, self.teacher_a)
+
+    def test_point_and_note_and_task_ownership(self):
+        # Create point as Teacher A
+        client_a = APIClient()
+        client_a.force_authenticate(user=self.teacher_a)
+
+        resp_pt = client_a.post('/api/session-points/upsert/', {
+            'session': self.session_a.id,
+            'num': 1,
+            'name': 'Точка 1',
+            'duration': 15,
+            'content': '<p>Контент</p>'
+        })
+        self.assertEqual(resp_pt.status_code, status.HTTP_201_CREATED)
+        point_id = resp_pt.data['id']
+
+        # Teacher B cannot edit point
+        client_b = APIClient()
+        client_b.force_authenticate(user=self.teacher_b)
+
+        resp_pt_b = client_b.post('/api/session-points/upsert/', {
+            'id': point_id,
+            'session': self.session_a.id,
+            'num': 1,
+            'name': 'Точка 1 от Б',
+            'duration': 15,
+            'content': '<p>Контент Б</p>'
+        })
+        self.assertEqual(resp_pt_b.status_code, status.HTTP_403_FORBIDDEN)
+
+        # Teacher B cannot delete point
+        resp_pt_del = client_b.delete(f'/api/session-points/{point_id}/')
+        self.assertEqual(resp_pt_del.status_code, status.HTTP_403_FORBIDDEN)
+
+        # Teacher A can edit point
+        resp_pt_edit = client_a.post('/api/session-points/upsert/', {
+            'id': point_id,
+            'session': self.session_a.id,
+            'num': 1,
+            'name': 'Точка 1 променена от А',
+            'duration': 20,
+            'content': '<p>Контент А нов</p>'
+        })
+        self.assertEqual(resp_pt_edit.status_code, status.HTTP_200_OK)
+
+
+class BroadcastMessagesAPITest(TestCase):
+    def setUp(self):
+        self.admin = User.objects.create_superuser(username='admin_bcast', password='password123')
+        self.admin.userprofile.access_level = SUPERADMIN
+        self.admin.userprofile.save()
+
+        self.teacher = User.objects.create_user(username='teacher_bcast', password='password123')
+        self.teacher.userprofile.access_level = TEACHER
+        self.teacher.userprofile.save()
+
+        self.student = User.objects.create_user(username='student_bcast', password='password123')
+        self.student.userprofile.access_level = STUDENT
+        self.student.userprofile.save()
+
+        # Message for Teachers only
+        self.msg_teacher = BroadcastMessage.objects.create(
+            title='Важно за учители',
+            message='Срокът за предаване на плановете изтича в петък.',
+            target_role=BroadcastMessage.AUDIENCE_TEACHER,
+            created_by=self.admin
+        )
+
+        # Message for All
+        self.msg_all = BroadcastMessage.objects.create(
+            title='Общо съобщение',
+            message='Системата ще бъде в профилактика в неделя.',
+            target_role=BroadcastMessage.AUDIENCE_ALL,
+            created_by=self.admin
+        )
+
+    def test_unread_filtering_by_role(self):
+        client_teacher = APIClient()
+        client_teacher.force_authenticate(user=self.teacher)
+
+        resp_teacher = client_teacher.get('/api/broadcast-messages/unread/')
+        self.assertEqual(resp_teacher.status_code, status.HTTP_200_OK)
+        teacher_msg_ids = [m['id'] for m in resp_teacher.data]
+        self.assertIn(self.msg_teacher.id, teacher_msg_ids)
+        self.assertIn(self.msg_all.id, teacher_msg_ids)
+
+        client_student = APIClient()
+        client_student.force_authenticate(user=self.student)
+
+        resp_student = client_student.get('/api/broadcast-messages/unread/')
+        self.assertEqual(resp_student.status_code, status.HTTP_200_OK)
+        student_msg_ids = [m['id'] for m in resp_student.data]
+        self.assertNotIn(self.msg_teacher.id, student_msg_ids)
+        self.assertIn(self.msg_all.id, student_msg_ids)
+
+    def test_mark_message_read(self):
+        client_teacher = APIClient()
+        client_teacher.force_authenticate(user=self.teacher)
+
+        # Mark teacher message as read
+        resp_mark = client_teacher.post(f'/api/broadcast-messages/{self.msg_teacher.id}/mark-read/')
+        self.assertEqual(resp_mark.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp_mark.data['status'], 'ok')
+
+        # Check unread list now only contains msg_all
+        resp_teacher_after = client_teacher.get('/api/broadcast-messages/unread/')
+        self.assertEqual(resp_teacher_after.status_code, status.HTTP_200_OK)
+        teacher_msg_ids = [m['id'] for m in resp_teacher_after.data]
+        self.assertNotIn(self.msg_teacher.id, teacher_msg_ids)
+        self.assertIn(self.msg_all.id, teacher_msg_ids)
+
+        # Mark msg_all as read
+        resp_mark_all = client_teacher.post(f'/api/broadcast-messages/{self.msg_all.id}/mark-read/')
+        self.assertEqual(resp_mark_all.status_code, status.HTTP_200_OK)
+
+        # Now unread list is completely empty for this teacher
+        resp_teacher_empty = client_teacher.get('/api/broadcast-messages/unread/')
+        self.assertEqual(resp_teacher_empty.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(resp_teacher_empty.data), 0)
+
+        # But student still sees msg_all
+        client_student = APIClient()
+        client_student.force_authenticate(user=self.student)
+        resp_student = client_student.get('/api/broadcast-messages/unread/')
+        student_msg_ids = [m['id'] for m in resp_student.data]
+        self.assertIn(self.msg_all.id, student_msg_ids)
+
+    def test_admin_crud_broadcast(self):
+        client_admin = APIClient()
+        client_admin.force_authenticate(user=self.admin)
+
+        # Create
+        resp_create = client_admin.post('/api/broadcast-messages/', {
+            'title': 'Ново съобщение за ученици',
+            'message': 'Тестът ще се проведе на 15-ти.',
+            'target_role': BroadcastMessage.AUDIENCE_STUDENT,
+            'is_active': True
+        })
+        self.assertEqual(resp_create.status_code, status.HTTP_201_CREATED)
+        new_msg_id = resp_create.data['id']
+
+        # Update
+        resp_update = client_admin.put(f'/api/broadcast-messages/{new_msg_id}/', {
+            'title': 'Обновено съобщение за ученици',
+            'message': 'Тестът се отлага за 20-ти.',
+            'target_role': BroadcastMessage.AUDIENCE_STUDENT,
+            'is_active': True
+        })
+        self.assertEqual(resp_update.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp_update.data['title'], 'Обновено съобщение за ученици')
+
+        # Delete
+        resp_del = client_admin.delete(f'/api/broadcast-messages/{new_msg_id}/')
+        self.assertEqual(resp_del.status_code, status.HTTP_204_NO_CONTENT)

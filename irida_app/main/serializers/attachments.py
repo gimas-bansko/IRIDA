@@ -5,6 +5,7 @@
 import os
 from rest_framework import serializers
 
+from ..constants import SUPERADMIN, GUESTADMIN, SCHOOLADMIN, TEACHER, STUDENT
 from ..models import AppAttachment
 
 
@@ -13,6 +14,7 @@ class AppAttachmentSerializer(serializers.ModelSerializer):
     file_name = serializers.SerializerMethodField(read_only=True)
     created_by_name = serializers.SerializerMethodField(read_only=True)
     is_owner = serializers.SerializerMethodField(read_only=True)
+    can_edit = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = AppAttachment
@@ -29,6 +31,7 @@ class AppAttachmentSerializer(serializers.ModelSerializer):
             'created_by',
             'created_by_name',
             'is_owner',
+            'can_edit',
             'created_at',
             'updated_at',
         ]
@@ -59,10 +62,27 @@ class AppAttachmentSerializer(serializers.ModelSerializer):
             last = obj.created_by.last_name
             full_name = f"{first} {last}".strip()
             return full_name if full_name else obj.created_by.username
-        return 'Системен' if obj.is_system else ''
+        return 'Системен' if obj.is_system else 'Анонимен автор'
 
     def get_is_owner(self, obj):
         request = self.context.get('request')
         if not request or not getattr(request, 'user', None) or not request.user.is_authenticated:
             return False
         return obj.created_by_id == request.user.id
+
+    def get_can_edit(self, obj):
+        request = self.context.get('request')
+        if not request or not getattr(request, 'user', None) or not request.user.is_authenticated:
+            return False
+        user = request.user
+        if user.is_superuser:
+            return True
+        user_profile = getattr(user, 'userprofile', None)
+        role = getattr(user_profile, 'access_level', None)
+        if role in [SUPERADMIN, GUESTADMIN, SCHOOLADMIN]:
+            return True
+        if obj.created_by_id == user.id:
+            return True
+        if obj.created_by_id is None and not obj.is_system:
+            return True
+        return False

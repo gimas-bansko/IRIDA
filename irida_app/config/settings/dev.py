@@ -23,15 +23,28 @@ SECRET_KEY = env(
 # Пощата отива в конзолата вместо в реален SMTP.
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Пълни SQL/шаблонни грешки в конзолата.
+# Пълни SQL/шаблонни грешки в конзолата + одит лог.
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'simple': {'format': '{levelname} {asctime} {name} {message}', 'style': '{'},
+        'audit': {
+            'format': '[{asctime}] {message}',
+            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
     },
     'handlers': {
         'console': {'class': 'logging.StreamHandler', 'formatter': 'simple'},
+        'audit_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGS_DIR / 'audit.log',
+            'maxBytes': 10 * 1024 * 1024,
+            'backupCount': 5,
+            'formatter': 'audit',
+            'encoding': 'utf-8',
+        },
     },
     'root': {'handlers': ['console'], 'level': 'INFO'},
     'loggers': {
@@ -39,6 +52,11 @@ LOGGING = {
             # Смени на 'DEBUG', за да видиш всяка SQL заявка.
             'level': env('DJANGO_SQL_LOG_LEVEL', default='WARNING'),
             'handlers': ['console'],
+            'propagate': False,
+        },
+        'irida.audit': {
+            'handlers': ['audit_file', 'console'],
+            'level': 'INFO',
             'propagate': False,
         },
     },

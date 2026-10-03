@@ -8,6 +8,9 @@ from .views import (
     AIPromptListView,
     AIPromptUpsertView,
     AppAttachmentListView,
+    BroadcastMessageListCreateView,
+    BroadcastMessageRetrieveUpdateDestroyView,
+    BroadcastUnreadListView,
     CurriculumImportView,
     GoalImportView,
     GoalRetrieveUpdateDestroyView,
@@ -23,7 +26,6 @@ from .views import (
     SessionPointsForSessionView,
     SessionRetrieveUpdateDestroyView,
     SessionTasksForSessionView,
-    SessionAttachmentsForSessionView,
     SessionTopicListCreateView,
     SessionTopicRetrieveUpdateDestroyView,
     SessionTopicsForSessionView,
@@ -43,6 +45,7 @@ from .views import (
     ai_prompt_delete,
     app_attachment_delete,
     app_attachment_upsert,
+    broadcast_mark_read,
     ckeditor_image_upload,
     session_attachment_delete,
     session_attachment_upsert,
@@ -152,4 +155,10 @@ urlpatterns = [
     path('prompts/', AIPromptListView.as_view(), name='prompt-list'),
     path('prompts/upsert/', AIPromptUpsertView.as_view(), name='prompt-upsert'),
     path('prompts/<int:pk>/', ai_prompt_delete, name='prompt-delete'),
+
+    # Броадкаст съобщения
+    path('broadcast-messages/unread/', BroadcastUnreadListView.as_view(), name='broadcast-unread-list'),
+    path('broadcast-messages/<int:pk>/mark-read/', broadcast_mark_read, name='broadcast-mark-read'),
+    path('broadcast-messages/', BroadcastMessageListCreateView.as_view(), name='broadcast-list-create'),
+    path('broadcast-messages/<int:pk>/', BroadcastMessageRetrieveUpdateDestroyView.as_view(), name='broadcast-detail'),
 ]

@@ -104,6 +104,9 @@
                                                 <span v-else class="text-muted fs-12">, Продължителност [[session.duration]] учебни часа, </span>
                                                 <span v-if="session.basic_level" class="badge bg-info fs-12">Основен (задължителен) урок</span>
                                                 <span v-else class="badge bg-warning fs-12">Резервен (при необходимост) урок</span>
+                                                <span class="badge bg-secondary-transparent text-secondary fs-12 ms-1" :title="'Автор: ' + (session.author_name || 'Анонимен автор')">
+                                                    <i class="bi bi-person-fill me-1"></i>[[ session.author_name || 'Анонимен автор' ]]
+                                                </span>
                                             </span>
                                         </div>
                                     </div>

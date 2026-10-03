@@ -19,6 +19,7 @@ from .accounts import (
     save_user_profile,
 )
 from .attachments import AppAttachment
+from .broadcasts import BroadcastMessage, BroadcastMessageRead
 from .curriculum import Goal, Subject, Topic, Unit
 from .prompts import AIPrompt
 from .lessons import (
@@ -41,6 +42,9 @@ __all__ = [
     'AIPrompt',
     # attachments
     'AppAttachment',
+    # broadcasts
+    'BroadcastMessage',
+    'BroadcastMessageRead',
     # lessons
     'Session',
     'SessionTopic',

@@ -749,6 +749,11 @@
     <script src="{% static 'js/custom.js' %}"></script>
     <script src="{% static 'js/date.js' %}"></script>
     <script src="{% static 'js/custom-switcher.min.js' %}"></script>
+
+    {% include 'main/components/ai_prompt_modal.html' %}
+    <script src="{% static 'irida/js/ai_prompts.js' %}"></script>
+    {% include 'main/components/broadcast_modal.html' %}
+    <script src="{% static 'irida/js/broadcast_modal.js' %}"></script>
 </body>
 
 </html>

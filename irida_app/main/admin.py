@@ -3,6 +3,8 @@ from django.contrib import admin
 from .models import (
     AIPrompt,
     AppAttachment,
+    BroadcastMessage,
+    BroadcastMessageRead,
     Documents,
     Goal,
     Log,
@@ -81,9 +83,31 @@ class AIPromptAdmin(admin.ModelAdmin):
     ordering = ('page_key', 'order', 'title')
 
 
+@admin.register(BroadcastMessage)
+class BroadcastMessageAdmin(admin.ModelAdmin):
+    list_display = ('title', 'target_role', 'is_active', 'created_by', 'created_at', 'expires_at', 'reads_count')
+    list_filter = ('target_role', 'is_active', 'created_at')
+    search_fields = ('title', 'message')
+    ordering = ('-created_at', '-id')
+
+    def reads_count(self, obj):
+        return obj.reads.count()
+    reads_count.short_description = 'Брой прочитания'
+
+
+@admin.register(BroadcastMessageRead)
+class BroadcastMessageReadAdmin(admin.ModelAdmin):
+    list_display = ('message', 'user', 'read_at')
+    list_filter = ('read_at', 'message')
+    search_fields = ('message__title', 'user__username', 'user__first_name', 'user__last_name')
+    ordering = ('-read_at',)
+
+
 @admin.register(Log)
 class LogV(admin.ModelAdmin):
-    list_display = ('user_name', 'action', 'date' )
-    list_display_links = ('user_name', 'action', )
-    list_filter = ('user_name', 'action', )
-    ordering = ('-date', )
+    list_display = ('date', 'user_name', 'action', 'user_id')
+    list_display_links = ('date', 'user_name', 'action')
+    search_fields = ('user_name', 'action')
+    list_filter = ('user_name',)
+    ordering = ('-date', '-id')
+    readonly_fields = ('date', 'user_name', 'user_id', 'action')
