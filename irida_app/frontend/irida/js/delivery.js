@@ -526,12 +526,26 @@ const App = {
                 });
         },
 
-        loadSessionAttachments() {
+        loadSessionAttachments(silent = false) {
             const vm = this;
+            if (!vm.session || !vm.session.id) return;
+            const existingCollapsedMap = {};
+            if (Array.isArray(vm.attachments)) {
+                for (const a of vm.attachments) {
+                    if (a && a.id != null) {
+                        existingCollapsedMap[a.id] = a.collapsed;
+                    }
+                }
+            }
             axios.get('/api/sessions/' + vm.session.id + '/attachments/')
                 .then(res => {
                     vm.attachments = res.data;
-                    vm.addCollapsedToAttachments();
+                    vm.addCollapsedToAttachments(existingCollapsedMap);
+                })
+                .catch(err => {
+                    if (!silent) {
+                        console.error('Грешка при зареждане на приложенията:', err);
+                    }
                 });
         },
 
@@ -558,11 +572,15 @@ const App = {
             }
         },
 
-        addCollapsedToAttachments() {
+        addCollapsedToAttachments(existingCollapsedMap = null) {
             if (!Array.isArray(this.attachments)) return;
             for (const a of this.attachments) {
-                if (a && typeof a === 'object' && !Object.prototype.hasOwnProperty.call(a, 'collapsed')) {
-                    a.collapsed = true;
+                if (a && typeof a === 'object') {
+                    if (existingCollapsedMap && Object.prototype.hasOwnProperty.call(existingCollapsedMap, a.id)) {
+                        a.collapsed = existingCollapsedMap[a.id];
+                    } else if (!Object.prototype.hasOwnProperty.call(a, 'collapsed')) {
+                        a.collapsed = true;
+                    }
                 }
             }
         },
@@ -974,12 +992,14 @@ const App = {
             this.updateLessonRunTiming();
             this.updateSelectedPointTiming();
             this.startLessonTimingTicker();
+            this.startAttachmentsPolling();
         },
 
         stopLesson() {
             this.lessonRun.started = false;
             this.lessonRun.paused = false;
             this.stopLessonTimingTicker();
+            this.stopAttachmentsPolling();
             this.resetLessonRun();
             this.showSelectedPointContent.content = false;
             this.showSelectedPointContent.notes = false;
@@ -1002,6 +1022,7 @@ const App = {
         },
 
         resetLessonRun() {
+            this.stopAttachmentsPolling();
             this.lessonRun.started = false;
                 this.lessonRun.paused = false;
                 this.lessonRun.startedAt = null;
@@ -1232,6 +1253,22 @@ const App = {
             }
         },
 
+        startAttachmentsPolling() {
+            if (this._attachmentsPollingInterval) return;
+            this._attachmentsPollingInterval = setInterval(() => {
+                if (this.lessonRun.started && this.session && this.session.id) {
+                    this.loadSessionAttachments(true);
+                }
+            }, 30000);
+        },
+
+        stopAttachmentsPolling() {
+            if (this._attachmentsPollingInterval) {
+                clearInterval(this._attachmentsPollingInterval);
+                this._attachmentsPollingInterval = null;
+            }
+        },
+
         openAIAssistant() {
             const pointsText = (this.points || []).map(p => `${p.num}. ${p.name}`).join('; ');
             const subjectObj = this.user?.profile?.subject || {};
@@ -1295,6 +1332,7 @@ const App = {
     beforeUnmount() {
         this.stopClock();
         this.stopLessonTimingTicker();
+        this.stopAttachmentsPolling();
     }
 };
 

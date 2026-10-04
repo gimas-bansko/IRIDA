@@ -1,4 +1,48 @@
 <!-- Modal: Броадкаст системни известия -->
+<style>
+/* Broadcast Modal - Light & Dark Theme Custom Styles */
+#broadcastModal .modal-content {
+    border: 1px solid var(--default-border, rgba(0, 0, 0, 0.1));
+}
+
+#broadcastModal .broadcast-message-box {
+    background-color: #f8f9fa;
+    color: #212529;
+    border: 1px solid #e9ecef;
+}
+
+/* Dark Theme Full Compatibility */
+[data-theme-mode="dark"] #broadcastModal .modal-content {
+    background-color: var(--custom-white, #1a1c1e);
+    color: var(--default-text-color, rgba(255, 255, 255, 0.85));
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme-mode="dark"] #broadcastModal .modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme-mode="dark"] #broadcastModal .modal-footer {
+    background-color: var(--custom-white, #1a1c1e) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme-mode="dark"] #broadcastModal #broadcastTitle,
+[data-theme-mode="dark"] #broadcastModal .text-dark {
+    color: #ffffff !important;
+}
+
+[data-theme-mode="dark"] #broadcastModal .text-muted {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+[data-theme-mode="dark"] #broadcastModal .broadcast-message-box,
+[data-theme-mode="dark"] #broadcastModal #broadcastMessageBody {
+    background-color: rgba(0, 0, 0, 0.35) !important;
+    color: #e3e3e8 !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+}
+</style>
 <div class="modal fade" id="broadcastModal" tabindex="-1" aria-labelledby="broadcastModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" style="z-index: 1065;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
@@ -19,7 +63,7 @@
                     <span id="broadcastDate"><i class="bi bi-calendar3 me-1"></i>Дата</span>
                 </div>
 
-                <div class="p-3 bg-light rounded border text-dark fs-14" id="broadcastMessageBody" style="white-space: pre-wrap; line-height: 1.6; max-height: 350px; overflow-y: auto;">
+                <div class="p-3 bg-light rounded border text-dark fs-14 broadcast-message-box" id="broadcastMessageBody" style="white-space: pre-wrap; line-height: 1.6; max-height: 350px; overflow-y: auto;">
                 </div>
             </div>
 

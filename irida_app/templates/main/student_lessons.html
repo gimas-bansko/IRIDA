@@ -445,6 +445,75 @@
         <!-- End::app-content -->
 
         <!-- Modal за обратна връзка -->
+        <style>
+        /* Feedback Modal - Light & Dark Theme Custom Styles */
+        #feedbackModal .modal-content {
+            border: 1px solid var(--default-border, rgba(0, 0, 0, 0.1));
+        }
+
+        /* Dark Theme Compatibility */
+        [data-theme-mode="dark"] #feedbackModal .modal-content {
+            background-color: var(--custom-white, #1a1c1e);
+            color: var(--default-text-color, rgba(255, 255, 255, 0.85));
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme-mode="dark"] #feedbackModal .modal-header {
+            background-color: rgba(18, 183, 106, 0.15) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        [data-theme-mode="dark"] #feedbackModal .modal-header .modal-title {
+            color: #47cd89 !important;
+        }
+
+        [data-theme-mode="dark"] #feedbackModal .modal-footer {
+            background-color: var(--custom-white, #1a1c1e) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        [data-theme-mode="dark"] #feedbackModal .text-muted {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        [data-theme-mode="dark"] #feedbackModal .form-label {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        [data-theme-mode="dark"] #feedbackModal .form-control,
+        [data-theme-mode="dark"] #feedbackModal .form-select {
+            background-color: var(--form-control-bg, #232628) !important;
+            border-color: var(--input-border, #313335) !important;
+            color: #ffffff !important;
+        }
+
+        [data-theme-mode="dark"] #feedbackModal .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.4) !important;
+        }
+
+        [data-theme-mode="dark"] #feedbackModal .alert-danger {
+            background-color: rgba(240, 68, 56, 0.15);
+            border-color: rgba(240, 68, 56, 0.3);
+            color: #fda29b;
+        }
+
+        [data-theme-mode="dark"] #feedbackModal .alert-success {
+            background-color: rgba(18, 183, 106, 0.15);
+            border-color: rgba(18, 183, 106, 0.3);
+            color: #47cd89;
+        }
+
+        [data-theme-mode="dark"] #feedbackModal .btn-outline-secondary {
+            border-color: rgba(255, 255, 255, 0.25);
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        [data-theme-mode="dark"] #feedbackModal .btn-outline-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+        }
+        </style>
         <div class="modal fade show" id="feedbackModal" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5);" v-if="feedbackModal.show">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content shadow-lg border-0">

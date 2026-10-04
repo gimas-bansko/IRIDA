@@ -442,30 +442,218 @@
                 </div>
 
                 <!-- Modal за импорт на уроци -->
+                <style>
+                /* Sessions Import Modal - Light & Dark Theme Custom Styles */
+                #sessionsImportModal .modal-content {
+                    border: 1px solid var(--default-border, rgba(0, 0, 0, 0.1));
+                }
+
+                #sessionsImportModal .modal-header {
+                    background-color: #f0f7ff;
+                    border-bottom: 1px solid #e0eafc;
+                    border-radius: 16px 16px 0 0;
+                }
+
+                #sessionsImportModal .modal-title {
+                    color: #1570ef;
+                }
+
+                #sessionsImportModal .modal-subtitle {
+                    color: #475467;
+                    font-size: 0.8125rem;
+                }
+
+                #sessionsImportModal .modal-footer {
+                    background-color: #f8fafc;
+                    border-top: 1px solid #e2e8f0;
+                    border-radius: 0 0 16px 16px;
+                }
+
+                #sessionsImportModal .import-context-box,
+                #sessionsImportModal .import-mode-box {
+                    background-color: #f8fafc;
+                    border-color: #e2e8f0 !important;
+                    color: #344054;
+                }
+
+                #sessionsImportModal .context-label {
+                    color: #475467;
+                }
+
+                #sessionsImportModal .context-value {
+                    color: #101828;
+                }
+
+                /* Dark Theme Compatibility */
+                [data-theme-mode="dark"] #sessionsImportModal .modal-content {
+                    background-color: var(--custom-white, #1a1c1e);
+                    color: var(--default-text-color, rgba(255, 255, 255, 0.85));
+                    border-color: rgba(255, 255, 255, 0.1);
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .modal-header {
+                    background-color: rgba(46, 144, 250, 0.12) !important;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+                    border-radius: 16px 16px 0 0 !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .modal-title {
+                    color: #53b1fd !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .modal-subtitle {
+                    color: #98a2b3 !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .btn-close {
+                    filter: invert(1) brightness(1.8) !important;
+                    opacity: 0.85;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .btn-close:hover {
+                    opacity: 1;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .modal-footer {
+                    background-color: var(--custom-white, #1a1c1e) !important;
+                    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+                    border-radius: 0 0 16px 16px !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .import-context-box,
+                [data-theme-mode="dark"] #sessionsImportModal .import-mode-box {
+                    background-color: rgba(255, 255, 255, 0.04) !important;
+                    border-color: rgba(255, 255, 255, 0.12) !important;
+                    color: rgba(255, 255, 255, 0.9) !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .context-label {
+                    color: rgba(255, 255, 255, 0.65) !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .context-value {
+                    color: #ffffff !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .text-dark {
+                    color: #ffffff !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .text-muted {
+                    color: rgba(255, 255, 255, 0.6) !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .badge.bg-primary-transparent {
+                    background-color: rgba(46, 144, 250, 0.18) !important;
+                    color: #53b1fd !important;
+                    border: 1px solid rgba(46, 144, 250, 0.35);
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .badge.bg-warning-transparent,
+                [data-theme-mode="dark"] #sessionsImportModal .bg-warning-transparent {
+                    background-color: rgba(247, 144, 9, 0.18) !important;
+                    color: #fec84b !important;
+                    border-color: rgba(247, 144, 9, 0.35) !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .text-warning-emphasis {
+                    color: #fec84b !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .alert-info {
+                    background-color: rgba(46, 144, 250, 0.12);
+                    border-color: rgba(46, 144, 250, 0.25);
+                    color: rgba(255, 255, 255, 0.9);
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .alert-info code {
+                    background-color: rgba(255, 255, 255, 0.12);
+                    color: #70bbfd;
+                    padding: 0.1rem 0.3rem;
+                    border-radius: 4px;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .alert-danger {
+                    background-color: rgba(240, 68, 56, 0.15);
+                    border-color: rgba(240, 68, 56, 0.3);
+                    color: #fda29b;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .form-control,
+                [data-theme-mode="dark"] #sessionsImportModal .form-select,
+                [data-theme-mode="dark"] #sessionsImportModal textarea {
+                    background-color: var(--form-control-bg, #232628) !important;
+                    border-color: var(--input-border, #313335) !important;
+                    color: #ffffff !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .form-control::placeholder,
+                [data-theme-mode="dark"] #sessionsImportModal textarea::placeholder {
+                    color: rgba(255, 255, 255, 0.4) !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .input-group-text {
+                    background-color: var(--form-control-bg, #232628) !important;
+                    border-color: var(--input-border, #313335) !important;
+                    color: rgba(255, 255, 255, 0.75) !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .form-check-label {
+                    color: rgba(255, 255, 255, 0.85);
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .form-check-label strong {
+                    color: #ffffff;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .form-check-input {
+                    background-color: var(--form-control-bg, #232628);
+                    border-color: var(--input-border, #313335);
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .btn-outline-secondary,
+                [data-theme-mode="dark"] #sessionsImportModal .modal-footer .btn-outline-secondary {
+                    background-color: transparent !important;
+                    border-color: rgba(255, 255, 255, 0.3) !important;
+                    color: #f2f4f7 !important;
+                }
+
+                [data-theme-mode="dark"] #sessionsImportModal .btn-outline-secondary:hover,
+                [data-theme-mode="dark"] #sessionsImportModal .modal-footer .btn-outline-secondary:hover {
+                    background-color: rgba(255, 255, 255, 0.12) !important;
+                    border-color: rgba(255, 255, 255, 0.5) !important;
+                    color: #ffffff !important;
+                }
+                </style>
                 <div class="modal fade" id="sessionsImportModal" tabindex="-1" aria-labelledby="sessionsImportModalLabel" aria-hidden="true" ref="sessionsImportModal">
                     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                         <div class="modal-content shadow-lg border-0">
-                            <div class="modal-header bg-primary-transparent border-bottom">
+                            <div class="modal-header py-3 border-bottom">
                                 <div class="d-flex align-items-center gap-2">
-                                    <i class="bi bi-file-earmark-arrow-up text-primary fs-20"></i>
-                                    <h5 class="modal-title fw-semibold text-primary mb-0" id="sessionsImportModalLabel">
-                                        Импорт на тематично разпределение и уроци
-                                    </h5>
+                                    <div class="avatar avatar-sm bg-primary text-fixed-white rounded-circle flex-shrink-0">
+                                        <i class="bi bi-file-earmark-arrow-up fs-16"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="modal-title fw-semibold mb-0" id="sessionsImportModalLabel">
+                                            Импорт на тематично разпределение и уроци
+                                        </h5>
+                                        <small class="modal-subtitle">Зареждане на урочни единици, типове и часове от JSON</small>
+                                    </div>
                                 </div>
                                 <button type="button" class="btn-close" @click="closeImportModal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body p-4">
                                 <!-- Контекстни данни за текущия предмет -->
-                                <div class="p-3 bg-light rounded-2 border mb-3">
+                                <div class="p-3 import-context-box rounded-2 border mb-3">
                                     <div class="row g-2 fs-14">
                                         <div class="col-md-6">
-                                            <span class="text-muted">Предмет:</span>
-                                            <span class="fw-semibold text-dark ms-1">[[ currentSubject.name || 'Не е избран' ]]</span>
+                                            <span class="context-label">Предмет:</span>
+                                            <span class="fw-semibold context-value ms-1">[[ currentSubject.name || 'Не е избран' ]]</span>
                                             <span class="badge bg-primary-transparent text-primary ms-1" v-if="currentSubject.subject_type">[[ currentSubject.subject_type ]]</span>
                                         </div>
                                         <div class="col-md-6">
-                                            <span class="text-muted">Специалност:</span>
-                                            <span class="fw-semibold text-dark ms-1">[[ currentSpecialty.specialty_name || 'Не е избрана' ]]</span>
+                                            <span class="context-label">Специалност:</span>
+                                            <span class="fw-semibold context-value ms-1">[[ currentSpecialty.specialty_name || 'Не е избрана' ]]</span>
                                         </div>
                                     </div>
                                 </div>
@@ -503,7 +691,7 @@
                                 </div>
 
                                 <!-- Предупреждение и избор при налични съществуващи уроци -->
-                                <div class="p-3 border rounded-2 mb-3" :class="listOfSessions.length > 0 ? 'bg-warning-transparent border-warning' : 'bg-light'">
+                                <div class="p-3 border rounded-2 mb-3" :class="listOfSessions.length > 0 ? 'bg-warning-transparent border-warning' : 'import-mode-box'">
                                     <div class="d-flex align-items-center gap-2 mb-2" v-if="listOfSessions.length > 0">
                                         <i class="bi bi-exclamation-triangle-fill text-warning fs-18"></i>
                                         <span class="fw-semibold text-warning-emphasis fs-14">
@@ -532,7 +720,7 @@
                                 </div>
 
                             </div>
-                            <div class="modal-footer border-top bg-light">
+                            <div class="modal-footer border-top py-3">
                                 <button type="button" class="btn btn-outline-secondary btn-sm px-3" @click="closeImportModal" :disabled="importData.isSubmitting">
                                     Отказ
                                 </button>
